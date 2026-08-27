@@ -2,6 +2,7 @@ import Select from 'react-select'
 import type { FundMeta } from '../types'
 import { FUND_COLORS, MAX_COMPARE_FUNDS } from '../constants'
 import { SavingsRateInput } from './SavingsRateInput'
+import { useWatchlist } from '../hooks/useWatchlist'
 import {
   isSavingsAssetId, savingsAssetId, parseSavingsRate, pickDefaultSavingsRate,
   SAVINGS_OPTION_LABEL,
@@ -26,6 +27,7 @@ export function FundSelector({
   startDate,
   endDate,
 }: Props) {
+  const { isWatched, toggle } = useWatchlist()
   const baseOptions: FundOption[] = allFunds.map(f => ({ value: f.id, label: f.name_vi }))
 
   function changeFund(index: number, newId: string) {
@@ -89,6 +91,15 @@ export function FundSelector({
                 fundId={fundId}
                 onCommit={rate => changeFund(i, savingsAssetId(rate))}
               />
+            )}
+            {!isSavingsAssetId(fundId) && (
+              <button
+                className={`fund-star-btn${isWatched(fundId) ? ' fund-star-btn-active' : ''}`}
+                onClick={() => toggle(fundId)}
+                title={isWatched(fundId) ? 'Bỏ khỏi danh sách theo dõi' : 'Thêm vào danh sách theo dõi'}
+              >
+                {isWatched(fundId) ? '★' : '☆'}
+              </button>
             )}
             <button
               className="fund-remove-btn"

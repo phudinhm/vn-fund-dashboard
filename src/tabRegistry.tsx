@@ -2,6 +2,7 @@ import type { ReactElement } from 'react'
 import type { CalculatorId, DashboardState, FundMeta } from './types'
 import type { DcaShareState, LsDcaShareState, ShareUrlState } from './utils/shareUrl'
 import { CompareTab } from './components/CompareTab'
+import { WatchlistPanel } from './components/WatchlistPanel'
 import { DCAPanel } from './components/DCAPanel'
 import { LumpSumDCAPanel } from './components/LumpSumDCAPanel'
 import { FundAnalysisPanel } from './components/FundAnalysisPanel'
@@ -32,7 +33,7 @@ import { ChangelogPanel } from './components/ChangelogPanel'
 /** Kiểu id của tab. Khai báo tay ở đây (12 giá trị), registry và các file khác
  * đều suy từ nó — thêm tab phải thêm id vào union này VÀ một entry trong registry. */
 export type TabId =
-  | 'compare' | 'dca' | 'lsdca' | 'fundanalysis' | 'overlap'
+  | 'compare' | 'watchlist' | 'dca' | 'lsdca' | 'fundanalysis' | 'overlap'
   | 'rebalance' | 'tactical' | 'bitcoin' | 'wallofworry'
   | 'calculator' | 'methodology' | 'changelog'
 
@@ -78,6 +79,17 @@ export const TAB_REGISTRY: TabManifest[] = [
         onChangeDateFrom={onChangeDateFrom}
         onChangeDateTo={onChangeDateTo}
         onChangeRollingPeriod={onChangeRollingPeriod}
+      />
+    ),
+  },
+  {
+    id: 'watchlist',
+    label: 'Theo Dõi',
+    keepMounted: false,
+    render: ({ metadata, updateState }: TabContext): ReactElement => (
+      <WatchlistPanel
+        funds={metadata}
+        onCompare={fundIds => updateState({ funds: fundIds, tab: 'compare' })}
       />
     ),
   },

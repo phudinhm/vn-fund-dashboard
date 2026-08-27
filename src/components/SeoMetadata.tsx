@@ -18,6 +18,12 @@ export const SEO_BY_TAB: Record<TabId, SeoMeta> = {
     heading: 'So Sánh Quỹ Mở và ETF Việt Nam',
     indexable: true,
   },
+  watchlist: {
+    title: 'Danh sách quỹ theo dõi | Fund Dashboard',
+    description: 'Lưu và theo dõi các quỹ mở, ETF yêu thích với CAGR, sụt giảm tối đa và lợi nhuận 1 năm gần nhất.',
+    heading: 'Danh Sách Quỹ Theo Dõi',
+    indexable: false,
+  },
   dca: {
     title: 'Mô phỏng DCA quỹ đầu tư Việt Nam | Fund Dashboard',
     description: 'Mô phỏng đầu tư định kỳ vào quỹ mở, ETF và các tài sản tại Việt Nam bằng dữ liệu lịch sử.',

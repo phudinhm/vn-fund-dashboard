@@ -184,6 +184,33 @@ h1, h2, h3 {
   cursor: not-allowed;
 }
 
+/* ─── Watchlist star toggle (dùng chung ở FundSelector & tab Theo Dõi) ── */
+.fund-star-btn {
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 50%;
+  background: #f5f4ed;
+  color: #b8b6ab;
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+
+.fund-star-btn:hover {
+  background: #fdf0ea;
+  color: var(--color-primary);
+}
+
+.fund-star-btn-active {
+  color: var(--color-primary);
+}
+
 .fund-selector-actions {
   display: flex;
   align-items: center;
@@ -305,12 +332,19 @@ h1, h2, h3 {
 }
 
 /* ─── Tabs ────────────────────────────────────── */
+/* Cuộn ngang thay vì bóp 13 tab vào một hàng: giữ tab đủ rộng để đọc được,
+ * scroll-snap để việc vuốt dừng gọn ở đầu mỗi tab thay vì lửng lơ giữa chừng. */
 .tabs {
   display: flex;
   gap: 4px;
   margin-bottom: 20px;
   border-bottom: 2px solid var(--color-border);
   padding-bottom: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
 }
 
 .tab {
@@ -324,6 +358,9 @@ h1, h2, h3 {
   border-bottom: 2px solid transparent;
   margin-bottom: -2px;
   transition: color 0.15s, border-color 0.15s;
+  white-space: nowrap;
+  flex-shrink: 0;
+  scroll-snap-align: start;
 }
 
 .tab:hover {
@@ -339,6 +376,12 @@ h1, h2, h3 {
 .tab:disabled {
   opacity: 0.4;
   cursor: not-allowed;
+}
+
+.tab:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: 4px;
 }
 
 /* ─── KPI Cards ───────────────────────────────── */
@@ -406,6 +449,161 @@ h1, h2, h3 {
 
 .kpi-winner .kpi-number {
   color: var(--color-winner);
+}
+
+/* ─── Watchlist ───────────────────────────────── */
+.watchlist-add .fund-search-select {
+  max-width: 420px;
+}
+
+.watchlist-empty {
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 20px;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+
+.watchlist-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.watchlist-compare-btn {
+  padding: 9px 16px;
+  border: none;
+  border-radius: 6px;
+  background: var(--color-primary);
+  color: var(--color-primary-fg);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.watchlist-compare-btn:hover {
+  background: var(--color-primary-dark);
+}
+
+.watchlist-toolbar-note {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+.watchlist-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 14px;
+}
+
+.watchlist-card {
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.watchlist-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.watchlist-card-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.watchlist-badge {
+  flex-shrink: 0;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--color-primary-fg);
+  white-space: nowrap;
+}
+
+.watchlist-card-name {
+  font-weight: 700;
+  font-size: 0.95rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.watchlist-card-fullname {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  line-height: 1.4;
+  margin-top: -4px;
+}
+
+.watchlist-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.watchlist-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.watchlist-stat-label {
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.watchlist-stat-value {
+  font-size: 0.95rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.watchlist-stat-value.pos {
+  color: var(--color-winner);
+}
+
+.watchlist-stat-value.neg {
+  color: var(--color-secondary);
+}
+
+.watchlist-stat-date {
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+}
+
+.watchlist-card-compare-btn {
+  align-self: flex-start;
+  margin-top: 4px;
+  padding: 6px 0;
+  border: none;
+  background: none;
+  color: var(--color-primary);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.watchlist-card-compare-btn:hover {
+  text-decoration: underline;
 }
 
 /* ─── Chart Containers ────────────────────────── */
@@ -4299,14 +4497,17 @@ h1, h2, h3 {
     font-size: 1.15rem;
   }
 
-  /* ── Tabs: full-width, equal sizing ── */
+  /* ── Tabs: cuộn ngang, mỗi tab giữ chiều rộng đọc được thay vì bị bóp ── */
   .tabs {
-    gap: 0;
+    gap: 2px;
+    margin-left: -12px;
+    margin-right: -12px;
+    padding-left: 12px;
+    padding-right: 12px;
   }
 
   .tab {
-    flex: 1;
-    padding: 12px 8px;
+    padding: 12px 14px;
     font-size: 0.85rem;
     text-align: center;
     min-height: 44px;
