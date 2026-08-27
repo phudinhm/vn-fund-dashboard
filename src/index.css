@@ -1,0 +1,7821 @@
+﻿@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:wght@500&display=swap');
+
+/* ─── Reset & Base ─────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --color-primary: #c96442;
+  --color-primary-dark: #a8512f;
+  --color-primary-fg: #faf9f5;
+  --color-primary-light: #fdf0ea;   /* terracotta hint bg */
+  --color-primary-border: #f0cfc0;  /* terracotta hint border */
+  --color-secondary: #b53333;
+  --color-portfolio: #0ECB81;
+  --color-baseline: #87867f;
+  --color-bg: #f5f4ed;
+  --color-surface: #faf9f5;
+  --color-text: #141413;
+  --color-text-muted: #5e5d59;
+  --color-border: #e8e6dc;
+  --color-border-subtle: #f0eee6;   /* very faint warm border */
+  --color-winner: #0ECB81;
+  --radius: 8px;
+  --shadow: rgba(0,0,0,0.05) 0px 4px 24px;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.6;
+}
+
+h1, h2, h3 {
+  font-family: 'Lora', Georgia, 'Times New Roman', serif;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+/* ─── App Layout ──────────────────────────────── */
+.app {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 16px 20px 40px;
+  overflow-x: hidden;
+}
+
+.app-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.app-header h1 {
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+/* ─── Loading & Error ─────────────────────────── */
+.loading-screen,
+.error-screen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  font-size: 1.1rem;
+  color: var(--color-text-muted);
+}
+
+.error-screen {
+  color: var(--color-secondary);
+}
+
+.loading-indicator {
+  text-align: center;
+  padding: 24px;
+  color: var(--color-text-muted);
+}
+
+.error-banner {
+  background: #fef2f2;
+  border: 1px solid #f5c6c6;
+  border-radius: var(--radius);
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  color: #991a1a;
+}
+
+/* ─── Fund Category Filter ────────────────────── */
+.fund-category-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.category-btn {
+  padding: 4px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 20px;
+  background: var(--color-surface);
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: all 0.15s;
+  color: var(--color-text);
+  white-space: nowrap;
+}
+
+.category-btn:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.category-btn-active {
+  background: var(--color-primary);
+  color: var(--color-primary-fg);
+  border-color: var(--color-primary);
+  font-weight: 600;
+}
+
+/* ─── Fund Selector ───────────────────────────── */
+.fund-selector {
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 16px 20px;
+  margin-bottom: 12px;
+}
+
+.fund-selector-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.fund-selector-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.fund-color-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.fund-search-select,
+.portfolio-fund-select {
+  flex: 1;
+  min-width: 0;
+}
+
+.fund-remove-btn {
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 50%;
+  background: #f5f4ed;
+  color: #5e5d59;
+  font-size: 0.85rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+
+.fund-remove-btn:hover {
+  background: #f5c6c6;
+  color: #b53333;
+}
+
+.fund-remove-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.fund-selector-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.fund-add-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border: 1px dashed var(--color-border);
+  border-radius: 6px;
+  background: none;
+  color: var(--color-primary);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.fund-add-btn:hover {
+  border-color: var(--color-primary);
+  background: var(--color-primary-light);
+}
+
+.fund-add-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.comparison-period {
+  margin-top: 8px;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+/* ─── Date Range Picker ───────────────────────── */
+.date-range-picker {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 10px 16px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.date-presets {
+  display: flex;
+  gap: 4px;
+}
+
+.preset-btn {
+  padding: 5px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: var(--color-surface);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.15s;
+  color: var(--color-text);
+}
+
+.preset-btn:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.preset-btn-active {
+  background: var(--color-primary);
+  color: var(--color-primary-fg);
+  font-weight: 600;
+  border-color: var(--color-primary);
+}
+
+.date-inputs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.date-inputs input[type="date"] {
+  padding: 5px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  font-size: 0.85rem;
+}
+
+.date-separator {
+  color: var(--color-text-muted);
+}
+
+/*
+ * Tab không hoạt động: ẩn đi nhưng KHÔNG dùng display:none.
+ *
+ * display:none làm phần tử co về 0x0. ResponsiveContainer của Recharts đo được
+ * chiều rộng 0 thì tháo bỏ luôn biểu đồ khỏi DOM, nên lúc quay lại tab, toàn bộ
+ * SVG phải dựng lại từ đầu, thấy rõ cảnh biểu đồ trống rồi vẽ lại.
+ *
+ * Cách dưới đây giữ nguyên chiều rộng thật của phần tử (nhờ vẫn nằm trong
+ * luồng), nên Recharts không thấy có gì thay đổi và giữ nguyên biểu đồ đã vẽ.
+ * height 0 với overflow hidden để tab ẩn không chiếm chỗ, visibility hidden để
+ * không nhìn thấy và không bấm hay tab phím vào được.
+ */
+.tab-panel-hidden {
+  height: 0;
+  overflow: hidden;
+  visibility: hidden;
+  /*
+   * position relative để phần tử này thành mốc định vị. Thiếu nó thì con nào
+   * dùng position absolute sẽ neo vào tổ tiên xa hơn, thoát khỏi overflow
+   * hidden ở đây và kéo dài chiều cao cuộn của cả trang.
+   */
+  position: relative;
+}
+
+/* ─── Tabs ────────────────────────────────────── */
+.tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 20px;
+  border-bottom: 2px solid var(--color-border);
+  padding-bottom: 0;
+}
+
+.tab {
+  padding: 10px 20px;
+  border: none;
+  background: none;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.tab:hover {
+  color: var(--color-text);
+}
+
+.tab-active {
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary);
+  font-weight: 600;
+}
+
+.tab:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ─── KPI Cards ───────────────────────────────── */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.kpi-card {
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 14px 16px;
+}
+
+.kpi-title {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.kpi-tooltip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--color-border);
+  font-size: 0.65rem;
+  color: var(--color-text-muted);
+  cursor: help;
+}
+
+.kpi-values {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.kpi-value {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.kpi-fund-name {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+.kpi-number {
+  font-size: 1.1rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.kpi-winner .kpi-number {
+  color: var(--color-winner);
+}
+
+/* ─── Chart Containers ────────────────────────── */
+.chart-container {
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 16px 16px 8px;
+  margin-bottom: 16px;
+}
+
+.chart-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chart-header h3 {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.chart-tooltip-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--color-border);
+  font-size: 0.7rem;
+  color: var(--color-text-muted);
+  cursor: help;
+  margin-left: 6px;
+}
+
+/* Chi phí trung vị của việc rải tiền, theo từng mốc nắm giữ */
+.holdcost-intro,
+.holdcost-example {
+  font-size: 0.85rem;
+  line-height: 1.6;
+  margin-top: 8px;
+}
+
+.holdcost-example {
+  padding: 8px 12px;
+  background: var(--color-bg);
+  border-radius: var(--radius);
+}
+
+.holdcost-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 14px;
+}
+
+.holdcost-row {
+  display: grid;
+  grid-template-columns: 150px 1fr 200px;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Nhãn hai dòng: số năm tổng, và ngay dưới là cách tách ra thành quãng rải
+   với quãng giữ thêm. Ghi sẵn để người đọc khỏi phải nhẩm mốc tính từ đâu. */
+.holdcost-label {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  text-align: right;
+  color: var(--color-text-muted);
+}
+
+.holdcost-label-years {
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.holdcost-label-breakdown {
+  font-size: 0.66rem;
+  line-height: 1.25;
+  opacity: 0.8;
+}
+
+/* Mobile: cột nhãn hẹp làm "rải 18 tháng + giữ 2 năm 6 tháng" vỡ thành năm
+   dòng. Xếp dọc hẳn, nhãn nằm ngang chiếm hết chiều rộng. */
+@media (max-width: 640px) {
+  .holdcost-row {
+    grid-template-columns: 1fr;
+    row-gap: 3px;
+    padding: 7px 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .holdcost-label {
+    flex-direction: row;
+    align-items: baseline;
+    gap: 6px;
+    text-align: left;
+  }
+  .holdcost-value { text-align: left; }
+}
+
+.holdcost-track {
+  position: relative;
+  height: 22px;
+  background: var(--color-bg);
+  border-radius: 4px;
+}
+
+.holdcost-zero {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--color-border);
+}
+
+.holdcost-bar {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  border-radius: 3px;
+}
+
+.holdcost-bar--neg { background: #dc2626; }
+.holdcost-bar--pos { background: #16a34a; }
+
+/* Mốc thiếu lần thử tách rời thì làm mờ, không tô đậm như thể chắc chắn */
+.holdcost-bar--thin {
+  opacity: 0.35;
+  background-image: repeating-linear-gradient(
+    45deg, transparent, transparent 3px, rgba(255,255,255,0.5) 3px, rgba(255,255,255,0.5) 6px
+  );
+}
+
+.holdcost-value {
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.3;
+}
+
+.holdcost-indep {
+  font-size: 0.68rem;
+  color: var(--color-text-muted);
+}
+
+.holdcost-na {
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+.holdcost-note {
+  margin-top: 14px;
+  padding: 12px 14px;
+  border-left: 3px solid var(--color-border);
+  background: var(--color-bg);
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+
+.holdcost-note p {
+  font-size: 0.82rem;
+  line-height: 1.6;
+  color: var(--color-text-muted);
+}
+
+.holdcost-note p + p { margin-top: 8px; }
+
+/* ── Kết quả theo mức giảm từ đỉnh lúc vào lệnh ── */
+.ddbucket-baseline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+  margin: 12px 0;
+  padding: 8px 12px;
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius);
+}
+
+.ddbucket-baseline-label {
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+}
+
+.ddbucket-baseline-value {
+  font-size: 0.85rem;
+}
+
+/* Nhãn dải dài hơn nhãn "N năm" của bảng chi phí, lại còn kèm danh sách tháng
+   bên dưới, nên cần cột rộng hơn hẳn. Cột giá trị cũng có ba mục nên nới theo. */
+.ddbucket-rows .holdcost-row {
+  grid-template-columns: 172px 1fr 215px;
+  align-items: start;
+}
+
+.ddbucket-label {
+  text-align: left;
+  font-weight: 500;
+}
+
+.ddbucket-band {
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+/* Tiêu đề phụ và danh sách trong phần diễn giải của khối "thời gian sau đỉnh" */
+.sincepeak-sub {
+  font-weight: 700;
+  margin-top: 14px !important;
+}
+
+.sincepeak-list {
+  margin: 6px 0 0;
+  padding-left: 20px;
+  font-size: 0.82rem;
+  line-height: 1.65;
+  color: var(--color-text-muted);
+}
+
+.sincepeak-list li + li { margin-top: 5px; }
+
+/* Dòng phụ nói thị trường lúc đó ra sao, tách khỏi dòng nói LS với DCA. */
+.ddbucket-market {
+  opacity: 0.85;
+  font-style: italic;
+}
+
+/* Danh sách tháng bắt đầu của từng giai đoạn, để người đọc tự đối chiếu. */
+.ddbucket-dates {
+  font-size: 0.62rem;
+  line-height: 1.3;
+  opacity: 0.75;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 560px) {
+  /* Xếp dọc hẳn như bảng chi phí. Ép hai cột ở đây làm tên dải với danh sách
+     tháng cùng vỡ dòng, mỗi hàng cao gần gấp ba. */
+  .ddbucket-rows .holdcost-row {
+    grid-template-columns: 1fr;
+    row-gap: 3px;
+  }
+  .ddbucket-rows .holdcost-label {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1px;
+  }
+  .ddbucket-rows .holdcost-value {
+    grid-column: 1 / -1;
+    text-align: left;
+  }
+}
+
+/* ── Bảng chi phí: nút đổi cách đếm mốc ── */
+.holdcost-modes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 14px 0 8px;
+}
+
+.holdcost-modes-label {
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+}
+
+.holdcost-mode-note {
+  margin: 0 0 12px;
+  padding: 8px 12px;
+  border-left: 3px solid var(--color-border);
+  background: var(--color-bg);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  font-size: 0.8rem;
+  line-height: 1.6;
+  color: var(--color-text-muted);
+}
+
+.holdcost-axis-caption {
+  margin: 6px 0 0;
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+/* ── Đường đi của một kịch bản cụ thể ── */
+.scnpath-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0 4px;
+}
+
+.scnpath-presets .lsdca-horizon-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  line-height: 1.3;
+}
+
+.scnpath-preset-date {
+  font-size: 0.7rem;
+  opacity: 0.75;
+  font-variant-numeric: tabular-nums;
+}
+
+.scnpath-slider-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 10px 0 4px;
+  flex-wrap: wrap;
+}
+
+.scnpath-slider-label {
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+}
+
+.scnpath-slider {
+  flex: 1;
+  min-width: 160px;
+  accent-color: var(--color-accent, #059669);
+}
+
+.scnpath-slider-value {
+  font-size: 0.85rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  min-width: 62px;
+  text-align: right;
+}
+
+.scnpath-endstats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.scnpath-endstat {
+  flex: 1 1 140px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-bg);
+}
+
+.scnpath-endstat-label {
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+}
+
+.scnpath-endstat-value {
+  font-size: 1rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.lsdca-hm-indep-note {
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-left: 3px solid var(--color-border);
+  background: var(--color-bg);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  font-size: 0.8rem;
+  line-height: 1.6;
+  color: var(--color-text-muted);
+}
+
+/* Số giai đoạn tách rời trong ô heatmap */
+.lsdca-hm-indep {
+  font-size: 0.62rem;
+  color: var(--color-text-muted);
+  margin-top: 2px;
+}
+
+/* Luật mobile của .holdcost-row nằm chung một chỗ ở gần định nghĩa gốc, đừng
+   thêm luật thứ hai ở đây. Trước có một luật 640px đặt lại grid ở đoạn này,
+   nó đứng sau nên đè mất luật kia và làm nhãn vỡ thành năm dòng. */
+
+/* Bảng lợi nhuận theo năm nhiệm kỳ tổng thống Mỹ */
+
+/*
+ * Khối này hay đứng ngay sau .perf-table-container, mà class đó đẩy khoảng cách
+ * bằng margin-top chứ không phải margin-bottom. Hai quy ước ngược nhau nên khi
+ * đứng cạnh thì không ai đẩy ai, dính sát vào nhau. Thêm lề trên cho riêng khối
+ * này thay vì sửa .perf-table-container, vì class đó đang dùng ở 6 chỗ khác.
+ */
+.cycle-table-card {
+  margin-top: 16px;
+}
+
+.cycle-table-intro {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+
+.cycle-table-wrap {
+  overflow-x: auto;
+}
+
+.cycle-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  min-width: 520px;
+}
+
+.cycle-table th,
+.cycle-table td {
+  padding: 7px 10px;
+  text-align: left;
+  border-bottom: 1px solid var(--color-border);
+  white-space: nowrap;
+}
+
+.cycle-table th {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-text-muted);
+  font-weight: 600;
+}
+
+.cycle-table .num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.cycle-table-group td {
+  background: var(--color-bg);
+  font-weight: 700;
+  font-size: 0.8rem;
+  padding-top: 12px;
+}
+
+.cycle-table-count {
+  font-weight: 400;
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+  margin-left: 8px;
+}
+
+.cycle-table-term {
+  font-weight: 600;
+}
+
+.cycle-table-years {
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+  margin-left: 6px;
+}
+
+.cycle-table-partial {
+  margin-left: 6px;
+  font-size: 0.68rem;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: var(--color-border);
+  color: var(--color-text-muted);
+}
+
+.cycle-table-halving {
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+}
+
+.cycle-pos { color: #16a34a; font-weight: 600; }
+.cycle-neg { color: #dc2626; font-weight: 600; }
+
+.cycle-table-note {
+  margin-top: 14px;
+  padding: 12px 14px;
+  border-left: 3px solid var(--color-border);
+  background: var(--color-bg);
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+
+.cycle-table-note p {
+  font-size: 0.82rem;
+  line-height: 1.6;
+  color: var(--color-text-muted);
+}
+
+.cycle-table-note p + p {
+  margin-top: 8px;
+}
+
+/* Chart giá: 1 tài sản thì 1 chart rộng, từ 2 trở lên thì tách nhỏ nằm cạnh nhau */
+.price-chart-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
+  gap: 12px;
+}
+
+.price-chart-panel-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 4px;
+  flex-wrap: wrap;
+}
+
+.price-chart-panel-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.price-chart-panel-unit {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.log-scale-btn {
+  padding: 3px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: transparent;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+  letter-spacing: 0.02em;
+}
+
+.log-scale-btn:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.log-scale-btn-active {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-primary-fg);
+  font-weight: 600;
+}
+
+/* :hover có specificity cao hơn .log-scale-btn-active nên phải ghi đè riêng,
+   nếu không chữ sẽ thành cam-trên-cam (tàng hình) khi hover nút đang active */
+.log-scale-btn-active:hover {
+  color: var(--color-primary-fg);
+}
+
+.bitcoin-description {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin-bottom: 0;
+  max-width: 100%;
+  flex-basis: 100%;  /* spans full row inside flex container */
+}
+
+.bitcoin-controls {
+  display: flex;
+  align-items: flex-end;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+  padding: 16px 20px;
+  background: #faf9f5;
+  border: 1px solid #e8e6dc;
+  border-radius: 10px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+
+.bitcoin-ctrl-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.bitcoin-ctrl-fund {
+  flex: 1;
+  min-width: 220px;
+}
+
+.bitcoin-ctrl-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #87867f;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.bitcoin-fund-select {
+  min-width: 220px;
+  flex: 1;
+}
+
+/* Ô chọn quỹ nền tảng, kèm ô nhập lãi suất khi chọn tiết kiệm ngân hàng */
+.bitcoin-fund-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.bitcoin-rebal-select {
+  padding: 8px 10px;
+  border: 1px solid #e8e6dc;
+  border-radius: 6px;
+  background: #faf9f5;
+  font-size: 0.9rem;
+  cursor: pointer;
+  min-height: 38px;
+  color: #141413;
+  appearance: auto;
+}
+
+.bitcoin-rebal-select:hover {
+  border-color: #c96442;
+}
+
+.bitcoin-rebal-select:focus {
+  outline: none;
+  border-color: #c96442;
+  box-shadow: 0 0 0 2px rgba(201, 100, 66, 0.15);
+}
+
+.bitcoin-weight-inputs {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.bitcoin-weight-chip {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 10px;
+  background: #faf9f5;
+  border: 1px solid #e8e6dc;
+  border-radius: 6px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.bitcoin-weight-chip:focus-within {
+  border-color: #c96442;
+  box-shadow: 0 0 0 2px rgba(201, 100, 66, 0.12);
+  background: #faf9f5;
+}
+
+.weight-chip-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.bitcoin-weight-input {
+  width: 42px;
+  border: none;
+  outline: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: right;
+  background: transparent;
+  color: #141413;
+  padding: 0;
+}
+
+/* hide spin buttons */
+.bitcoin-weight-input::-webkit-outer-spin-button,
+.bitcoin-weight-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.bitcoin-weight-input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.bitcoin-weight-unit {
+  font-size: 0.8rem;
+  color: #87867f;
+  font-weight: 500;
+}
+
+/* ─── Money input (Bitcoin tab) ──────────────────── */
+
+.bitcoin-money-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  background: #faf9f5;
+  border: 1px solid #e8e6dc;
+  border-radius: 6px;
+  min-height: 38px;
+  box-sizing: border-box;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.bitcoin-money-wrap:focus-within {
+  border-color: #c96442;
+  box-shadow: 0 0 0 2px rgba(201, 100, 66, 0.12);
+  background: #faf9f5;
+}
+
+.bitcoin-money-input {
+  width: 120px;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #141413;
+  text-align: right;
+  padding: 0;
+}
+
+.bitcoin-money-unit {
+  font-size: 0.85rem;
+  color: #87867f;
+  font-weight: 500;
+}
+
+/* ─── Money Machine hero block ────────────────────── */
+
+.money-machine-block {
+  margin-bottom: 20px;
+  padding: 22px 24px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+}
+
+.money-machine-header h3 {
+  margin: 0 0 18px 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #141413;
+  line-height: 1.5;
+}
+
+.money-amount-highlight {
+  color: #c96442;
+  font-weight: 700;
+  padding: 0 4px;
+}
+
+.money-machine-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.mm-card {
+  background: #faf9f5;
+  border: 1px solid #e8e6dc;
+  border-top: 3px solid #141413;
+  border-radius: 8px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mm-card--base {
+  opacity: 0.85;
+}
+
+.mm-card-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #5e5d59;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.mm-card-amount-row {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.mm-card-start {
+  font-size: 0.8rem;
+  color: #87867f;
+  font-weight: 500;
+}
+
+.mm-card-arrow {
+  font-size: 0.9rem;
+  color: #87867f;
+}
+
+.mm-card-final {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #141413;
+}
+
+.mm-card-return {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.mm-card-delta {
+  margin-top: 2px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 4px;
+  display: inline-block;
+  align-self: flex-start;
+}
+
+.mm-card-delta--pos {
+  color: #15803d;
+  background: #dcfce7;
+}
+
+.mm-card-delta--neg {
+  color: #991a1a;
+  background: #fee2e2;
+}
+
+.money-machine-takeaway {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  background: #faf9f5;
+  border: 1px solid #e8e6dc;
+  border-left: 4px solid #c96442;
+  border-radius: 6px;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: #141413;
+}
+
+.money-machine-takeaway strong {
+  color: #a8512f;
+  font-weight: 700;
+}
+
+.mm-takeaway-emoji {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+  line-height: 1.4;
+}
+
+/* ─── Sleep Test block ────────────────────────────── */
+
+.sleep-test-container {
+  margin-top: 16px;
+  background: #faf9f5;
+  border: 1px solid #e8e6dc;
+  border-radius: 10px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  padding: 16px 20px;
+}
+
+.sleep-test-intro {
+  font-size: 0.9rem;
+  color: #5e5d59;
+  line-height: 1.55;
+  margin: 10px 0 14px 0;
+}
+
+.sleep-test-intro strong {
+  color: #141413;
+  font-weight: 700;
+}
+
+.sleep-test-table .sleep-cell {
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.sleep-pct {
+  font-weight: 600;
+  color: #991a1a;
+  font-size: 0.9rem;
+}
+
+.sleep-vnd {
+  font-size: 0.78rem;
+  color: #5e5d59;
+  font-weight: 500;
+  margin-top: 2px;
+}
+
+.sleep-test-takeaway {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  margin-top: 14px;
+  background: #fef2f2;
+  border: 1px solid #f5c6c6;
+  border-left: 4px solid #dc2626;
+  border-radius: 6px;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: #141413;
+}
+
+.sleep-test-takeaway strong {
+  color: #991a1a;
+  font-weight: 700;
+}
+
+/* ─── Win Rate block ──────────────────────────────── */
+
+.winrate-container {
+  margin-top: 16px;
+  background: #faf9f5;
+  border: 1px solid #e8e6dc;
+  border-radius: 10px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  padding: 16px 20px;
+}
+
+.winrate-intro {
+  font-size: 0.9rem;
+  color: #5e5d59;
+  line-height: 1.55;
+  margin: 10px 0 14px 0;
+}
+
+.winrate-table-wrap {
+  overflow-x: auto;
+}
+
+.winrate-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 8px 8px;
+}
+
+.winrate-table thead tr {
+  /* no borders, use spacing */
+}
+
+.winrate-table th {
+  padding: 4px 10px;
+  text-align: center;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #5e5d59;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.winrate-th-name {
+  text-align: left !important;
+}
+
+.winrate-td-name {
+  padding: 8px 10px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #141413;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.winrate-cell {
+  text-align: center;
+  padding: 10px 12px;
+  border-radius: 8px;
+  min-width: 110px;
+  vertical-align: middle;
+}
+
+.winrate-cell--strong {
+  background: #dcfce7;
+  border: 1px solid #86efac;
+}
+
+.winrate-cell--medium {
+  background: #fef9c3;
+  border: 1px solid #fde68a;
+}
+
+.winrate-cell--weak {
+  background: #fee2e2;
+  border: 1px solid #f5c6c6;
+}
+
+.winrate-cell--na {
+  background: #f5f4ed;
+  color: #87867f;
+  font-size: 1.2rem;
+  border: 1px solid #e8e6dc;
+}
+
+.winrate-fraction {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #141413;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+.winrate-slash {
+  color: #87867f;
+  font-weight: 500;
+  margin: 0 1px;
+}
+
+.winrate-bar-wrap {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+
+.winrate-cell--strong .winrate-bar {
+  background: #16a34a;
+}
+
+.winrate-cell--medium .winrate-bar {
+  background: #ca8a04;
+}
+
+.winrate-cell--weak .winrate-bar {
+  background: #dc2626;
+}
+
+.winrate-bar {
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+.winrate-pct {
+  font-size: 0.72rem;
+  color: #5e5d59;
+  font-weight: 500;
+}
+
+.winrate-takeaway {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  margin-top: 14px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-left: 4px solid #16a34a;
+  border-radius: 6px;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: #141413;
+}
+
+.winrate-takeaway strong {
+  color: #15803d;
+  font-weight: 700;
+}
+
+/* ─── DCA Journey Block (hero narrative for DCA tab) ─────────────────────────────── */
+
+.dca-journey-block {
+  margin-bottom: 18px;
+  padding: 22px 24px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+}
+
+.dca-journey-headline {
+  font-size: 1.05rem;
+  line-height: 1.55;
+  color: #141413;
+  margin-bottom: 18px;
+}
+
+.dca-journey-headline strong { color: #a8512f; }
+
+.dca-journey-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.dca-journey-stat {
+  padding: 14px 16px;
+  background: #faf9f5;
+  border: 1px solid #e8e6dc;
+  border-radius: 8px;
+}
+
+.dca-journey-stat--highlight {
+  background: #faf9f5;
+  border-color: #c96442;
+  border-width: 2px;
+}
+
+.dca-journey-stat--pos {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+}
+
+.dca-journey-stat--neg {
+  background: #fef2f2;
+  border-color: #f5c6c6;
+}
+
+.dca-journey-stat-label {
+  font-size: 0.78rem;
+  color: #5e5d59;
+  font-weight: 500;
+  margin-bottom: 6px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.dca-journey-stat-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #141413;
+}
+
+.dca-journey-stat--pos .dca-journey-stat-value { color: #15803d; }
+.dca-journey-stat--neg .dca-journey-stat-value { color: #991a1a; }
+
+.dca-journey-stat-sub {
+  font-size: 0.82rem;
+  color: #5e5d59;
+  margin-top: 2px;
+  font-weight: 500;
+}
+
+.dca-journey-stat--pos .dca-journey-stat-sub { color: #15803d; }
+.dca-journey-stat--neg .dca-journey-stat-sub { color: #991a1a; }
+
+.dca-journey-takeaway {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  background: #faf9f5;
+  border: 1px solid #e8e6dc;
+  border-left: 4px solid #c96442;
+  border-radius: 6px;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: #141413;
+}
+
+.dca-journey-takeaway strong { color: #a8512f; font-weight: 700; }
+
+.dca-journey-takeaway--neg {
+  background: #fef2f2;
+  border-color: #f5c6c6;
+  border-left-color: #dc2626;
+}
+.dca-journey-takeaway--neg strong { color: #991a1a; }
+
+.dca-journey-takeaway-icon {
+  flex-shrink: 0;
+  font-size: 1.1rem;
+  line-height: 1.3;
+}
+
+/* EOY Returns table (Modified Dietz) */
+
+.dca-eoy-block {
+  margin-bottom: 18px;
+  padding: 22px 24px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+}
+
+.dca-eoy-title {
+  margin: 0 0 6px 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.dca-eoy-explainer {
+  margin: 0 0 12px 0;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: #5e5d59;
+}
+
+.dca-eoy-explainer strong {
+  color: #141413;
+}
+
+.dca-eoy-table-scroll {
+  overflow-x: auto;
+}
+
+.dca-eoy-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.dca-eoy-table th,
+.dca-eoy-table td {
+  padding: 6px 10px;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.dca-eoy-th-year,
+.dca-eoy-year {
+  text-align: left;
+}
+
+.dca-eoy-table thead th {
+  border-bottom: 2px solid #e8e6dc;
+  font-weight: 700;
+  font-size: 0.78rem;
+  vertical-align: bottom;
+}
+
+/* Đường kẻ dọc phân cách giữa các nhóm cột (mỗi quỹ / cột Chênh lệch) để dễ
+   nhìn ranh giới khi có từ 2 quỹ trở lên, tránh dồn hết số liệu thành 1 khối. */
+.dca-eoy-group-start {
+  border-left: 1px solid #e8e6dc;
+}
+
+.dca-eoy-table tbody tr:nth-child(even) {
+  background: #faf9f5;
+}
+
+.dca-eoy-year {
+  font-weight: 600;
+  color: #5e5d59;
+}
+
+.dca-eoy-cell--pos { color: #059669; font-weight: 600; }
+.dca-eoy-cell--neg { color: #dc2626; font-weight: 600; }
+.dca-eoy-cell--empty { color: #b8b6ac; }
+
+.dca-eoy-partial {
+  color: #b8b6ac;
+  font-weight: 400;
+}
+
+.dca-eoy-table thead tr:last-child th {
+  border-bottom: 1px solid #e8e6dc;
+}
+
+.dca-eoy-subhead {
+  font-weight: 500;
+  font-size: 0.72rem;
+  text-transform: none;
+  color: #9a9890;
+}
+
+.dca-eoy-cell--balance {
+  color: #5e5d59;
+  font-weight: 400;
+}
+
+/* ─── DCA Stats Table (horizontal: 1 danh mục / hàng) ── */
+.dca-stats-table-scroll {
+  overflow-x: auto;
+}
+
+.dca-stats-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.dca-stats-table th,
+.dca-stats-table td {
+  padding: 8px 10px;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.dca-stats-table th:first-child,
+.dca-stats-table td:first-child {
+  text-align: left;
+}
+
+.dca-stats-table thead th {
+  border-bottom: 2px solid var(--color-border);
+  font-weight: 700;
+  color: var(--color-text-muted);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+}
+
+.dca-stats-table tbody tr:nth-child(even) {
+  background: var(--color-bg);
+}
+
+.dca-stats-td-name {
+  font-weight: 600;
+  color: var(--color-text);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dca-eoy-footnote {
+  margin-top: 6px;
+  font-size: 0.78rem;
+  color: #9a9890;
+}
+
+/* Multi-portfolio ranking */
+
+.dca-journey-ranked {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.dca-journey-card {
+  padding: 12px 14px;
+  background: #faf9f5;
+  border: 1px solid #e8e6dc;
+  border-left: 4px solid #c96442;
+  border-radius: 8px;
+}
+
+.dca-journey-card-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.dca-journey-card-rank {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.dca-journey-card-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.dca-journey-card-value {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #141413;
+  margin-bottom: 4px;
+}
+
+.dca-journey-card-sub {
+  font-size: 0.82rem;
+  color: #5e5d59;
+  line-height: 1.4;
+}
+
+.dca-journey-pos { color: #15803d; font-weight: 600; }
+.dca-journey-neg { color: #991a1a; font-weight: 600; }
+
+/* ─── Dividend Notice (inline banner for non-DCA tabs) ─────────────────────────── */
+
+.dividend-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 16px;
+  padding: 12px 14px;
+  background: var(--color-primary-light);
+  border: 1px solid var(--color-primary-border);
+  border-left: 3px solid var(--color-primary);
+  border-radius: 6px;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: var(--color-text);
+}
+
+.dividend-notice-icon {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+  line-height: 1.3;
+}
+
+.dividend-notice-body strong {
+  color: var(--color-primary);
+}
+
+/* ─── Dividend Block (DCDE reinvestment narrative) ─────────────────────────────── */
+/* Palette: neutral. Chỉ background của .dca-journey-block bên ngoài mới có màu. */
+
+.dca-dividend-group {
+  margin-top: 14px;
+}
+
+.dca-dividend-group + .dca-dividend-group {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px dashed #e8e6dc;
+}
+
+.dca-dividend-fund-head {
+  font-size: 0.92rem;
+  color: var(--color-text);
+  margin-bottom: 10px;
+}
+
+.dca-dividend-muted {
+  color: #5e5d59;
+  font-weight: 400;
+  font-size: 0.85rem;
+}
+
+.dca-dividend-portfolio + .dca-dividend-portfolio {
+  margin-top: 14px;
+}
+
+.dca-dividend-portfolio-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #5e5d59;
+  margin-bottom: 6px;
+}
+
+.dca-dividend-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.dca-dividend-table th,
+.dca-dividend-table td {
+  padding: 8px 10px;
+  text-align: left;
+  border-bottom: 1px solid #e8e6dc;
+  white-space: nowrap;
+}
+
+.dca-dividend-table th {
+  font-weight: 600;
+  color: #5e5d59;
+  font-size: 0.78rem;
+  border-bottom: 1px solid #87867f;
+}
+
+.dca-dividend-table td.num,
+.dca-dividend-table th.num {
+  text-align: right;
+}
+
+.dca-dividend-table tfoot td {
+  font-weight: 700;
+  color: #141413;
+  border-top: 1px solid #87867f;
+  border-bottom: none;
+}
+
+/* ─── Bank Comparison Block ────────────────────────────────────────────────────── */
+
+.dca-bank-compare-block {
+  margin-bottom: 20px;
+  padding: 20px 22px;
+  background: #faf9f5;
+  border: 1px solid #e8e6dc;
+  border-radius: 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.dca-bank-compare-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.dca-bank-compare-title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #141413;
+}
+
+.dca-bank-compare-rate {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: #5e5d59;
+}
+
+.dca-bank-compare-rate-btns {
+  display: flex;
+  gap: 4px;
+}
+
+.dca-bank-rate-btn {
+  padding: 4px 10px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  background: #faf9f5;
+  color: #5e5d59;
+  border: 1px solid #e8e6dc;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.dca-bank-rate-btn:hover {
+  background: #faf9f5;
+  border-color: #87867f;
+}
+
+.dca-bank-rate-btn--active {
+  background: #c96442;
+  color: #fff;
+  border-color: #c96442;
+}
+
+.dca-bank-compare-sub {
+  font-size: 0.92rem;
+  color: #5e5d59;
+  line-height: 1.5;
+  margin: 0 0 14px 0;
+}
+
+.dca-bank-compare-sub strong { color: #141413; font-weight: 600; }
+
+.dca-bank-compare-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.dca-bank-compare-row {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr auto;
+  gap: 14px;
+  align-items: center;
+  padding: 12px 14px;
+  background: #faf9f5;
+  border-radius: 8px;
+}
+
+.dca-bank-compare-portfolio,
+.dca-bank-compare-bank {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 10px;
+  background: #faf9f5;
+  border: 1px solid #e8e6dc;
+  border-radius: 6px;
+}
+
+.dca-bank-compare-portfolio {
+  border-left: 3px solid #c96442;
+}
+
+.dca-bank-compare-name {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #5e5d59;
+}
+
+.dca-bank-compare-val {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #141413;
+}
+
+.dca-bank-compare-vs {
+  font-size: 0.8rem;
+  color: #87867f;
+  font-weight: 600;
+  font-style: italic;
+}
+
+.dca-bank-compare-delta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  min-width: 140px;
+}
+
+.dca-bank-compare-delta--pos {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+}
+
+.dca-bank-compare-delta--neg {
+  background: #fef2f2;
+  border: 1px solid #f5c6c6;
+}
+
+.dca-bank-compare-delta-label {
+  font-size: 0.72rem;
+  color: #5e5d59;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.dca-bank-compare-delta-val {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.dca-bank-compare-delta--pos .dca-bank-compare-delta-val { color: #15803d; }
+.dca-bank-compare-delta--neg .dca-bank-compare-delta-val { color: #991a1a; }
+
+.dca-bank-compare-delta-pct {
+  font-size: 0.78rem;
+  font-weight: 500;
+}
+
+.dca-bank-compare-delta--pos .dca-bank-compare-delta-pct { color: #15803d; }
+.dca-bank-compare-delta--neg .dca-bank-compare-delta-pct { color: #991a1a; }
+
+/* Responsive: stack on small screens */
+@media (max-width: 720px) {
+  .dca-bank-compare-row {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .dca-bank-compare-vs {
+    text-align: center;
+  }
+  .dca-bank-compare-delta {
+    align-items: flex-start;
+    min-width: 0;
+  }
+}
+
+/* ─── Generic Chart Takeaway (narrative box shown under each chart) ─────────────── */
+
+.chart-takeaway {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  margin-top: 14px;
+  border-radius: 6px;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: #141413;
+}
+
+.chart-takeaway-icon {
+  flex-shrink: 0;
+  font-size: 1.1rem;
+  line-height: 1.3;
+}
+
+.chart-takeaway-body {
+  flex: 1;
+}
+
+.chart-takeaway--green {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-left: 4px solid #16a34a;
+}
+.chart-takeaway--green strong { color: #15803d; font-weight: 700; }
+
+.chart-takeaway--red {
+  background: #fef2f2;
+  border: 1px solid #f5c6c6;
+  border-left: 4px solid #dc2626;
+}
+.chart-takeaway--red strong { color: #991a1a; font-weight: 700; }
+
+.chart-takeaway--orange {
+  background: #fff7ed;
+  border: 1px solid #e8e6dc;
+  border-left: 4px solid #ea580c;
+}
+.chart-takeaway--orange strong { color: #a8512f; font-weight: 700; }
+
+.chart-takeaway--blue {
+  background: var(--color-primary-light);
+  border: 1px solid var(--color-primary-border);
+  border-left: 4px solid #c96442;
+}
+.chart-takeaway--blue strong { color: #a8512f; font-weight: 700; }
+
+/* ─── Section Divider (chapter break between chart groups) ─────────────────────── */
+
+.section-divider {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 32px 0 18px 0;
+}
+
+.section-divider::before,
+.section-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #e8e6dc, transparent);
+}
+
+.section-divider-label {
+  flex-shrink: 0;
+  padding: 6px 14px;
+  background: #f5f4ed;
+  border: 1px solid #e8e6dc;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #5e5d59;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+/* ─── Performance Stats Table ─────────────────────── */
+
+.perf-table-container {
+  margin-top: 16px;
+  background: #faf9f5;
+  border: 1px solid #e8e6dc;
+  border-radius: 10px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  padding: 16px 20px;
+}
+
+.perf-table-wrap {
+  overflow-x: auto;
+}
+
+.perf-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.perf-table thead tr {
+  border-bottom: 2px solid #e8e6dc;
+}
+
+.perf-table th {
+  padding: 9px 16px;
+  text-align: right;
+  font-weight: 600;
+  font-size: 0.72rem;
+  color: #5e5d59;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: default;
+}
+
+.perf-th-name {
+  text-align: left !important;
+}
+
+.perf-table td {
+  padding: 12px 16px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.perf-td-name {
+  text-align: left !important;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-weight: 600;
+  color: #141413;
+}
+
+.perf-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.perf-table tbody tr {
+  border-bottom: 1px solid #f5f4ed;
+  transition: background 0.12s;
+}
+
+.perf-table tbody tr:hover {
+  background: #faf9f5;
+}
+
+.perf-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+/* value colours */
+.perf-pos     { color: #141413; }
+.perf-neg     { color: #141413; }
+.perf-neutral { color: #141413; }
+
+/* best-in-column: bold + underline */
+.perf-best {
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 3px;
+}
+
+.chart-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  text-align: center;
+  padding: 20px;
+}
+
+/* ─── Rolling Period Buttons ──────────────────── */
+.rolling-period-buttons {
+  display: flex;
+  gap: 4px;
+}
+
+.period-btn {
+  padding: 4px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: var(--color-surface);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.period-btn:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.period-btn-active {
+  background: var(--color-primary);
+  color: var(--color-primary-fg);
+  font-weight: 600;
+  border-color: var(--color-primary);
+}
+
+.period-btn-disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  text-decoration: line-through;
+}
+
+.period-btn-disabled:hover {
+  border-color: var(--color-border);
+  color: inherit;
+}
+
+/* ─── Simulation Panel ────────────────────────── */
+.simulation-panel {
+  margin-bottom: 20px;
+}
+
+.simulation-panel h2,
+.compare-content h2 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.panel-header h2 {
+  margin-bottom: 0;
+}
+
+.compare-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 12px;
+}
+
+/* ─── Portfolio Card ─────────────────────────── */
+.dca-portfolios-card {
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+.dca-portfolios-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.dca-portfolios-card-header .dca-section-title {
+  margin-bottom: 0;
+}
+
+.dca-add-portfolio-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: var(--radius);
+  background: var(--color-primary);
+  color: var(--color-primary-fg);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+
+.dca-add-portfolio-btn:hover {
+  background: var(--color-primary-dark);
+}
+
+.dca-portfolio-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(420px, 100%), 1fr));
+  gap: 12px;
+}
+
+.dca-portfolio-grid .portfolio-card {
+  margin-bottom: 0;
+}
+
+.portfolio-card {
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 16px;
+  margin-bottom: 12px;
+}
+
+.portfolio-icon-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 2px;
+}
+
+.portfolio-delete-btn-corner {
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 6px;
+  background: #b53333;
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+}
+
+.portfolio-delete-btn-corner:hover {
+  background: #991a1a;
+}
+
+.portfolio-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.portfolio-color-dot {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.portfolio-name-input {
+  font-size: 1rem;
+  font-weight: 600;
+  border: 1px solid transparent;
+  border-bottom: 1px dashed var(--color-border);
+  border-radius: 6px;
+  padding: 4px 8px;
+  background: #fff;
+  color: var(--color-text);
+  width: 160px;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.portfolio-name-input:hover {
+  border-color: var(--color-border);
+  background: #fff;
+}
+
+.portfolio-name-input:focus {
+  border-color: var(--color-primary);
+  border-bottom-style: solid;
+  background: #fff;
+  outline: none;
+}
+
+.portfolio-rebal {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.portfolio-rebal label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.portfolio-rebal select {
+  padding: 5px 8px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  font-size: 0.85rem;
+}
+
+/* ─── Portfolio Actions ──────────────────────── */
+.portfolio-actions {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.portfolio-add-btn {
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 6px;
+  background: var(--color-primary);
+  color: var(--color-primary-fg);
+  font-size: 1.2rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+}
+
+.portfolio-add-btn:hover {
+  background: #047857;
+}
+
+.portfolio-add-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.portfolio-delete-btn {
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 6px;
+  background: #b53333;
+  color: white;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+}
+
+.portfolio-delete-btn:hover {
+  background: #991a1a;
+}
+
+.portfolio-set-btn {
+  padding: 0 14px;
+  height: 36px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: var(--color-surface);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.portfolio-set-btn:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+/* ─── Portfolio Slots ────────────────────────── */
+.portfolio-slots {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.portfolio-slot-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.portfolio-slot-row .portfolio-fund-select {
+  flex: 1;
+  min-width: 0;
+}
+
+.portfolio-weight-input {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.portfolio-weight-input input {
+  width: 56px;
+  padding: 7px 8px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  font-size: 0.85rem;
+  text-align: right;
+}
+
+.portfolio-weight-input span {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+.portfolio-rate-input {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.portfolio-rate-input input {
+  width: 64px;
+  padding: 7px 8px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  font-size: 0.85rem;
+  text-align: right;
+}
+
+.portfolio-rate-input span {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.portfolio-remove-slot-btn {
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 50%;
+  background: #b53333;
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+  flex-shrink: 0;
+}
+
+.portfolio-remove-slot-btn:hover {
+  background: #991a1a;
+}
+
+.portfolio-remove-slot-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* ─── Portfolio Total ────────────────────────── */
+.portfolio-total {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  padding-top: 6px;
+  border-top: 1px solid var(--color-border);
+}
+
+.portfolio-total-value {
+  background: #f0fdf4;
+  color: #0ECB81;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-variant-numeric: tabular-nums;
+}
+
+.portfolio-total-warn {
+  color: #dc2626;
+}
+
+.portfolio-total-warn .portfolio-total-value {
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+/* ─── Add Portfolio Button ───────────────────── */
+.dca-action-row {
+  display: flex;
+  gap: 12px;
+  align-items: stretch;
+  margin-bottom: 16px;
+}
+
+.dca-action-row .sim-add-portfolio-btn {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+.sim-add-portfolio-btn {
+  display: block;
+  width: 100%;
+  padding: 14px;
+  border: 2px dashed var(--color-border);
+  border-radius: var(--radius);
+  background: none;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  cursor: pointer;
+  transition: all 0.15s;
+  margin-bottom: 16px;
+}
+
+.sim-add-portfolio-btn:hover {
+  border-color: var(--color-primary);
+  background: var(--color-primary-light);
+}
+
+.share-btn {
+  padding: 14px 20px;
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius);
+  background: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.share-btn:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.share-btn-copied {
+  border-color: #16a34a;
+  color: #16a34a;
+}
+
+/* ─── Run Simulation Button ─────────────────── */
+.sim-run-btn {
+  display: block;
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: var(--radius);
+  background: var(--color-primary);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-primary-fg);
+  cursor: pointer;
+  transition: background 0.15s;
+  margin-bottom: 16px;
+  letter-spacing: 0.2px;
+}
+
+.sim-run-btn:hover {
+  background: #a8512f;
+}
+
+.sim-run-btn:disabled {
+  background: #a8a5a0;
+  cursor: not-allowed;
+}
+
+/* ─── KPIs Table ─────────────────────────────── */
+.sim-kpis-table {
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  overflow-x: auto;
+}
+
+.sim-kpis-table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.sim-kpis-table th {
+  text-align: left;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 6px 12px 6px 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.sim-kpis-table td {
+  padding: 8px 12px 8px 0;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.sim-kpis-table td:first-child {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ─── Changelog ───────────────────────────────── */
+.changelog-panel {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+.changelog-panel h2 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 24px;
+  color: var(--color-text);
+}
+
+.changelog-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.changelog-entry {
+  border-left: 3px solid var(--color-primary);
+  padding-left: 16px;
+}
+
+.changelog-header {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.changelog-version {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--color-primary);
+}
+
+.changelog-date {
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+}
+
+.changelog-items {
+  margin: 0;
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.changelog-items li {
+  font-size: 0.9rem;
+  color: var(--color-text);
+  line-height: 1.5;
+}
+
+/* ─── Minh Bạch Hoá (Methodology) ────────────────────────────── */
+.methodology-panel {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 24px 16px 40px;
+  color: var(--color-text);
+}
+
+.method-header h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: var(--color-text);
+}
+
+.method-intro {
+  font-size: 0.98rem;
+  line-height: 1.65;
+  color: var(--color-text);
+  margin-bottom: 10px;
+}
+
+.method-toc {
+  margin: 24px 0 8px;
+  padding: 16px 18px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+}
+
+.method-toc-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--color-text-muted);
+  margin-bottom: 10px;
+}
+
+.method-toc ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.method-toc button {
+  background: none;
+  border: none;
+  padding: 4px 0;
+  font-size: 0.95rem;
+  color: var(--color-primary);
+  cursor: pointer;
+  text-align: left;
+}
+
+.method-toc button:hover {
+  text-decoration: underline;
+  color: var(--color-primary-dark);
+}
+
+.method-section {
+  margin-top: 36px;
+  scroll-margin-top: 16px;
+}
+
+.method-section-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--color-text);
+  padding-bottom: 8px;
+  margin-bottom: 14px;
+  border-bottom: 2px solid var(--color-primary);
+}
+
+.method-section p,
+.method-section li {
+  font-size: 0.95rem;
+  line-height: 1.68;
+  color: var(--color-text);
+}
+
+.method-section p {
+  margin-bottom: 12px;
+}
+
+.method-sub {
+  font-size: 1.02rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 26px 0 10px;
+}
+
+.method-list {
+  margin: 0 0 12px;
+  padding-left: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.method-formula {
+  background: #f5f4ed;
+  border: 1px solid var(--color-border);
+  border-left: 4px solid var(--color-primary);
+  border-radius: 6px;
+  padding: 12px 16px;
+  margin: 12px 0;
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #141413;
+  overflow-x: auto;
+}
+
+.method-formula sub { font-size: 0.72em; }
+.method-formula sup { font-size: 0.72em; }
+
+.method-where {
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: var(--color-text-muted);
+  margin: -4px 0 12px;
+  padding-left: 14px;
+  border-left: 2px solid var(--color-border);
+}
+
+.method-seenat {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 12px 0 4px;
+  padding: 8px 12px;
+  background: var(--color-primary-light);
+  border: 1px solid var(--color-primary-border);
+  border-radius: 6px;
+  font-size: 0.86rem;
+  line-height: 1.55;
+  color: var(--color-text);
+}
+
+.method-seenat-icon { flex-shrink: 0; }
+
+.method-example {
+  margin: 14px 0;
+  padding: 14px 16px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-left: 4px solid #16a34a;
+  border-radius: 6px;
+}
+
+.method-example-label {
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #15803d;
+  margin-bottom: 8px;
+}
+
+.method-example-body p { margin-bottom: 10px; }
+.method-example-body p:last-child { margin-bottom: 0; }
+.method-example-body ul {
+  margin: 0 0 10px;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.method-table-wrap {
+  overflow-x: auto;
+  margin: 12px 0;
+}
+
+.method-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.method-table th,
+.method-table td {
+  border: 1px solid var(--color-border);
+  padding: 8px 10px;
+  text-align: left;
+  line-height: 1.45;
+  vertical-align: top;
+}
+
+.method-table th {
+  background: var(--color-surface);
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.method-footer {
+  margin-top: 40px;
+  padding-top: 18px;
+  border-top: 1px solid var(--color-border);
+  font-size: 0.86rem;
+  line-height: 1.6;
+  color: var(--color-text-muted);
+}
+
+.method-footer p { margin-bottom: 6px; }
+
+/* ─── Footer ──────────────────────────────────── */
+.app-footer {
+  text-align: center;
+  padding: 24px 0;
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  border-top: 1px solid var(--color-border);
+  margin-top: 24px;
+}
+
+/* ─── Recharts overrides ──────────────────────── */
+.recharts-legend-item-text {
+  font-size: 0.85rem !important;
+}
+
+.recharts-tooltip-wrapper {
+  font-size: 0.85rem;
+}
+
+/* ─── DCA Panel ──────────────────────────────── */
+.dca-params-card {
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+.dca-section-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: var(--color-text);
+}
+
+.dca-subsection {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--color-border);
+}
+
+.dca-subsection-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 4px;
+}
+
+.dca-subsection-hint {
+  font-size: 0.92rem;
+  color: var(--color-text-muted);
+  margin-bottom: 12px;
+  line-height: 1.5;
+}
+
+.dca-param-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.dca-param-row:last-child {
+  margin-bottom: 0;
+}
+
+.dca-label {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  min-width: 160px;
+  flex-shrink: 0;
+}
+
+.dca-date-mode {
+  display: flex;
+  gap: 4px;
+}
+
+.dca-mode-btn {
+  padding: 6px 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.dca-mode-btn:hover {
+  border-color: var(--color-primary);
+}
+
+.dca-mode-btn-active {
+  background: var(--color-primary);
+  color: var(--color-primary-fg);
+  font-weight: 600;
+  border-color: var(--color-primary);
+}
+
+.dca-years-row {
+  flex-wrap: wrap;
+}
+
+.dca-years-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.dca-year-btn {
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dca-year-btn:hover {
+  border-color: var(--color-primary);
+}
+
+.dca-year-btn-active {
+  background: var(--color-primary);
+  color: var(--color-primary-fg);
+  font-weight: 600;
+  border-color: var(--color-primary);
+}
+
+.dca-date-inputs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.dca-date-inputs input[type="date"] {
+  padding: 6px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  font-size: 0.85rem;
+  flex: 1;
+}
+
+.dca-date-sep {
+  color: var(--color-text-muted);
+}
+
+.dca-amount-input {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+}
+
+.dca-amount-input input {
+  padding: 6px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  font-size: 0.85rem;
+  width: 100%;
+  max-width: 200px;
+  font-variant-numeric: tabular-nums;
+}
+
+.dca-currency {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+.dca-freq-select {
+  padding: 6px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  font-size: 0.85rem;
+  min-width: 140px;
+}
+
+.dca-note {
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+  font-style: italic;
+  margin: 8px 0 0;
+  line-height: 1.5;
+}
+
+/* ── Biểu đồ tỷ số sức mạnh tương đối giữa 2 danh mục (DcaRatioChart) ── */
+
+.dca-ratio-sub {
+  margin: 0 0 12px 0;
+  font-size: 0.88rem;
+  color: #5e5d59;
+  line-height: 1.5;
+}
+
+.dca-ratio-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.dca-ratio-vs {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+.dca-ratio-headline {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.dca-ratio-value {
+  font-size: 1.9rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.dca-ratio-narrative {
+  margin: 14px 0 0;
+  font-size: 0.88rem;
+  color: #5e5d59;
+  line-height: 1.6;
+}
+
+/* ── Tab "Độ nhạy tái cân bằng" ── */
+
+.rebal-band-checks {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.rebal-check {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.88rem;
+  color: #3d3d3a;
+  cursor: pointer;
+}
+
+.rebal-check input[type="checkbox"] {
+  accent-color: var(--color-primary);
+  width: 15px;
+  height: 15px;
+  cursor: pointer;
+}
+
+.rebal-schedule-select {
+  flex: 1;
+  min-width: 280px;
+  max-width: 680px;
+}
+
+.rebal-band-config {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.rebal-fee-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+
+.rebal-fee-row .scnpath-slider {
+  max-width: 220px;
+}
+
+.rebal-fee-value {
+  font-size: 0.85rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  min-width: 40px;
+}
+
+.rebal-band-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.rebal-band-row .rebal-check {
+  min-width: 150px;
+}
+
+.rebal-sweep-inputs {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.rebal-sweep-inputs label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.83rem;
+  color: var(--color-text-muted);
+}
+
+.rebal-sweep-inputs input {
+  width: 62px;
+  padding: 5px 8px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  font-size: 0.85rem;
+}
+
+.rebal-sweep-inputs--disabled {
+  opacity: 0.45;
+}
+
+.rebal-inline-note {
+  margin: 6px 0 14px;
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+  line-height: 1.55;
+}
+
+.rebal-inline-note strong {
+  color: #3d3d3a;
+}
+
+.rebal-intro-card {
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+.rebal-intro-card .dca-ratio-sub {
+  margin-bottom: 0;
+  font-size: 0.92rem;
+}
+
+.rebal-scatter-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  justify-content: center;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.rebal-scatter-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+}
+
+.rebal-scatter-legend-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ── "Cùng 100 triệu, vào ở thời điểm khác nhau" (DcaEntryPointBlock) ── */
+
+.dca-entry-date {
+  color: var(--color-text-muted);
+  font-size: 0.78rem;
+}
+
+.dca-entry-mult {
+  color: var(--color-text-muted);
+  font-size: 0.78rem;
+}
+
+/* ── Pill chọn section kết quả DCA (kiểu hl.eco) ── */
+
+.dca-anchor-nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.dca-anchor-btn {
+  padding: 6px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: transparent;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+
+.dca-anchor-btn:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: var(--color-primary-light);
+}
+
+.dca-anchor-btn--active {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-primary-fg);
+}
+
+/* :hover có specificity cao hơn nên phải ghi đè riêng cho nút đang active,
+   nếu không chữ sẽ thành cam-trên-cam (tàng hình) khi hover — cùng bài học
+   với .log-scale-btn-active:hover */
+.dca-anchor-btn--active:hover {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-primary-fg);
+}
+
+/* ── Chú giải sự kiện Wall of Worry overlay trên PortfolioValueChart ── */
+
+.pvc-events-legend {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 3px 14px;
+  margin-top: 10px;
+  font-size: 0.74rem;
+  color: #5e5d59;
+  line-height: 1.5;
+}
+
+.pvc-events-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.pvc-events-num {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 0.62rem;
+  font-weight: 700;
+}
+
+/* DCA Summary Cards */
+.dca-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.dca-summary-card {
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 16px;
+  border-left: 4px solid var(--color-primary);
+}
+
+.dca-summary-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: var(--color-text);
+}
+
+.dca-summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 4px;
+  font-size: 0.85rem;
+}
+
+.dca-summary-value {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.dca-profit {
+  color: #0ECB81;
+}
+
+.dca-loss {
+  color: #b53333;
+}
+
+.dca-summary-separator {
+  border-top: 1px solid #e8e6dc;
+  margin: 6px 0;
+}
+
+.dca-info-icon {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  line-height: 14px;
+  text-align: center;
+  font-size: 10px;
+  border-radius: 50%;
+  background: #e8e6dc;
+  color: #5e5d59;
+  margin-left: 4px;
+  cursor: help;
+  vertical-align: middle;
+}
+
+.dca-twrr-note {
+  background: #faf9f5;
+  border: 1px solid #e8e6dc;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 0.82rem;
+  color: #a8512f;
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+
+/* ─── DCA Glossary ────────────── */
+.dca-glossary {
+  margin-top: 32px;
+  border: 1px solid #e8e6dc;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.dca-glossary-toggle {
+  width: 100%;
+  padding: 14px 20px;
+  background: #faf9f5;
+  border: none;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #141413;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s;
+}
+
+.dca-glossary-toggle:hover {
+  background: #f5f4ed;
+}
+
+.dca-glossary-content {
+  padding: 20px 24px;
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: #141413;
+}
+
+.dca-glossary-content h3 {
+  font-size: 1.05rem;
+  color: #141413;
+  margin: 24px 0 8px;
+}
+
+.dca-glossary-content h3:first-child {
+  margin-top: 0;
+}
+
+.dca-glossary-content h4 {
+  font-size: 0.95rem;
+  color: #141413;
+  margin: 18px 0 6px;
+}
+
+.dca-glossary-content p {
+  margin: 6px 0;
+}
+
+.dca-glossary-content ul {
+  margin: 6px 0 12px 20px;
+  padding: 0;
+}
+
+.dca-glossary-content li {
+  margin-bottom: 4px;
+}
+
+.dca-glossary-formula {
+  background: #faf9f5;
+  border: 1px solid #e8e6dc;
+  border-radius: 6px;
+  padding: 10px 16px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.92rem;
+  color: #a8512f;
+  margin: 10px 0;
+  text-align: center;
+}
+
+.dca-glossary-note {
+  background: var(--color-primary-light);
+  border-left: 4px solid var(--color-primary);
+  padding: 10px 14px;
+  margin: 14px 0;
+  font-size: 0.85rem;
+  color: #a8512f;
+  border-radius: 0 6px 6px 0;
+}
+
+.dca-glossary-divider {
+  border: none;
+  border-top: 1px solid #e8e6dc;
+  margin: 24px 0;
+}
+
+.dca-glossary-table-wrap {
+  overflow-x: auto;
+  margin: 10px 0 16px;
+}
+
+.dca-glossary-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.dca-glossary-table th,
+.dca-glossary-table td {
+  border: 1px solid #e8e6dc;
+  padding: 8px 12px;
+  text-align: left;
+}
+
+.dca-glossary-table th {
+  background: #f5f4ed;
+  font-weight: 600;
+  color: #141413;
+}
+
+.dca-glossary-table td {
+  color: #5e5d59;
+}
+
+/* ─── LS vs DCA Panel ────────────────────────── */
+.lsdca-panel {}
+
+.lsdca-subtitle {
+  color: var(--color-text-muted);
+  font-size: 0.88rem;
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.lsdca-horizon-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.lsdca-horizon-btn {
+  padding: 6px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: var(--color-surface);
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: var(--color-text);
+  transition: all 0.15s;
+}
+
+.lsdca-horizon-btn:hover {
+  border-color: var(--color-primary);
+}
+
+.lsdca-horizon-btn-active {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-primary-fg);
+  font-weight: 600;
+}
+
+.lsdca-freq-btns {
+  display: flex;
+  gap: 6px;
+}
+
+.lsdca-cash-fund-select {
+  flex: 1;
+  min-width: 200px;
+}
+
+/* Results */
+.lsdca-results {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Ba khối cuối tab dùng lại .perf-table-container mượn từ tab khác, nên lệch
+   khung với mấy thẻ còn lại: có viền, bo góc to hơn, padding trên dưới hẹp hơn.
+   Đồng bộ về đúng khung thẻ của tab này, và chỉ trong phạm vi tab này để không
+   đụng tới các tab đang dùng chung class đó.
+   Khoảng cách giữa các khối do `gap` ở trên lo hết, các component không tự đặt
+   margin-top riêng nữa, nếu không chỗ 24 chỗ 40. */
+.lsdca-results .perf-table-container {
+  margin-top: 0;
+  padding: 20px;
+  border: none;
+  border-radius: 8px;
+}
+
+.lsdca-window-info {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+.lsdca-summary-card {
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.lsdca-winner-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.lsdca-winner-label {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+}
+
+.lsdca-winner-value {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.lsdca-winner-sub {
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+}
+
+.lsdca-ls-color  { color: #0ECB81; }
+.lsdca-dca-color { color: #c96442; }
+
+.lsdca-stats-context {
+  font-size: 0.78rem;
+  color: #5e5d59;
+  margin-bottom: 10px;
+  padding: 6px 10px;
+  background: #faf9f5;
+  border-radius: 6px;
+  border-left: 3px solid #e8e6dc;
+}
+.lsdca-stats-context strong {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.lsdca-stats-grid {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.lsdca-stat-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.lsdca-stat-header {
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.lsdca-stat-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.88rem;
+  color: var(--color-text-muted);
+}
+
+.lsdca-stat-row span:last-child {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.lsdca-stat-row-secondary {
+  opacity: 0.65;
+  font-size: 0.82rem;
+  margin-top: 2px;
+}
+
+.lsdca-stat-divider {
+  width: 1px;
+  background: var(--color-border);
+  align-self: stretch;
+  margin: 0 4px;
+}
+
+.lsdca-percentiles {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--color-border);
+}
+
+.lsdca-pct-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  width: 100%;
+  margin-bottom: 4px;
+}
+
+.lsdca-pct-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  flex: 1;
+  min-width: 80px;
+  cursor: default;
+}
+
+.lsdca-pct-name {
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+  text-align: center;
+  line-height: 1.3;
+}
+
+.lsdca-pct-item span:last-child {
+  font-weight: 700;
+  font-size: 0.92rem;
+}
+
+.lsdca-chart-card {
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 20px;
+}
+
+.lsdca-chart-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.lsdca-chart-sub {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  margin-bottom: 12px;
+}
+
+/* ─── LS vs DCA: Heatmap ─────────────────────── */
+.lsdca-heatmap-wrapper {
+  display: flex;
+  align-items: stretch;
+  gap: 6px;
+  margin-top: 16px;
+}
+
+.lsdca-hm-yaxis-title {
+  writing-mode: vertical-lr;
+  transform: rotate(180deg);
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+  padding: 4px 0;
+}
+
+.lsdca-heatmap-inner {
+  flex: 1;
+  min-width: 0;
+}
+
+.lsdca-heatmap {
+  display: grid;
+  gap: 4px;
+}
+
+.lsdca-hm-col-header {
+  text-align: center;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  padding: 4px 2px 8px;
+}
+
+.lsdca-hm-row-header {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  padding-right: 8px;
+}
+
+.lsdca-hm-cell {
+  border-radius: 8px;
+  padding: 10px 8px;
+  text-align: center;
+  cursor: default;
+  user-select: none;
+  transition: filter 0.15s;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+}
+
+.lsdca-hm-cell:hover {
+  filter: brightness(0.96);
+}
+
+.lsdca-hm-cell--strong {
+  background: #dcfce7;
+  border: 1px solid #86efac;
+}
+
+.lsdca-hm-cell--medium {
+  background: #fef9c3;
+  border: 1px solid #fde68a;
+}
+
+.lsdca-hm-cell--weak {
+  background: #fee2e2;
+  border: 1px solid #f5c6c6;
+}
+
+.lsdca-hm-cell--na {
+  background: #f5f4ed;
+  border: 1px solid #e8e6dc;
+  color: #87867f;
+  font-size: 1.2rem;
+  font-weight: 600;
+  align-items: center;
+}
+
+.lsdca-hm-fraction {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #141413;
+  line-height: 1;
+}
+
+.lsdca-hm-slash {
+  color: #87867f;
+  font-weight: 500;
+  margin: 0 1px;
+}
+
+.lsdca-hm-bar-wrap {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.lsdca-hm-bar {
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+.lsdca-hm-cell--strong .lsdca-hm-bar { background: #16a34a; }
+.lsdca-hm-cell--medium .lsdca-hm-bar { background: #ca8a04; }
+.lsdca-hm-cell--weak   .lsdca-hm-bar { background: #dc2626; }
+
+.lsdca-hm-pct {
+  font-size: 0.7rem;
+  color: #5e5d59;
+  font-weight: 500;
+  line-height: 1.1;
+}
+
+.lsdca-hm-cell-lown {
+  opacity: 0.75;
+  outline: 1px dashed rgba(0, 0, 0, 0.2);
+}
+
+/* 3-tier legend chips (replaces gradient bar) */
+.lsdca-hm-legend-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+  font-size: 0.72rem;
+}
+
+.lsdca-hm-chip {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.lsdca-hm-chip--weak {
+  background: #fee2e2;
+  border: 1px solid #f5c6c6;
+  color: #991a1a;
+}
+
+.lsdca-hm-chip--medium {
+  background: #fef9c3;
+  border: 1px solid #fde68a;
+  color: #854d0e;
+}
+
+.lsdca-hm-chip--strong {
+  background: #dcfce7;
+  border: 1px solid #86efac;
+  color: #166534;
+}
+
+/* CAGR toggle */
+.lsdca-stat-cagr-toggle {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  padding-bottom: 4px;
+  grid-column: 1 / -1;
+}
+
+.lsdca-cagr-btn {
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid var(--color-border);
+  background: #faf9f5;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.lsdca-cagr-btn:hover {
+  border-color: #c96442;
+  color: #c96442;
+}
+
+.lsdca-cagr-btn-active {
+  background: var(--color-primary-light);
+  border-color: #c96442;
+  color: #c96442;
+  font-weight: 600;
+}
+
+/* Capital input hint */
+.dca-amount-input-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.lsdca-capital-hint {
+  font-size: 0.75rem;
+  color: #5e5d59;
+  padding-left: 2px;
+}
+
+/* Pre-run hint */
+.lsdca-pre-run-hint {
+  margin-top: 16px;
+  padding: 12px 16px;
+  background: var(--color-primary-light);
+  border: 1px solid var(--color-primary-border);
+  border-radius: 8px;
+  font-size: 0.85rem;
+  color: #a8512f;
+  text-align: center;
+}
+
+/* Mobile responsive */
+@media (max-width: 520px) {
+  .lsdca-pct-item {
+    min-width: 56px;
+    font-size: 0.8rem;
+  }
+  .lsdca-pct-label {
+    font-size: 0.8rem;
+  }
+  .lsdca-heatmap-inner {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .lsdca-heatmap {
+    min-width: 280px;
+  }
+  .lsdca-hm-cell {
+    padding: 7px 4px;
+    gap: 3px;
+  }
+  .lsdca-hm-fraction {
+    font-size: 0.85rem;
+  }
+  .lsdca-hm-pct {
+    font-size: 0.62rem;
+  }
+  .lsdca-winner-row {
+    gap: 6px;
+  }
+  .lsdca-winner-value {
+    font-size: 2rem;
+  }
+}
+
+/* Compare fund heatmap */
+.lsdca-hm-compare {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--color-border);
+}
+
+.lsdca-hm-compare-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.lsdca-heatmap-compare {
+  margin-top: 12px;
+}
+
+.lsdca-heatmap-compare-label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #c96442;
+  margin-bottom: 6px;
+  padding: 4px 0;
+  border-bottom: 2px solid #c96442;
+}
+
+.lsdca-hm-xaxis-title {
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  margin-top: 8px;
+}
+
+
+.lsdca-hm-explainer {
+  margin-top: 20px;
+  border: 1px solid #e8e6dc;
+  border-radius: 12px;
+  overflow: hidden;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: #5e5d59;
+}
+
+.lsdca-hm-explainer-title {
+  font-weight: 700;
+  font-size: 0.88rem;
+  margin-bottom: 8px;
+  color: #141413;
+}
+
+.lsdca-hm-explainer ul {
+  margin: 8px 0 8px 16px;
+  padding: 0;
+}
+
+.lsdca-hm-explainer li {
+  margin-bottom: 4px;
+}
+
+.lsdca-hm-explainer p {
+  margin: 6px 0;
+}
+
+.lsdca-hm-explainer-note {
+  margin-top: 10px !important;
+  padding: 8px 10px;
+  background: var(--color-primary-light);
+  border-radius: 4px;
+  font-size: 0.82rem;
+  color: #a8512f;
+}
+
+/* ─── Responsive: Tablet (≤768px) ────────────── */
+@media (max-width: 768px) {
+  .app {
+    padding: 12px 16px 32px;
+  }
+
+  .kpi-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .kpi-card {
+    padding: 14px 12px;
+  }
+
+  .kpi-number {
+    font-size: 0.95rem;
+  }
+
+  .kpi-fund-name {
+    font-size: 0.78rem;
+  }
+
+  .chart-container {
+    padding: 12px 10px 6px;
+  }
+
+  .date-range-picker {
+    gap: 8px;
+    padding: 10px 12px;
+  }
+
+  .portfolio-card-header {
+    flex-wrap: wrap;
+  }
+
+  .portfolio-rebal {
+    margin-left: 0;
+    width: 100%;
+  }
+}
+
+/* ─── Responsive: Mobile (≤480px) ────────────── */
+@media (max-width: 480px) {
+  .app {
+    padding: 8px 12px 24px;
+  }
+
+  .app-header {
+    margin-bottom: 16px;
+  }
+
+  .app-header h1 {
+    font-size: 1.15rem;
+  }
+
+  /* ── Tabs: full-width, equal sizing ── */
+  .tabs {
+    gap: 0;
+  }
+
+  .tab {
+    flex: 1;
+    padding: 12px 8px;
+    font-size: 0.85rem;
+    text-align: center;
+    min-height: 44px;
+  }
+
+  /* ── Fund Selector ── */
+  .fund-selector {
+    padding: 12px;
+  }
+
+  .fund-selector-item {
+    gap: 6px;
+  }
+
+  .fund-remove-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 1rem;
+  }
+
+  .fund-add-btn {
+    padding: 10px 14px;
+    min-height: 44px;
+    font-size: 0.85rem;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .comparison-period {
+    font-size: 0.8rem;
+  }
+
+  /* ── Date Range Picker: stack vertically ── */
+  .date-range-picker {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    padding: 10px 12px;
+  }
+
+  .date-presets {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .preset-btn {
+    padding: 8px 14px;
+    min-height: 40px;
+    font-size: 0.85rem;
+    flex: 1;
+    min-width: 0;
+    text-align: center;
+  }
+
+  .date-inputs {
+    width: 100%;
+  }
+
+  .date-inputs input[type="date"] {
+    flex: 1;
+    padding: 8px 10px;
+    min-height: 40px;
+    font-size: 0.85rem;
+  }
+
+  /* ── KPI Cards: stack single column ── */
+  .kpi-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .kpi-card {
+    padding: 12px 14px;
+  }
+
+  .kpi-title {
+    font-size: 0.75rem;
+  }
+
+  .kpi-fund-name {
+    font-size: 0.8rem;
+  }
+
+  .kpi-number {
+    font-size: 1rem;
+  }
+
+  /* ── Charts: tighter padding, smaller titles ── */
+  .chart-container {
+    padding: 10px 8px 4px;
+    margin-bottom: 12px;
+  }
+
+  .chart-header {
+    margin-bottom: 8px;
+  }
+
+  .chart-header h3 {
+    font-size: 0.9rem;
+  }
+
+  /* ── Rolling Period Buttons: larger touch targets ── */
+  .rolling-period-buttons {
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .period-btn {
+    padding: 8px 14px;
+    min-height: 40px;
+    font-size: 0.85rem;
+  }
+
+  /* ── Simulation: Portfolio Card mobile ── */
+  .portfolio-card {
+    padding: 12px;
+  }
+
+  .portfolio-card-header {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .portfolio-name-input {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .portfolio-rebal {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .portfolio-rebal select {
+    flex: 1;
+  }
+
+  .portfolio-slot-row {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .portfolio-slot-row .portfolio-fund-select {
+    flex: 1 1 100%;
+    order: 1;
+  }
+
+  .portfolio-weight-input {
+    order: 2;
+    flex: 1;
+  }
+
+  .portfolio-weight-input input {
+    width: 100%;
+    min-width: 60px;
+  }
+
+  /* Chỉ áp trong hàng slot của danh mục (tab DCA, Tái Cân Bằng), nơi cả hàng
+     xuống dòng trên mobile. Ô lãi suất ở tab So Sánh và Bitcoin nằm trong hàng
+     không wrap, cho nó flex:1 sẽ giành hết chỗ của ô chọn quỹ. */
+  .portfolio-slot-row .portfolio-rate-input {
+    order: 2;
+    flex: 1;
+  }
+
+  .portfolio-slot-row .portfolio-rate-input input {
+    width: 100%;
+    min-width: 60px;
+  }
+
+  .portfolio-remove-slot-btn {
+    order: 3;
+    width: 36px;
+    height: 36px;
+  }
+
+  .portfolio-actions {
+    flex-wrap: wrap;
+  }
+
+  .portfolio-add-btn,
+  .portfolio-delete-btn {
+    width: 44px;
+    height: 44px;
+  }
+
+  .portfolio-set-btn {
+    height: 44px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  /* ── Simulation buttons: full touch target ── */
+  .sim-add-portfolio-btn {
+    padding: 16px;
+    min-height: 48px;
+  }
+
+  .sim-run-btn {
+    padding: 16px;
+    min-height: 48px;
+  }
+
+  /* ── DCA: mobile ── */
+  .dca-params-card {
+    padding: 14px;
+  }
+
+  .dca-param-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+  }
+
+  .dca-label {
+    min-width: 0;
+  }
+
+  .dca-amount-input input {
+    max-width: none;
+    min-height: 40px;
+  }
+
+  .dca-freq-select {
+    min-height: 40px;
+    width: 100%;
+  }
+
+  .dca-date-inputs {
+    flex-direction: column;
+  }
+
+  .dca-date-inputs input[type="date"] {
+    min-height: 40px;
+  }
+
+  .dca-date-sep {
+    display: none;
+  }
+
+  .dca-mode-btn {
+    flex: 1;
+    min-height: 40px;
+  }
+
+  .dca-year-btn {
+    min-width: 40px;
+    min-height: 40px;
+  }
+
+  .dca-summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* ── Recharts: smaller font on mobile ── */
+  .recharts-legend-item-text {
+    font-size: 0.75rem !important;
+  }
+
+  .recharts-tooltip-wrapper {
+    font-size: 0.8rem;
+  }
+
+  /* ── Footer ── */
+  .app-footer {
+    padding: 16px 0;
+    font-size: 0.75rem;
+  }
+}
+
+/* ─── BTC Weight Chart subtitle ──────────────────── */
+.btc-weight-chart-sub {
+  font-size: 0.82rem;
+  color: #5e5d59;
+  font-style: italic;
+  margin: 2px 0 0;
+}
+
+/* ─── BTC Contribution Chart Controls ────────────── */
+.btc-contrib-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.btc-contrib-ctrl-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.btc-contrib-ctrl-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #5e5d59;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  min-width: 190px;
+}
+
+.btc-contrib-btn-group {
+  display: flex;
+  gap: 4px;
+}
+
+.btc-contrib-btn {
+  padding: 5px 14px;
+  border: 1px solid #e8e6dc;
+  border-radius: 20px;
+  background: #faf9f5;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: #5e5d59;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btc-contrib-btn:hover {
+  border-color: #c96442;
+  color: #c96442;
+}
+
+.btc-contrib-btn--active {
+  background: #c96442;
+  border-color: #c96442;
+  color: #fff;
+  font-weight: 600;
+}
+
+/* Bitcoin "Run simulation" button */
+.btc-run-row {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+  margin: 16px 0 8px;
+}
+
+.btc-run-btn {
+  display: block;
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: var(--radius);
+  background: #c96442;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btc-run-btn:hover:not(:disabled) {
+  background: #ea580c;
+}
+
+.btc-run-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btc-run-hint {
+  font-size: 0.82rem;
+  color: #b45309;
+  font-style: italic;
+  text-align: center;
+}
+
+.btc-run-placeholder {
+  padding: 28px 16px;
+  margin-top: 16px;
+  border: 1px dashed #e8e6dc;
+  border-radius: 8px;
+  text-align: center;
+  color: #5e5d59;
+  font-size: 0.9rem;
+  background: var(--color-surface);
+}
+
+/* BTC Contribution Chart Description */
+.btc-contrib-desc {
+  font-size: 0.82rem;
+  color: #5e5d59;
+  margin: 0 0 14px;
+  line-height: 1.9;
+}
+
+.btc-contrib-desc-line {
+  display: inline-block;
+  width: 18px;
+  height: 2.5px;
+  border-radius: 2px;
+  vertical-align: middle;
+  margin: 0 2px;
+  position: relative;
+  top: -1px;
+}
+
+.btc-contrib-desc-swatch {
+  display: inline-block;
+  width: 13px;
+  height: 13px;
+  border-radius: 3px;
+  vertical-align: middle;
+  margin: 0 2px;
+  position: relative;
+  top: -1px;
+}
+
+.btc-contrib-desc-sep {
+  display: none;
+}
+
+/* BTC Contribution Chart Legend */
+.btc-contrib-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #f5f4ed;
+  font-size: 0.8rem;
+  color: #5e5d59;
+}
+
+.btc-contrib-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btc-contrib-legend-line {
+  display: inline-block;
+  width: 18px;
+  height: 2px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.btc-contrib-legend-swatch {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+/* ─── Custom Tooltip ──────────────────────────────── */
+.custom-tooltip {
+  background: #faf9f5;
+  border: 1px solid #e8e6dc;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 0.82rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+  line-height: 1.7;
+  min-width: 160px;
+}
+
+.custom-tooltip .ct-date {
+  font-weight: 700;
+  color: #141413;
+  margin-bottom: 4px;
+  font-size: 0.85rem;
+}
+
+/* ─── DCA Storm Block ───────────────────────────────────────────────────────── */
+
+.dca-storm-block {
+  margin-bottom: 20px;
+  padding: 20px 22px;
+  background: #faf9f5;
+  border: 1px solid #e8e6dc;
+  border-radius: 10px;
+}
+
+.dca-storm-block--calm {
+  background: #faf9f5;
+}
+
+.dca-storm-title {
+  margin: 0 0 6px 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #141413;
+}
+
+.dca-storm-sub {
+  margin: 0 0 16px 0;
+  font-size: 0.92rem;
+  color: #5e5d59;
+  line-height: 1.5;
+}
+
+.dca-storm-calm-text {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: #5e5d59;
+}
+
+.dca-storm-calm-text strong {
+  color: #141413;
+}
+
+.dca-storm-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+@media (max-width: 640px) {
+  .dca-storm-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.dca-storm-stat {
+  padding: 12px 14px;
+  background: #faf9f5;
+  border-radius: 8px;
+  border: 1px solid #e8e6dc;
+}
+
+.dca-storm-stat-label {
+  font-size: 0.72rem;
+  color: #5e5d59;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 600;
+}
+
+.dca-storm-stat-value {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #141413;
+  line-height: 1.2;
+}
+
+.dca-storm-stat-value--neg {
+  color: #141413;
+}
+
+.dca-storm-stat-sub {
+  margin-top: 4px;
+  font-size: 0.78rem;
+  color: #5e5d59;
+  font-style: italic;
+}
+
+.dca-storm-chart {
+  margin: 16px 0;
+  padding: 14px 12px 10px 12px;
+  background: #faf9f5;
+  border: 1px solid #e8e6dc;
+  border-radius: 8px;
+}
+
+.dca-storm-chart-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #141413;
+  margin-bottom: 2px;
+}
+
+.dca-storm-chart-sub {
+  font-size: 0.78rem;
+  color: #5e5d59;
+  margin-bottom: 10px;
+  line-height: 1.45;
+}
+
+.dca-storm-chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 18px;
+  margin-top: 8px;
+  padding: 4px 2px 2px 2px;
+}
+
+.dca-storm-chart-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  color: #5e5d59;
+}
+
+.dca-storm-chart-note {
+  margin-top: 10px;
+  padding: 10px 12px;
+  background: #faf9f5;
+  border-left: 3px solid #87867f;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: #5e5d59;
+}
+
+.dca-storm-chart-note strong {
+  color: #141413;
+}
+
+/* Bảng các đợt sụt giảm lớn nhất (trong khối Kiên trì qua bão) */
+.dca-episodes-section {
+  margin-top: 16px;
+}
+
+.dca-episodes-portfolio {
+  margin-bottom: 14px;
+}
+
+.dca-episodes-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 6px;
+}
+
+.dca-storm-takeaway {
+  display: flex;
+  gap: 12px;
+  padding: 14px 16px;
+  background: #faf9f5;
+  border-left: 3px solid #87867f;
+  border-radius: 6px;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: #5e5d59;
+}
+
+.dca-storm-takeaway--ongoing {
+  background: #faf9f5;
+  border-left-color: #87867f;
+  color: #5e5d59;
+}
+
+.dca-storm-takeaway-icon {
+  flex-shrink: 0;
+  font-size: 1.3rem;
+  line-height: 1;
+}
+
+.dca-storm-takeaway strong {
+  color: #141413;
+}
+
+/* ─── DCA Return Explainer ──────────────────────────────────────────────────── */
+
+.dca-explainer-block {
+  margin-bottom: 20px;
+  background: #faf9f5;
+  border: 1px solid #e8e6dc;
+  border-radius: 10px;
+  overflow: hidden;
+  transition: box-shadow 0.2s;
+}
+
+.dca-explainer-block--open {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border-color: #e8e6dc;
+}
+
+.dca-explainer-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 18px;
+  background: var(--color-surface);
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text);
+  text-align: left;
+  transition: background 0.15s;
+}
+
+.dca-explainer-toggle:hover {
+  background: var(--color-bg);
+}
+
+.dca-explainer-block--open .dca-explainer-toggle {
+  background: #fef9c3;
+  border-bottom: 1px solid #fde68a;
+}
+
+.dca-explainer-icon {
+  font-size: 1.15rem;
+  line-height: 1;
+}
+
+.dca-explainer-toggle-text {
+  flex: 1;
+}
+
+.dca-explainer-chevron {
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+}
+
+.dca-explainer-body {
+  padding: 18px 22px 22px;
+  font-size: 0.92rem;
+  line-height: 1.65;
+  color: var(--color-text);
+}
+
+.dca-explainer-intro {
+  margin: 0 0 18px 0;
+}
+
+.dca-explainer-intro em {
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+.dca-explainer-compare {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 12px;
+  align-items: stretch;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 640px) {
+  .dca-explainer-compare {
+    grid-template-columns: 1fr;
+  }
+  .dca-explainer-vs {
+    padding: 4px 0;
+  }
+}
+
+.dca-explainer-metric {
+  padding: 14px 16px;
+  background: #faf9f5;
+  border: 1px solid #e8e6dc;
+  border-radius: 8px;
+}
+
+.dca-explainer-metric--highlight {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+}
+
+.dca-explainer-metric-name {
+  font-size: 0.82rem;
+  color: #5e5d59;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.dca-explainer-metric-val {
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: #141413;
+  margin: 2px 0 8px 0;
+}
+
+.dca-explainer-metric--highlight .dca-explainer-metric-val {
+  color: #047857;
+}
+
+.dca-explainer-metric-desc {
+  font-size: 0.85rem;
+  color: #5e5d59;
+  line-height: 1.55;
+}
+
+.dca-explainer-metric-desc em {
+  color: #a8512f;
+  font-style: italic;
+}
+
+.dca-explainer-vs {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #87867f;
+  font-style: italic;
+}
+
+.dca-explainer-analogy {
+  padding: 16px 18px;
+  background: var(--color-primary-light);
+  border: 1px solid #fde68a;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.dca-explainer-analogy-title {
+  margin: 0 0 10px 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #a8512f;
+}
+
+.dca-explainer-analogy p {
+  margin: 0 0 10px 0;
+  color: #422006;
+}
+
+.dca-explainer-analogy p:last-child {
+  margin-bottom: 0;
+}
+
+.dca-explainer-analogy em {
+  color: #854d0e;
+  font-style: italic;
+}
+
+.dca-explainer-bullets {
+  margin: 0 0 12px 0;
+  padding-left: 20px;
+}
+
+.dca-explainer-bullets li {
+  margin-bottom: 6px;
+  color: #422006;
+}
+
+.dca-explainer-conclusion {
+  padding: 14px 16px;
+  background: var(--color-primary-light);
+  border-left: 3px solid var(--color-primary);
+  border-radius: 6px;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--color-text);
+}
+
+.dca-explainer-conclusion strong {
+  color: var(--color-primary-dark);
+}
+
+.dca-explainer-conclusion em {
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+/* ─── Consistency Block (panic-stop simulation) ─────────────────────────────── */
+
+.dca-consist-block {
+  margin-bottom: 20px;
+  padding: 20px 22px;
+  background: #faf9f5;
+  border: 1px solid #e8e6dc;
+  border-radius: 10px;
+}
+
+.dca-consist-title {
+  margin: 0 0 6px 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #141413;
+}
+
+.dca-consist-sub {
+  margin: 0 0 14px 0;
+  font-size: 0.92rem;
+  color: #5e5d59;
+  line-height: 1.5;
+}
+
+.dca-consist-sub strong {
+  color: #5e5d59;
+  font-weight: 600;
+}
+
+.dca-consist-boost-control {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  font-size: 0.88rem;
+  color: #141413;
+}
+
+.dca-consist-boost-control label {
+  font-weight: 600;
+}
+
+.dca-consist-subtitle {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px dashed #e8e6dc;
+  margin-bottom: 10px;
+  font-size: 0.96rem;
+  font-weight: 700;
+  color: #141413;
+}
+
+.dca-consist-card {
+  margin-bottom: 14px;
+  padding: 14px;
+  background: var(--color-surface);
+  border: 1px solid #e8e6dc;
+  border-radius: 8px;
+}
+
+.dca-consist-card-header {
+  margin-bottom: 10px;
+}
+
+.dca-consist-chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 18px;
+  margin-top: 6px;
+  margin-bottom: 12px;
+  font-size: 0.82rem;
+  color: #5e5d59;
+}
+
+.dca-consist-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dca-consist-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  margin-bottom: 12px;
+}
+
+.dca-consist-table th,
+.dca-consist-table td {
+  padding: 8px 10px;
+  text-align: right;
+  border-bottom: 1px solid #e8e6dc;
+}
+
+.dca-consist-table th:first-child,
+.dca-consist-table td:first-child {
+  text-align: left;
+}
+
+.dca-consist-table th {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #5e5d59;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  background: #faf9f5;
+}
+
+.dca-consist-table td {
+  color: #5e5d59;
+}
+
+.dca-consist-row--baseline {
+  background: var(--color-primary-light);
+}
+
+.dca-consist-row--baseline td {
+  color: #141413;
+}
+
+.dca-consist-skip {
+  color: #87867f;
+  font-size: 0.78rem;
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+.dca-consist-gap--neg {
+  color: #991a1a;
+  font-weight: 600;
+}
+
+.dca-consist-gap--pos {
+  color: #047857;
+  font-weight: 600;
+}
+
+.dca-consist-takeaway {
+  padding: 10px 12px;
+  background: #faf9f5;
+  border-left: 3px solid #dc2626;
+  border-radius: 4px;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: #5e5d59;
+}
+
+.dca-consist-takeaway strong {
+  color: #141413;
+}
+
+.dca-consist-takeaway p {
+  margin: 0 0 8px 0;
+}
+
+.dca-consist-takeaway p:last-child {
+  margin-bottom: 0;
+}
+
+@media (max-width: 640px) {
+  .dca-consist-table {
+    font-size: 0.78rem;
+  }
+  .dca-consist-table th,
+  .dca-consist-table td {
+    padding: 6px 6px;
+  }
+  .dca-consist-skip {
+    display: block;
+  }
+}
+
+/* ─── Projection Block ──────────────────────────────────────────────────────── */
+
+.dca-projection-block {
+  margin-bottom: 20px;
+  padding: 20px 22px;
+  background: #faf9f5;
+  border: 1px solid #e8e6dc;
+  border-radius: 10px;
+}
+
+.dca-projection-title {
+  margin: 0 0 6px 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #141413;
+}
+
+.dca-projection-sub {
+  margin: 0 0 14px 0;
+  font-size: 0.92rem;
+  color: #5e5d59;
+  line-height: 1.5;
+}
+
+.dca-projection-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.dca-projection-controls-label {
+  font-size: 0.85rem;
+  color: #5e5d59;
+  font-weight: 500;
+}
+
+.dca-projection-btn {
+  padding: 5px 12px;
+  border: 1px solid #e8e6dc;
+  background: #faf9f5;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  color: #5e5d59;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.dca-projection-btn:hover {
+  border-color: #87867f;
+  background: #faf9f5;
+}
+
+.dca-projection-btn--active {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-primary-fg);
+}
+
+.dca-projection-btn--active:hover {
+  background: var(--color-primary-dark);
+}
+
+.dca-projection-custom-input {
+  padding: 5px 10px;
+  border: 1px solid #e8e6dc;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  color: #141413;
+  min-width: 140px;
+  background: #faf9f5;
+  font-family: inherit;
+}
+
+.dca-projection-custom-input:focus {
+  outline: none;
+  border-color: #141413;
+}
+
+.dca-projection-hint {
+  font-size: 0.78rem;
+  color: #87867f;
+  font-style: italic;
+  margin: -8px 0 16px 0;
+}
+
+.dca-projection-card {
+  margin-bottom: 14px;
+  padding: 14px;
+  background: var(--color-surface);
+  border: 1px solid #e8e6dc;
+  border-radius: 8px;
+}
+
+.dca-projection-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 10px;
+}
+
+.dca-projection-card-cagr {
+  font-size: 0.82rem;
+  color: #5e5d59;
+}
+
+.dca-projection-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 8px;
+  font-size: 0.82rem;
+  color: #5e5d59;
+}
+
+.dca-projection-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dca-projection-swatch {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+}
+
+.dca-projection-takeaway {
+  margin-top: 12px;
+  padding: 10px 12px;
+  background: #faf9f5;
+  border-left: 3px solid #5e5d59;
+  border-radius: 4px;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: #5e5d59;
+}
+
+.dca-projection-takeaway strong {
+  color: #141413;
+}
+
+.dca-projection-disclaimer {
+  margin-top: 12px;
+  padding: 10px 12px;
+  background: var(--color-primary-light);
+  border: 1px solid #fde68a;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: #78350f;
+}
+
+/* ─── Data Quality Block ────────────────────────────────────────────────────── */
+
+.dq-block {
+  margin: 16px 0 20px 0;
+  background: #faf9f5;
+  border: 1px solid #e8e6dc;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.dq-block--ok {
+  border-left: 4px solid #0ECB81;
+}
+
+.dq-block--warn {
+  border-left: 4px solid #d97706;
+}
+
+.dq-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 14px 18px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  color: inherit;
+}
+
+.dq-header:hover {
+  background: #faf9f5;
+}
+
+.dq-dot {
+  flex-shrink: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.dq-dot--ok { background: #0ECB81; }
+.dq-dot--warn { background: #d97706; }
+
+.dq-header-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.dq-header-main strong {
+  font-size: 0.95rem;
+  color: #141413;
+  font-weight: 700;
+}
+
+.dq-header-sub {
+  font-size: 0.85rem;
+  color: #5e5d59;
+}
+
+.dq-toggle {
+  flex-shrink: 0;
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: #f5f4ed;
+  font-size: 0.8rem;
+  color: #5e5d59;
+  font-weight: 600;
+}
+
+.dq-body {
+  padding: 4px 18px 18px 18px;
+  border-top: 1px solid #f5f4ed;
+}
+
+.dq-intro {
+  margin: 14px 0;
+  font-size: 0.88rem;
+  color: #5e5d59;
+  line-height: 1.55;
+}
+
+.dq-timelines {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 14px 0;
+}
+
+.dq-timeline-row {
+  display: grid;
+  grid-template-columns: 120px 1fr 180px;
+  gap: 12px;
+  align-items: center;
+  font-size: 0.82rem;
+}
+
+.dq-timeline-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #141413;
+}
+
+.dq-swatch {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.dq-timeline-track {
+  position: relative;
+  height: 18px;
+  background: #f5f4ed;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.dq-timeline-bar {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-radius: 3px;
+  opacity: 0.85;
+}
+
+.dq-timeline-gap {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(
+    45deg,
+    #fff 0,
+    #fff 4px,
+    #f5c6c6 4px,
+    #f5c6c6 8px
+  );
+  border-left: 1px solid #dc2626;
+  border-right: 1px solid #dc2626;
+  z-index: 2;
+}
+
+.dq-timeline-marker {
+  position: absolute;
+  top: -2px;
+  bottom: -2px;
+  width: 2px;
+  background: #141413;
+  z-index: 3;
+}
+
+.dq-timeline-span {
+  font-size: 0.78rem;
+  color: #5e5d59;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.dq-aligned {
+  margin: 14px 0;
+  padding: 10px 14px;
+  background: var(--color-primary-light);
+  border-radius: 6px;
+  font-size: 0.88rem;
+  color: var(--color-text);
+  line-height: 1.55;
+}
+
+.dq-issues {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid #f5f4ed;
+}
+
+.dq-issues-title {
+  margin: 0 0 10px 0;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #141413;
+}
+
+.dq-issue-card {
+  margin-bottom: 10px;
+  padding: 10px 14px;
+  background: var(--color-primary-light);
+  border: 1px solid #fde68a;
+  border-radius: 6px;
+}
+
+.dq-issue-head {
+  margin-bottom: 6px;
+  font-size: 0.88rem;
+  color: #a8512f;
+}
+
+.dq-issue-list {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 0.85rem;
+  color: #78350f;
+  line-height: 1.6;
+}
+
+.dq-issue-list li {
+  margin-bottom: 4px;
+}
+
+.dq-issue-list li:last-child {
+  margin-bottom: 0;
+}
+
+@media (max-width: 640px) {
+  .dq-timeline-row {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+  .dq-timeline-span {
+    text-align: left;
+  }
+}
+
+.dq-highlight {
+  color: #dc2626;
+  font-weight: 700;
+}
+
+/* ─── Compare Story Block ───────────────────────────────────────────────────── */
+
+.cmp-story {
+  margin: 28px 0 20px 0;
+  padding: 24px 24px 8px 24px;
+  background: #faf9f5;
+  border: 1px solid #e8e6dc;
+  border-radius: 12px;
+}
+
+.cmp-story-header {
+  margin-bottom: 18px;
+  padding-bottom: 14px;
+  border-bottom: 2px solid #f5f4ed;
+}
+
+.cmp-story-title {
+  margin: 0 0 8px 0;
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #141413;
+  letter-spacing: -0.01em;
+}
+
+.cmp-story-sub {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #5e5d59;
+  line-height: 1.55;
+}
+
+.cmp-sec {
+  padding: 22px 0 18px 0;
+  border-bottom: 1px solid #f5f4ed;
+}
+
+.cmp-sec:last-child {
+  border-bottom: none;
+}
+
+.cmp-sec-title {
+  margin: 0 0 8px 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #141413;
+}
+
+.cmp-sec-lead {
+  margin: 0 0 14px 0;
+  font-size: 0.92rem;
+  color: #5e5d59;
+  line-height: 1.6;
+}
+
+.cmp-chart {
+  margin: 10px 0 14px 0;
+}
+
+.cmp-table {
+  display: flex;
+  flex-direction: column;
+  margin: 6px 0 14px 0;
+  border: 1px solid #e8e6dc;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.cmp-table-row {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr;
+  gap: 12px;
+  padding: 10px 14px;
+  font-size: 0.9rem;
+  color: #141413;
+  align-items: center;
+  border-bottom: 1px solid #f5f4ed;
+}
+
+.cmp-table-row:last-child {
+  border-bottom: none;
+}
+
+.cmp-table-row--dd {
+  grid-template-columns: 1.5fr 1fr 1.5fr;
+}
+
+/* Bảng thống kê Rolling Returns. 12 cột: nhóm Thống Kê (7) + nhóm Phân bổ (5).
+   Trên desktop bảng co theo container; chỉ cuộn ngang khi màn hình hẹp. */
+.cmp-table--rolling {
+  position: relative;
+  overflow-x: auto;
+}
+
+/* Vạch ngăn cách liên tục giữa nhóm Thống Kê và nhóm Phân bổ, chạy suốt
+   chiều cao bảng. Vị trí left được tính từ header cột "Âm" (JS). */
+.cmp-table--rolling__divider {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 0;
+  border-left: 2px solid #d8d5c9;
+  pointer-events: none;
+}
+
+.cmp-table--rolling .cmp-table-row {
+  /* Cột đầu dùng minmax để mọi hàng khởi đầu cùng chiều rộng, không bị tên
+     quỹ dài (vd GOLD_NHAN_SJC) đẩy lệch các cột số phía sau. Cột số dùng
+     minmax(0, 1fr) để nội dung không giãn cột riêng lẻ theo từng hàng. */
+  grid-template-columns: minmax(150px, 1.4fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
+  gap: 8px;
+  padding: 8px 10px;
+}
+
+.cmp-table--rolling .cmp-table-row > * {
+  min-width: 0;
+}
+
+/* Hàng nhóm: Quỹ (1 cột) + Thống Kê (span 5) + Phân bổ (span 5).
+   Giữ nguyên grid 11 cột để cột khớp chính xác với hàng dưới (gap 8px giữa
+   các cell đồng nhất ở mọi hàng). */
+.cmp-table--rolling .cmp-table-group-head > :nth-child(2) {
+  grid-column: span 5;
+}
+
+.cmp-table--rolling .cmp-table-group-head > :nth-child(3) {
+  grid-column: span 5;
+}
+
+.cmp-group-title {
+  text-align: center;
+  text-transform: none;
+  letter-spacing: 0.01em;
+  font-weight: 700;
+  color: #141413;
+}
+
+/* Header cột con của bảng rolling: bỏ uppercase để tiếng Việt có dấu đọc
+   thoải và không wrap 2 dòng trong cột hẹp. */
+.cmp-table--rolling .cmp-table-head--rolling {
+  text-transform: none;
+  letter-spacing: 0.01em;
+  text-align: center;
+}
+
+/* Ô số trong bảng rolling căn phải để dễ so sánh dọc, dùng tabular-nums
+   cho các chữ số thẳng hàng. */
+.cmp-table--rolling .cmp-table-row--rolling > :not(:first-child) {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.rolling-sample-count {
+  display: block;
+  margin-top: 3px;
+  color: var(--color-text-muted);
+  font-size: 0.72rem;
+  font-weight: 400;
+  line-height: 1.35;
+  white-space: normal;
+}
+
+.cmp-table-head {
+  background: #faf9f5;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #5e5d59;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.cmp-table-head--dd {
+  grid-template-columns: 1.5fr 1fr 1.5fr;
+}
+
+.cmp-fund-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cmp-swatch {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.cmp-num-strong {
+  font-weight: 700;
+  color: #141413;
+}
+
+.cmp-num-neg {
+  color: #dc2626;
+  font-weight: 600;
+}
+
+.cmp-underwater {
+  color: #b45309;
+  font-weight: 600;
+}
+
+.cmp-takeaway {
+  margin: 10px 0 0 0;
+  padding: 12px 14px;
+  background: var(--color-primary-light);
+  border-left: 3px solid var(--color-primary);
+  border-radius: 0 6px 6px 0;
+  font-size: 0.92rem;
+  color: var(--color-text);
+  line-height: 1.6;
+}
+
+.cmp-takeaway strong {
+  color: #141413;
+  font-weight: 700;
+}
+
+.cmp-sec--verdict {
+  padding-bottom: 8px;
+}
+
+.cmp-verdict-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 12px;
+  margin: 10px 0 14px 0;
+}
+
+.cmp-verdict-card {
+  padding: 14px 16px;
+  background: #faf9f5;
+  border: 1px solid #e8e6dc;
+  border-radius: 8px;
+  border-left-width: 4px;
+}
+
+.cmp-verdict--aggressive { border-left-color: #dc2626; }
+.cmp-verdict--balanced   { border-left-color: #0ECB81; }
+.cmp-verdict--stable     { border-left-color: #c96442; }
+.cmp-verdict--weak       { border-left-color: #87867f; }
+
+.cmp-verdict-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.cmp-verdict-head > strong {
+  font-size: 0.98rem;
+  color: #141413;
+}
+
+.cmp-verdict-badge {
+  margin-left: auto;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.cmp-verdict-badge--aggressive { background: #fee2e2; color: #991a1a; }
+.cmp-verdict-badge--balanced   { background: #dcfce7; color: #065f46; }
+.cmp-verdict-badge--stable     { background: var(--color-primary-light); color: #a8512f; }
+.cmp-verdict-badge--weak       { background: #f5f4ed; color: #5e5d59; }
+
+.cmp-verdict-kpis {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 8px;
+  font-size: 0.82rem;
+  color: #5e5d59;
+  flex-wrap: wrap;
+}
+
+.cmp-verdict-kpis strong {
+  color: #141413;
+  font-weight: 700;
+  margin-left: 3px;
+}
+
+.cmp-verdict-tagline {
+  margin: 0;
+  font-size: 0.88rem;
+  color: #5e5d59;
+  line-height: 1.55;
+}
+
+@media (max-width: 640px) {
+  .cmp-story {
+    padding: 18px 14px 8px 14px;
+  }
+  .cmp-story-title {
+    font-size: 1.15rem;
+  }
+  .cmp-table-row,
+  .cmp-table-row--dd {
+    grid-template-columns: 1fr 1fr;
+    row-gap: 4px;
+  }
+  .cmp-table--rolling .cmp-table-row,
+  .cmp-table--rolling .cmp-table-row--rolling {
+    grid-template-columns: minmax(150px, 1.4fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
+    min-width: 830px;
+    row-gap: 0;
+  }
+  .cmp-table--rolling .cmp-table-group-head {
+    min-width: 830px;
+  }
+  .cmp-table-head,
+  .cmp-table-head--dd {
+    display: none;
+  }
+  .cmp-table-head--rolling,
+  .cmp-table--rolling .cmp-table-group-head {
+    display: grid;
+  }
+  .cmp-verdict-badge {
+    margin-left: 0;
+  }
+}
+
+/* ─── Rolling Return Block ──────────────────────────────────────────────────── */
+
+.dca-rolling-block {
+  margin-bottom: 20px;
+  padding: 20px 22px;
+  background: #faf9f5;
+  border: 1px solid #e8e6dc;
+  border-radius: 10px;
+}
+
+.dca-rolling-title {
+  margin: 0 0 6px 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #141413;
+}
+
+.dca-rolling-sub {
+  margin: 0 0 14px 0;
+  font-size: 0.88rem;
+  color: #5e5d59;
+  line-height: 1.5;
+}
+
+.dca-rolling-sub strong {
+  color: #141413;
+  font-weight: 600;
+}
+
+/* Chú thích giải thích khái niệm Lợi nhuận cuốn chiếu, đặt dưới bảng thống kê. */
+.rolling-note {
+  margin: 10px 0 0 0;
+  padding: 14px 16px;
+  background: #faf9f5;
+  border: 1px solid #e8e6dc;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: #5e5d59;
+}
+
+.rolling-note p {
+  margin: 0;
+}
+
+.rolling-note p + p {
+  margin-top: 10px;
+}
+
+.dca-rolling-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.dca-rolling-controls-label {
+  font-size: 0.85rem;
+  color: #5e5d59;
+  font-weight: 500;
+}
+
+.dca-rolling-btn {
+  padding: 5px 12px;
+  border: 1px solid #e8e6dc;
+  background: #faf9f5;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  color: #5e5d59;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.dca-rolling-btn:hover {
+  border-color: #87867f;
+  background: #faf9f5;
+}
+
+.dca-rolling-btn--active {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-primary-fg);
+}
+
+.dca-rolling-btn--active:hover {
+  background: var(--color-primary-dark);
+}
+
+.dca-rolling-card {
+  margin-bottom: 14px;
+  padding: 14px;
+  background: var(--color-surface);
+  border: 1px solid #e8e6dc;
+  border-radius: 8px;
+}
+
+.dca-rolling-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 8px;
+}
+
+.dca-rolling-card-count {
+  font-size: 0.8rem;
+  color: #5e5d59;
+}
+
+.dca-rolling-insufficient {
+  padding: 16px;
+  text-align: center;
+  font-size: 0.88rem;
+  color: #5e5d59;
+  font-style: italic;
+}
+
+.dca-rolling-stats {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  margin-top: 10px;
+}
+
+@media (max-width: 640px) {
+  .dca-rolling-stats {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.dca-rolling-stat {
+  padding: 8px 10px;
+  background: #faf9f5;
+  border: 1px solid #e8e6dc;
+  border-radius: 6px;
+  text-align: center;
+}
+
+.dca-rolling-stat--highlight {
+  border-color: #87867f;
+  background: #f5f4ed;
+}
+
+.dca-rolling-stat-label {
+  font-size: 0.72rem;
+  color: #5e5d59;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.dca-rolling-stat-value {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #141413;
+}
+
+.dca-rolling-takeaway {
+  margin-top: 12px;
+  padding: 10px 12px;
+  background: #faf9f5;
+  border-left: 3px solid #5e5d59;
+  border-radius: 4px;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: #5e5d59;
+}
+
+.dca-rolling-takeaway strong {
+  color: #141413;
+}
+
+/* ─── Monte Carlo Block ─────────────────────────────────────────────────────── */
+
+.dca-mc-block {
+  margin-bottom: 20px;
+  padding: 20px 22px;
+  background: #faf9f5;
+  border: 1px solid #e8e6dc;
+  border-radius: 10px;
+}
+
+.dca-mc-title {
+  margin: 0 0 6px 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #141413;
+}
+
+.dca-mc-sub {
+  margin: 0 0 14px 0;
+  font-size: 0.92rem;
+  color: #5e5d59;
+  line-height: 1.5;
+}
+
+.dca-mc-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+  padding: 12px 14px;
+  background: #faf9f5;
+  border-radius: 8px;
+}
+
+.dca-mc-control-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.dca-mc-control-label {
+  font-size: 0.85rem;
+  color: #5e5d59;
+  font-weight: 500;
+  min-width: 70px;
+}
+
+.dca-mc-btn {
+  padding: 5px 12px;
+  border: 1px solid #e8e6dc;
+  background: #faf9f5;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  color: #5e5d59;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.dca-mc-btn:hover {
+  border-color: #87867f;
+  background: #f5f4ed;
+}
+
+.dca-mc-btn--active {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-primary-fg);
+}
+
+.dca-mc-btn--active:hover {
+  background: var(--color-primary-dark);
+}
+
+.dca-mc-custom {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: 4px;
+}
+
+.dca-mc-custom-input {
+  padding: 5px 10px;
+  border: 1px solid #e8e6dc;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  color: #141413;
+  min-width: 200px;
+  background: #faf9f5;
+  font-family: inherit;
+}
+
+.dca-mc-custom-input:focus {
+  outline: none;
+  border-color: #141413;
+}
+
+.dca-mc-custom-error {
+  font-size: 0.8rem;
+  color: #991a1a;
+  padding-left: 78px;
+}
+
+.dca-mc-current {
+  font-size: 0.85rem;
+  color: #5e5d59;
+  padding-top: 4px;
+}
+
+.dca-mc-current strong {
+  color: #141413;
+}
+
+.dca-mc-hint {
+  font-size: 0.78rem;
+  color: #87867f;
+  font-style: italic;
+  margin-top: -2px;
+}
+
+.dca-mc-detail-control {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 2px;
+}
+
+.dca-mc-detail-control label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: #5e5d59;
+}
+
+.dca-mc-detail-control select {
+  max-width: 250px;
+  padding: 5px 26px 5px 9px;
+  border: 1px solid #e8e6dc;
+  border-radius: 6px;
+  background: var(--color-surface);
+  color: #141413;
+  font: inherit;
+}
+
+.dca-historical-percentile {
+  margin-top: 16px;
+}
+
+.dca-historical-percentile .chart-header {
+  align-items: flex-start;
+}
+
+.dca-historical-percentile .chart-header > div {
+  width: 100%;
+}
+
+.dca-historical-percentile-sub {
+  max-width: none;
+  margin: 4px 0 0;
+  color: #5e5d59;
+  font-size: 0.85rem;
+  line-height: 1.45;
+  text-align: justify;
+}
+
+.dca-historical-percentile-sub > p {
+  margin: 0 0 10px;
+}
+
+.dca-historical-percentile-sub > p:last-child {
+  margin-bottom: 0;
+}
+
+.dca-historical-percentile-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 12px 0;
+  color: #5e5d59;
+  font-size: 0.85rem;
+}
+
+.dca-historical-percentile-controls .dca-mc-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.38;
+}
+
+.dca-historical-percentile-table td {
+  min-width: 102px;
+}
+
+.dca-historical-window-count,
+.dca-historical-window-date {
+  display: block;
+  margin-top: 2px;
+  color: #87867f;
+  font-size: 0.72rem;
+  font-weight: 400;
+}
+
+.dca-historical-percentile-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.dca-historical-percentile-card {
+  padding: 12px;
+  border: 1px solid #e8e6dc;
+  border-radius: 7px;
+  background: #faf9f5;
+}
+
+.dca-historical-percentile-card > strong {
+  color: #141413;
+  font-size: 0.85rem;
+}
+
+.dca-mc-card {
+  margin-bottom: 14px;
+  padding: 14px;
+  background: var(--color-surface);
+  border: 1px solid #e8e6dc;
+  border-radius: 8px;
+}
+
+.dca-mc-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 8px;
+}
+
+.dca-mc-card-sub {
+  font-size: 0.8rem;
+  color: #5e5d59;
+}
+
+.dca-mc-insufficient {
+  padding: 16px;
+  text-align: center;
+  font-size: 0.88rem;
+  color: #5e5d59;
+  font-style: italic;
+}
+
+.dca-mc-stats {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.dca-mc-stat {
+  padding: 8px 10px;
+  background: #faf9f5;
+  border: 1px solid #e8e6dc;
+  border-radius: 6px;
+  text-align: center;
+}
+
+.dca-mc-stat--highlight {
+  border-color: #87867f;
+  background: #f5f4ed;
+}
+
+.dca-mc-stat-label {
+  font-size: 0.72rem;
+  color: #5e5d59;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.dca-mc-stat-sublabel {
+  font-size: 0.68rem;
+  color: #9ca3af;
+  margin-bottom: 2px;
+}
+
+.dca-mc-stat-value {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #141413;
+}
+
+.dca-mc-takeaway {
+  margin-top: 12px;
+  padding: 10px 12px;
+  background: #faf9f5;
+  border-left: 3px solid #5e5d59;
+  border-radius: 4px;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: #5e5d59;
+}
+
+.dca-mc-takeaway strong {
+  color: #141413;
+}
+
+.dca-mc-details {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid #e8e6dc;
+}
+
+.dca-mc-detail-heading h4,
+.dca-mc-distribution-card h5 {
+  margin: 0;
+  color: #141413;
+}
+
+.dca-mc-detail-heading h4 {
+  font-size: 0.98rem;
+}
+
+.dca-mc-detail-heading p,
+.dca-mc-distribution-card p {
+  margin: 4px 0 0;
+  color: #5e5d59;
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.dca-mc-detail-heading--results {
+  margin-top: 20px;
+}
+
+.dca-mc-path-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.dca-mc-path-card,
+.dca-mc-distribution-card {
+  padding: 12px;
+  border: 1px solid #e8e6dc;
+  border-radius: 7px;
+  background: #faf9f5;
+}
+
+.dca-mc-path-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 4px;
+  font-size: 0.82rem;
+  color: #5e5d59;
+}
+
+.dca-mc-path-header strong {
+  color: #141413;
+}
+
+.dca-mc-path-metrics {
+  display: flex;
+  gap: 14px;
+  margin-top: 4px;
+  color: #5e5d59;
+  font-size: 0.78rem;
+}
+
+.dca-mc-path-metrics strong {
+  color: #141413;
+}
+
+.dca-mc-distribution-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.dca-mc-distribution-card h5 {
+  font-size: 0.9rem;
+}
+
+.dca-mc-distribution-card--wide {
+  grid-column: 1 / -1;
+}
+
+.dca-mc-tooltip {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 10px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  background: #fff;
+  color: #5e5d59;
+  font-size: 0.75rem;
+}
+
+.dca-mc-tooltip strong {
+  color: #141413;
+}
+
+.dca-mc-disclaimer {
+  margin-top: 12px;
+  padding: 10px 12px;
+  background: var(--color-primary-light);
+  border: 1px solid #fde68a;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: #78350f;
+}
+
+@media (max-width: 640px) {
+  .dca-mc-stats {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .dca-mc-custom-input {
+    min-width: 140px;
+  }
+  .dca-mc-custom-error {
+    padding-left: 0;
+  }
+  .dca-mc-path-grid,
+  .dca-mc-distribution-grid,
+  .dca-historical-percentile-grid {
+    grid-template-columns: 1fr;
+  }
+  .dca-mc-distribution-card--wide {
+    grid-column: auto;
+  }
+}
+
+
+
+/* ── Wall of Worry tab ── */
+
+.wow-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 10px 2px 18px;
+}
+
+.wow-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: #5e5d59;
+}
+
+.wow-legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.wow-events-panel {
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.wow-events-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--color-border);
+  background: #faf9f5;
+}
+
+.wow-events-header-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #7A7574;
+}
+
+.wow-hide-all-btn {
+  border: none;
+  background: none;
+  padding: 0;
+  font-size: 0.82rem;
+  color: var(--color-primary);
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-style: dashed;
+  text-underline-offset: 2px;
+}
+
+.wow-hide-all-btn:hover {
+  color: #8a3d24;
+}
+
+.wow-events-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.wow-event-row {
+  border-bottom: 1px solid #eeece4;
+}
+
+.wow-event-row:last-child {
+  border-bottom: none;
+}
+
+.wow-event-row-main {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 14px;
+}
+
+.wow-event-row:hover .wow-event-row-main {
+  background: #faf9f5;
+}
+
+.wow-event-date {
+  flex-shrink: 0;
+  width: 76px;
+  font-size: 0.8rem;
+  color: #7A7574;
+  font-variant-numeric: tabular-nums;
+}
+
+.wow-event-dot {
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.wow-event-title-btn {
+  flex: 1;
+  text-align: left;
+  border: none;
+  background: none;
+  padding: 0;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #141413;
+  cursor: pointer;
+  border-bottom: 1px dashed transparent;
+}
+
+.wow-event-title-btn:hover {
+  border-bottom-color: var(--color-border);
+}
+
+.wow-event-title-btn[aria-expanded="true"] {
+  color: var(--color-primary);
+}
+
+.wow-event-checkbox {
+  flex-shrink: 0;
+  display: inline-flex;
+  cursor: pointer;
+}
+
+.wow-event-checkbox input {
+  position: absolute;
+  opacity: 0;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  cursor: pointer;
+}
+
+.wow-event-checkbox-box {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  border: 1.5px solid var(--color-border);
+  display: inline-block;
+  position: relative;
+}
+
+.wow-event-checkbox input:checked + .wow-event-checkbox-box {
+  background: #141413;
+  border-color: #141413;
+}
+
+.wow-event-checkbox input:checked + .wow-event-checkbox-box::after {
+  content: '';
+  position: absolute;
+  left: 5px;
+  top: 1px;
+  width: 4px;
+  height: 8px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.wow-event-checkbox input:focus-visible + .wow-event-checkbox-box {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.wow-shown-count {
+  font-size: 0.78rem;
+  color: #7A7574;
+  white-space: nowrap;
+}
+
+.wow-event-desc {
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: #5e5d59;
+  padding: 0 14px 12px calc(76px + 10px + 8px + 10px);
+}
+
+.wow-about p {
+  font-size: 0.92rem;
+  line-height: 1.65;
+  color: #141413;
+  margin: 0 0 12px;
+}
+
+.wow-about .wow-disclaimer {
+  font-size: 0.85rem;
+  color: #7A7574;
+  font-style: italic;
+  margin-bottom: 0;
+}
+
+.wow-chart-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.wow-event-source {
+  font-size: 0.8rem;
+  color: #7A7574;
+  text-decoration: none;
+  border-bottom: 1px dashed #b5b1a8;
+  white-space: nowrap;
+}
+
+.wow-event-source:hover {
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary);
+}
+
+.wow-hidden-note {
+  margin: 10px 2px 0;
+  font-size: 0.85rem;
+  line-height: 1.55;
+  color: #7A7574;
+}
+
+.btc-contrib-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.btc-contrib-btn:disabled:hover {
+  border-color: #e8e6dc;
+  color: #5e5d59;
+}
+
+/* ─── Tactical Allocation Panel ──────────────────────────────────────────── */
+
+.tactical-pct-input {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tactical-pct-input input {
+  width: 72px;
+  padding: 5px 8px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  font-size: 0.85rem;
+}
+
+.tactical-signal-select {
+  min-width: 260px;
+  flex: 1;
+  max-width: 420px;
+}
+
+.tactical-ma-btn {
+  width: auto;
+  padding: 0 10px;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+/* Nhãn dài hơn hẳn nút SMA/EMA/RSI nên cần rộng hơn, cùng chiều cao. */
+.tactical-freq-btn {
+  width: auto;
+  padding: 0 12px;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.tactical-results {
+  margin-top: 20px;
+}
+
+.tactical-current-signal {
+  margin-bottom: 16px;
+  padding: 14px 16px;
+  background: #faf9f5;
+  border: 1px solid var(--color-border);
+  border-left: 3px solid var(--color-primary);
+  border-radius: 6px;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: var(--color-text-muted);
+}
+
+.tactical-chart-legend {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 8px;
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+}
+
+.tactical-chart-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tactical-swatch {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+}
+
+.tactical-stats-row--highlight {
+  background: var(--color-primary-light);
+  font-weight: 600;
+}
+
+.tactical-takeaway {
+  margin: 16px 0;
+  padding: 10px 12px;
+  background: #faf9f5;
+  border-left: 3px solid #5e5d59;
+  border-radius: 4px;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: #5e5d59;
+}
+
+.tactical-takeaway strong {
+  color: #141413;
+}
+
+.tactical-disclaimer {
+  margin-top: 16px;
+  padding: 10px 12px;
+  background: var(--color-primary-light);
+  border: 1px solid #fde68a;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: #78350f;
+}
+
+/* Tách thành nhiều đoạn ngắn cho dễ đọc, nhưng vẫn phải nhìn ra là một khối liền. */
+.tactical-disclaimer p {
+  margin: 0 0 8px;
+}
+
+.tactical-disclaimer p:last-child {
+  margin-bottom: 0;
+}
+
+/* ── Heatmap tháng × năm (tab So Sánh) ─────────────────────── */
+
+.hm-fund-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.hm-fund-tab {
+  border: 1px solid #d8d5cb;
+  background: #fff;
+  border-radius: 999px;
+  padding: 4px 14px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+
+.hm-fund-tab:hover {
+  border-color: var(--color-text-muted);
+}
+
+.hm-fund-tab--active {
+  background: #fff;
+}
+
+.hm-scroll {
+  overflow-x: auto;
+  padding-bottom: 6px;
+}
+
+.hm-grid {
+  display: grid;
+  gap: 3px;
+  min-width: 640px;
+}
+
+.hm-col-header {
+  text-align: center;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  padding: 2px 0 6px;
+}
+
+.hm-row-header {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  padding-right: 6px;
+}
+
+.hm-cell {
+  border-radius: 4px;
+  padding: 5px 2px;
+  text-align: center;
+  font-size: 0.72rem;
+  font-variant-numeric: tabular-nums;
+  cursor: default;
+  transition: filter 0.12s;
+}
+
+.hm-cell:hover {
+  filter: brightness(0.94);
+}
+
+.hm-cell--na {
+  background: #f5f4ed;
+  color: #c3c1b8;
+}
+
+.hm-cell--partial {
+  outline: 1px dashed rgba(0, 0, 0, 0.18);
+  outline-offset: -1px;
+}
+
+.hm-legend {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.hm-legend-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  margin: 0 4px;
+}
+
+.hm-legend-unit {
+  font-size: 0.68rem;
+  color: var(--color-text-muted);
+  margin-left: 6px;
+}
+
+.hm-legend-swatch {
+  width: 18px;
+  height: 14px;
+  border-radius: 3px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.hm-legend-swatch--neg3 { background: rgb(255, 80, 80); }
+.hm-legend-swatch--neg2 { background: rgb(255, 145, 145); }
+.hm-legend-swatch--neg1 { background: rgb(255, 190, 190); }
+.hm-legend-swatch--zero  { background: rgb(248, 248, 245); }
+.hm-legend-swatch--pos1 { background: rgb(214, 235, 231); }
+.hm-legend-swatch--pos2 { background: rgb(175, 220, 210); }
+.hm-legend-swatch--pos3 { background: rgb(120, 200, 180); }
+
+/* ─── Máy Tính (Calculator Suite) ─────────────────────────────── */
+
+.calc-intro {
+  margin-bottom: 16px;
+}
+
+.calc-title {
+  font-size: 1.35rem;
+  margin-bottom: 4px;
+}
+
+.calc-subtitle {
+  font-size: 0.92rem;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}
+
+/* Nav con: chọn máy tính trong tab. Khác với .tab ở trên cùng, đây là lớp
+   điều hướng thứ hai nên dùng dạng thẻ chứ không dùng gạch chân. */
+.calc-nav {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.calc-nav-btn {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  text-align: left;
+  padding: 12px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.calc-nav-btn:hover {
+  border-color: var(--color-primary);
+}
+
+.calc-nav-btn--active {
+  background: var(--color-primary-light);
+  border-color: var(--color-primary);
+}
+
+.calc-nav-label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.calc-nav-btn--active .calc-nav-label {
+  color: var(--color-primary-dark);
+}
+
+.calc-nav-desc {
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+  line-height: 1.4;
+}
+
+/* Ô nhập số kèm đơn vị (%/năm, năm). Dựng theo .dca-amount-input để form máy
+   tính và form tab DCA nhìn ra cùng một bộ. */
+.calc-unit-input {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+}
+
+.calc-number-input {
+  padding: 6px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  font-size: 0.85rem;
+  width: 100%;
+  max-width: 120px;
+  font-variant-numeric: tabular-nums;
+}
+
+.calc-unit {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.calc-field-hint {
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+  line-height: 1.4;
+}
+
+.calc-result-card {
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 20px;
+}
+
+.calc-result-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.calc-result-row:last-of-type {
+  border-bottom: none;
+}
+
+.calc-result-label {
+  font-size: 0.88rem;
+  color: var(--color-text-muted);
+}
+
+.calc-result-value {
+  font-size: 1rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  color: var(--color-text);
+}
+
+.calc-result-row--primary .calc-result-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.calc-result-row--good .calc-result-value {
+  color: var(--color-portfolio);
+}
+
+.calc-result-row--bad .calc-result-value {
+  color: var(--color-secondary);
+}
+
+.calc-takeaway {
+  margin-top: 16px;
+  padding: 14px 16px;
+  background: var(--color-primary-light);
+  border: 1px solid var(--color-primary-border);
+  border-radius: var(--radius);
+  font-size: 0.92rem;
+  line-height: 1.65;
+  color: var(--color-text);
+}
+
+.calc-takeaway strong {
+  color: var(--color-primary-dark);
+  font-weight: 700;
+}
+
+.calc-note {
+  margin-top: 12px;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: var(--color-text-muted);
+}
+
+@media (max-width: 640px) {
+  .calc-nav {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .calc-nav-btn {
+    min-height: 48px;
+  }
+
+  .calc-result-card {
+    padding: 14px;
+  }
+
+  .calc-result-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+  }
+
+  .calc-result-value {
+    text-align: left;
+  }
+
+  .calc-result-row--primary .calc-result-value {
+    font-size: 1.3rem;
+  }
+}
+
+/* Ô nhập của máy tính chuyển sang full-width đúng lúc .dca-param-row đổi sang
+   xếp dọc (≤480px), để nhãn và ô không lệch nhịp nhau. */
+@media (max-width: 480px) {
+  .calc-unit-input {
+    width: 100%;
+  }
+
+  .calc-number-input {
+    max-width: none;
+    min-height: 40px;
+  }
+}
+
+/* Biểu đồ trong tab Máy Tính */
+.calc-chart {
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.calc-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px 18px;
+  margin-top: 10px;
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+.calc-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.calc-legend-swatch {
+  width: 16px;
+  height: 12px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.calc-legend-line {
+  width: 18px;
+  height: 3px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+/* Đường nét đứt trong chú thích: dựng bằng mask để khỏi thêm ảnh nền */
+.calc-legend-line--dashed {
+  height: 0;
+  border-top: 3px dashed currentColor;
+  background: none !important;
+  color: var(--color-text-muted);
+}
+
+/* Cảnh báo khi chọn tiết kiệm ngân hàng làm nguồn tín hiệu ở tab Chiến Thuật
+   Phân Bổ. Dựng theo .dividend-notice nhưng đổi sang tông hổ phách, vì đây là
+   lời cảnh báo chứ không phải ghi chú thường. */
+.tactical-signal-warning {
+  margin: -4px 0 12px;
+  padding: 12px 14px;
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-left: 3px solid #d97706;
+  border-radius: 6px;
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: var(--color-text);
+}
+
+/* ─── Overlap Tab ─────────────────────────────────────────── */
+.overlap-select {
+  flex: 1;
+  min-width: 0;
+}
+
+.overlap-warn {
+  margin-top: 8px;
+  font-size: 0.85rem;
+  color: #b45309;
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-left: 3px solid #d97706;
+  border-radius: 6px;
+  padding: 8px 12px;
+}
+
+.overlap-limit-warn {
+  margin: 0 0 12px;
+  font-size: 0.85rem;
+  line-height: 1.55;
+  color: var(--color-text);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-left: 3px solid var(--color-border-strong, #c96442);
+  border-radius: 6px;
+  padding: 10px 14px;
+}
+
+.overlap-period-warn {
+  margin: 0 0 12px;
+  font-size: 0.85rem;
+  line-height: 1.55;
+  color: var(--color-text);
+  background: #fef2f2;
+  border: 1px solid #f5c6c6;
+  border-left: 3px solid #dc2626;
+  border-radius: 6px;
+  padding: 10px 14px;
+}
+
+.overlap-source-info {
+  margin: 0 0 12px;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: var(--color-text-muted);
+}
+
+.overlap-stats {
+  margin-bottom: 18px;
+}
+
+.overlap-stat--highlight .dca-journey-stat-value {
+  color: #c96442;
+}
+
+.overlap-table-card,
+.overlap-drift-card {
+  margin-bottom: 18px;
+}
+
+/* grid child: 1fr in a 2-col grid defaults to minmax(auto, 1fr), so a long
+   unbreakable cell (e.g. an unlisted stock's full company name) forces the
+   column to widen and spills the table into its neighbor. min-width: 0 lets
+   the column shrink; the table then scrolls horizontally instead of blowing
+   the grid. */
+.overlap-table-card {
+  min-width: 0;
+}
+
+.overlap-table-card .dca-stats-table-scroll {
+  overflow-x: auto;
+}
+
+.overlap-table td {
+  white-space: nowrap;
+}
+
+.overlap-diff-pos {
+  color: #15803d;
+  font-weight: 600;
+}
+
+.overlap-diff-neg {
+  color: #991a1a;
+  font-weight: 600;
+}
+
+.overlap-empty {
+  padding: 14px 16px;
+  font-size: 0.88rem;
+  color: var(--color-text-muted);
+  background: var(--color-bg);
+  border-radius: 6px;
+  margin: 0;
+}
+
+.overlap-two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.overlap-note {
+  margin-top: 4px;
+  font-size: 0.78rem;
+  color: #9a9890;
+  line-height: 1.6;
+}
+
+.overlap-portfolio-group {
+  margin-bottom: 14px;
+}
+
+.overlap-portfolio-group:last-child {
+  margin-bottom: 0;
+}
+
+.overlap-portfolio-group-title {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  margin: 0 0 6px;
+}
+
+/* ── Tab Phân Tích Quỹ (fund-analysis-*) ── */
+
+/* Layout tổng tài sản: [tổng số | donut | cards phân bổ], kiểu digiinvest.
+   Cân giữa bộ ba bằng 2 cột lề bằng nhau (1fr auto 1fr); khối tổng căn PHẢI
+   để số sát donut, cards căn trái sát donut — không để hở giữa các cột. */
+.fund-analysis-summary {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 24px;
+  align-items: center;
+  margin: 4px 0 14px;
+}
+
+.fund-analysis-total-left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.fund-analysis-total-caption {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+}
+
+.fund-analysis-total-value {
+  font-size: 2.2rem;
+  font-weight: 900;
+  line-height: 1.1;
+  color: var(--color-primary);
+}
+
+.fund-analysis-delta {
+  font-size: 0.82rem;
+}
+
+.fund-analysis-delta.pos {
+  color: #047857;
+}
+
+.fund-analysis-delta.neg {
+  color: #be123c;
+}
+
+/* Donut conic-gradient (hole bằng vòng tròn nền) */
+.fund-analysis-donut-wrap {
+  display: flex;
+  justify-content: center;
+}
+
+.fund-analysis-donut {
+  position: relative;
+  width: 176px;
+  height: 176px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.fund-analysis-donut-hole {
+  position: absolute;
+  inset: 30px;
+  border-radius: 50%;
+  background: var(--color-surface);
+}
+
+/* Cards phân bổ: dot + tên + giá trị + % + delta so kỳ trước */
+.fund-analysis-alloc-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.fund-analysis-alloc-card {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.fund-analysis-alloc-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.fund-analysis-alloc-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.fund-analysis-alloc-name {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+}
+
+.fund-analysis-alloc-value {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.fund-analysis-alloc-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.82rem;
+}
+
+.fund-analysis-alloc-pct {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.fund-analysis-alloc-delta.pos {
+  color: #047857;
+}
+
+.fund-analysis-alloc-delta.neg {
+  color: #be123c;
+}
+
+.fund-analysis-nav {
+  margin-top: 4px;
+  font-size: 0.82rem;
+  color: #9a9890;
+}
+
+/* Note dưới mỗi chart: card nền nhạt + gạch trái, giống dca-projection-takeaway */
+.fund-analysis-chart-note {
+  margin-top: 8px;
+  padding: 10px 12px;
+  background: #faf9f5;
+  border-left: 3px solid #5e5d59;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: #5e5d59;
+}
+.fund-analysis-chart-note p {
+  margin: 0 0 6px;
+}
+.fund-analysis-chart-note p:last-child {
+  margin-bottom: 0;
+}
+.fund-analysis-chart-note strong {
+  color: #141413;
+}
+
+/* ── Plot Twist (Red Flags ẩn): detector card ── */
+.redflag-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.redflag-badge {
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.redflag-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  font-size: 0.85rem;
+  color: #5e5d59;
+  margin-bottom: 4px;
+}
+
+.redflag-metrics strong {
+  color: #141413;
+}
+
+/* Note nhấn mạnh (vd spike cổ tức) — dòng thứ 2 dưới chart */
+.fund-analysis-note-em {
+  color: #8a5a00;
+  background: #fff7e6;
+  border-left: 3px solid #f59e0b;
+  padding: 6px 8px;
+  border-radius: 4px;
+}
+
+/* Hộp insight: phân biệt hiệu quả đầu tư với dòng tiền */
+.fund-analysis-insight {
+  margin: 0 0 18px;
+  padding: 10px 14px;
+  font-size: 0.85rem;
+  line-height: 1.55;
+  color: #1e3a8a;
+  background: #eff6ff;
+  border-left: 4px solid #3b82f6;
+  border-radius: 6px;
+}
+
+/* Narrative đầu mỗi nhóm: block trắng bo tròn, full-width, như card chart */
+.fund-analysis-narrative {
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: var(--color-text);
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  padding: 12px 16px;
+  margin: 0 0 18px;
+}
+
+/* Legend chart cơ cấu tài sản (stacked 100%) */
+.fund-analysis-stack-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px 14px;
+  margin-top: 6px;
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+}
+
+/* Bảng danh mục: giới hạn ~10 dòng, cuộn dọc khi xem thêm */
+.fund-analysis-table-scroll {
+  max-height: 610px;
+  overflow-y: auto;
+}
+
+/* Lưới 2 cột cho các chart phân tích (mỗi hàng 2 chart song song) */
+.fund-analysis-charts-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.fund-analysis-charts-grid .chart-container {
+  margin-bottom: 0;
+}
+
+/* Chart trải cả 2 cột của grid (vd nhà đầu tư nước ngoài 2284) */
+.fund-analysis-chart-wide {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 1100px) {
+  .fund-analysis-charts-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.fund-analysis-stack-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.fund-analysis-stack-legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  display: inline-block;
+}
+
+/* Cell tên cổ phiếu trong bảng danh mục: symbol + ngành nhỏ xám bên dưới */
+.fund-analysis-symbol {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.fund-analysis-industry {
+  display: block;
+  font-size: 0.72rem;
+  color: #9a9890;
+}
+
+@media (max-width: 900px) {
+  .fund-analysis-summary {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .fund-analysis-total-left {
+    align-items: flex-start;
+  }
+
+  .fund-analysis-donut-wrap {
+    justify-content: flex-start;
+  }
+
+  .fund-analysis-alloc-cards {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 12px 24px;
+  }
+}
+
+@media (max-width: 720px) {
+  .overlap-two-col {
+    grid-template-columns: 1fr;
+  }
+}

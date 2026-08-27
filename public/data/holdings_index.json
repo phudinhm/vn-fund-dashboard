@@ -1,0 +1,262 @@
+[
+  {
+    "id": "ABBF",
+    "update_at": "2026-07-01",
+    "source": "digiinvest"
+  },
+  {
+    "id": "ABEF",
+    "update_at": "2026-07-01",
+    "source": "digiinvest"
+  },
+  {
+    "id": "AEIF",
+    "update_at": "2026-07-01",
+    "source": "fmarket"
+  },
+  {
+    "id": "BMFF",
+    "update_at": "2026-07-01",
+    "source": "digiinvest"
+  },
+  {
+    "id": "BVFED",
+    "update_at": "2026-07-01",
+    "source": "fmarket"
+  },
+  {
+    "id": "BVPF",
+    "update_at": "2026-07-01",
+    "source": "fmarket"
+  },
+  {
+    "id": "DCAF",
+    "update_at": "2026-07-01",
+    "source": "digiinvest"
+  },
+  {
+    "id": "DCBF",
+    "update_at": "2026-07-01",
+    "source": "digiinvest"
+  },
+  {
+    "id": "DCDE",
+    "update_at": "2026-07-01",
+    "source": "digiinvest"
+  },
+  {
+    "id": "DCDS",
+    "update_at": "2026-07-01",
+    "source": "report"
+  },
+  {
+    "id": "DCIP",
+    "update_at": "2026-07-01",
+    "source": "digiinvest"
+  },
+  {
+    "id": "ENF",
+    "update_at": "2026-07-01",
+    "source": "fmarket"
+  },
+  {
+    "id": "EVESG",
+    "update_at": "2026-07-01",
+    "source": "fmarket"
+  },
+  {
+    "id": "GDEGF",
+    "update_at": "2026-07-01",
+    "source": "fmarket"
+  },
+  {
+    "id": "HDBOND",
+    "update_at": "2026-07-01",
+    "source": "fmarket"
+  },
+  {
+    "id": "KDEF",
+    "update_at": "2026-07-01",
+    "source": "digiinvest"
+  },
+  {
+    "id": "LHCDF",
+    "update_at": "2026-07-01",
+    "source": "fmarket"
+  },
+  {
+    "id": "LPLF",
+    "update_at": "2026-07-01",
+    "source": "fmarket"
+  },
+  {
+    "id": "MAFBAL",
+    "update_at": "2026-07-01",
+    "source": "digiinvest"
+  },
+  {
+    "id": "MAFEQI",
+    "update_at": "2026-07-01",
+    "source": "digiinvest"
+  },
+  {
+    "id": "MAGEF",
+    "update_at": "2026-07-01",
+    "source": "fmarket"
+  },
+  {
+    "id": "MBAM",
+    "update_at": "2026-07-01",
+    "source": "digiinvest"
+  },
+  {
+    "id": "MBBOND",
+    "update_at": "2026-07-01",
+    "source": "digiinvest"
+  },
+  {
+    "id": "MBVF",
+    "update_at": "2026-07-01",
+    "source": "digiinvest"
+  },
+  {
+    "id": "MDI",
+    "update_at": "2026-07-01",
+    "source": "digiinvest"
+  },
+  {
+    "id": "NTPPF",
+    "update_at": "2026-07-01",
+    "source": "fmarket"
+  },
+  {
+    "id": "PBIF",
+    "update_at": "2026-07-01",
+    "source": "fmarket"
+  },
+  {
+    "id": "PHVSF",
+    "update_at": "2026-07-01",
+    "source": "digiinvest"
+  },
+  {
+    "id": "RVPIF",
+    "update_at": "2026-07-01",
+    "source": "fmarket"
+  },
+  {
+    "id": "SSIBF",
+    "update_at": "2026-07-01",
+    "source": "digiinvest"
+  },
+  {
+    "id": "SSIEF",
+    "update_at": "2026-07-01",
+    "source": "fmarket"
+  },
+  {
+    "id": "SSISCA",
+    "update_at": "2026-07-01",
+    "source": "digiinvest"
+  },
+  {
+    "id": "TBLF",
+    "update_at": "2026-07-01",
+    "source": "fmarket"
+  },
+  {
+    "id": "TCBF",
+    "update_at": "2026-07-01",
+    "source": "digiinvest"
+  },
+  {
+    "id": "TCEF",
+    "update_at": "2026-07-01",
+    "source": "digiinvest"
+  },
+  {
+    "id": "TCGF",
+    "update_at": "2026-07-01",
+    "source": "fmarket"
+  },
+  {
+    "id": "UVDIF",
+    "update_at": "2026-07-01",
+    "source": "fmarket"
+  },
+  {
+    "id": "UVEEF",
+    "update_at": "2026-07-01",
+    "source": "fmarket"
+  },
+  {
+    "id": "VCAMBF",
+    "update_at": "2026-07-01",
+    "source": "fmarket"
+  },
+  {
+    "id": "VCAMDF",
+    "update_at": "2026-07-01",
+    "source": "fmarket"
+  },
+  {
+    "id": "VCBFAIF",
+    "update_at": "2026-07-01",
+    "source": "fmarket"
+  },
+  {
+    "id": "VCBFBCF",
+    "update_at": "2026-07-01",
+    "source": "digiinvest"
+  },
+  {
+    "id": "VCBFMGF",
+    "update_at": "2026-07-01",
+    "source": "digiinvest"
+  },
+  {
+    "id": "VCBFTBF",
+    "update_at": "2026-07-01",
+    "source": "digiinvest"
+  },
+  {
+    "id": "VDEF",
+    "update_at": "2026-07-01",
+    "source": "digiinvest"
+  },
+  {
+    "id": "VEOF",
+    "update_at": "2026-07-01",
+    "source": "digiinvest"
+  },
+  {
+    "id": "VESAF",
+    "update_at": "2026-07-01",
+    "source": "digiinvest"
+  },
+  {
+    "id": "VFF",
+    "update_at": "2026-07-01",
+    "source": "digiinvest"
+  },
+  {
+    "id": "VIBF",
+    "update_at": "2026-07-01",
+    "source": "digiinvest"
+  },
+  {
+    "id": "VLGF",
+    "update_at": "2026-07-01",
+    "source": "fmarket"
+  },
+  {
+    "id": "VMEEF",
+    "update_at": "2026-07-01",
+    "source": "digiinvest"
+  },
+  {
+    "id": "VNDAF",
+    "update_at": "2026-07-01",
+    "source": "fmarket"
+  }
+]
