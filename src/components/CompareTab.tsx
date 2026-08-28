@@ -9,6 +9,7 @@ import { DrawdownChart } from './DrawdownChart'
 import { YearlyPerformanceChart } from './YearlyPerformanceChart'
 import { RollingReturnChart } from './RollingReturnChart'
 import { CompareStoryBlock } from './CompareStoryBlock'
+import { CorrelationBlock } from './CorrelationBlock'
 import { MonthlyHeatmap } from './MonthlyHeatmap'
 import { DataQualityBlock } from './DataQualityBlock'
 import { DividendNotice } from './DividendNotice'
@@ -216,6 +217,13 @@ function CompareTabImpl({
             period={rollingPeriod}
             availablePeriods={comparison.data.availableRollingPeriods}
             onPeriodChange={onChangeRollingPeriod}
+          />
+
+          {/* Đa dạng hoá thật hay chỉ trên danh nghĩa: các quỹ có đi cùng nhịp không. */}
+          <CorrelationBlock
+            funds={comparison.data.funds}
+            colors={FUND_COLORS}
+            displayName={assetDisplayName}
           />
 
           <CompareStoryBlock

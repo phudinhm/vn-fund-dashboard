@@ -3225,6 +3225,63 @@ button:not(:disabled):active {
   gap: 8px;
 }
 
+/* ─── Ma trận tương quan ─────────────────────────────────────── */
+.corr-scroll {
+  overflow-x: auto;
+  margin-bottom: 4px;
+}
+
+.corr-table {
+  border-collapse: separate;
+  border-spacing: 3px;
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+  margin: 0 auto;
+}
+
+.corr-head,
+.corr-row-head {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  padding: 4px 6px;
+}
+
+.corr-head {
+  text-align: center;
+  /* Nhãn cột dài dễ kéo bảng rộng ra; giới hạn rồi cắt bớt cho gọn. */
+  max-width: 90px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.corr-row-head {
+  text-align: right;
+}
+
+.corr-cell {
+  text-align: center;
+  min-width: 52px;
+  padding: 7px 8px;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+.corr-cell-diagonal {
+  color: var(--color-text-muted);
+}
+
+.corr-avg-head,
+.corr-avg-cell {
+  border-left: 2px solid var(--color-border);
+}
+
+.corr-avg-cell {
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
 /* ─── Phân Tích Quỹ: ghi chú phạm vi dữ liệu ─────────────────── */
 .fa-scope-note {
   background: var(--color-primary-light);
@@ -8239,4 +8296,9 @@ button:not(:disabled):active {
   .overlap-two-col {
     grid-template-columns: 1fr;
   }
+}
+
+.corr-caveat {
+  margin-top: 6px;
+  opacity: 0.85;
 }
