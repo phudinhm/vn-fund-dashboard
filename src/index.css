@@ -471,6 +471,7 @@ button:not(:disabled):active {
 
 .date-presets {
   display: flex;
+  flex-wrap: wrap;
   gap: 4px;
 }
 
@@ -4773,8 +4774,11 @@ button:not(:disabled):active {
     padding: 8px 14px;
     min-height: 40px;
     font-size: 0.85rem;
-    flex: 1;
-    min-width: 0;
+    /* KHÔNG dùng flex:1 + min-width:0: 9 nút bị ép chung một hàng và co nhỏ
+       hơn cả bề ngang chữ, cắt nhãn thành "7 ngà", "1 thár". Để nút giữ đúng
+       bề ngang nội dung rồi xuống hàng (flex-wrap ở .date-presets). */
+    flex: 0 0 auto;
+    white-space: nowrap;
     text-align: center;
   }
 
