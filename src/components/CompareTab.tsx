@@ -16,6 +16,7 @@ import { DateRangePicker } from './DateRangePicker'
 import { ShareButton } from './ShareButton'
 import { FUND_COLORS } from '../constants'
 import { assetDisplayName, isSavingsAssetId } from '../utils/savingsAsset'
+import { useT } from '../i18n'
 import type { ChartSeries, FundMeta } from '../types'
 
 interface Props {
@@ -40,6 +41,7 @@ function CompareTabImpl({
   metadata, funds, dateFrom, dateTo, rollingPeriod,
   onChangeFunds, onChangeDateFrom, onChangeDateTo, onChangeRollingPeriod,
 }: Props) {
+  const t = useT()
   const dualPriceFundIds = useMemo(
     () => new Set(metadata.filter(m => m.type === 'gold').map(m => m.id)),
     [metadata],
@@ -151,7 +153,7 @@ function CompareTabImpl({
   return (
     <>
       <div className="panel-header">
-        <h2>So Sánh Các Quỹ</h2>
+        <h2>{t('compare.title')}</h2>
         <ShareButton getUrl={() => window.location.href} />
       </div>
       <FundSelector
@@ -169,7 +171,7 @@ function CompareTabImpl({
         onChangeTo={onChangeDateTo}
       />
 
-      {fundsLoading && <div className="loading-indicator">Đang tải dữ liệu quỹ...</div>}
+      {fundsLoading && <div className="loading-indicator">{t('compare.loadingFunds')}</div>}
       {errorMessages.length > 0 && (
         <div className="error-banner">
           {errorMessages.map(msg => <p key={msg}>{msg}</p>)}

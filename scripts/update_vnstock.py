@@ -20,6 +20,11 @@ DATA_DIR = os.path.join(os.path.dirname(__file__), '..', 'public', 'data')
 # ETFs — use Quote(source='VCI') to get stock prices
 ETF_FUNDS = ['E1VFVN30', 'FUEVFVND', 'FUEDCMID', 'FUESSVFL', 'FUEVN100', 'FUESSV50']
 
+# Chỉ số thị trường — dùng làm benchmark so sánh với quỹ. Cùng Quote(source='VCI')
+# như ETF, nhưng KHÔNG nhân 1000: giá ETF trả về đơn vị nghìn đồng, còn điểm chỉ
+# số đã là con số thật (vd VNINDEX ~1.200), nhân lên sẽ sai một bậc.
+INDEX_SYMBOLS = ['VNINDEX', 'VN30', 'VN100']
+
 
 
 # ─── Helpers ───────────────────────────────────────────────
@@ -109,6 +114,58 @@ def update_etf(symbol):
         print(f'  ❌ {symbol}: {e}')
         return False
 
+
+# ─── Index update via Quote (benchmark: VNINDEX, VN30, VN100) ───
+
+def update_index(symbol):
+    """Update market index point data using vnstock Quote (VCI source).
+
+    Same fetch path as update_etf(), except index points are NOT multiplied
+    by 1000 — VCI returns them as the real point value already, unlike stock/
+    ETF closes which come in thousands of VND.
+    """
+    from vnstock import Quote
+
+    csv_path = os.path.join(DATA_DIR, f'{symbol}.csv')
+    last_date = get_last_date(csv_path)
+
+    if last_date:
+        start = (datetime.strptime(last_date, '%Y-%m-%d') + timedelta(days=1)).strftime('%Y-%m-%d')
+    else:
+        start = '2014-01-01'
+    end = datetime.now().strftime('%Y-%m-%d')
+
+    if start > end:
+        print(f'  ✅ {symbol}: already up to date (last: {last_date})')
+        return True
+
+    try:
+        quote = Quote(symbol=symbol, source='VCI')
+        df = quote.history(start=start, end=end, interval='1D')
+
+        if df is None or df.empty:
+            print(f'  ✅ {symbol}: no new data available (last: {last_date})')
+            return True
+
+        df_filtered = df[['time', 'close']].copy()
+        df_filtered = df_filtered.rename(columns={'time': 'date', 'close': 'price'})
+        df_filtered['date'] = pd.to_datetime(df_filtered['date']).dt.strftime('%Y-%m-%d')
+        df_filtered['price'] = df_filtered['price'].round(2)
+
+        df_filtered = df_filtered.sort_values('date').reset_index(drop=True)
+
+        count = append_to_csv(csv_path, df_filtered)
+        if count > 0:
+            new_last = df_filtered['date'].iloc[-1]
+            print(f'  📈 {symbol}: +{count} rows ({last_date or "start"} → {new_last})')
+        else:
+            print(f'  ✅ {symbol}: already up to date (last: {last_date})')
+
+        return True
+
+    except Exception as e:
+        print(f'  ❌ {symbol}: {e}')
+        return False
 
 
 # ─── BTC/VND via CoinGecko ───────────────────────────────
@@ -217,14 +274,24 @@ def main():
             etf_failures.append(symbol)
     print()
 
-    # ── 2. BTC/VND ──
+    # ── 2. Market indices (benchmark) ──
+    print('📈 Updating market indices via vnstock Quote (VCI)...')
+    index_failures = []
+    for symbol in INDEX_SYMBOLS:
+        if not update_index(symbol):
+            index_failures.append(symbol)
+    print()
+
+    # ── 3. BTC/VND ──
     print('₿  Updating Bitcoin (BTC/VND) via CoinGecko...')
     btc_ok = update_btc_vnd()
     print()
 
-    if etf_failures or not btc_ok:
+    if etf_failures or index_failures or not btc_ok:
         if etf_failures:
             print(f'❌ ETF update failed for: {", ".join(etf_failures)}')
+        if index_failures:
+            print(f'❌ Index update failed for: {", ".join(index_failures)}')
         if not btc_ok:
             print('❌ BTC update failed.')
         print('Exiting with error so GitHub Actions alerts.\n')

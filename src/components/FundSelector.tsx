@@ -3,6 +3,7 @@ import type { FundMeta } from '../types'
 import { FUND_COLORS, MAX_COMPARE_FUNDS } from '../constants'
 import { SavingsRateInput } from './SavingsRateInput'
 import { useWatchlist } from '../hooks/useWatchlist'
+import { useT } from '../i18n'
 import {
   isSavingsAssetId, savingsAssetId, parseSavingsRate, pickDefaultSavingsRate,
   SAVINGS_OPTION_LABEL,
@@ -27,6 +28,7 @@ export function FundSelector({
   startDate,
   endDate,
 }: Props) {
+  const t = useT()
   const { isWatched, toggle } = useWatchlist()
   const baseOptions: FundOption[] = allFunds.map(f => ({ value: f.id, label: f.name_vi }))
 
@@ -81,8 +83,8 @@ export function FundSelector({
                 ? { value: fundId, label: SAVINGS_OPTION_LABEL }
                 : options.find(o => o.value === fundId) || null}
               onChange={opt => opt && changeFund(i, opt.value)}
-              placeholder="Tìm quỹ..."
-              noOptionsMessage={() => 'Không tìm thấy'}
+              placeholder={t('fundSelector.searchPlaceholder')}
+              noOptionsMessage={() => t('fundSelector.noOptions')}
               isSearchable
               styles={selectStyles}
             />
@@ -96,7 +98,7 @@ export function FundSelector({
               <button
                 className={`fund-star-btn${isWatched(fundId) ? ' fund-star-btn-active' : ''}`}
                 onClick={() => toggle(fundId)}
-                title={isWatched(fundId) ? 'Bỏ khỏi danh sách theo dõi' : 'Thêm vào danh sách theo dõi'}
+                title={isWatched(fundId) ? t('fundSelector.removeFromWatchlist') : t('fundSelector.addToWatchlist')}
               >
                 {isWatched(fundId) ? '★' : '☆'}
               </button>
@@ -105,7 +107,7 @@ export function FundSelector({
               className="fund-remove-btn"
               onClick={() => removeFund(i)}
               disabled={selectedFunds.length <= 1}
-              title="Xoá quỹ"
+              title={t('fundSelector.removeFund')}
             >
               ✕
             </button>
@@ -119,12 +121,12 @@ export function FundSelector({
         onClick={addFund}
         disabled={selectedFunds.length >= MAX_COMPARE_FUNDS}
       >
-        + Thêm quỹ so sánh
+        {t('fundSelector.addFund')}
       </button>
 
       {startDate && endDate && (
         <div className="comparison-period">
-          So sánh từ {formatDate(startDate)} đến {formatDate(endDate)}
+          {t('fundSelector.comparisonPeriod', { from: formatDate(startDate), to: formatDate(endDate) })}
         </div>
       )}
     </div>

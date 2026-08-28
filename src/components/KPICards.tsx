@@ -1,4 +1,5 @@
 import type { KPIData } from '../types'
+import { useT } from '../i18n'
 
 interface FundKPI {
   name: string
@@ -11,52 +12,39 @@ interface Props {
   dcaMode?: boolean
 }
 
-const TOOLTIPS: Record<string, string | undefined> = {
-  cagr: 'Lợi nhuận bình quân hằng năm (CAGR): tốc độ tăng trưởng trung bình mỗi năm nếu giữ quỹ trong suốt khoảng thời gian.',
-  maxDrawdown: 'Mức sụt giảm tối đa: mức giảm lớn nhất tính từ đỉnh, cho thấy rủi ro lớn nhất khi đầu tư.',
-  rollingAvg: 'Trung bình lợi nhuận quy năm theo chu kỳ 12 tháng: hiệu suất trung bình nếu giữ quỹ bất kỳ 12 tháng liên tục nào.',
-  winRate: 'Tỷ lệ thắng: phần trăm số năm đầy đủ mà quỹ có lợi nhuận cao nhất trong nhóm so sánh.',
-}
-
-const DCA_TOOLTIPS: Record<string, string | undefined> = {
-  cagr: 'CAGR (TWRR): tốc độ tăng trưởng trung bình mỗi năm của quỹ, bỏ qua dòng tiền DCA. Đây là hiệu suất thuần của quỹ, không phải lợi nhuận thực tế trên tiền bạn đầu tư.',
-  maxDrawdown: 'Mức sụt giảm tối đa (TWRR): mức giảm lớn nhất tính từ đỉnh dựa trên hiệu suất thuần của quỹ.',
-  rollingAvg: 'TB Rolling 12T (TWRR): hiệu suất trung bình quy năm nếu giữ quỹ bất kỳ 12 tháng liên tục nào, bỏ qua dòng tiền DCA.',
-  winRate: 'Tỷ lệ thắng: phần trăm số năm đầy đủ mà quỹ có lợi nhuận cao nhất trong nhóm so sánh.',
-}
-
 export function KPICards({ funds, dcaMode }: Props) {
-  const tips = dcaMode ? DCA_TOOLTIPS : TOOLTIPS
+  const t = useT()
 
   return (
     <div className="kpi-grid">
       <KPICard
-        title={dcaMode ? 'CAGR (TWRR)' : 'CAGR'}
-        tooltip={tips.cagr}
+        title={t(dcaMode ? 'kpi.cagrTwrr' : 'kpi.cagr')}
+        tooltip={t(dcaMode ? 'kpi.tooltip.cagrTwrr' : 'kpi.tooltip.cagr')}
         funds={funds}
         getValue={f => f.kpi.cagr}
         format={formatPercent}
         higherIsBetter
       />
       <KPICard
-        title="Sụt giảm tối đa"
-        tooltip={tips.maxDrawdown}
+        title={t('kpi.maxDrawdown')}
+        tooltip={t(dcaMode ? 'kpi.tooltip.maxDrawdownTwrr' : 'kpi.tooltip.maxDrawdown')}
         funds={funds}
         getValue={f => f.kpi.maxDrawdown}
         format={formatPercent}
         higherIsBetter={false}
+        isDrawdown
       />
       <KPICard
-        title="TB Rolling 12T"
-        tooltip={tips.rollingAvg}
+        title={t('kpi.rollingAvg')}
+        tooltip={t(dcaMode ? 'kpi.tooltip.rollingAvgTwrr' : 'kpi.tooltip.rollingAvg')}
         funds={funds}
         getValue={f => f.kpi.rollingAvg12M}
         format={formatPercent}
         higherIsBetter
       />
       <KPICard
-        title="Tỷ lệ thắng (năm)"
-        tooltip={tips.winRate}
+        title={t('kpi.winRate')}
+        tooltip={t('kpi.tooltip.winRate')}
         funds={funds}
         getValue={f => f.kpi.winRate}
         format={formatPercent}
@@ -73,6 +61,8 @@ interface CardProps {
   getValue: (f: FundKPI) => number | null
   format: (v: number) => string
   higherIsBetter: boolean
+  /** Sụt giảm: giá trị gần 0 (ít âm hơn) mới là tốt, không phụ thuộc higherIsBetter. */
+  isDrawdown?: boolean
 }
 
 function KPICard({
@@ -82,6 +72,7 @@ function KPICard({
   getValue,
   format,
   higherIsBetter,
+  isDrawdown,
 }: CardProps) {
   // Find the best value
   const values = funds.map(f => getValue(f))
@@ -89,7 +80,6 @@ function KPICard({
 
   if (values.every(v => v !== null)) {
     // For drawdown: higher (closer to 0) is better
-    const isDrawdown = title === 'Sụt giảm tối đa'
     const better = isDrawdown || higherIsBetter
       ? Math.max(...(values as number[]))
       : Math.min(...(values as number[]))

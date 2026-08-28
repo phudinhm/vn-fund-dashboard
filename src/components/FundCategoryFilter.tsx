@@ -1,4 +1,5 @@
 import type { FundMeta } from '../types'
+import { useT, type TranslationKey } from '../i18n'
 
 export type FundCategory = FundMeta['type'] | 'all'
 
@@ -7,31 +8,19 @@ interface Props {
   onCategoryChange: (category: FundCategory) => void
 }
 
-interface CategoryButton {
-  value: FundCategory
-  label: string
-}
-
-const CATEGORY_BUTTONS: CategoryButton[] = [
-  { value: 'all', label: 'Tất cả' },
-  { value: 'mutual_fund', label: 'Cổ phiếu' },
-  { value: 'bond', label: 'Trái phiếu' },
-  { value: 'balanced', label: 'Cân bằng' },
-  { value: 'etf', label: 'ETF' },
-  { value: 'crypto', label: 'Crypto' },
-  { value: 'gold', label: 'Vàng' },
-]
+const CATEGORY_ORDER: FundCategory[] = ['all', 'mutual_fund', 'bond', 'balanced', 'etf', 'index', 'crypto', 'gold']
 
 export function FundCategoryFilter({ activeCategory, onCategoryChange }: Props) {
+  const t = useT()
   return (
     <div className="fund-category-filter">
-      {CATEGORY_BUTTONS.map(btn => (
+      {CATEGORY_ORDER.map(value => (
         <button
-          key={btn.value}
-          className={`category-btn${activeCategory === btn.value ? ' category-btn-active' : ''}`}
-          onClick={() => onCategoryChange(btn.value)}
+          key={value}
+          className={`category-btn${activeCategory === value ? ' category-btn-active' : ''}`}
+          onClick={() => onCategoryChange(value)}
         >
-          {btn.label}
+          {t(`category.${value}` as TranslationKey)}
         </button>
       ))}
     </div>
@@ -63,6 +52,7 @@ export function getCategoryLabel(type: FundMeta['type']): string {
     case 'bond': return 'Trái phiếu'
     case 'balanced': return 'Cân bằng'
     case 'etf': return 'ETF'
+    case 'index': return 'Chỉ số'
     case 'crypto': return 'Crypto'
     case 'gold': return 'Vàng'
     default: return _assertExhaustiveFundType(type)

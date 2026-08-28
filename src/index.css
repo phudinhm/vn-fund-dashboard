@@ -194,9 +194,16 @@ button:not(:disabled):active {
   white-space: nowrap;
 }
 
-.theme-toggle-btn {
+.app-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   flex-shrink: 0;
-  width: 38px;
+}
+
+.theme-toggle-btn,
+.lang-toggle-btn {
+  flex-shrink: 0;
   height: 38px;
   border-radius: 50%;
   border: 1px solid var(--color-border);
@@ -210,7 +217,22 @@ button:not(:disabled):active {
   transition: transform 0.15s var(--ease), border-color 0.15s var(--ease), box-shadow 0.15s var(--ease);
 }
 
-.theme-toggle-btn:hover {
+.theme-toggle-btn {
+  width: 38px;
+}
+
+.lang-toggle-btn {
+  width: auto;
+  min-width: 38px;
+  padding: 0 12px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.theme-toggle-btn:hover,
+.lang-toggle-btn:hover {
   border-color: var(--color-primary);
   box-shadow: var(--shadow);
   transform: translateY(-1px);
@@ -3128,63 +3150,6 @@ button:not(:disabled):active {
   display: flex;
   align-items: center;
   gap: 8px;
-}
-
-/* ─── Changelog ───────────────────────────────── */
-.changelog-panel {
-  max-width: 680px;
-  margin: 0 auto;
-  padding: 24px 16px;
-}
-
-.changelog-panel h2 {
-  font-size: 1.3rem;
-  font-weight: 700;
-  margin-bottom: 24px;
-  color: var(--color-text);
-}
-
-.changelog-list {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.changelog-entry {
-  border-left: 3px solid var(--color-primary);
-  padding-left: 16px;
-}
-
-.changelog-header {
-  display: flex;
-  align-items: baseline;
-  gap: 12px;
-  margin-bottom: 8px;
-}
-
-.changelog-version {
-  font-weight: 700;
-  font-size: 1rem;
-  color: var(--color-primary);
-}
-
-.changelog-date {
-  font-size: 0.82rem;
-  color: var(--color-text-muted);
-}
-
-.changelog-items {
-  margin: 0;
-  padding-left: 18px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.changelog-items li {
-  font-size: 0.9rem;
-  color: var(--color-text);
-  line-height: 1.5;
 }
 
 /* ─── Minh Bạch Hoá (Methodology) ────────────────────────────── */

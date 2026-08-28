@@ -13,7 +13,6 @@ import { BitcoinPanel } from './components/BitcoinPanel'
 import { WallOfWorryPanel } from './components/WallOfWorryPanel'
 import { CalculatorTab } from './components/calculators/CalculatorTab'
 import { MethodologyPanel } from './components/MethodologyPanel'
-import { ChangelogPanel } from './components/ChangelogPanel'
 
 /**
  * Nguồn duy nhất của danh sách tab.
@@ -35,7 +34,7 @@ import { ChangelogPanel } from './components/ChangelogPanel'
 export type TabId =
   | 'compare' | 'watchlist' | 'dca' | 'lsdca' | 'fundanalysis' | 'overlap'
   | 'rebalance' | 'tactical' | 'bitcoin' | 'wallofworry'
-  | 'calculator' | 'methodology' | 'changelog'
+  | 'calculator' | 'methodology'
 
 /** Manifest của một tab trong registry. */
 export interface TabManifest {
@@ -154,11 +153,5 @@ export const TAB_REGISTRY: TabManifest[] = [
     label: 'Minh Bạch Hoá',
     keepMounted: false,
     render: (): ReactElement => <MethodologyPanel />,
-  },
-  {
-    id: 'changelog',
-    label: 'Changelog',
-    keepMounted: false,
-    render: (): ReactElement => <ChangelogPanel />,
   },
 ] as const

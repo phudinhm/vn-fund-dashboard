@@ -4,7 +4,7 @@ import type { FundMeta, PricePoint } from '../types'
 import { useWatchlist } from '../hooks/useWatchlist'
 import { useMultiFundSeries } from '../hooks/useFundData'
 import { weeklyReturns, cagr, maxDrawdown } from '../utils/calculations'
-import { getCategoryLabel } from './FundCategoryFilter'
+import { useT, type TranslationKey } from '../i18n'
 import { MAX_COMPARE_FUNDS } from '../constants'
 
 interface Props {
@@ -24,6 +24,7 @@ const CATEGORY_COLORS: Record<FundMeta['type'], string> = {
   bond: '#818cf8',
   balanced: '#34d399',
   etf: '#8b5cf6',
+  index: '#0ea5e9',
   crypto: '#f59e0b',
   gold: '#eab308',
 }
@@ -82,6 +83,7 @@ function pctClass(value: number | null): string {
 }
 
 export function WatchlistPanel({ funds, onCompare }: Props) {
+  const t = useT()
   const { ids: watchedIds, add, remove } = useWatchlist()
   const { data, loading, errors } = useMultiFundSeries(watchedIds)
 
@@ -126,12 +128,12 @@ export function WatchlistPanel({ funds, onCompare }: Props) {
   return (
     <div className="simulation-panel watchlist-panel">
       <div className="panel-header">
-        <h2>Theo Dõi</h2>
+        <h2>{t('watchlist.title')}</h2>
       </div>
 
       <div className="chart-container watchlist-add">
         <div className="chart-header">
-          <h3>Thêm quỹ vào danh sách theo dõi</h3>
+          <h3>{t('watchlist.addSectionTitle')}</h3>
         </div>
         <Select<FundOption>
           className="fund-search-select"
@@ -139,8 +141,8 @@ export function WatchlistPanel({ funds, onCompare }: Props) {
           options={addOptions}
           value={null}
           onChange={opt => opt && add(opt.value)}
-          placeholder="Tìm quỹ..."
-          noOptionsMessage={() => (funds.length === 0 ? 'Đang tải...' : 'Đã theo dõi hết quỹ')}
+          placeholder={t('watchlist.searchPlaceholder')}
+          noOptionsMessage={() => (funds.length === 0 ? t('watchlist.noOptionsLoading') : t('watchlist.noOptionsAllWatched'))}
           isSearchable
           isDisabled={addOptions.length === 0}
           styles={selectStyles}
@@ -148,10 +150,7 @@ export function WatchlistPanel({ funds, onCompare }: Props) {
       </div>
 
       {watchedIds.length === 0 && (
-        <p className="watchlist-empty">
-          Chưa có quỹ nào trong danh sách theo dõi. Tìm và thêm quỹ ở ô phía trên, hoặc bấm ngôi sao ☆
-          cạnh mỗi quỹ trong tab So Sánh.
-        </p>
+        <p className="watchlist-empty">{t('watchlist.empty')}</p>
       )}
 
       {watchedIds.length > 0 && (
@@ -160,17 +159,17 @@ export function WatchlistPanel({ funds, onCompare }: Props) {
             className="watchlist-compare-btn"
             onClick={() => onCompare(compareIds)}
           >
-            So sánh {compareIds.length} quỹ đang theo dõi
+            {t('watchlist.compareButton', { n: compareIds.length })}
           </button>
           {watchedIds.length > MAX_COMPARE_FUNDS && (
             <span className="watchlist-toolbar-note">
-              Chỉ lấy {MAX_COMPARE_FUNDS} quỹ đầu (giới hạn so sánh)
+              {t('watchlist.compareLimitNote', { n: MAX_COMPARE_FUNDS })}
             </span>
           )}
         </div>
       )}
 
-      {loading && watchedIds.length > 0 && <div className="loading-indicator">Đang tải dữ liệu...</div>}
+      {loading && watchedIds.length > 0 && <div className="loading-indicator">{t('watchlist.loading')}</div>}
 
       <div className="watchlist-grid">
         {cards.map(({ meta, latest, sinceInceptionCagr, dd, trailing1Y, error }) => (
@@ -178,14 +177,14 @@ export function WatchlistPanel({ funds, onCompare }: Props) {
             <div className="watchlist-card-head">
               <div className="watchlist-card-title">
                 <span className="watchlist-badge" style={{ background: CATEGORY_COLORS[meta.type] }}>
-                  {getCategoryLabel(meta.type)}
+                  {t(`category.${meta.type}` as TranslationKey)}
                 </span>
                 <span className="watchlist-card-name" title={meta.name_vi}>{meta.id}</span>
               </div>
               <button
                 className="fund-star-btn fund-star-btn-active"
                 onClick={() => remove(meta.id)}
-                title="Bỏ khỏi danh sách theo dõi"
+                title={t('watchlist.removeFromWatchlist')}
               >
                 ★
               </button>
@@ -197,26 +196,26 @@ export function WatchlistPanel({ funds, onCompare }: Props) {
             {!error && (
               <div className="watchlist-stats">
                 <div className="watchlist-stat">
-                  <span className="watchlist-stat-label">Giá mới nhất</span>
+                  <span className="watchlist-stat-label">{t('watchlist.stat.latestPrice')}</span>
                   <span className="watchlist-stat-value">
                     {latest ? `${Math.round(latest.price).toLocaleString('vi-VN')} đ` : '—'}
                   </span>
                   {latest && <span className="watchlist-stat-date">{formatDate(latest.date)}</span>}
                 </div>
                 <div className="watchlist-stat">
-                  <span className="watchlist-stat-label">1 năm</span>
+                  <span className="watchlist-stat-label">{t('watchlist.stat.oneYear')}</span>
                   <span className={`watchlist-stat-value ${pctClass(trailing1Y)}`}>
                     {formatPercent(trailing1Y)}
                   </span>
                 </div>
                 <div className="watchlist-stat">
-                  <span className="watchlist-stat-label">CAGR từ đầu</span>
+                  <span className="watchlist-stat-label">{t('watchlist.stat.cagrSinceInception')}</span>
                   <span className={`watchlist-stat-value ${pctClass(sinceInceptionCagr)}`}>
                     {formatPercent(sinceInceptionCagr)}
                   </span>
                 </div>
                 <div className="watchlist-stat">
-                  <span className="watchlist-stat-label">Sụt giảm tối đa</span>
+                  <span className="watchlist-stat-label">{t('watchlist.stat.maxDrawdown')}</span>
                   <span className={`watchlist-stat-value ${pctClass(dd)}`}>
                     {dd !== null ? formatPercent(dd) : '—'}
                   </span>
@@ -228,7 +227,7 @@ export function WatchlistPanel({ funds, onCompare }: Props) {
               className="watchlist-card-compare-btn"
               onClick={() => onCompare([meta.id])}
             >
-              Xem trong So Sánh →
+              {t('watchlist.viewInCompare')}
             </button>
           </div>
         ))}

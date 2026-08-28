@@ -3,8 +3,10 @@ import type { CalculatorId } from './types'
 import { useFundMetadata } from './hooks/useFundData'
 import { useUrlState } from './hooks/useUrlState'
 import { useTheme } from './hooks/useTheme'
+import { useLanguage } from './hooks/useLanguage'
+import { useT } from './i18n'
 import { TAB_REGISTRY, type TabContext, type TabId } from './tabRegistry'
-import { SEO_BY_TAB, SeoMetadata } from './components/SeoMetadata'
+import { SeoMetadata } from './components/SeoMetadata'
 
 /** Icon gợi ý cho từng tab — thuần trang trí, chỉ để quét nhanh bằng mắt. */
 const TAB_ICONS: Record<TabId, string> = {
@@ -20,13 +22,14 @@ const TAB_ICONS: Record<TabId, string> = {
   wallofworry: '🌩️',
   calculator: '🧮',
   methodology: '📐',
-  changelog: '📝',
 }
 
 export function App() {
   const { metadata, metadataError, loading: metaLoading } = useFundMetadata()
   const { state, updateState, dcaUrlParams, lsDcaUrlParams } = useUrlState()
   const { theme, toggle: toggleTheme } = useTheme()
+  const { language, toggle: toggleLanguage } = useLanguage()
+  const t = useT()
 
   // Stable callback references (qua useCallback, dep chỉ là `updateState` vốn
   // đã ổn định) để CompareTab (React.memo) không bị coi là "props đổi" mỗi
@@ -57,11 +60,11 @@ export function App() {
   )
 
   if (metaLoading) {
-    return <div className="loading-screen">Đang tải dữ liệu...</div>
+    return <div className="loading-screen">{t('app.loading')}</div>
   }
 
   if (metadataError || !metadata) {
-    return <div className="error-screen">{metadataError || 'Lỗi tải dữ liệu'}</div>
+    return <div className="error-screen">{metadataError || t('app.error')}</div>
   }
 
   return (
@@ -70,16 +73,26 @@ export function App() {
       <header className="app-header">
         <div className="app-header-brand">
           <span className="app-header-mark" aria-hidden="true">MP</span>
-          <h1>{SEO_BY_TAB[state.tab].heading}</h1>
+          <h1>{t(`heading.${state.tab}`)}</h1>
         </div>
-        <button
-          className="theme-toggle-btn"
-          onClick={toggleTheme}
-          title={theme === 'dark' ? 'Chuyển sang giao diện sáng' : 'Chuyển sang giao diện tối'}
-          aria-label={theme === 'dark' ? 'Chuyển sang giao diện sáng' : 'Chuyển sang giao diện tối'}
-        >
-          {theme === 'dark' ? '☀️' : '🌙'}
-        </button>
+        <div className="app-header-actions">
+          <button
+            className="lang-toggle-btn"
+            onClick={toggleLanguage}
+            title={t('app.language.toggle')}
+            aria-label={t('app.language.toggle')}
+          >
+            {language === 'vi' ? 'EN' : 'VI'}
+          </button>
+          <button
+            className="theme-toggle-btn"
+            onClick={toggleTheme}
+            title={theme === 'dark' ? t('app.theme.toLight') : t('app.theme.toDark')}
+            aria-label={theme === 'dark' ? t('app.theme.toLight') : t('app.theme.toDark')}
+          >
+            {theme === 'dark' ? '☀️' : '🌙'}
+          </button>
+        </div>
       </header>
 
       {/* Tabs — duyệt registry, không hardcode */}
@@ -92,7 +105,7 @@ export function App() {
             aria-current={state.tab === tab.id ? 'page' : undefined}
           >
             <span className="tab-icon" aria-hidden="true">{TAB_ICONS[tab.id]}</span>
-            {tab.label}
+            {t(`tab.${tab.id}`)}
           </button>
         ))}
       </nav>
@@ -112,8 +125,8 @@ export function App() {
       )}
 
       <footer className="app-footer">
-        <p>Dữ liệu từ fmarket.vn & vnstock. Cập nhật hàng ngày.</p>
-        <p>Blog: <a href="https://minhphudinh.com" target="_blank" rel="noopener noreferrer">minhphudinh.com</a></p>
+        <p>{t('app.footer.dataSource')}</p>
+        <p>{t('app.footer.by')}</p>
       </footer>
     </div>
   )

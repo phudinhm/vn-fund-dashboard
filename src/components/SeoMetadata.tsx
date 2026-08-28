@@ -84,12 +84,6 @@ export const SEO_BY_TAB: Record<TabId, SeoMeta> = {
     heading: 'Phương Pháp và Dữ Liệu',
     indexable: true,
   },
-  changelog: {
-    title: 'Nhật ký thay đổi | Fund Dashboard',
-    description: 'Theo dõi các thay đổi về dữ liệu, công thức và tính năng của Fund Dashboard.',
-    heading: 'Nhật Ký Thay Đổi',
-    indexable: false,
-  },
 }
 
 function setMetaContent(attribute: 'name' | 'property', value: string, content: string) {
