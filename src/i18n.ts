@@ -45,6 +45,7 @@ const DICT = {
   'app.theme.toLight': { vi: 'Chuyển sang giao diện sáng', en: 'Switch to light mode' },
   'app.theme.toDark': { vi: 'Chuyển sang giao diện tối', en: 'Switch to dark mode' },
   'app.language.toggle': { vi: 'Switch to English', en: 'Chuyển sang Tiếng Việt' },
+  'app.nav.label': { vi: 'Danh mục các tab', en: 'Section navigation' },
 
   // ── Fund category filter ──
   'category.all': { vi: 'Tất cả', en: 'All' },
@@ -62,6 +63,7 @@ const DICT = {
   'fundSelector.addFund': { vi: '+ Thêm quỹ so sánh', en: '+ Add fund to compare' },
   'fundSelector.removeFund': { vi: 'Xoá quỹ', en: 'Remove fund' },
   'fundSelector.comparisonPeriod': { vi: 'So sánh từ {from} đến {to}', en: 'Comparing from {from} to {to}' },
+  'fundSelector.savingsGroup': { vi: 'Tài sản khác', en: 'Other assets' },
   'fundSelector.addToWatchlist': { vi: 'Thêm vào danh sách theo dõi', en: 'Add to watchlist' },
   'fundSelector.removeFromWatchlist': { vi: 'Bỏ khỏi danh sách theo dõi', en: 'Remove from watchlist' },
 

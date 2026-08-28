@@ -149,7 +149,37 @@ button:not(:disabled):active {
   max-width: 1100px;
   margin: 0 auto;
   padding: 16px 20px 40px;
-  overflow-x: hidden;
+  /* clip chứ không phải hidden: hidden biến .app thành scroll container, khiến
+     position:sticky của sidebar tab neo vào .app (trôi theo trang) thay vì
+     viewport. clip chặn tràn ngang y hệt nhưng không tạo scroll container. */
+  overflow-x: clip;
+}
+
+/*
+ * Khung nav + nội dung. Mặc định (màn hẹp) xếp dọc: thanh tab cuộn ngang nằm
+ * trên, nội dung ở dưới. Từ 1000px trở lên chuyển thành 2 cột — sidebar tab
+ * dọc bên trái. 12 tab xếp ngang trên một hàng thì màn 1100px chỉ thấy được
+ * quá nửa, phải cuộn mới biết còn tab nào; xếp dọc thì thấy hết cùng lúc.
+ */
+.app-body {
+  display: block;
+}
+
+.app-main {
+  min-width: 0; /* cho phép con (bảng, chart) co lại thay vì làm tràn grid */
+}
+
+@media (min-width: 1000px) {
+  .app {
+    max-width: 1320px;
+  }
+
+  .app-body {
+    display: grid;
+    grid-template-columns: 216px minmax(0, 1fr);
+    gap: 24px;
+    align-items: start;
+  }
 }
 
 .app-header {
@@ -575,6 +605,48 @@ button:not(:disabled):active {
 .tab:focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
+}
+
+/* ── Sidebar dọc từ 1000px: thấy hết 12 tab cùng lúc, không phải cuộn ── */
+@media (min-width: 1000px) {
+  .tabs {
+    flex-direction: column;
+    gap: 2px;
+    padding: 8px;
+    overflow-x: visible;
+    overflow-y: visible;
+    /* Dính theo khi cuộn: các tab dài (Phân Tích Quỹ, DCA) cuộn hàng nghìn px,
+       nav trôi mất thì phải cuộn ngược lên đầu mới đổi tab được. */
+    position: sticky;
+    top: 16px;
+    margin-bottom: 0;
+  }
+
+  .tab {
+    /* Nhãn căn trái thành một cột đọc dọc, thay vì căn giữa kiểu pill ngang. */
+    justify-content: flex-start;
+    width: 100%;
+    padding: 10px 12px;
+    white-space: normal;
+    text-align: left;
+    line-height: 1.25;
+  }
+
+  .tab-icon {
+    /* Cột icon rộng cố định để chữ của mọi tab thẳng hàng nhau. */
+    width: 18px;
+    flex-shrink: 0;
+    text-align: center;
+  }
+
+  .tab-active,
+  .tab-active:hover {
+    /* Sidebar nằm sát nội dung: gradient đậm nguyên khối trông nặng nề, dùng
+       nền nhạt + thanh chỉ dấu bên trái cho nhẹ mắt hơn. */
+    background: var(--color-primary-light);
+    color: var(--color-primary);
+    box-shadow: inset 3px 0 0 var(--color-primary);
+  }
 }
 
 /* ─── KPI Cards ───────────────────────────────── */

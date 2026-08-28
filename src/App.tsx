@@ -95,34 +95,40 @@ export function App() {
         </div>
       </header>
 
-      {/* Tabs — duyệt registry, không hardcode */}
-      <nav className="tabs">
-        {TAB_REGISTRY.map(tab => (
-          <button
-            key={tab.id}
-            className={`tab ${state.tab === tab.id ? 'tab-active' : ''}`}
-            onClick={() => updateState({ tab: tab.id })}
-            aria-current={state.tab === tab.id ? 'page' : undefined}
-          >
-            <span className="tab-icon" aria-hidden="true">{TAB_ICONS[tab.id]}</span>
-            {t(`tab.${tab.id}`)}
-          </button>
-        ))}
-      </nav>
+      {/* Sidebar dọc trên màn rộng, thanh cuộn ngang trên mobile — xem .app-body
+          trong index.css. 12 tab xếp ngang bị cắt mất một nửa ở màn thường. */}
+      <div className="app-body">
+        {/* Tabs — duyệt registry, không hardcode */}
+        <nav className="tabs" aria-label={t('app.nav.label')}>
+          {TAB_REGISTRY.map(tab => (
+            <button
+              key={tab.id}
+              className={`tab ${state.tab === tab.id ? 'tab-active' : ''}`}
+              onClick={() => updateState({ tab: tab.id })}
+              aria-current={state.tab === tab.id ? 'page' : undefined}
+            >
+              <span className="tab-icon" aria-hidden="true">{TAB_ICONS[tab.id]}</span>
+              {t(`tab.${tab.id}`)}
+            </button>
+          ))}
+        </nav>
 
-      {/* Panel: keepMounted = ẩn bằng CSS để giữ state; ngược lại mount khi active */}
-      {TAB_REGISTRY.map(tab =>
-        tab.keepMounted ? (
-          <div
-            key={tab.id}
-            className={tab.wrapperClass ? `${tab.wrapperClass} ${state.tab === tab.id ? '' : 'tab-panel-hidden'}` : (state.tab === tab.id ? undefined : 'tab-panel-hidden')}
-          >
-            {tab.render(tabContext)}
-          </div>
-        ) : (
-          state.tab === tab.id && <div key={tab.id}>{tab.render(tabContext)}</div>
-        ),
-      )}
+        {/* Panel: keepMounted = ẩn bằng CSS để giữ state; ngược lại mount khi active */}
+        <main className="app-main">
+          {TAB_REGISTRY.map(tab =>
+            tab.keepMounted ? (
+              <div
+                key={tab.id}
+                className={tab.wrapperClass ? `${tab.wrapperClass} ${state.tab === tab.id ? '' : 'tab-panel-hidden'}` : (state.tab === tab.id ? undefined : 'tab-panel-hidden')}
+              >
+                {tab.render(tabContext)}
+              </div>
+            ) : (
+              state.tab === tab.id && <div key={tab.id}>{tab.render(tabContext)}</div>
+            ),
+          )}
+        </main>
+      </div>
 
       <footer className="app-footer">
         <p>{t('app.footer.dataSource')}</p>

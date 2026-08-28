@@ -1,9 +1,14 @@
+import { useMemo } from 'react'
 import Select from 'react-select'
 import type { FundMeta } from '../types'
 import { FUND_COLORS, MAX_COMPARE_FUNDS } from '../constants'
 import { SavingsRateInput } from './SavingsRateInput'
 import { useWatchlist } from '../hooks/useWatchlist'
-import { useT } from '../i18n'
+import { useT, type TranslationKey } from '../i18n'
+import {
+  buildGroupedFundOptions, findGroupedOption,
+  type FundOption, type FundOptionGroup,
+} from '../utils/fundSelectOptions'
 import {
   isSavingsAssetId, savingsAssetId, parseSavingsRate, pickDefaultSavingsRate,
   SAVINGS_OPTION_LABEL,
@@ -16,11 +21,6 @@ interface Props {
   endDate?: string
 }
 
-interface FundOption {
-  value: string
-  label: string
-}
-
 export function FundSelector({
   allFunds,
   selectedFunds,
@@ -30,7 +30,12 @@ export function FundSelector({
 }: Props) {
   const t = useT()
   const { isWatched, toggle } = useWatchlist()
-  const baseOptions: FundOption[] = allFunds.map(f => ({ value: f.id, label: f.name_vi }))
+  // Nhóm theo loại tài sản + công ty quản lý. 80+ quỹ trong một danh sách phẳng
+  // rất khó quét bằng mắt; gom nhóm cho thấy ngay quỹ thuộc loại nào, của bên nào.
+  const baseGroups: FundOptionGroup[] = useMemo(
+    () => buildGroupedFundOptions(allFunds, type => t(`category.${type}` as TranslationKey)),
+    [allFunds, t],
+  )
 
   function changeFund(index: number, newId: string) {
     const next = [...selectedFunds]
@@ -63,9 +68,14 @@ export function FundSelector({
             .filter((id, j) => j !== i && isSavingsAssetId(id))
             .map(id => parseSavingsRate(id))
           const defaultRate = pickDefaultSavingsRate(usedRatesElsewhere)
-          const options: FundOption[] = [
-            ...baseOptions,
-            { value: savingsAssetId(defaultRate), label: SAVINGS_OPTION_LABEL },
+          // Tiết kiệm ngân hàng là tài sản do dashboard tự sinh, không thuộc
+          // công ty quản lý nào — cho vào nhóm riêng ở cuối danh sách.
+          const groups: FundOptionGroup[] = [
+            ...baseGroups,
+            {
+              label: t('fundSelector.savingsGroup'),
+              options: [{ value: savingsAssetId(defaultRate), label: SAVINGS_OPTION_LABEL }],
+            },
           ]
           return (
           <div key={i} className="fund-selector-item">
@@ -73,15 +83,15 @@ export function FundSelector({
               className="fund-color-dot"
               style={{ background: FUND_COLORS[i % FUND_COLORS.length] }}
             />
-            <Select<FundOption>
+            <Select<FundOption, false, FundOptionGroup>
               className="fund-search-select"
               classNamePrefix="fund-search"
-              options={options}
+              options={groups}
               // Lãi suất nằm trong id ("SAVINGS:7"), đổi lãi suất là đổi id, nên
               // id mới không khớp option nào. Tự dựng option cho đúng id hiện tại.
               value={isSavingsAssetId(fundId)
                 ? { value: fundId, label: SAVINGS_OPTION_LABEL }
-                : options.find(o => o.value === fundId) || null}
+                : findGroupedOption(groups, fundId)}
               onChange={opt => opt && changeFund(i, opt.value)}
               placeholder={t('fundSelector.searchPlaceholder')}
               noOptionsMessage={() => t('fundSelector.noOptions')}
@@ -150,6 +160,19 @@ const selectStyles = {
     ...base,
     zIndex: 20,
     backgroundColor: 'var(--color-surface)',
+  }),
+  groupHeading: (base: Record<string, unknown>) => ({
+    ...base,
+    fontSize: '0.72rem',
+    fontWeight: 700,
+    letterSpacing: '0.04em',
+    textTransform: 'uppercase' as const,
+    color: 'var(--color-primary)',
+    backgroundColor: 'var(--color-primary-light)',
+    padding: '6px 12px',
+    marginBottom: 2,
+    position: 'sticky' as const,
+    top: 0,
   }),
   option: (base: Record<string, unknown>, state: { isFocused: boolean; isSelected: boolean }) => ({
     ...base,

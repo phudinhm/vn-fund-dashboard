@@ -5,17 +5,15 @@ import { useWatchlist } from '../hooks/useWatchlist'
 import { useMultiFundSeries } from '../hooks/useFundData'
 import { weeklyReturns, cagr, maxDrawdown } from '../utils/calculations'
 import { useT, type TranslationKey } from '../i18n'
+import {
+  buildGroupedFundOptions, type FundOption, type FundOptionGroup,
+} from '../utils/fundSelectOptions'
 import { MAX_COMPARE_FUNDS } from '../constants'
 
 interface Props {
   funds: FundMeta[]
   /** Mở tab So Sánh với danh sách quỹ đã cho, dùng chung updateState của App. */
   onCompare: (fundIds: string[]) => void
-}
-
-interface FundOption {
-  value: string
-  label: string
 }
 
 /** Màu badge theo loại quỹ — tách riêng khỏi FundCategoryFilter (chỉ có nhãn, không màu). */
@@ -43,6 +41,19 @@ const selectStyles = {
   input: (base: Record<string, unknown>) => ({ ...base, color: 'var(--color-text)' }),
   placeholder: (base: Record<string, unknown>) => ({ ...base, color: 'var(--color-text-muted)' }),
   menu: (base: Record<string, unknown>) => ({ ...base, zIndex: 20, backgroundColor: 'var(--color-surface)' }),
+  groupHeading: (base: Record<string, unknown>) => ({
+    ...base,
+    fontSize: '0.72rem',
+    fontWeight: 700,
+    letterSpacing: '0.04em',
+    textTransform: 'uppercase' as const,
+    color: 'var(--color-primary)',
+    backgroundColor: 'var(--color-primary-light)',
+    padding: '6px 12px',
+    marginBottom: 2,
+    position: 'sticky' as const,
+    top: 0,
+  }),
   option: (base: Record<string, unknown>, state: { isFocused: boolean; isSelected: boolean }) => ({
     ...base,
     fontSize: '0.9rem',
@@ -89,12 +100,15 @@ export function WatchlistPanel({ funds, onCompare }: Props) {
 
   const fundById = useMemo(() => new Map(funds.map(f => [f.id, f])), [funds])
 
-  const addOptions: FundOption[] = useMemo(
-    () => funds
-      .filter(f => !watchedIds.includes(f.id))
-      .map(f => ({ value: f.id, label: f.name_vi })),
-    [funds, watchedIds],
+  // Gom nhóm theo loại tài sản + công ty quản lý, giống dropdown tab So Sánh.
+  const addGroups: FundOptionGroup[] = useMemo(
+    () => buildGroupedFundOptions(
+      funds.filter(f => !watchedIds.includes(f.id)),
+      type => t(`category.${type}` as TranslationKey),
+    ),
+    [funds, watchedIds, t],
   )
+  const hasAddOptions = addGroups.some(g => g.options.length > 0)
 
   const cards = useMemo(() => {
     return watchedIds
@@ -135,16 +149,16 @@ export function WatchlistPanel({ funds, onCompare }: Props) {
         <div className="chart-header">
           <h3>{t('watchlist.addSectionTitle')}</h3>
         </div>
-        <Select<FundOption>
+        <Select<FundOption, false, FundOptionGroup>
           className="fund-search-select"
           classNamePrefix="fund-search"
-          options={addOptions}
+          options={addGroups}
           value={null}
           onChange={opt => opt && add(opt.value)}
           placeholder={t('watchlist.searchPlaceholder')}
           noOptionsMessage={() => (funds.length === 0 ? t('watchlist.noOptionsLoading') : t('watchlist.noOptionsAllWatched'))}
           isSearchable
-          isDisabled={addOptions.length === 0}
+          isDisabled={!hasAddOptions}
           styles={selectStyles}
         />
       </div>
