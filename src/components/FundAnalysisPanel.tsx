@@ -36,8 +36,9 @@ interface FundOption {
   label: string
 }
 
-/** Quỹ có báo cáo tài chính tidy. Chỉ DCDS hiện tại; thêm khi quỹ khác có report. */
-const REPORT_FUNDS = ['DCDS']
+/** Quỹ có báo cáo tài chính tidy. Thêm khi quỹ khác có report (xem
+ *  scripts/fund_report/README.md và workflow "Backfill Fund Reports"). */
+const REPORT_FUNDS = ['DCDS', 'DCBF', 'DCIP']
 
 /** Màu tài sản theo bảng màu digiinvest (donut + cards phân bổ).
  *  Cổ phiếu + tổng tài sản dùng màu chủ đạo dashboard (--color-primary)
