@@ -32,17 +32,21 @@ const selectStyles = {
   control: (base: Record<string, unknown>) => ({
     ...base,
     minHeight: 38,
-    borderColor: '#e5e7eb',
+    backgroundColor: 'var(--color-surface)',
+    borderColor: 'var(--color-border)',
     boxShadow: 'none',
-    '&:hover': { borderColor: '#2563EB' },
+    '&:hover': { borderColor: 'var(--color-primary)' },
     fontSize: '0.95rem',
   }),
-  menu: (base: Record<string, unknown>) => ({ ...base, zIndex: 20 }),
+  singleValue: (base: Record<string, unknown>) => ({ ...base, color: 'var(--color-text)' }),
+  input: (base: Record<string, unknown>) => ({ ...base, color: 'var(--color-text)' }),
+  placeholder: (base: Record<string, unknown>) => ({ ...base, color: 'var(--color-text-muted)' }),
+  menu: (base: Record<string, unknown>) => ({ ...base, zIndex: 20, backgroundColor: 'var(--color-surface)' }),
   option: (base: Record<string, unknown>, state: { isFocused: boolean; isSelected: boolean }) => ({
     ...base,
     fontSize: '0.9rem',
-    backgroundColor: state.isSelected ? '#2563EB' : state.isFocused ? '#eff6ff' : undefined,
-    color: state.isSelected ? 'white' : '#1a1a1a',
+    backgroundColor: state.isSelected ? 'var(--color-primary)' : state.isFocused ? 'var(--color-primary-light)' : undefined,
+    color: state.isSelected ? 'white' : 'var(--color-text)',
   }),
 }
 

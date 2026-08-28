@@ -9,7 +9,7 @@ export interface SeoMeta {
   indexable: boolean
 }
 
-const SITE_ORIGIN = 'https://fund.vohoanghac.com'
+const SITE_ORIGIN = 'https://fund.minhphudinh.com'
 
 export const SEO_BY_TAB: Record<TabId, SeoMeta> = {
   compare: {

@@ -552,22 +552,26 @@ const bitcoinSelectStyles = {
   control: (base: Record<string, unknown>) => ({
     ...base,
     minHeight: 38,
-    borderColor: '#e5e7eb',
+    borderColor: 'var(--color-border)',
     borderRadius: 6,
     boxShadow: 'none',
     '&:hover': { borderColor: '#F97316' },
     fontSize: '0.9rem',
-    backgroundColor: '#fff',
+    backgroundColor: 'var(--color-surface)',
   }),
+  singleValue: (base: Record<string, unknown>) => ({ ...base, color: 'var(--color-text)' }),
+  input: (base: Record<string, unknown>) => ({ ...base, color: 'var(--color-text)' }),
+  placeholder: (base: Record<string, unknown>) => ({ ...base, color: 'var(--color-text-muted)' }),
   menu: (base: Record<string, unknown>) => ({
     ...base,
     zIndex: 20,
+    backgroundColor: 'var(--color-surface)',
   }),
   option: (base: Record<string, unknown>, state: { isFocused: boolean; isSelected: boolean }) => ({
     ...base,
     fontSize: '0.85rem',
     backgroundColor: state.isSelected ? '#F97316' : state.isFocused ? '#FFF7ED' : undefined,
-    color: state.isSelected ? 'white' : '#1a1a1a',
+    color: state.isSelected ? 'white' : 'var(--color-text)',
   }),
 }
 

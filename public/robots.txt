@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://fund.vohoanghac.com/sitemap.xml
+Sitemap: https://fund.minhphudinh.com/sitemap.xml

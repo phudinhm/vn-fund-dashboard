@@ -6,7 +6,7 @@ import { SavingsRateInput } from './SavingsRateInput'
 
 export const PORTFOLIO_COLORS = [
   '#059669', // green
-  '#2563EB', // blue
+  'var(--color-primary)', // blue
   '#DC2626', // red
   '#F59E0B', // amber
   '#8B5CF6', // purple
@@ -175,19 +175,24 @@ export const portfolioSelectStyles = {
   control: (base: Record<string, unknown>) => ({
     ...base,
     minHeight: 36,
-    borderColor: '#e5e7eb',
+    backgroundColor: 'var(--color-surface)',
+    borderColor: 'var(--color-border)',
     boxShadow: 'none',
-    '&:hover': { borderColor: '#2563EB' },
+    '&:hover': { borderColor: 'var(--color-primary)' },
     fontSize: '0.9rem',
   }),
+  singleValue: (base: Record<string, unknown>) => ({ ...base, color: 'var(--color-text)' }),
+  input: (base: Record<string, unknown>) => ({ ...base, color: 'var(--color-text)' }),
+  placeholder: (base: Record<string, unknown>) => ({ ...base, color: 'var(--color-text-muted)' }),
   menu: (base: Record<string, unknown>) => ({
     ...base,
     zIndex: 20,
+    backgroundColor: 'var(--color-surface)',
   }),
   option: (base: Record<string, unknown>, state: { isFocused: boolean; isSelected: boolean }) => ({
     ...base,
     fontSize: '0.85rem',
     backgroundColor: state.isSelected ? '#059669' : state.isFocused ? '#ecfdf5' : undefined,
-    color: state.isSelected ? 'white' : '#1a1a1a',
+    color: state.isSelected ? 'white' : 'var(--color-text)',
   }),
 }
