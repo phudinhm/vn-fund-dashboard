@@ -13,6 +13,10 @@ import {
   type FundPeriodSummary, type FundAssetsSnapshot, type FundIncomeSummary, type FundFlowSummary,
 } from '../utils/fundReport'
 import { RedFlagDetectors } from './RedFlagSection'
+import { FundHoldingsAnalysis } from './FundHoldingsAnalysis'
+import {
+  findGroupedOption, type FundOptionGroup,
+} from '../utils/fundSelectOptions'
 
 /**
  * Tab "Phân Tích Quỹ" — đọc báo cáo tài chính tháng chính thức (Thông tư
@@ -190,10 +194,10 @@ export function industryAllocationForPeriod(
 }
 
 function FundAnalysisPanelImpl({ funds }: Props) {
-  const [fundId, setFundId] = useState<string>(() => {
-    const saved = loadLS<string>('fund_analysis_fund', REPORT_FUNDS[0]!)
-    return REPORT_FUNDS.includes(saved) ? saved : REPORT_FUNDS[0]!
-  })
+  const [fundId, setFundId] = useState<string>(() =>
+    loadLS<string>('fund_analysis_fund', REPORT_FUNDS[0]!))
+  /** Quỹ nào có dữ liệu danh mục (holdings) + nguồn của nó. */
+  const [holdingsSource, setHoldingsSource] = useState<Map<string, string | null>>(new Map())
   const [piePeriod, setPiePeriod] = useState<string | null>(() => loadLS<string | null>('fund_analysis_pie_period', null))
   const [tablePeriod, setTablePeriod] = useState<string | null>(() => loadLS<string | null>('fund_analysis_table_period', null))
 
@@ -213,8 +217,29 @@ function FundAnalysisPanelImpl({ funds }: Props) {
   const showSection = (id: AnalysisSectionId) =>
     activeSection === 'all' || activeSection === id ? undefined : 'none'
 
-  // Load dữ liệu báo cáo của quỹ đang chọn (static, chỉ fetch 1 lần mỗi fund).
+  const isReportFund = REPORT_FUNDS.includes(fundId)
+
+  // Quỹ nào có holdings — nguồn dữ liệu cho các quỹ chưa có báo cáo tài chính.
   useEffect(() => {
+    let cancelled = false
+    fetch('/data/holdings_index.json')
+      .then(r => (r.ok ? r.json() : []))
+      .then((entries: { id: string; source?: string }[]) => {
+        if (cancelled || !Array.isArray(entries)) return
+        setHoldingsSource(new Map(entries.map(e => [e.id, e.source ?? null])))
+      })
+      .catch(() => { /* không có holdings index thì chỉ còn quỹ có báo cáo */ })
+    return () => { cancelled = true }
+  }, [])
+
+  // Load dữ liệu báo cáo của quỹ đang chọn (static, chỉ fetch 1 lần mỗi fund).
+  // Quỹ không có báo cáo tài chính dùng FundHoldingsAnalysis, không fetch ở đây.
+  useEffect(() => {
+    if (!isReportFund) {
+      setLoading(false)
+      setError(null)
+      return
+    }
     let cancelled = false
     setLoading(true)
     setError(null)
@@ -251,7 +276,7 @@ function FundAnalysisPanelImpl({ funds }: Props) {
       }
     })
     return () => { cancelled = true }
-  }, [fundId])
+  }, [fundId, isReportFund])
 
   const periods = useMemo(
     () => portfolio ? fundReportPeriods(portfolio) : [],
@@ -267,15 +292,33 @@ function FundAnalysisPanelImpl({ funds }: Props) {
     [portfolio, periods, tablePeriod],
   )
 
-  const fundOptions: FundOption[] = useMemo(
-    () => REPORT_FUNDS
-      .map(id => {
-        const meta = funds.find(f => f.id === id)
-        return { value: id, label: meta ? meta.name_vi : id }
-      }),
-    [funds],
+  /**
+   * Quỹ chọn được: quỹ có báo cáo tài chính (phân tích đầy đủ) + quỹ có dữ
+   * liệu danh mục (phân tích theo holdings). Tách hai nhóm trong dropdown để
+   * người dùng biết trước mức chi tiết sẽ nhận được.
+   */
+  const fundGroups: FundOptionGroup[] = useMemo(() => {
+    const label = (id: string) => funds.find(f => f.id === id)?.name_vi ?? id
+    const reportOptions = REPORT_FUNDS.map(id => ({ value: id, label: label(id) }))
+    const holdingsOnly = funds
+      .filter(f => !REPORT_FUNDS.includes(f.id) && holdingsSource.has(f.id))
+      .map(f => ({ value: f.id, label: f.name_vi }))
+
+    const groups: FundOptionGroup[] = [
+      { label: `Báo cáo tài chính đầy đủ (${reportOptions.length})`, options: reportOptions },
+    ]
+    if (holdingsOnly.length > 0) {
+      groups.push({ label: `Phân tích theo danh mục (${holdingsOnly.length})`, options: holdingsOnly })
+    }
+    return groups
+  }, [funds, holdingsSource])
+
+  const selectedFund = useMemo(
+    () => findGroupedOption(fundGroups, fundId)
+      ?? { value: fundId, label: funds.find(f => f.id === fundId)?.name_vi ?? fundId },
+    [fundGroups, fundId, funds],
   )
-  const selectedFund = fundOptions.find(o => o.value === fundId) ?? fundOptions[0]
+  const selectedMeta = funds.find(f => f.id === fundId)
 
   const periodOptions: PeriodOption[] = useMemo(
     () => [
@@ -694,22 +737,32 @@ function FundAnalysisPanelImpl({ funds }: Props) {
         <div className="dca-param-row">
           <label className="dca-label">Quỹ</label>
           <div className="overlap-select">
-            <Select<FundOption>
+            <Select<FundOption, false, FundOptionGroup>
               className="fund-search-select"
               classNamePrefix="fund-search"
-              options={fundOptions}
+              options={fundGroups}
               value={selectedFund}
               onChange={opt => opt && setFundId(opt.value)}
-              isSearchable={false}
+              isSearchable
+              placeholder="Tìm quỹ..."
+              noOptionsMessage={() => 'Không tìm thấy'}
               styles={selectStyles}
             />
           </div>
         </div>
       </div>
 
-      {loading && <div className="loading-indicator">Đang tải dữ liệu...</div>}
+      {/* Quỹ chưa có báo cáo tài chính: phân tích dựa trên danh mục + chuỗi giá. */}
+      {!isReportFund && selectedMeta && (
+        <FundHoldingsAnalysis
+          fund={selectedMeta}
+          source={holdingsSource.get(fundId) ?? null}
+        />
+      )}
 
-      {!loading && portfolio && (
+      {isReportFund && loading && <div className="loading-indicator">Đang tải dữ liệu...</div>}
+
+      {isReportFund && !loading && portfolio && (
         <>
           {/* ── Pills chọn section (kiểu tab DCA) ── */}
           <div className="dca-anchor-nav">
