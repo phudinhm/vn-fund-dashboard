@@ -1858,6 +1858,101 @@ const DICT = {
     en: '<b>-{dd}%</b> in <b>{date}</b>{bear}, and it has not reclaimed its old high. Breaking even from here needs <b>+{recovery}%</b> — a reminder that the deeper the fall, the harder the climb back. Vietnam is a frontier market and the turn from bull to bear is abrupt. You may be in the middle of a storm. Keep contributing month after month; low prices buy more units. Every previous bear market — 2018–2019, 2022 — did recover.',
   },
 
+  // ── DCA entry point block ──
+  'entry.at10y': { vi: '10 năm trước', en: '10 years ago' },
+  'entry.at5y': { vi: '5 năm trước', en: '5 years ago' },
+  'entry.at3y': { vi: '3 năm trước', en: '3 years ago' },
+  'entry.at1y': { vi: '1 năm trước', en: '1 year ago' },
+  'entry.at6m': { vi: '6 tháng trước', en: '6 months ago' },
+  'entry.title': { vi: 'Cùng 100 triệu, vào ở thời điểm khác nhau', en: 'The same 100 million, entered at different times' },
+  'entry.help': {
+    vi: 'Mô phỏng mua MỘT LẦN 100 triệu tại từng mốc thời gian rồi giữ đến nay (khác với mô phỏng nạp đều đặn ở các mục trên). Tính trên toàn bộ lịch sử dữ liệu của quỹ, không phụ thuộc khoảng thời gian bạn chọn ở phần Thông số.',
+    en: 'Simulates a SINGLE 100 million purchase at each point in time, held to today — unlike the recurring-contribution simulations above. Computed over the fund’s entire history, independent of the date range you set in Parameters.',
+  },
+  'entry.intro': {
+    vi: 'Giả sử bạn để dành 100 triệu mua <b>một lần</b> tại từng mốc thời gian dưới đây rồi giữ đến nay. Mỗi hàng là một thời điểm vào, mỗi cột là một danh mục. Đây là phiên bản tiền thật ngày thật của câu hỏi "bắt đầu ở thời điểm khác thì sao": không phải phân phối xác suất, mà là con số cụ thể bạn sẽ thấy trong tài khoản.',
+    en: 'Suppose you had 100 million and bought <b>once</b> at each of the dates below, holding to today. Each row is an entry point, each column a portfolio. This is the real-money, real-dates version of "what if I had started at a different time" — not a probability distribution, but the specific figure you would be looking at in your account.',
+  },
+  'entry.col.entryPoint': { vi: 'Thời điểm vào', en: 'Entry point' },
+  'entry.footnoteMissing': {
+    vi: '— : quỹ trong danh mục chưa có dữ liệu tại thời điểm đó nên không tính, tránh đoán mò. In đậm là khoản lớn nhất của mỗi hàng.',
+    en: '— : a fund in that portfolio has no data at that date, so it is left out rather than guessed. The largest figure in each row is bold.',
+  },
+  'entry.footnoteBold': { vi: 'In đậm là khoản lớn nhất của mỗi hàng.', en: 'The largest figure in each row is bold.' },
+  'entry.narrative': {
+    vi: 'Cùng 100 triệu vào <b>{name}</b>: vào {longLabel} giờ thành <b>{longValue}</b>, vào {shortLabel} giờ thành <b>{shortValue}</b>. Khoảng chênh lệch đó không đến từ việc chọn đúng đáy, mà đến từ thời gian nắm giữ. Đó là lý do vì sao vào sớm và giữ đủ lâu quan trọng hơn đoán đỉnh đoán đáy thị trường. Nói đi cũng phải nói lại: giai đoạn vừa qua thị trường nhìn chung đi lên, không có gì đảm bảo những năm tới sẽ lặp lại đúng như vậy.',
+    en: 'The same 100 million into <b>{name}</b>: entering {longLabel} is now <b>{longValue}</b>; entering {shortLabel} is now <b>{shortValue}</b>. That gap did not come from picking the bottom — it came from holding time. Which is why entering early and holding long matters more than calling tops and bottoms. To be fair though: the market generally rose over this stretch, and nothing guarantees the coming years repeat it.',
+  },
+  'entry.billion': { vi: '{v} tỷ', en: '{v} bn' },
+  'entry.million': { vi: '{v} triệu', en: '{v} m' },
+
+  // ── DCA return / pain chart ──
+  'pain.title': { vi: 'Bản đồ lợi nhuận và rủi ro', en: 'Return versus pain' },
+  'pain.logHelp': {
+    vi: 'Chuyển trục dọc sang logarithmic. Hữu ích khi các danh mục có mức nhân vốn chênh lệch lớn.',
+    en: 'Switch the vertical axis to logarithmic. Useful when the portfolios’ multiples differ widely.',
+  },
+  'pain.help': {
+    vi: 'Trục ngang: mức sụt giảm sâu nhất so với đỉnh (drawdown), càng sang phải càng đau. Trục dọc: tổng số lần nhân vốn. Góc trên-trái là vùng lý tưởng: lợi nhuận cao mà ít đau.',
+    en: 'Horizontal axis: the deepest fall below the peak, so further right hurts more. Vertical axis: the total multiple on your money. The top-left corner is the ideal zone — high return with little pain.',
+  },
+  'pain.intro': {
+    vi: 'Mỗi chấm là một danh mục, đặt lợi nhuận cạnh cái giá phải trả để có được nó. Trục ngang là mức sụt giảm sâu nhất so với đỉnh trong suốt kỳ, càng sang phải càng đau. Trục dọc là tổng số lần nhân vốn. Góc trên-trái (lợi nhuận cao, ít đau) gần như luôn trống, vì muốn lợi nhuận cao hơn thường phải chịu biến động lớn hơn.',
+    en: 'Each dot is a portfolio, placing the return next to the price paid for it. The horizontal axis is the deepest fall below the peak over the period — further right hurts more. The vertical axis is the total multiple on your money. The top-left corner, high return with little pain, is almost always empty: a higher return usually costs more volatility.',
+  },
+  'pain.xAxis': { vi: 'Sụt giảm tối đa (sâu hơn →)', en: 'Max drawdown (deeper →)' },
+  'pain.tooltipReturn': { vi: 'Tổng lợi nhuận: {mult} (+{pct}%)', en: 'Total return: {mult} (+{pct}%)' },
+  'pain.tooltipDrawdown': { vi: 'Sụt giảm tối đa: -{v}%', en: 'Max drawdown: -{v}%' },
+  'pain.bestReturn': {
+    vi: ' đang có lợi nhuận cao nhất trong nhóm, +{pct}%, đổi lại mức sụt giảm tối đa -{dd}%.',
+    en: ' has the highest return of the group at +{pct}%, in exchange for a maximum drawdown of -{dd}%.',
+  },
+  'pain.safest': {
+    vi: ' là danh mục ít đau nhất, sụt giảm tối đa chỉ -{dd}%, nhưng đổi lại lợi nhuận thấp hơn.',
+    en: ' is the least painful, with a maximum drawdown of just -{dd}%, at the cost of a lower return.',
+  },
+  'pain.tradeoffPrefix': { vi: 'So với <b>{best}</b>, ', en: 'Against <b>{best}</b>, ' },
+  'pain.tradeoffBody': {
+    vi: 'giữ được khoảng {ups}% lợi nhuận trong khi né được {avoided}% mức sụt giảm, một đánh đổi đáng cân nhắc nếu bạn ưu tiên sự yên tâm hơn lợi nhuận tối đa.',
+    en: 'it keeps about {ups}% of the return while avoiding {avoided}% of the drawdown — a trade worth considering if you value peace of mind over maximum return.',
+  },
+  'pain.closing': {
+    vi: 'Giả sử bạn đang phải chọn giữa các danh mục này, câu hỏi không phải "cái nào lời nhất" mà là "bạn chịu được mức đau nào". Đã gọi là đầu tư thì sẽ luôn có rủi ro, và quá khứ không đảm bảo cho tương lai.',
+    en: 'If you had to choose between these, the question is not "which returns most" but "how much pain can you take". Investing carries risk, and the past guarantees nothing about the future.',
+  },
+
+  // ── Projection block ──
+  'proj.title': { vi: 'Nếu bạn kiên trì thêm nhiều năm nữa thì sao?', en: 'What if you kept going for years more?' },
+  'proj.intro': {
+    vi: 'Giả sử bạn vẫn đều đặn nạp tiền mỗi tháng như bây giờ, và CAGR tương lai loanh quanh mức lịch sử. Đây không phải là dự báo, không ai biết trước thị trường sẽ đi đâu. Chỉ là để bạn cảm nhận sức nặng của lãi kép khi chơi đủ lâu.',
+    en: 'Assume you keep contributing every month as you do now, and that future CAGR lands near the historical figure. This is not a forecast — nobody knows where the market goes. It is here so you can feel the weight of compounding over a long enough run.',
+  },
+  'proj.horizonLabel': { vi: 'Chiếu về:', en: 'Project out:' },
+  'proj.yearsAhead': { vi: '{n} năm nữa', en: '{n} more years' },
+  'proj.contribLabel': { vi: 'Nạp/tháng:', en: 'Per month:' },
+  'proj.reset': { vi: '↺ Về mặc định ({v})', en: '↺ Reset to default ({v})' },
+  'proj.contribNote': {
+    vi: 'Mặc định đúng bằng số tiền đầu tư định kỳ ở phần "Thông số" phía trên. Chỉnh số ở đây chỉ thay đổi giả định cho tương lai — không ảnh hưởng tới lịch sử hay giá trị danh mục hiện tại.',
+    en: 'The default matches the recurring amount in Parameters above. Changing it here only alters the assumption about the future — it does not affect the history or the portfolio’s current value.',
+  },
+  'proj.warning': {
+    vi: '⚠️ Thị trường không bao giờ đi thẳng như một đường kẻ. Có những năm sập sâu, có những năm bùng mạnh. Biểu đồ trên chỉ minh họa lãi kép theo CAGR trung bình. Thực tế sẽ dao động lớn hơn nhiều, và kết quả của bạn có thể lệch xa cả ba kịch bản này. Hãy xem đây là "nếu thì", không phải "sẽ là".',
+    en: '⚠️ The market never moves in a straight line. Some years crash, some years surge. The chart only illustrates compounding at an average CAGR. Reality swings far more, and your result could fall well outside all three of these paths. Read it as "what if", not "what will be".',
+  },
+  'proj.historicalCagr': { vi: 'CAGR lịch sử: {v}%/năm', en: 'Historical CAGR: {v}%/yr' },
+  'proj.monthLabel': { vi: 'Tháng {m} (năm {y})', en: 'Month {m} (year {y})' },
+  'proj.now': { vi: 'Hiện tại', en: 'Today' },
+  'proj.scenario.opt': { vi: 'Tốt', en: 'Optimistic' },
+  'proj.scenario.base': { vi: 'Base', en: 'Base' },
+  'proj.scenario.pess': { vi: 'Xấu', en: 'Pessimistic' },
+  'proj.legendOpt': { vi: 'Tốt ({rate}%/năm): {value}', en: 'Optimistic ({rate}%/yr): {value}' },
+  'proj.legendBase': { vi: 'Base ({rate}%/năm): <b>{value}</b>', en: 'Base ({rate}%/yr): <b>{value}</b>' },
+  'proj.legendPess': { vi: 'Xấu ({rate}%/năm): {value}', en: 'Pessimistic ({rate}%/yr): {value}' },
+  'proj.takeaway': {
+    vi: 'Danh mục <b>{name}</b> hiện có giá trị <b>{current}</b> — đây là điểm xuất phát, không phải bắt đầu từ 0 đồng. Nếu CAGR giữ được mức lịch sử <b>{cagr}%/năm</b> và bạn vẫn đều đặn nạp <b>{monthly}/tháng</b>, sau <b>{years} năm nữa</b> danh mục có thể chạm <b>{final}</b>. Trong đó bạn chỉ nạp thêm {contributed}, phần còn lại {growth} là tiền đẻ tiền nhờ lãi kép. Đó là lý do vì sao đầu tư là cuộc chơi của thời gian, không phải của canh đỉnh canh đáy.',
+    en: '<b>{name}</b> is worth <b>{current}</b> today — that is your starting point, not zero. If CAGR holds at its historical <b>{cagr}% a year</b> and you keep contributing <b>{monthly} a month</b>, then in <b>{years} years</b> the portfolio could reach <b>{final}</b>. Of that you would only contribute {contributed}; the remaining {growth} is money the money made. Which is why investing is a game of time, not of timing.',
+  },
+
   // ── Methodology tab (khung; nội dung ở src/components/methodology/) ──
   'method.tocLabel': { vi: 'Mục lục', en: 'Table of contents' },
   'method.onThisPage': { vi: 'Trong trang này', en: 'On this page' },

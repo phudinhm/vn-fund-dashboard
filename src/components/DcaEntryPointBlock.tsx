@@ -14,16 +14,18 @@ import { useMemo, memo } from 'react'
 import type { PricePoint, RebalanceFrequency } from '../types'
 import { simulateDCA, slicePricesWithPredecessor, type DCASlot } from '../utils/dca'
 import { alignFundsToCommonGridDaily } from '../utils/weeklyResample'
+import { useT, useTRich, translateStatic, type TranslationKey } from '../i18n'
+import { useLanguage, type Language } from '../hooks/useLanguage'
 
 /** Số tiền cố định cho mỗi lần vào, chọn tròn 100 triệu cho dễ nhẩm. */
 const AMOUNT = 100_000_000
 
-const ENTRY_POINTS: { label: string; months: number }[] = [
-  { label: '10 năm trước', months: 120 },
-  { label: '5 năm trước', months: 60 },
-  { label: '3 năm trước', months: 36 },
-  { label: '1 năm trước', months: 12 },
-  { label: '6 tháng trước', months: 6 },
+const ENTRY_POINTS: { labelKey: TranslationKey; months: number }[] = [
+  { labelKey: 'entry.at10y', months: 120 },
+  { labelKey: 'entry.at5y', months: 60 },
+  { labelKey: 'entry.at3y', months: 36 },
+  { labelKey: 'entry.at1y', months: 12 },
+  { labelKey: 'entry.at6m', months: 6 },
 ]
 
 export interface EntryPointPortfolio {
@@ -55,6 +57,9 @@ interface EntryRow {
 }
 
 function DcaEntryPointBlockImpl({ portfolios, fundData, purchasePriceData }: Props) {
+  const t = useT()
+  const tr = useTRich()
+  const { language } = useLanguage()
   const rows = useMemo<EntryRow[]>(() => {
     if (portfolios.length === 0) return []
 
@@ -106,9 +111,9 @@ function DcaEntryPointBlockImpl({ portfolios, fundData, purchasePriceData }: Pro
         )
         return { portfolio: p, value: sim.cumulative.length > 0 ? sim.finalValue : null }
       })
-      return { label: ep.label, months: ep.months, entryDate, cells }
+      return { label: t(ep.labelKey), months: ep.months, entryDate, cells }
     }).filter(r => r.cells.some(c => c.value !== null))
-  }, [portfolios, fundData, purchasePriceData])
+  }, [portfolios, fundData, purchasePriceData, language])
 
   if (rows.length === 0) return null
 
@@ -118,26 +123,22 @@ function DcaEntryPointBlockImpl({ portfolios, fundData, purchasePriceData }: Pro
   return (
     <div className="chart-container">
       <div className="chart-header">
-        <h3>Cùng 100 triệu, vào ở thời điểm khác nhau</h3>
+        <h3>{t('entry.title')}</h3>
         <span
           className="chart-tooltip-icon"
-          title="Mô phỏng mua MỘT LẦN 100 triệu tại từng mốc thời gian rồi giữ đến nay (khác với mô phỏng nạp đều đặn ở các mục trên). Tính trên toàn bộ lịch sử dữ liệu của quỹ, không phụ thuộc khoảng thời gian bạn chọn ở phần Thông số."
+          title={t('entry.help')}
         >?</span>
       </div>
 
       <p className="dca-ratio-sub">
-        Giả sử bạn để dành 100 triệu mua <strong>một lần</strong> tại từng mốc thời gian
-        dưới đây rồi giữ đến nay. Mỗi hàng là một thời điểm vào, mỗi cột là một danh mục.
-        Đây là phiên bản tiền thật ngày thật của câu hỏi "bắt đầu ở thời điểm khác thì
-        sao": không phải phân phối xác suất, mà là con số cụ thể bạn sẽ thấy trong tài
-        khoản.
+        {tr('entry.intro')}
       </p>
 
       <div className="dca-stats-table-scroll">
         <table className="dca-stats-table">
           <thead>
             <tr>
-              <th>Thời điểm vào</th>
+              <th>{t('entry.col.entryPoint')}</th>
               {portfolios.map(p => (
                 <th key={p.id}>
                   <span className="perf-dot" style={{ background: p.color }} />
@@ -167,7 +168,7 @@ function DcaEntryPointBlockImpl({ portfolios, fundData, purchasePriceData }: Pro
                         : undefined}
                     >
                       {c.value !== null
-                        ? <>{formatCompactVND(c.value)} <span className="dca-entry-mult">({formatMultiple(c.value / AMOUNT)})</span></>
+                        ? <>{formatCompactVND(c.value, language)} <span className="dca-entry-mult">({formatMultiple(c.value / AMOUNT, language)})</span></>
                         : '—'}
                     </td>
                   ))}
@@ -180,25 +181,24 @@ function DcaEntryPointBlockImpl({ portfolios, fundData, purchasePriceData }: Pro
 
       {hasMissing && (
         <div className="dca-eoy-footnote">
-          — : quỹ trong danh mục chưa có dữ liệu tại thời điểm đó nên không tính, tránh
-          đoán mò. In đậm là khoản lớn nhất của mỗi hàng.
+          {t('entry.footnoteMissing')}
         </div>
       )}
       {!hasMissing && rows.length > 0 && (
         <div className="dca-eoy-footnote">
-          In đậm là khoản lớn nhất của mỗi hàng.
+          {t('entry.footnoteBold')}
         </div>
       )}
 
       {narrative && (
         <p className="dca-ratio-narrative">
-          Cùng 100 triệu vào <strong style={{ color: narrative.portfolio.color }}>{narrative.portfolio.name}</strong>:
-          vào {narrative.longLabel} giờ thành <strong>{formatCompactVND(narrative.longValue)}</strong>,
-          vào {narrative.shortLabel} giờ thành <strong>{formatCompactVND(narrative.shortValue)}</strong>.
-          Khoảng chênh lệch đó không đến từ việc chọn đúng đáy, mà đến từ thời gian nắm giữ.
-          Đó là lý do vì sao vào sớm và giữ đủ lâu quan trọng hơn đoán đỉnh đoán đáy thị trường.
-          Nói đi cũng phải nói lại: giai đoạn vừa qua thị trường nhìn chung đi lên, không có
-          gì đảm bảo những năm tới sẽ lặp lại đúng như vậy.
+          {tr('entry.narrative', {
+            name: narrative.portfolio.name,
+            longLabel: narrative.longLabel,
+            longValue: formatCompactVND(narrative.longValue, language),
+            shortLabel: narrative.shortLabel,
+            shortValue: formatCompactVND(narrative.shortValue, language),
+          })}
         </p>
       )}
     </div>
@@ -259,13 +259,17 @@ function subtractMonths(dateStr: string, months: number): string {
 }
 
 /** 412_345_678 → "412 triệu", 1_234_000_000 → "1,23 tỷ" */
-function formatCompactVND(v: number): string {
-  if (v >= 1e9) return (v / 1e9).toFixed(2).replace('.', ',') + ' tỷ'
-  return Math.round(v / 1e6) + ' triệu'
+function formatCompactVND(v: number, lang: Language): string {
+  if (v >= 1e9) {
+    const num = (v / 1e9).toFixed(2)
+    return translateStatic('entry.billion', lang, { v: lang === 'vi' ? num.replace('.', ',') : num })
+  }
+  return translateStatic('entry.million', lang, { v: Math.round(v / 1e6) })
 }
 
-function formatMultiple(v: number): string {
-  return v.toFixed(2).replace('.', ',') + '×'
+function formatMultiple(v: number, lang: Language): string {
+  const num = v.toFixed(2)
+  return (lang === 'vi' ? num.replace('.', ',') : num) + '×'
 }
 
 /** "2016-07-15" → "07/2016" */

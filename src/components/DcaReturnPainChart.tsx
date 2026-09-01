@@ -12,6 +12,7 @@ import {
   ScatterChart, Scatter, XAxis, YAxis, CartesianGrid,
   Tooltip, ResponsiveContainer,
 } from 'recharts'
+import { useT, useTRich } from '../i18n'
 
 export interface ReturnPainPortfolio {
   id: string
@@ -39,6 +40,8 @@ interface ScatterPoint {
 }
 
 function DcaReturnPainChartImpl({ portfolios }: Props) {
+  const t = useT()
+  const tr = useTRich()
   const [logScale, setLogScale] = useState(true)
 
   const eligible = portfolios.filter(p => p.totalInvested > 0)
@@ -64,28 +67,24 @@ function DcaReturnPainChartImpl({ portfolios }: Props) {
   return (
     <div className="chart-container">
       <div className="chart-header">
-        <h3>Bản đồ lợi nhuận và rủi ro</h3>
+        <h3>{t('pain.title')}</h3>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <button
             className={`log-scale-btn${logScale ? ' log-scale-btn-active' : ''}`}
             onClick={() => setLogScale(v => !v)}
-            title="Chuyển trục dọc sang logarithmic. Hữu ích khi các danh mục có mức nhân vốn chênh lệch lớn."
+            title={t('pain.logHelp')}
           >
             Log
           </button>
           <span
             className="chart-tooltip-icon"
-            title="Trục ngang: mức sụt giảm sâu nhất so với đỉnh (drawdown), càng sang phải càng đau. Trục dọc: tổng số lần nhân vốn. Góc trên-trái là vùng lý tưởng: lợi nhuận cao mà ít đau."
+            title={t('pain.help')}
           >?</span>
         </div>
       </div>
 
       <p className="dca-ratio-sub">
-        Mỗi chấm là một danh mục, đặt lợi nhuận cạnh cái giá phải trả để có được nó.
-        Trục ngang là mức sụt giảm sâu nhất so với đỉnh trong suốt kỳ, càng sang phải
-        càng đau. Trục dọc là tổng số lần nhân vốn. Góc trên-trái (lợi nhuận cao, ít
-        đau) gần như luôn trống, vì muốn lợi nhuận cao hơn thường phải chịu biến động
-        lớn hơn.
+        {t('pain.intro')}
       </p>
 
       <ResponsiveContainer width="100%" height={340}>
@@ -97,7 +96,7 @@ function DcaReturnPainChartImpl({ portfolios }: Props) {
             domain={[0, (max: number) => Math.ceil((max + 5) / 10) * 10]}
             tickFormatter={(v: number) => `-${v.toFixed(0)}%`}
             tick={{ fontSize: 12 }}
-            label={{ value: 'Sụt giảm tối đa (sâu hơn →)', position: 'insideBottom', offset: -14, fontSize: 12, fill: '#5e5d59' }}
+            label={{ value: t('pain.xAxis'), position: 'insideBottom', offset: -14, fontSize: 12, fill: '#5e5d59' }}
           />
           <YAxis
             type="number"
@@ -116,8 +115,8 @@ function DcaReturnPainChartImpl({ portfolios }: Props) {
               return (
                 <div style={{ background: '#fff', border: '1px solid #e8e6dc', borderRadius: 6, padding: '8px 12px', fontSize: 12 }}>
                   <strong style={{ color: p.color }}>{p.name}</strong>
-                  <div>Tổng lợi nhuận: {formatMultiple(p.returnX)} (+{((p.returnX - 1) * 100).toFixed(0)}%)</div>
-                  <div>Sụt giảm tối đa: -{p.pain.toFixed(1)}%</div>
+                  <div>{t('pain.tooltipReturn', { mult: formatMultiple(p.returnX), pct: ((p.returnX - 1) * 100).toFixed(0) })}</div>
+                  <div>{t('pain.tooltipDrawdown', { v: p.pain.toFixed(1) })}</div>
                 </div>
               )
             }}
@@ -129,30 +128,30 @@ function DcaReturnPainChartImpl({ portfolios }: Props) {
       {narrative && (
         <p className="dca-ratio-narrative">
           <strong style={{ color: narrative.bestReturn.color }}>{narrative.bestReturn.name}</strong>{' '}
-          đang có lợi nhuận cao nhất trong nhóm, +{narrative.bestReturn.returnPct.toFixed(0)}%, đổi lại
-          mức sụt giảm tối đa -{narrative.bestReturn.pain.toFixed(1)}%.
+          {t('pain.bestReturn', {
+            pct: narrative.bestReturn.returnPct.toFixed(0),
+            dd: narrative.bestReturn.pain.toFixed(1),
+          })}
           {' '}
           {narrative.safest.id !== narrative.bestReturn.id && (
             <>
               <strong style={{ color: narrative.safest.color }}>{narrative.safest.name}</strong>{' '}
-              là danh mục ít đau nhất, sụt giảm tối đa chỉ -{narrative.safest.pain.toFixed(1)}%, nhưng
-              đổi lại lợi nhuận thấp hơn.
+              {t('pain.safest', { dd: narrative.safest.pain.toFixed(1) })}
               {' '}
             </>
           )}
           {narrative.tradeoff && (
             <>
-              So với <strong style={{ color: narrative.bestReturn.color }}>{narrative.bestReturn.name}</strong>,{' '}
+              {tr('pain.tradeoffPrefix', { best: narrative.bestReturn.name })}
               <strong style={{ color: narrative.tradeoff.point.color }}>{narrative.tradeoff.point.name}</strong>{' '}
-              giữ được khoảng {narrative.tradeoff.captureUps.toFixed(0)}% lợi nhuận trong khi né được{' '}
-              {narrative.tradeoff.painAvoided.toFixed(0)}% mức sụt giảm, một đánh đổi đáng cân nhắc nếu
-              bạn ưu tiên sự yên tâm hơn lợi nhuận tối đa.
+              {t('pain.tradeoffBody', {
+                ups: narrative.tradeoff.captureUps.toFixed(0),
+                avoided: narrative.tradeoff.painAvoided.toFixed(0),
+              })}
               {' '}
             </>
           )}
-          Giả sử bạn đang phải chọn giữa các danh mục này, câu hỏi không phải "cái nào lời nhất" mà là
-          "bạn chịu được mức đau nào". Đã gọi là đầu tư thì sẽ luôn có rủi ro, và quá khứ không đảm bảo
-          cho tương lai.
+          {t('pain.closing')}
         </p>
       )}
     </div>
