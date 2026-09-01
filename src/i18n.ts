@@ -1953,6 +1953,103 @@ const DICT = {
     en: '<b>{name}</b> is worth <b>{current}</b> today — that is your starting point, not zero. If CAGR holds at its historical <b>{cagr}% a year</b> and you keep contributing <b>{monthly} a month</b>, then in <b>{years} years</b> the portfolio could reach <b>{final}</b>. Of that you would only contribute {contributed}; the remaining {growth} is money the money made. Which is why investing is a game of time, not of timing.',
   },
 
+  // ── DCA consistency block (panic / buy the dip) ──
+  'consist.panicTitle': { vi: 'Nếu bạn hoảng loạn dừng đầu tư khi thấy đỏ?', en: 'What if you panicked and stopped when you saw red?' },
+  'consist.panicIntro': {
+    vi: 'Nhà đầu tư cá nhân thường có xu hướng bỏ DCA trong bối cảnh thị trường giảm sâu vì sợ mất thêm tiền, rồi chần chừ không dám đầu tư lại cho đến khi thị trường hồi phục. Đây là phép đối chứng bằng chính dữ liệu quỹ của bạn: so sánh đầu tư đều đặn qua từng tháng bất chấp biến động, với hai biến thể hành vi dừng đầu tư khi quỹ giảm <b>-15%</b> và <b>-25%</b> từ đỉnh.',
+    en: 'Retail investors tend to abandon DCA in a deep drawdown for fear of losing more, then hesitate to start again until the market has recovered. This is the control experiment on your own fund’s data: contributing every month regardless of the swings, against two behavioural variants that stop contributing once the fund is <b>-15%</b> and <b>-25%</b> below its peak.',
+  },
+  'consist.legend.steady': { vi: 'Đầu tư đều đặn', en: 'Contributing steadily' },
+  'consist.legend.stop15': { vi: 'Dừng đầu tư khi DD < -15%', en: 'Stop when drawdown < -15%' },
+  'consist.legend.stop25': { vi: 'Dừng đầu tư khi DD < -25%', en: 'Stop when drawdown < -25%' },
+  'consist.legend.boost15': { vi: 'Tăng tiền khi DD < -15%', en: 'Buy more when drawdown < -15%' },
+  'consist.legend.boost25': { vi: 'Tăng tiền khi DD < -25%', en: 'Buy more when drawdown < -25%' },
+  'consist.col.scenario': { vi: 'Kịch bản', en: 'Scenario' },
+  'consist.col.invested': { vi: 'Đã đầu tư', en: 'Invested' },
+  'consist.col.finalValue': { vi: 'Giá trị cuối', en: 'Ending value' },
+  'consist.col.netProfit': { vi: 'Lời ròng', en: 'Net profit' },
+  'consist.col.returnPct': { vi: '% Lợi nhuận', en: 'Return %' },
+  'consist.help.mwrr': {
+    vi: 'Money-Weighted Rate of Return: lãi suất kép hàng năm có tính đến ĐÚNG thời điểm mỗi đồng được nạp vào, khác "% Lợi nhuận" (không phân biệt tiền vào sớm hay muộn). Đây là cách so sánh công bằng nhất giữa các kịch bản có tổng vốn và lịch nạp khác nhau.',
+    en: 'Money-weighted rate of return: the annual compound rate counting the EXACT date every dong went in, unlike "Return %" which does not distinguish early money from late. It is the fairest way to compare scenarios whose total capital and contribution schedules differ.',
+  },
+  'consist.col.opportunityCost': { vi: 'Chi phí cơ hội', en: 'Opportunity cost' },
+  'consist.help.opportunityCost': {
+    vi: 'Panic bỏ nạp nên đầu tư ít tiền hơn hẳn — nếu so thẳng giá trị cuối, chênh lệch sẽ bị thổi phồng bởi phần "chưa đầu tư", không phải do đầu tư kém. Cột này giả định số tiền bị bỏ nạp vẫn nằm trong túi bạn (tiền mặt, không sinh lời), cộng lại vào giá trị cuối của panic rồi mới so với kịch bản nạp đều đặn — ra đúng phần thiệt hại do mua sai thời điểm và mất lãi kép.',
+    en: 'Panicking skips contributions, so it invests far less. Comparing ending values head-on would inflate the gap with money that was never invested rather than invested badly. This column assumes the skipped money stayed in your pocket as idle cash, adds it back to the panicking outcome, and only then compares — isolating the real damage from buying at the wrong times and losing the compounding.',
+  },
+  'consist.row.steady': { vi: 'Đầu tư đều đặn', en: 'Contributing steadily' },
+  'consist.skipSub': { vi: '({n} lần bỏ · giữ {cash} tiền mặt)', en: '({n} skipped · {cash} held as cash)' },
+  'consist.tableNote': {
+    vi: '"Chi phí cơ hội" đã cộng lại phần tiền mặt bị bỏ nạp (giả định giữ nguyên, không sinh lời) trước khi so với kịch bản đầu tư đều đặn — nên đây là thiệt hại thực do mua sai thời điểm và mất lãi kép, không lẫn với việc panic đơn giản là có ít vốn hơn. "MWRR" là cách so sánh khác, có tính thời gian: lãi suất kép hàng năm theo đúng ngày mỗi đồng được nạp vào.',
+    en: '"Opportunity cost" adds the skipped cash back — assumed held and earning nothing — before comparing against contributing steadily, so it is the real damage from mistimed buying and lost compounding rather than simply having invested less. "MWRR" is the other comparison, the one that counts time: the annual compound rate by the exact date each dong went in.',
+  },
+  'consist.boostTitle': { vi: 'Ngược lại, nếu bạn tăng tiền khi thấy đỏ?', en: 'And if you bought more when you saw red?' },
+  'consist.boostLabel': { vi: 'Tăng thêm mỗi lần nạp khi giảm sâu', en: 'Extra per contribution during a deep fall' },
+  'consist.boostIntro': {
+    vi: 'Một số nhà đầu tư chọn cách ngược với hoảng loạn: chủ động nạp thêm tiền đúng lúc quỹ giảm sâu, tức mua thêm khi giá rẻ. Đây là phép thử tương tự ở trên, nhưng đảo chiều: so sánh đầu tư đều đặn với hai biến thể tăng thêm <b>{extra}</b> mỗi lần quỹ giảm <b>-15%</b> và <b>-25%</b> từ đỉnh.',
+    en: 'Some investors do the opposite of panicking: they deliberately add money exactly when the fund is deep in a drawdown, buying more while it is cheap. Same experiment as above, reversed — contributing steadily against two variants that add <b>{extra}</b> each time the fund is <b>-15%</b> and <b>-25%</b> below its peak.',
+  },
+  'consist.panic15': { vi: 'Panic -15%', en: 'Panic at -15%' },
+  'consist.panic25': { vi: 'Panic -25%', en: 'Panic at -25%' },
+  'consist.boostRow15': { vi: 'Tăng tiền -15%', en: 'Buy more at -15%' },
+  'consist.boostRow25': { vi: 'Tăng tiền -25%', en: 'Buy more at -25%' },
+  'consist.boostSub': { vi: '({n} lần · thêm {extra})', en: '({n} times · {extra} extra)' },
+  'consist.boostTableNote': {
+    vi: 'Bảng này không có cột "Chi phí cơ hội" vì tăng tiền đầu tư NHIỀU vốn hơn (khác với panic đầu tư ít vốn hơn). "% Lợi nhuận" tính trên mỗi đồng đã đầu tư nhưng không phân biệt tiền vào sớm hay muộn — cột "MWRR" mới là so sánh công bằng nhất, vì có tính đúng số năm mỗi đồng đã có để sinh lời.',
+    en: 'There is no "opportunity cost" column here because buying more invests MORE capital, not less. "Return %" is per dong invested but does not distinguish early money from late — "MWRR" is the fair comparison, because it counts exactly how many years each dong had to compound.',
+  },
+  'consist.noTrigger': {
+    vi: 'Trong kỳ này, không lần nạp tiền hàng tháng nào rơi đúng vào lúc quỹ giảm sâu quá -15%, nên cả ba kịch bản cho kết quả giống nhau. Điều này không có nghĩa quỹ chưa từng giảm đến mức đó. Quỹ vẫn có thể đã giảm sâu như vậy, chỉ là gọn trong vài tuần ngắn giữa hai lần nạp, không lần kiểm tra hàng tháng nào rơi đúng lúc. Xem bảng "Các đợt sụt giảm lớn nhất" ở trên để biết quỹ thực sự từng giảm sâu đến đâu, hoặc thử kéo dài kỳ backtest để xem mình sẽ xử lý thế nào khi có bão thật.',
+    en: 'Over this period no monthly contribution date fell while the fund was more than -15% down, so all three scenarios end identically. That does not mean the fund never fell that far — it may well have, but within a few weeks between two contribution dates, so no monthly check caught it. See the "Largest drawdowns" table above for how far it really fell, or extend the backtest to see how you would handle a real storm.',
+  },
+  'consist.panicWon1': {
+    vi: 'Trong kỳ này, việc dừng đầu tư khi quỹ giảm sâu <b>-25%</b> lại cho kết quả tốt hơn đầu tư đều đặn một chút (hơn <b>{gap}</b>, đã tính cả phần tiền mặt giữ lại chứ không chỉ nhờ đầu tư ít hơn). Lý do: kỳ này quỹ có xu hướng đi xuống kéo dài, mua thêm ở vùng giảm bị lỗ tiếp.',
+    en: 'Over this period, stopping at <b>-25%</b> actually came out slightly ahead of contributing steadily — by <b>{gap}</b>, counting the cash held back rather than merely having invested less. The reason: the fund trended down through this stretch, so buying into the falls kept losing more.',
+  },
+  'consist.panicWon2': {
+    vi: 'Nhưng cẩn thận trước khi kết luận rằng panic tốt. Chiến lược này chỉ thắng khi bạn đoán đúng rằng thị trường sẽ tiếp tục giảm, điều không ai đoán được trước. Với phần lớn chu kỳ dài hạn của thị trường Việt Nam, đầu tư đều đặn qua đáy là cách duy nhất tận dụng lãi kép sau hồi phục.',
+    en: 'Be careful before concluding panic is good, though. It only wins when you correctly guess the market keeps falling, which nobody can do in advance. Across most of Vietnam’s long-run cycles, contributing through the trough is the only way to capture the compounding that comes after the recovery.',
+  },
+  'consist.panicCost1': {
+    vi: 'Một trong những sai lầm tâm lý lớn nhất của nhà đầu tư là muốn đứng ngoài quan sát khi thị trường giông bão. Nhiều người nghĩ rằng tạm ngừng rót vốn lúc tài sản đang lao dốc là cách để bảo vệ bản thân. Nhưng thực tế chứng minh: kiên định đầu tư xuyên qua khủng hoảng mới là lựa chọn mang lại kết quả tốt nhất.',
+    en: 'One of the biggest psychological mistakes an investor makes is wanting to stand aside and watch while the market storms. Plenty of people believe pausing contributions during a fall protects them. The evidence says otherwise: contributing straight through the crisis is what produces the best outcome.',
+  },
+  'consist.panicCost2': {
+    vi: 'Hãy nhìn vào các con số để thấy rõ cái giá của sự hoảng loạn. Nếu bạn sợ hãi và ngừng rót vốn khi danh mục sụt giảm <b>-15%</b>, đúng là bạn sẽ giữ lại được một khoản tiền mặt an toàn (cụ thể là <b>{cash15}</b> cất trong két thay vì đem đi mua tài sản). Nhưng khi chu kỳ thị trường bình phục, tổng tài sản của bạn lại thấp hơn đến <b>{gap15}</b> so với người kiên trì rót vốn đều đặn, ngay cả khi đã cộng gộp số tiền mặt bạn cố tình cất giữ. Kể cả khi bạn chịu đựng giỏi hơn một chút và chỉ bỏ chạy khi thị trường giảm <b>-25%</b>, bạn vẫn thiệt hại <b>{gap25}</b> tiền lãi. Sự hoảng sợ càng đến sớm, cơ hội bạn bỏ lỡ càng lớn.',
+    en: 'Look at the numbers for the price of panic. Stop contributing once the portfolio is <b>-15%</b> down and yes, you keep a safe pile of cash — <b>{cash15}</b> sitting in the drawer instead of buying assets. But once the cycle recovers, your total is <b>{gap15}</b> below someone who kept contributing, even after adding back all the cash you deliberately held. Even if you hold your nerve a little longer and only bail at <b>-25%</b>, you still give up <b>{gap25}</b> in gains. The earlier the fear arrives, the more opportunity it costs.',
+  },
+  'consist.panicCost3': {
+    vi: 'Tại sao sự chênh lệch này lại lớn đến vậy? Nguyên lý rất đơn giản: những lúc thị trường bi quan và giảm sâu nhất chính là lúc tài sản được bán với giá rẻ mạt nhất. Những khoản đầu tư bạn dũng cảm thực hiện ngay giữa tâm bão sẽ là cỗ máy tạo ra nhiều lợi nhuận nhất khi mọi thứ phục hồi. Việc rời bỏ cuộc chơi vì sợ hãi đồng nghĩa với việc bạn tự tước đi cơ hội mua tài sản giá hời. Đó là cái giá rất đắt cho việc để cảm xúc dẫn dắt các quyết định tài chính.',
+    en: 'Why is the gap so large? The principle is simple: the moments the market is most pessimistic and furthest down are exactly when assets sell cheapest. The contributions you make in the eye of the storm are the ones that generate the most on the way back. Walking away out of fear means denying yourself the bargain. That is a very expensive way to let emotion drive a financial decision.',
+  },
+  'consist.panicCostNote': {
+    vi: 'Chú ý: panic -25% (bỏ {n25} lần) thậm chí mất {loss25} nhiều hơn panic -15% (bỏ {n15} lần) mất {loss15}. Càng panic sớm càng bỏ lỡ nhiều cơ hội.',
+    en: 'Note: panicking at -25% ({n25} skipped) actually costs {loss25}, more than panicking at -15% ({n15} skipped) costs at {loss15}. The earlier the panic, the more opportunity missed.',
+  },
+  'consist.boostPrompt': {
+    vi: 'Nhập số tiền tăng thêm ở trên để xem thử: nếu bạn mua thêm mỗi khi thị trường giảm sâu, kết quả sẽ khác gì so với đầu tư đều đặn.',
+    en: 'Enter an extra amount above to see what happens: if you bought more each time the market fell deeply, how would the result differ from contributing steadily?',
+  },
+  'consist.boostNoTrigger': {
+    vi: 'Trong kỳ này, không lần nạp tiền hàng tháng nào rơi đúng vào lúc quỹ giảm sâu quá -15%, nên tăng tiền chưa có cơ hội áp dụng. Cả ba kịch bản cho kết quả giống nhau. Quỹ vẫn có thể từng giảm đến mức đó, chỉ là không rơi đúng vào ngày bạn định kỳ nạp tiền.',
+    en: 'Over this period no monthly contribution date fell while the fund was more than -15% down, so buying more never got a chance to apply and all three scenarios end identically. The fund may still have fallen that far, just not on a contribution date.',
+  },
+  'consist.boostTakeaway1': {
+    vi: 'Nếu bạn tăng thêm tiền mỗi khi quỹ giảm <b>{threshold}</b> từ đỉnh ({count} lần, tổng cộng nạp thêm <b>{extra}</b>), MWRR (lãi suất kép hàng năm có tính đến thời điểm dòng tiền) {verdict} kịch bản đầu tư đều đặn ({best}/năm so với {base}/năm). Đây là phép so sánh công bằng hơn "% Lợi nhuận" thô ở bảng trên, vì MWRR tính đúng số năm mỗi đồng đã có để sinh lời, không để chuyện tiền vào sớm hay muộn làm lệch kết quả.',
+    en: 'Adding extra each time the fund was <b>{threshold}</b> below its peak ({count} times, <b>{extra}</b> extra in total) gives an MWRR — the annual compound rate that counts cash-flow timing — that {verdict} contributing steadily ({best}/yr against {base}/yr). This is a fairer comparison than the raw "Return %" in the table above, because MWRR counts exactly how many years each dong had to compound instead of letting early or late money skew the result.',
+  },
+  'consist.verdictBetter': { vi: 'nhỉnh hơn', en: 'edges out' },
+  'consist.verdictWorse': { vi: 'lại kém hơn', en: 'falls short of' },
+  'consist.boostTakeaway2': {
+    vi: 'Mốc <b>-15%</b> dễ chạm: chỉ cần giá lùi nhẹ so với đỉnh gần nhất là đã tính "giảm sâu", nên nó kích hoạt tới <b>{n15} lần</b> suốt hành trình, kể cả những năm quỹ đã tăng trưởng rất nhiều. Vấn đề là thấp hơn đỉnh gần đây không có nghĩa là rẻ: sau nhiều năm giá quỹ tăng gấp vài lần, một lần giảm -15% ở giai đoạn sau vẫn có thể đắt hơn hẳn mức giá bình thường của những năm đầu. Mốc <b>-25%</b> khó chạm hơn (chỉ <b>{n25} lần</b>), nên phần lớn chỉ bắt trúng những đợt sụt thật sự nặng như bear 2018-2019 hay COVID 3/2020, những lúc giá thực sự bị ép xuống thấp.',
+    en: 'The <b>-15%</b> threshold is easy to hit: a modest step back from a recent high already counts as a deep fall, so it triggered <b>{n15} times</b> over the journey, including in years when the fund had already grown a great deal. The catch is that below a recent high does not mean cheap: after the price has multiplied over several years, a -15% dip late on can still be far more expensive than a normal price early on. The <b>-25%</b> threshold is harder to reach (only <b>{n25} times</b>), so it mostly catches the genuinely severe falls — the 2018–2019 bear market, COVID in March 2020 — when prices really were forced down.',
+  },
+  'consist.boostTakeaway3': {
+    vi: 'Cách này cũng đòi hỏi bạn có sẵn tiền mặt đúng lúc thị trường đang đáng sợ nhất, điều không dễ về cả tâm lý lẫn tài chính. Quá khứ không đảm bảo tương lai: nếu quỹ tiếp tục giảm ngay sau lần tăng tiền, phần vốn đầu tư thêm đó vẫn phải chờ hồi phục như mọi khoản đầu tư khác.',
+    en: 'This also requires having cash on hand exactly when the market is at its most frightening, which is hard both psychologically and financially. And the past guarantees nothing: if the fund keeps falling right after you add, that extra capital waits for the recovery like everything else.',
+  },
+
   // ── Methodology tab (khung; nội dung ở src/components/methodology/) ──
   'method.tocLabel': { vi: 'Mục lục', en: 'Table of contents' },
   'method.onThisPage': { vi: 'Trong trang này', en: 'On this page' },
