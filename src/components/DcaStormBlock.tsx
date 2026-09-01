@@ -14,6 +14,8 @@ import {
 } from 'recharts'
 import type { DCAStormStats } from '../utils/dca'
 import { drawdownEpisodes } from '../utils/drawdownStats'
+import { useT, useTRich, translateStatic, type TranslationKey } from '../i18n'
+import { useLanguage, type Language } from '../hooks/useLanguage'
 
 export interface StormPortfolio {
   id: string
@@ -30,13 +32,15 @@ interface Props {
   portfolios: StormPortfolio[]
 }
 
-const BEAR_LABEL: Record<NonNullable<DCAStormStats['inBearPeriod']>, string> = {
-  bear2018: 'bear market 2018-2019',
-  covid2020: 'cú sập COVID tháng 3/2020',
-  bear2022: 'bear market 2022',
+const BEAR_LABEL_KEYS: Record<NonNullable<DCAStormStats['inBearPeriod']>, TranslationKey> = {
+  bear2018: 'storm.bear2018',
+  covid2020: 'storm.covid2020',
+  bear2022: 'storm.bear2022',
 }
 
 function DcaStormBlockImpl({ portfolios }: Props) {
+  const t = useT()
+  const tr = useTRich()
   if (portfolios.length === 0) return null
 
   // Lọc portfolio có bão đáng kể (DD ≤ -10%)
@@ -47,14 +51,9 @@ function DcaStormBlockImpl({ portfolios }: Props) {
     const worstDD = Math.min(...portfolios.map(p => p.storm.maxDrawdown))
     return (
       <div className="dca-storm-block dca-storm-block--calm">
-        <h3 className="dca-storm-title">⛅ Giai đoạn êm ả</h3>
+        <h3 className="dca-storm-title">{t('storm.calmTitle')}</h3>
         <p className="dca-storm-calm-text">
-          Suốt kỳ đầu tư này, danh mục không trải qua cơn bão nào đáng kể.
-          Drawdown tệ nhất chỉ <strong>{(worstDD * 100).toFixed(1)}%</strong>.
-          Thị trường chứng khoán Việt Nam là thị trường cận biên, từ bull sang
-          bear diễn ra chóng vánh, có thể bạn đang ở giai đoạn thuận lợi. Đừng
-          vội kết luận DCA luôn êm ả như vậy. Thử chọn khoảng thời gian dài hơn
-          (bao trùm 2018-2019 hoặc 2022) để thấy bức tranh đầy đủ hơn.
+          {tr('storm.calmBody', { dd: (worstDD * 100).toFixed(1) })}
         </p>
       </div>
     )
@@ -63,49 +62,52 @@ function DcaStormBlockImpl({ portfolios }: Props) {
   // Tìm portfolio có bão tệ nhất (sâu nhất)
   const worst = [...stormed].sort((a, b) => a.storm.maxDrawdown - b.storm.maxDrawdown)[0]!
   const s = worst.storm
-  const bearName = s.inBearPeriod ? BEAR_LABEL[s.inBearPeriod] : null
+  const bearKey = s.inBearPeriod ? BEAR_LABEL_KEYS[s.inBearPeriod] : null
 
   return (
     <div className="dca-storm-block">
-      <h3 className="dca-storm-title">🌊 Kiên trì qua bão</h3>
+      <h3 className="dca-storm-title">{t('storm.title')}</h3>
       <p className="dca-storm-sub">
-        Hành trình DCA không bao giờ là một đường thẳng. Đây là những cơn bão
-        mà danh mục {portfolios.length > 1 ? 'của bạn' : `${worst.name} của bạn`} đã trải qua.
+        {t('storm.intro', {
+          who: portfolios.length > 1
+            ? t('storm.whoYours')
+            : t('storm.whoNamed', { name: worst.name }),
+        })}
       </p>
 
       <div className="dca-storm-grid">
         <div className="dca-storm-stat">
-          <div className="dca-storm-stat-label">Drawdown tệ nhất</div>
+          <div className="dca-storm-stat-label">{t('storm.stat.worstDD')}</div>
           <div className="dca-storm-stat-value dca-storm-stat-value--neg">
             {(s.maxDrawdown * 100).toFixed(1)}%
           </div>
           <div className="dca-storm-stat-sub">
-            cần +{recoveryNeededPct(s.maxDrawdown).toFixed(0)}% để hòa vốn
+            {t('storm.stat.needToBreakEven', { pct: recoveryNeededPct(s.maxDrawdown).toFixed(0) })}
           </div>
           {portfolios.length > 1 && (
             <div className="dca-storm-stat-sub" style={{ color: worst.color }}>
-              ở {worst.name}
+              {t('storm.stat.at', { name: worst.name })}
             </div>
           )}
         </div>
 
         <div className="dca-storm-stat">
-          <div className="dca-storm-stat-label">Thời điểm chạm đáy</div>
+          <div className="dca-storm-stat-label">{t('storm.stat.troughDate')}</div>
           <div className="dca-storm-stat-value">{formatMonthYear(s.maxDDDate)}</div>
-          {bearName && (
-            <div className="dca-storm-stat-sub">trùng {bearName}</div>
+          {bearKey && (
+            <div className="dca-storm-stat-sub">{t('storm.stat.coincides', { bear: t(bearKey) })}</div>
           )}
         </div>
 
         <div className="dca-storm-stat">
-          <div className="dca-storm-stat-label">Thời gian hồi phục</div>
+          <div className="dca-storm-stat-label">{t('storm.stat.recovery')}</div>
           <div className="dca-storm-stat-value">
             {s.recoveryMonths !== null
-              ? `${s.recoveryMonths} tháng`
-              : 'chưa hồi phục'}
+              ? t('storm.stat.months', { n: s.recoveryMonths })
+              : t('storm.stat.notRecovered')}
           </div>
           {s.stormsCount > 1 && (
-            <div className="dca-storm-stat-sub">tổng {s.stormsCount} cơn bão trong kỳ</div>
+            <div className="dca-storm-stat-sub">{t('storm.stat.stormCount', { n: s.stormsCount })}</div>
           )}
         </div>
       </div>
@@ -129,6 +131,7 @@ export const DcaStormBlock = memo(DcaStormBlockImpl)
  * với stat "Drawdown tệ nhất -X%" trong storm stats.
  */
 function MarketDrawdownChart({ portfolios }: { portfolios: StormPortfolio[] }) {
+  const t = useT()
   const { data, minDD } = useMemo(
     () => computeSeriesDD(portfolios, p => p.drawdown.map(pt => ({ date: pt.date, dd: pt.value * 100 }))),
     [portfolios],
@@ -140,10 +143,9 @@ function MarketDrawdownChart({ portfolios }: { portfolios: StormPortfolio[] }) {
 
   return (
     <div className="dca-storm-chart">
-      <div className="dca-storm-chart-title">Giá quỹ sập bao nhiêu?</div>
+      <div className="dca-storm-chart-title">{t('storm.fundChartTitle')}</div>
       <div className="dca-storm-chart-sub">
-        Khoảng cách từ đỉnh giá quỹ. Đây là "bão thị trường thật", đo bằng TWRR
-        nên đã loại ảnh hưởng của việc bạn nạp tiền đều đặn.
+        {t('storm.fundChartNote')}
       </div>
       {renderUnderwaterChart(data, portfolios, floorPct, 'mkt')}
     </div>
@@ -166,6 +168,8 @@ function AccountDrawdownChart({
   worstPortfolioId: string
   marketMaxDD: number
 }) {
+  const t = useT()
+  const tr = useTRich()
   const { data, minDD, accountMaxDDByPortfolio } = useMemo(() => {
     const result = computeSeriesDD(portfolios, p => {
       let peak = 0
@@ -203,18 +207,18 @@ function AccountDrawdownChart({
 
   return (
     <div className="dca-storm-chart">
-      <div className="dca-storm-chart-title">Số dư tài khoản sập bao nhiêu?</div>
+      <div className="dca-storm-chart-title">{t('storm.accountChartTitle')}</div>
       <div className="dca-storm-chart-sub">
-        Khoảng cách từ đỉnh số dư tài khoản thực tế của bạn. Đây là thứ bạn thấy khi mở app quỹ.
+        {t('storm.accountChartNote')}
       </div>
       {renderUnderwaterChart(data, portfolios, floorPct, 'acc')}
       {softenedSignificant && (
         <div className="dca-storm-chart-note">
-          Giá quỹ sập <strong>-{marketDDPct.toFixed(1)}%</strong>, nhưng số dư tài khoản
-          lúc tệ nhất chỉ <strong>-{accountDDPct.toFixed(1)}%</strong>. Khoảng chênh{' '}
-          <strong>{softenedBy.toFixed(1)} điểm %</strong> là phần DCA cứu vớt: mỗi lần bạn
-          nạp thêm tiền giữa bão, peak số dư được kéo lên chậm, đáy cũng không sập sâu như
-          giá quỹ.
+          {tr('storm.softened', {
+            market: marketDDPct.toFixed(1),
+            account: accountDDPct.toFixed(1),
+            gap: softenedBy.toFixed(1),
+          })}
         </div>
       )}
     </div>
@@ -344,6 +348,8 @@ function renderUnderwaterChart(
  * trong lịch sử, và (đa số) đều đã hồi phục.
  */
 function DrawdownEpisodesSection({ portfolios }: { portfolios: StormPortfolio[] }) {
+  const t = useT()
+  const { language } = useLanguage()
   const perPortfolio = useMemo(() => portfolios.map(p => ({
     id: p.id,
     name: p.name,
@@ -355,10 +361,9 @@ function DrawdownEpisodesSection({ portfolios }: { portfolios: StormPortfolio[] 
 
   return (
     <div className="dca-episodes-section">
-      <div className="dca-storm-chart-title">Các đợt sụt giảm lớn nhất</div>
+      <div className="dca-storm-chart-title">{t('storm.tableTitle')}</div>
       <div className="dca-storm-chart-sub">
-        Top 5 đợt sụt từ 5% trở lên của mỗi danh mục. "Dưới đỉnh" là tổng thời
-        gian từ lúc lập đỉnh đến khi vượt lại đỉnh cũ.
+        {t('storm.tableNote')}
       </div>
 
       {perPortfolio.map(p => (
@@ -374,11 +379,11 @@ function DrawdownEpisodesSection({ portfolios }: { portfolios: StormPortfolio[] 
               <thead>
                 <tr>
                   <th>#</th>
-                  <th>Sụt giảm</th>
-                  <th>Từ đỉnh</th>
-                  <th>Chạm đáy</th>
-                  <th>Hồi phục</th>
-                  <th>Dưới đỉnh</th>
+                  <th>{t('storm.col.drawdown')}</th>
+                  <th>{t('storm.col.fromPeak')}</th>
+                  <th>{t('storm.col.trough')}</th>
+                  <th>{t('storm.col.recovered')}</th>
+                  <th>{t('storm.col.underwater')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -388,8 +393,8 @@ function DrawdownEpisodesSection({ portfolios }: { portfolios: StormPortfolio[] 
                     <td className="dca-loss">{(e.depth * 100).toFixed(1)}%</td>
                     <td>{formatMonthYear(e.peakDate)}</td>
                     <td>{formatMonthYear(e.troughDate)}</td>
-                    <td>{e.recoveryDate ? formatMonthYear(e.recoveryDate) : 'chưa hồi phục'}</td>
-                    <td>{formatEpisodeDuration(e.totalDays)}{e.recoveryDate === null ? ' *' : ''}</td>
+                    <td>{e.recoveryDate ? formatMonthYear(e.recoveryDate) : t('storm.stat.notRecovered')}</td>
+                    <td>{formatEpisodeDuration(e.totalDays, language)}{e.recoveryDate === null ? ' *' : ''}</td>
                   </tr>
                 ))}
               </tbody>
@@ -417,10 +422,10 @@ function recoveryNeededPct(maxDrawdown: number): number {
 }
 
 /** Số ngày → "2.5 năm" / "8 tháng" / "45 ngày" */
-function formatEpisodeDuration(days: number): string {
-  if (days >= 365) return (days / 365.25).toFixed(1) + ' năm'
-  if (days >= 60) return Math.round(days / 30.44) + ' tháng'
-  return days + ' ngày'
+function formatEpisodeDuration(days: number, lang: Language): string {
+  if (days >= 365) return translateStatic('storm.years', lang, { v: (days / 365.25).toFixed(1) })
+  if (days >= 60) return translateStatic('storm.months', lang, { v: Math.round(days / 30.44) })
+  return translateStatic('storm.days', lang, { v: days })
 }
 
 function formatMonthYearShort(dateStr: string): string {
@@ -444,8 +449,10 @@ interface TakeawayProps {
 }
 
 function StormTakeaway({ storm, worstName, multi }: TakeawayProps) {
+  const t = useT()
+  const tr = useTRich()
   const s = storm
-  const bearName = s.inBearPeriod ? BEAR_LABEL[s.inBearPeriod] : null
+  const bearKey = s.inBearPeriod ? BEAR_LABEL_KEYS[s.inBearPeriod] : null
   const ddPct = Math.abs(s.maxDrawdown * 100).toFixed(1)
   const recoveryPct = recoveryNeededPct(s.maxDrawdown).toFixed(0)
 
@@ -455,19 +462,16 @@ function StormTakeaway({ storm, worstName, multi }: TakeawayProps) {
       <div className="dca-storm-takeaway">
         <span className="dca-storm-takeaway-icon">⚓</span>
         <div>
-          {multi ? (
-            <>Đáy sâu nhất của danh mục <strong>{worstName}</strong> là</>
-          ) : (
-            <>Đáy sâu nhất là</>
-          )}
-          {' '}<strong>-{ddPct}%</strong> vào{' '}
-          <strong>{formatMonthYear(s.maxDDDate)}</strong>
-          {bearName && <>, đúng vào {bearName}</>}. Từ đáy đó, giá cần tăng{' '}
-          <strong>+{recoveryPct}%</strong> chỉ để hòa vốn, sụt càng sâu thì càng khó gỡ lại.
-          Nếu bạn hoảng loạn bán lúc đó, toàn bộ khoản lỗ sẽ hiện thực hóa. Nhưng bạn đã
-          kiên trì nạp tiền thêm, và thị trường hồi phục về đỉnh cũ sau{' '}
-          <strong>{s.recoveryMonths} tháng</strong>. Đó là lý do vì sao đầu tư đều đặn qua
-          từng tháng quan trọng hơn đoán đỉnh đoán đáy thị trường.
+          {multi
+            ? tr('storm.takeaway.recoveredNamed', { name: worstName })
+            : tr('storm.takeaway.recoveredUnnamed')}
+          {tr('storm.takeaway.recoveredBody', {
+            dd: ddPct,
+            date: formatMonthYear(s.maxDDDate),
+            bear: bearKey ? t('storm.takeaway.bearSuffix', { bear: t(bearKey) }) : '',
+            recovery: recoveryPct,
+            months: s.recoveryMonths,
+          })}
         </div>
       </div>
     )
@@ -478,19 +482,15 @@ function StormTakeaway({ storm, worstName, multi }: TakeawayProps) {
     <div className="dca-storm-takeaway dca-storm-takeaway--ongoing">
       <span className="dca-storm-takeaway-icon">⛈️</span>
       <div>
-        {multi ? (
-          <>Danh mục <strong>{worstName}</strong> chạm đáy</>
-        ) : (
-          <>Danh mục chạm đáy</>
-        )}
-        {' '}<strong>-{ddPct}%</strong> vào <strong>{formatMonthYear(s.maxDDDate)}</strong>
-        {bearName && <>, đúng vào {bearName}</>} và hiện vẫn chưa hồi phục về đỉnh cũ. Để
-        hòa vốn từ đáy này, giá cần tăng <strong>+{recoveryPct}%</strong>, một lời nhắc
-        rằng sụt càng sâu thì càng khó gỡ lại. Thị trường Việt Nam là thị trường cận biên,
-        từ bull sang bear diễn ra chóng vánh.
-        {' '}Có thể bạn đang trong giai đoạn bão. Hãy kiên trì nạp tiền đều đặn qua từng
-        tháng, mua được nhiều chứng chỉ quỹ hơn khi giá thấp. Lịch sử cho thấy các bear
-        market trước đây (2018-2019, 2022) đều đã hồi phục.
+        {multi
+          ? tr('storm.takeaway.underwaterNamed', { name: worstName })
+          : tr('storm.takeaway.underwaterUnnamed')}
+        {tr('storm.takeaway.underwaterBody', {
+          dd: ddPct,
+          date: formatMonthYear(s.maxDDDate),
+          bear: bearKey ? t('storm.takeaway.bearSuffix', { bear: t(bearKey) }) : '',
+          recovery: recoveryPct,
+        })}
       </div>
     </div>
   )
