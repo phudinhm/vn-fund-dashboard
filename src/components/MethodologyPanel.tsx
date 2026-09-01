@@ -2,7 +2,7 @@ import { memo } from 'react'
 
 /**
  * Tab "Minh Bạch Hoá": tài liệu giải thích chính xác cách dashboard tính từng
- * con số, bắt đầu từ tab DCA. Nội dung tĩnh, viết theo giọng blog vohoanghac,
+ * con số, bắt đầu từ tab DCA. Nội dung tĩnh, viết theo giọng blog minhphudinh,
  * ví dụ số dùng số minh hoạ cố định (không kéo từ trạng thái mô phỏng) để luôn
  * khớp với code và không bao giờ vỡ khi dữ liệu đổi.
  *

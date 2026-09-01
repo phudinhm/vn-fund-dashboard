@@ -9,7 +9,7 @@ export interface SeoMeta {
   indexable: boolean
 }
 
-const SITE_ORIGIN = 'https://fund.vohoanghac.com'
+const SITE_ORIGIN = 'https://fund.minhphudinh.com'
 
 export const SEO_BY_TAB: Record<TabId, SeoMeta> = {
   compare: {
@@ -17,6 +17,12 @@ export const SEO_BY_TAB: Record<TabId, SeoMeta> = {
     description: 'So sánh hiệu suất quỹ mở, ETF và các tài sản tại Việt Nam bằng dữ liệu lịch sử NAV, CAGR, drawdown và rolling return.',
     heading: 'So Sánh Quỹ Mở và ETF Việt Nam',
     indexable: true,
+  },
+  watchlist: {
+    title: 'Danh sách quỹ theo dõi | Fund Dashboard',
+    description: 'Lưu và theo dõi các quỹ mở, ETF yêu thích với CAGR, sụt giảm tối đa và lợi nhuận 1 năm gần nhất.',
+    heading: 'Danh Sách Quỹ Theo Dõi',
+    indexable: false,
   },
   dca: {
     title: 'Mô phỏng DCA quỹ đầu tư Việt Nam | Fund Dashboard',
@@ -77,12 +83,6 @@ export const SEO_BY_TAB: Record<TabId, SeoMeta> = {
     description: 'Tìm hiểu nguồn dữ liệu, công thức và các giới hạn của những chỉ số trong Fund Dashboard.',
     heading: 'Phương Pháp và Dữ Liệu',
     indexable: true,
-  },
-  changelog: {
-    title: 'Nhật ký thay đổi | Fund Dashboard',
-    description: 'Theo dõi các thay đổi về dữ liệu, công thức và tính năng của Fund Dashboard.',
-    heading: 'Nhật Ký Thay Đổi',
-    indexable: false,
   },
 }
 

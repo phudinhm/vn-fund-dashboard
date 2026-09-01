@@ -183,6 +183,12 @@ function WallOfWorryPanelImpl() {
 
   const { pts, t0, t1, xOf, yOf, linePath, areaPath, yearTicks, labels, inRangeEvents } = chart
   const hiddenCount = WOW_EVENTS.length - inRangeEvents.length
+
+  /** Ngày sự kiện mới nhất trong danh sách tĩnh — mốc "dữ liệu tới đâu". */
+  const lastCuratedDate = WOW_EVENTS.reduce(
+    (latest, e) => (e.date > latest ? e.date : latest),
+    WOW_EVENTS[0]?.date ?? '',
+  )
   const shownOnChartCount = inRangeEvents.length - hiddenDates.size
   const allHidden = inRangeEvents.length > 0 && hiddenDates.size === inRangeEvents.length
 
@@ -232,6 +238,16 @@ function WallOfWorryPanelImpl() {
     <div className="simulation-panel wow-panel">
       <div className="panel-header">
         <h2>Wall of Worry</h2>
+      </div>
+
+      {/* Danh sách sự kiện là mảng tĩnh trong mã nguồn (wallOfWorryEvents.ts),
+          KHÔNG tự cập nhật theo tin tức. Nói rõ ra cùng ngày sự kiện mới nhất,
+          để không ai tưởng thị trường thật sự yên ắng từ đó tới nay. */}
+      <div className="fa-scope-note">
+        <strong>Danh sách tuyển chọn thủ công.</strong> {WOW_EVENTS.length} sự kiện được
+        chọn lọc và gắn nguồn bằng tay, không tự động cập nhật theo tin tức. Sự kiện mới
+        nhất trong danh sách: <strong>{formatDateVN(lastCuratedDate)}</strong>. Biến động
+        sau mốc đó chưa được đánh dấu.
       </div>
 
       <div className="dca-journey-block">

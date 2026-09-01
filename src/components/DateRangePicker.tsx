@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useT, type TranslationKey } from '../i18n'
 
 interface Props {
   dateFrom: string | null
@@ -9,17 +10,7 @@ interface Props {
 
 type Preset = '7d' | '1m' | '3m' | '6m' | '1y' | '3y' | '5y' | 'ytd' | 'all'
 
-const PRESETS: { value: Preset; label: string }[] = [
-  { value: '7d', label: '7 ngày' },
-  { value: '1m', label: '1 tháng' },
-  { value: '3m', label: '3 tháng' },
-  { value: '6m', label: '6 tháng' },
-  { value: '1y', label: '1 năm' },
-  { value: '3y', label: '3 năm' },
-  { value: '5y', label: '5 năm' },
-  { value: 'ytd', label: 'YTD' },
-  { value: 'all', label: 'Tất cả' },
-]
+const PRESET_VALUES: Preset[] = ['7d', '1m', '3m', '6m', '1y', '3y', '5y', 'ytd', 'all']
 
 function getPresetFrom(preset: Preset): string | null {
   const now = new Date()
@@ -62,15 +53,16 @@ function getActivePreset(dateFrom: string | null, dateTo: string | null): Preset
   if (dateTo) return null
   if (!dateFrom) return 'all'
 
-  for (const p of PRESETS) {
-    if (p.value === 'all') continue
-    const expected = getPresetFrom(p.value)
-    if (expected === dateFrom) return p.value
+  for (const value of PRESET_VALUES) {
+    if (value === 'all') continue
+    const expected = getPresetFrom(value)
+    if (expected === dateFrom) return value
   }
   return null
 }
 
 export function DateRangePicker({ dateFrom, dateTo, onChangeFrom, onChangeTo }: Props) {
+  const t = useT()
   const [draftFrom, setDraftFrom] = useState(dateFrom ?? '')
   const [draftTo, setDraftTo] = useState(dateTo ?? '')
 
@@ -90,20 +82,20 @@ export function DateRangePicker({ dateFrom, dateTo, onChangeFrom, onChangeTo }: 
   return (
     <div className="date-range-picker">
       <div className="date-presets">
-        {PRESETS.map(p => (
+        {PRESET_VALUES.map(value => (
           <button
-            key={p.value}
-            className={`preset-btn ${activePreset === p.value ? 'preset-btn-active' : ''}`}
-            onClick={() => handlePreset(p.value)}
+            key={value}
+            className={`preset-btn ${activePreset === value ? 'preset-btn-active' : ''}`}
+            onClick={() => handlePreset(value)}
           >
-            {p.label}
+            {t(`dateRange.${value}` as TranslationKey)}
           </button>
         ))}
       </div>
       <div className="date-inputs">
         <input
           type="date"
-          aria-label="Từ ngày"
+          aria-label={t('dateRange.from')}
           value={draftFrom}
           onChange={e => setDraftFrom(e.target.value)}
           onBlur={() => onChangeFrom(draftFrom || null)}
@@ -111,7 +103,7 @@ export function DateRangePicker({ dateFrom, dateTo, onChangeFrom, onChangeTo }: 
         <span className="date-separator">→</span>
         <input
           type="date"
-          aria-label="Đến ngày"
+          aria-label={t('dateRange.to')}
           value={draftTo}
           onChange={e => setDraftTo(e.target.value)}
           onBlur={() => onChangeTo(draftTo || null)}

@@ -2,7 +2,7 @@
  * DcaReturnExplainer: giải thích vì sao có 2 con số lợi nhuận khác nhau (CAGR vs MWRR).
  *
  * Retail VN hay nhìn thấy 2 con số chênh lệch nhau 5-10% và bối rối.
- * Dùng ẩn dụ "cây giống" trực tiếp từ blog Võ Hoàng Hạc (cam-nang-dca-toan-tap phần 2)
+ * Dùng ẩn dụ "cây giống" trực tiếp từ blog minhphudinh (cam-nang-dca-toan-tap phần 2)
  * để giải thích: CAGR giả định toàn bộ tiền có từ đầu, MWRR chiết khấu từng dòng tiền.
  *
  * Default collapsed, user nào tò mò thì mở.

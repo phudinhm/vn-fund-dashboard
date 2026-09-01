@@ -43,7 +43,7 @@ describe('SeoMetadata', () => {
     )
     expect(document.head.querySelector('link[rel="canonical"]')).toHaveAttribute(
       'href',
-      'https://fund.vohoanghac.com/',
+      'https://fund.minhphudinh.com/',
     )
     expect(document.head.querySelector('meta[name="robots"]')).toHaveAttribute('content', 'noindex, follow')
   })
@@ -58,7 +58,7 @@ describe('SeoMetadata', () => {
     expect(document.head.querySelector('meta[name="robots"]')).toHaveAttribute('content', 'noindex, follow')
     expect(document.head.querySelector('link[rel="canonical"]')).toHaveAttribute(
       'href',
-      'https://fund.vohoanghac.com/',
+      'https://fund.minhphudinh.com/',
     )
   })
 })

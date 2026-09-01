@@ -141,7 +141,7 @@ function PricePanel({
           {series.name}
         </span>
         <span className="price-chart-panel-unit">
-          {lastValue !== undefined && `${formatVNDFull(lastValue)} / ${unitOf(meta)}`}
+          {lastValue !== undefined && formatAssetValue(lastValue, meta)}
         </span>
       </div>
       <ResponsiveContainer width="100%" height={height}>
@@ -164,7 +164,7 @@ function PricePanel({
           />
           <Tooltip
             formatter={(value: number, name: string) => [
-              `${formatVNDFull(value)} / ${unitOf(meta)}`,
+              formatAssetValue(value, meta),
               name,
             ]}
             labelFormatter={formatTooltipDate}
@@ -235,4 +235,11 @@ function unitOf(meta: FundMeta | undefined): string {
   if (meta?.type === 'gold') return 'lượng'
   if (meta?.type === 'crypto') return 'coin'
   return 'CCQ'
+}
+
+/** Format giá trị hiển thị theo loại tài sản. Chỉ số thị trường (VNINDEX,
+ *  VN30...) tính bằng điểm, không phải tiền — không gắn đơn vị "đ". */
+function formatAssetValue(value: number, meta: FundMeta | undefined): string {
+  if (meta?.type === 'index') return `${Math.round(value).toLocaleString('vi-VN')} điểm`
+  return `${formatVNDFull(value)} / ${unitOf(meta)}`
 }

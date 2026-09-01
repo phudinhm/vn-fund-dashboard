@@ -58,7 +58,7 @@ export function CompareStoryBlock({ funds, colors, startDate, endDate }: Props) 
       const posRate = positiveRollingRate(roll12) ?? 0
       return {
         id: f.id,
-        color: colors[i % colors.length] ?? '#2563EB',
+        color: colors[i % colors.length] ?? 'var(--color-primary)',
         cagr,
         totalReturn,
         vol,

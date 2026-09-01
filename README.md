@@ -8,7 +8,7 @@ Nay nhờ sự giúp đỡ của Claude Code thì ước mơ này đã thành hi
 
 Dashboard so sánh hiệu suất các quỹ đầu tư mở (cổ phiếu, trái phiếu, cân bằng) và ETF tại Việt Nam. Dữ liệu cập nhật tự động hàng ngày.
 
-**Demo:** [fund.vohoanghac.com](https://fund.vohoanghac.com)
+**Demo:** [fund.minhphudinh.com](https://fund.minhphudinh.com)
 
 ![So Sánh](docs/screenshot1.png)
 
@@ -122,7 +122,17 @@ Dashboard so sánh hiệu suất các quỹ đầu tư mở (cổ phiếu, trái
 | FUESSVFL | 2020 |
 | FUEVN100 | 2020 |
 
+### Chỉ số (benchmark)
+
+Dùng để so sánh hiệu suất quỹ với thị trường chung — chọn như một tài sản bình thường ở bất kỳ tab nào.
+
+| Mã | Tên |
+|---------|---------|
+| VNINDEX | Chỉ số VN-Index (HOSE) |
+| VN30 | Chỉ số 30 cổ phiếu vốn hoá lớn nhất HOSE |
+| VN100 | Chỉ số 100 cổ phiếu vốn hoá lớn nhất HOSE |
+
 ### Nguồn dữ liệu
 - **Quỹ mở:** [fmarket.vn](https://fmarket.vn) API
-- **ETF:** [vnstock](https://github.com/thinh-vu/vnstock) (nguồn VCI)
+- **ETF & chỉ số:** [vnstock](https://github.com/thinh-vu/vnstock) (nguồn VCI)
 - **Cập nhật:** GitHub Actions chạy tự động 18:00 (giờ VN), thứ 2–6

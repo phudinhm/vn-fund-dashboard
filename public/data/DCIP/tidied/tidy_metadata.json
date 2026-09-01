@@ -1,0 +1,625 @@
+{
+  "fund_id": "DCIP",
+  "files": [
+    {
+      "source_file": "DCIP_2021_06.xlsx",
+      "as_of": "2021-07-01",
+      "fund_name_vi": "Quỹ Đầu tư Trái phiếu Gia tăng Thu nhập Cố định DC",
+      "fund_name_en": "DC Income Plus Bond Fund (DCIP)",
+      "company_vi": "Công ty Cổ phần Quản lý Quỹ Đầu tư Dragon Capital Việt Nam",
+      "company_en": "Dragon Capital Vietfund Management Joint Stock Company",
+      "bank_vi": "Ngân hàng TNHH Một thành viên Standard Chartered (Việt Nam)",
+      "bank_en": "Standard Chartered Bank (Vietnam) Limited"
+    },
+    {
+      "source_file": "DCIP_2021_07.xlsx",
+      "as_of": "2021-08-02",
+      "fund_name_vi": "Quỹ Đầu tư Trái phiếu Gia tăng Thu nhập Cố định DC",
+      "fund_name_en": "DC Income Plus Bond Fund (DCIP)",
+      "company_vi": "Công ty Cổ phần Quản lý Quỹ Đầu tư Dragon Capital Việt Nam",
+      "company_en": "Dragon Capital Vietfund Management Joint Stock Company",
+      "bank_vi": "Ngân hàng TNHH Một thành viên Standard Chartered (Việt Nam)",
+      "bank_en": "Standard Chartered Bank (Vietnam) Limited"
+    },
+    {
+      "source_file": "DCIP_2021_08.xlsx",
+      "as_of": "2021-09-01",
+      "fund_name_vi": "Quỹ Đầu tư Trái phiếu Gia tăng Thu nhập Cố định DC",
+      "fund_name_en": "DC Income Plus Bond Fund (DCIP)",
+      "company_vi": "Công ty Cổ phần Quản lý Quỹ Đầu tư Dragon Capital Việt Nam",
+      "company_en": "Dragon Capital Vietfund Management Joint Stock Company",
+      "bank_vi": "Ngân hàng TNHH Một thành viên Standard Chartered (Việt Nam)",
+      "bank_en": "Standard Chartered Bank (Vietnam) Limited"
+    },
+    {
+      "source_file": "DCIP_2021_09.xlsx",
+      "as_of": "2021-10-01",
+      "fund_name_vi": "Quỹ Đầu tư Trái phiếu Gia tăng Thu nhập Cố định DC",
+      "fund_name_en": "DC Income Plus Bond Fund (DCIP)",
+      "company_vi": "Công ty Cổ phần Quản lý Quỹ Đầu tư Dragon Capital Việt Nam",
+      "company_en": "Dragon Capital Vietfund Management Joint Stock Company",
+      "bank_vi": "Ngân hàng TNHH Một thành viên Standard Chartered (Việt Nam)",
+      "bank_en": "Standard Chartered Bank (Vietnam) Limited"
+    },
+    {
+      "source_file": "DCIP_2021_10.xlsx",
+      "as_of": "2021-11-01",
+      "fund_name_vi": "Quỹ Đầu tư Trái phiếu Gia tăng Thu nhập Cố định DC",
+      "fund_name_en": "DC Income Plus Bond Fund (DCIP)",
+      "company_vi": "Công ty Cổ phần Quản lý Quỹ Đầu tư Dragon Capital Việt Nam",
+      "company_en": "Dragon Capital Vietfund Management Joint Stock Company",
+      "bank_vi": "Ngân hàng TNHH Một thành viên Standard Chartered (Việt Nam)",
+      "bank_en": "Standard Chartered Bank (Vietnam) Limited"
+    },
+    {
+      "source_file": "DCIP_2021_11.xlsx",
+      "as_of": "2021-12-01",
+      "fund_name_vi": "Quỹ Đầu tư Trái phiếu Gia tăng Thu nhập Cố định DC",
+      "fund_name_en": "DC Income Plus Bond Fund (DCIP)",
+      "company_vi": "Công ty Cổ phần Quản lý Quỹ Đầu tư Dragon Capital Việt Nam",
+      "company_en": "Dragon Capital Vietfund Management Joint Stock Company",
+      "bank_vi": "Ngân hàng TNHH Một thành viên Standard Chartered (Việt Nam)",
+      "bank_en": "Standard Chartered Bank (Vietnam) Limited"
+    },
+    {
+      "source_file": "DCIP_2021_12.xlsx",
+      "as_of": "2022-01-05",
+      "fund_name_vi": "Quỹ Đầu tư Trái phiếu Gia tăng Thu nhập Cố định DC",
+      "fund_name_en": "DC Income Plus Bond Fund (DCIP)",
+      "company_vi": "Công ty Cổ phần Quản lý Quỹ Đầu tư Dragon Capital Việt Nam",
+      "company_en": "Dragon Capital Vietfund Management Joint Stock Company",
+      "bank_vi": "Ngân hàng TNHH Một thành viên Standard Chartered (Việt Nam)",
+      "bank_en": "Standard Chartered Bank (Vietnam) Limited"
+    },
+    {
+      "source_file": "DCIP_2022_01.xlsx",
+      "as_of": "2022-02-08",
+      "fund_name_vi": "Quỹ Đầu tư Trái phiếu Gia tăng Thu nhập Cố định DC",
+      "fund_name_en": "DC Income Plus Bond Fund (DCIP)",
+      "company_vi": "Công ty Cổ phần Quản lý Quỹ Đầu tư Dragon Capital Việt Nam",
+      "company_en": "Dragon Capital Vietfund Management Joint Stock Company",
+      "bank_vi": "Ngân hàng TNHH Một thành viên Standard Chartered (Việt Nam)",
+      "bank_en": "Standard Chartered Bank (Vietnam) Limited"
+    },
+    {
+      "source_file": "DCIP_2022_02.xlsx",
+      "as_of": "2022-03-01",
+      "fund_name_vi": "Quỹ Đầu tư Trái phiếu Gia tăng Thu nhập Cố định DC",
+      "fund_name_en": "DC Income Plus Bond Fund (DCIP)",
+      "company_vi": "Công ty Cổ phần Quản lý Quỹ Đầu tư Dragon Capital Việt Nam",
+      "company_en": "Dragon Capital Vietfund Management Joint Stock Company",
+      "bank_vi": "Ngân hàng TNHH Một thành viên Standard Chartered (Việt Nam)",
+      "bank_en": "Standard Chartered Bank (Vietnam) Limited"
+    },
+    {
+      "source_file": "DCIP_2022_03.xlsx",
+      "as_of": "2022-04-04",
+      "fund_name_vi": "Quỹ Đầu tư Trái phiếu Gia tăng Thu nhập Cố định DC",
+      "fund_name_en": "DC Income Plus Bond Fund (DCIP)",
+      "company_vi": "Công ty Cổ phần Quản lý Quỹ Đầu tư Dragon Capital Việt Nam",
+      "company_en": "Dragon Capital Vietfund Management Joint Stock Company",
+      "bank_vi": "Ngân hàng TNHH Một thành viên Standard Chartered (Việt Nam)",
+      "bank_en": "Standard Chartered Bank (Vietnam) Limited"
+    },
+    {
+      "source_file": "DCIP_2022_04.xlsx",
+      "as_of": "2022-05-05",
+      "fund_name_vi": "Quỹ Đầu tư Trái phiếu Gia tăng Thu nhập Cố định DC",
+      "fund_name_en": "DC Income Plus Bond Fund (DCIP)",
+      "company_vi": "Công ty Cổ phần Quản lý Quỹ Đầu tư Dragon Capital Việt Nam",
+      "company_en": "Dragon Capital Vietfund Management Joint Stock Company",
+      "bank_vi": "Ngân hàng TNHH Một thành viên Standard Chartered (Việt Nam)",
+      "bank_en": "Standard Chartered Bank (Vietnam) Limited"
+    },
+    {
+      "source_file": "DCIP_2022_05.xlsx",
+      "as_of": "2022-06-01",
+      "fund_name_vi": "Quỹ Đầu tư Trái phiếu Gia tăng Thu nhập Cố định DC",
+      "fund_name_en": "DC Income Plus Bond Fund(DCIP)",
+      "company_vi": "Công ty Cổ phần Quản lý Quỹ Đầu tư Dragon Capital Việt Nam",
+      "company_en": "Dragon Capital Vietfund Management Joint Stock Company",
+      "bank_vi": "Ngân hàng TNHH Một thành viên Standard Chartered (Việt Nam)",
+      "bank_en": "Standard Chartered Bank (Vietnam) Limited"
+    },
+    {
+      "source_file": "DCIP_2022_06.xlsx",
+      "as_of": "2022-07-01",
+      "fund_name_vi": "Quỹ Đầu tư Trái phiếu Gia tăng Thu nhập Cố định DC",
+      "fund_name_en": "DC Income Plus Bond Fund(DCIP)",
+      "company_vi": "Công ty Cổ phần Quản lý Quỹ Đầu tư Dragon Capital Việt Nam",
+      "company_en": "Dragon Capital Vietfund Management Joint Stock Company",
+      "bank_vi": "Ngân hàng TNHH Một thành viên Standard Chartered (Việt Nam)",
+      "bank_en": "Standard Chartered Bank (Vietnam) Limited"
+    },
+    {
+      "source_file": "DCIP_2022_07.xlsx",
+      "as_of": "2022-08-01",
+      "fund_name_vi": "Quỹ Đầu tư Trái phiếu Gia tăng Thu nhập Cố định DC",
+      "fund_name_en": "DC Income Plus Bond Fund(DCIP)",
+      "company_vi": "Công ty Cổ phần Quản lý Quỹ Đầu tư Dragon Capital Việt Nam",
+      "company_en": "Dragon Capital Vietfund Management Joint Stock Company",
+      "bank_vi": "Ngân hàng TNHH Một thành viên Standard Chartered (Việt Nam)",
+      "bank_en": "Standard Chartered Bank (Vietnam) Limited"
+    },
+    {
+      "source_file": "DCIP_2022_08.xlsx",
+      "as_of": "2022-09-05",
+      "fund_name_vi": "Quỹ Đầu tư Trái phiếu Gia tăng Thu nhập Cố định DC",
+      "fund_name_en": "DC Income Plus Bond Fund(DCIP)",
+      "company_vi": "Công ty Cổ phần Quản lý Quỹ Đầu tư Dragon Capital Việt Nam",
+      "company_en": "Dragon Capital Vietfund Management Joint Stock Company",
+      "bank_vi": "Ngân hàng TNHH Một thành viên Standard Chartered (Việt Nam)",
+      "bank_en": "Standard Chartered Bank (Vietnam) Limited"
+    },
+    {
+      "source_file": "DCIP_2022_09.xlsx",
+      "as_of": "2022-10-03",
+      "fund_name_vi": "Quỹ Đầu tư Trái phiếu Gia tăng Thu nhập Cố định DC",
+      "fund_name_en": "DC Income Plus Bond Fund(DCIP)",
+      "company_vi": "Công ty Cổ phần Quản lý Quỹ Đầu tư Dragon Capital Việt Nam",
+      "company_en": "Dragon Capital Vietfund Management Joint Stock Company",
+      "bank_vi": "Ngân hàng TNHH Một thành viên Standard Chartered (Việt Nam)",
+      "bank_en": "Standard Chartered Bank (Vietnam) Limited"
+    },
+    {
+      "source_file": "DCIP_2022_10.xlsx",
+      "as_of": "2022-11-01",
+      "fund_name_vi": "Quỹ Đầu tư Trái phiếu Gia tăng Thu nhập Cố định DC",
+      "fund_name_en": "DC Income Plus Bond Fund(DCIP)",
+      "company_vi": "Công ty Cổ phần Quản lý Quỹ Đầu tư Dragon Capital Việt Nam",
+      "company_en": "Dragon Capital Vietfund Management Joint Stock Company",
+      "bank_vi": "Ngân hàng TNHH Một thành viên Standard Chartered (Việt Nam)",
+      "bank_en": "Standard Chartered Bank (Vietnam) Limited"
+    },
+    {
+      "source_file": "DCIP_2022_11.xlsx",
+      "as_of": "2022-12-02",
+      "fund_name_vi": "Quỹ Đầu tư Trái phiếu Gia tăng Thu nhập Cố định DC",
+      "fund_name_en": "DC Income Plus Bond Fund(DCIP)",
+      "company_vi": "Công ty Cổ phần Quản lý Quỹ Đầu tư Dragon Capital Việt Nam",
+      "company_en": "Dragon Capital Vietfund Management Joint Stock Company",
+      "bank_vi": "Ngân hàng TNHH Một thành viên Standard Chartered (Việt Nam)",
+      "bank_en": "Standard Chartered Bank (Vietnam) Limited"
+    },
+    {
+      "source_file": "DCIP_2022_12.xlsx",
+      "as_of": "2023-01-04",
+      "fund_name_vi": "Quỹ Đầu tư Trái phiếu Gia tăng Thu nhập Cố định DC",
+      "fund_name_en": "DC Income Plus Bond Fund(DCIP)",
+      "company_vi": "Công ty Cổ phần Quản lý Quỹ Đầu tư Dragon Capital Việt Nam",
+      "company_en": "Dragon Capital Vietfund Management Joint Stock Company",
+      "bank_vi": "Ngân hàng TNHH Một thành viên Standard Chartered (Việt Nam)",
+      "bank_en": "Standard Chartered Bank (Vietnam) Limited"
+    },
+    {
+      "source_file": "DCIP_2023_01.xlsx",
+      "as_of": "2023-02-01",
+      "fund_name_vi": "Quỹ Đầu tư Trái phiếu Gia tăng Thu nhập Cố định DC",
+      "fund_name_en": "DC Income Plus Bond Fund(DCIP)",
+      "company_vi": "Công ty Cổ phần Quản lý Quỹ Đầu tư Dragon Capital Việt Nam",
+      "company_en": "Dragon Capital Vietfund Management Joint Stock Company",
+      "bank_vi": "Ngân hàng TNHH Một thành viên Standard Chartered (Việt Nam)",
+      "bank_en": "Standard Chartered Bank (Vietnam) Limited"
+    },
+    {
+      "source_file": "DCIP_2023_02.xlsx",
+      "as_of": "2023-03-02",
+      "fund_name_vi": "Quỹ Đầu tư Trái phiếu Gia tăng Thu nhập Cố định DC",
+      "fund_name_en": "DC Income Plus Bond Fund(DCIP)",
+      "company_vi": "Công ty Cổ phần Quản lý Quỹ Đầu tư Dragon Capital Việt Nam",
+      "company_en": "Dragon Capital Vietfund Management Joint Stock Company",
+      "bank_vi": "Ngân hàng TNHH Một thành viên Standard Chartered (Việt Nam)",
+      "bank_en": "Standard Chartered Bank (Vietnam) Limited"
+    },
+    {
+      "source_file": "DCIP_2023_03.xlsx",
+      "as_of": "2023-04-04",
+      "fund_name_vi": "Quỹ Đầu tư Trái phiếu Gia tăng Thu nhập Cố định DC",
+      "fund_name_en": "DC Income Plus Bond Fund(DCIP)",
+      "company_vi": "Công ty Cổ phần Quản lý Quỹ Đầu tư Dragon Capital Việt Nam",
+      "company_en": "Dragon Capital Vietfund Management Joint Stock Company",
+      "bank_vi": "Ngân hàng TNHH Một thành viên Standard Chartered (Việt Nam)",
+      "bank_en": "Standard Chartered Bank (Vietnam) Limited"
+    },
+    {
+      "source_file": "DCIP_2023_04.xlsx",
+      "as_of": "2023-05-05",
+      "fund_name_vi": "Quỹ Đầu tư Trái phiếu Gia tăng Thu nhập Cố định DC",
+      "fund_name_en": "DC Income Plus Bond Fund(DCIP)",
+      "company_vi": "Công ty Cổ phần Quản lý Quỹ Đầu tư Dragon Capital Việt Nam",
+      "company_en": "Dragon Capital Vietfund Management Joint Stock Company",
+      "bank_vi": "Ngân hàng TNHH Một thành viên Standard Chartered (Việt Nam)",
+      "bank_en": "Standard Chartered Bank (Vietnam) Limited"
+    },
+    {
+      "source_file": "DCIP_2023_05.xlsx",
+      "as_of": "2023-06-02",
+      "fund_name_vi": "Quỹ Đầu tư Trái phiếu Gia tăng Thu nhập Cố định DC",
+      "fund_name_en": "DC Income Plus Bond Fund(DCIP)",
+      "company_vi": "Công ty Cổ phần Quản lý Quỹ Đầu tư Dragon Capital Việt Nam",
+      "company_en": "Dragon Capital Vietfund Management Joint Stock Company",
+      "bank_vi": "Ngân hàng TNHH Một thành viên Standard Chartered (Việt Nam)",
+      "bank_en": "Standard Chartered Bank (Vietnam) Limited"
+    },
+    {
+      "source_file": "DCIP_2023_06.xlsx",
+      "as_of": "2023-07-04",
+      "fund_name_vi": "Quỹ Đầu tư Trái phiếu Gia tăng Thu nhập Cố định DC",
+      "fund_name_en": "DC Income Plus Bond Fund(DCIP)",
+      "company_vi": "Công ty Cổ phần Quản lý Quỹ Đầu tư Dragon Capital Việt Nam",
+      "company_en": "Dragon Capital Vietfund Management Joint Stock Company",
+      "bank_vi": "Ngân hàng TNHH Một thành viên Standard Chartered (Việt Nam)",
+      "bank_en": "Standard Chartered Bank (Vietnam) Limited"
+    },
+    {
+      "source_file": "DCIP_2023_07.xlsx",
+      "as_of": "2023-08-02",
+      "fund_name_vi": "Quỹ Đầu tư Trái phiếu Gia tăng Thu nhập Cố định DC",
+      "fund_name_en": "DC Income Plus Bond Fund(VFMVFC)",
+      "company_vi": "Công ty Cổ phần Quản lý Quỹ Đầu tư Dragon Capital Việt Nam",
+      "company_en": "Dragon Capital Vietfund Management Joint Stock Company",
+      "bank_vi": "Ngân hàng TNHH Một thành viên Standard Chartered (Việt Nam)",
+      "bank_en": "Standard Chartered Bank (Vietnam) Limited"
+    },
+    {
+      "source_file": "DCIP_2023_08.xlsx",
+      "as_of": "2023-09-05",
+      "fund_name_vi": "Quỹ Đầu tư Trái phiếu Gia tăng Thu nhập Cố định DC",
+      "fund_name_en": "DC Income Plus Bond Fund(DCIP)",
+      "company_vi": "Công ty Cổ phần Quản lý Quỹ Đầu tư Dragon Capital Việt Nam",
+      "company_en": "Dragon Capital Vietfund Management Joint Stock Company",
+      "bank_vi": "Ngân hàng TNHH Một thành viên Standard Chartered (Việt Nam)",
+      "bank_en": "Standard Chartered Bank (Vietnam) Limited"
+    },
+    {
+      "source_file": "DCIP_2023_09.xlsx",
+      "as_of": "2023-10-02",
+      "fund_name_vi": "Quỹ Đầu tư Trái phiếu Gia tăng Thu nhập Cố định DC",
+      "fund_name_en": "DC Income Plus Bond Fund(DCIP)",
+      "company_vi": "Công ty Cổ phần Quản lý Quỹ Đầu tư Dragon Capital Việt Nam",
+      "company_en": "Dragon Capital Vietfund Management Joint Stock Company",
+      "bank_vi": "Ngân hàng TNHH Một thành viên Standard Chartered (Việt Nam)",
+      "bank_en": "Standard Chartered Bank (Vietnam) Limited"
+    },
+    {
+      "source_file": "DCIP_2023_10.xlsx",
+      "as_of": "2023-11-02",
+      "fund_name_vi": "Quỹ Đầu tư Trái phiếu Gia tăng Thu nhập Cố định DC",
+      "fund_name_en": "DC Income Plus Bond Fund(DCIP)",
+      "company_vi": "Công ty Cổ phần Quản lý Quỹ Đầu tư Dragon Capital Việt Nam",
+      "company_en": "Dragon Capital Vietfund Management Joint Stock Company",
+      "bank_vi": "Ngân hàng TNHH Một thành viên Standard Chartered (Việt Nam)",
+      "bank_en": "Standard Chartered Bank (Vietnam) Limited"
+    },
+    {
+      "source_file": "DCIP_2023_11.xlsx",
+      "as_of": "2023-12-04",
+      "fund_name_vi": "Quỹ Đầu tư Trái phiếu Gia tăng Thu nhập Cố định DC",
+      "fund_name_en": "DC Income Plus Bond Fund(DCIP)",
+      "company_vi": "Công ty Cổ phần Quản lý Quỹ Đầu tư Dragon Capital Việt Nam",
+      "company_en": "Dragon Capital Vietfund Management Joint Stock Company",
+      "bank_vi": "Ngân hàng TNHH Một thành viên Standard Chartered (Việt Nam)",
+      "bank_en": "Standard Chartered Bank (Vietnam) Limited"
+    },
+    {
+      "source_file": "DCIP_2023_12.xlsx",
+      "as_of": "2024-01-03",
+      "fund_name_vi": "Quỹ Đầu tư Trái phiếu Gia tăng Thu nhập Cố định DC",
+      "fund_name_en": "DC Income Plus Bond Fund(DCIP)",
+      "company_vi": "Công ty Cổ phần Quản lý Quỹ Đầu tư Dragon Capital Việt Nam",
+      "company_en": "Dragon Capital Vietfund Management Joint Stock Company",
+      "bank_vi": "Ngân hàng TNHH Một thành viên Standard Chartered (Việt Nam)",
+      "bank_en": "Standard Chartered Bank (Vietnam) Limited"
+    },
+    {
+      "source_file": "DCIP_2024_01.xlsx",
+      "as_of": "2024-02-02",
+      "fund_name_vi": "Quỹ Đầu tư Trái phiếu Gia tăng Thu nhập Cố định DC",
+      "fund_name_en": "DC Income Plus Bond Fund(DCIP)",
+      "company_vi": "Công ty Cổ phần Quản lý Quỹ Đầu tư Dragon Capital Việt Nam",
+      "company_en": "Dragon Capital Vietfund Management Joint Stock Company",
+      "bank_vi": "Ngân hàng TNHH Một thành viên Standard Chartered (Việt Nam)",
+      "bank_en": "Standard Chartered Bank (Vietnam) Limited"
+    },
+    {
+      "source_file": "DCIP_2024_02.xlsx",
+      "as_of": "2024-03-01",
+      "fund_name_vi": "Quỹ Đầu tư Trái phiếu Gia tăng Thu nhập Cố định DC",
+      "fund_name_en": "DC Income Plus Bond Fund(DCIP)",
+      "company_vi": "Công ty Cổ phần Quản lý Quỹ Đầu tư Dragon Capital Việt Nam",
+      "company_en": "Dragon Capital Vietfund Management Joint Stock Company",
+      "bank_vi": "Ngân hàng TNHH Một thành viên Standard Chartered (Việt Nam)",
+      "bank_en": "Standard Chartered Bank (Vietnam) Limited"
+    },
+    {
+      "source_file": "DCIP_2024_03.xlsx",
+      "as_of": "2024-04-01",
+      "fund_name_vi": "Quỹ Đầu tư Trái phiếu Gia tăng Thu nhập Cố định DC",
+      "fund_name_en": "DC Income Plus Bond Fund(DCIP)",
+      "company_vi": "Công ty Cổ phần Quản lý Quỹ Đầu tư Dragon Capital Việt Nam",
+      "company_en": "Dragon Capital Vietfund Management Joint Stock Company",
+      "bank_vi": "Ngân hàng TNHH Một thành viên Standard Chartered (Việt Nam)",
+      "bank_en": "Standard Chartered Bank (Vietnam) Limited"
+    },
+    {
+      "source_file": "DCIP_2024_04.xlsx",
+      "as_of": "2024-05-03",
+      "fund_name_vi": "Quỹ Đầu tư Trái phiếu Gia tăng Thu nhập Cố định DC",
+      "fund_name_en": "DC Income Plus Bond Fund(DCIP)",
+      "company_vi": "Công ty Cổ phần Quản lý Quỹ Đầu tư Dragon Capital Việt Nam",
+      "company_en": "Dragon Capital Vietfund Management Joint Stock Company",
+      "bank_vi": "Ngân hàng TNHH Một thành viên Standard Chartered (Việt Nam)",
+      "bank_en": "Standard Chartered Bank (Vietnam) Limited"
+    },
+    {
+      "source_file": "DCIP_2024_05.xlsx",
+      "as_of": "2024-06-03",
+      "fund_name_vi": "Quỹ Đầu tư Trái phiếu Gia tăng Thu nhập Cố định DC",
+      "fund_name_en": "DC Income Plus Bond Fund(DCIP)",
+      "company_vi": "Công ty Cổ phần Quản lý Quỹ Đầu tư Dragon Capital Việt Nam",
+      "company_en": "Dragon Capital Vietfund Management Joint Stock Company",
+      "bank_vi": "Ngân hàng TNHH Một thành viên Standard Chartered (Việt Nam)",
+      "bank_en": "Standard Chartered Bank (Vietnam) Limited"
+    },
+    {
+      "source_file": "DCIP_2024_06.xlsx",
+      "as_of": "2024-07-01",
+      "fund_name_vi": "Quỹ Đầu tư Trái phiếu Gia tăng Thu nhập Cố định DC",
+      "fund_name_en": "DC Income Plus Bond Fund(DCIP)",
+      "company_vi": "Công ty Cổ phần Quản lý Quỹ Đầu tư Dragon Capital Việt Nam",
+      "company_en": "Dragon Capital Vietfund Management Joint Stock Company",
+      "bank_vi": "Ngân hàng TNHH Một thành viên Standard Chartered (Việt Nam)",
+      "bank_en": "Standard Chartered Bank (Vietnam) Limited"
+    },
+    {
+      "source_file": "DCIP_2024_07.xlsx",
+      "as_of": "2024-08-01",
+      "fund_name_vi": "Quỹ Đầu tư Trái phiếu Gia tăng Thu nhập Cố định DC",
+      "fund_name_en": "DC Income Plus Bond Fund(VFMVFC)",
+      "company_vi": "Công ty Cổ phần Quản lý Quỹ Đầu tư Dragon Capital Việt Nam",
+      "company_en": "Dragon Capital Vietfund Management Joint Stock Company",
+      "bank_vi": "Ngân hàng TNHH Một thành viên Standard Chartered (Việt Nam)",
+      "bank_en": "Standard Chartered Bank (Vietnam) Limited"
+    },
+    {
+      "source_file": "DCIP_2024_08.xlsx",
+      "as_of": "2024-09-04",
+      "fund_name_vi": "Quỹ Đầu tư Trái phiếu Gia tăng Thu nhập Cố định DC",
+      "fund_name_en": "DC Income Plus Bond Fund(DCIP)",
+      "company_vi": "Công ty Cổ phần Quản lý Quỹ Đầu tư Dragon Capital Việt Nam",
+      "company_en": "Dragon Capital Vietfund Management Joint Stock Company",
+      "bank_vi": "Ngân hàng TNHH Một thành viên Standard Chartered (Việt Nam)",
+      "bank_en": "Standard Chartered Bank (Vietnam) Limited"
+    },
+    {
+      "source_file": "DCIP_2024_09.xlsx",
+      "as_of": "2024-10-01",
+      "fund_name_vi": "Quỹ Đầu tư Trái phiếu Gia tăng Thu nhập Cố định DC",
+      "fund_name_en": "DC Income Plus Bond Fund (DCIP)",
+      "company_vi": "Công ty Cổ phần Quản lý Quỹ Đầu tư Dragon Capital Việt Nam",
+      "company_en": "Dragon Capital Vietfund Management Joint Stock Company",
+      "bank_vi": "Ngân hàng TNHH Một thành viên Standard Chartered (Việt Nam)",
+      "bank_en": "Standard Chartered Bank (Vietnam) Limited"
+    },
+    {
+      "source_file": "DCIP_2024_10.xlsx",
+      "as_of": "2024-11-01",
+      "fund_name_vi": "Quỹ Đầu tư Trái phiếu Gia tăng Thu nhập Cố định DC",
+      "fund_name_en": "DC Income Plus Bond Fund (DCIP)",
+      "company_vi": "Công ty Cổ phần Quản lý Quỹ Đầu tư Dragon Capital Việt Nam",
+      "company_en": "Dragon Capital Vietfund Management Joint Stock Company",
+      "bank_vi": "Ngân hàng TNHH Một thành viên Standard Chartered (Việt Nam)",
+      "bank_en": "Standard Chartered Bank (Vietnam) Limited"
+    },
+    {
+      "source_file": "DCIP_2024_11.xlsx",
+      "as_of": "2024-12-02",
+      "fund_name_vi": "Quỹ Đầu tư Trái phiếu Gia tăng Thu nhập Cố định DC",
+      "fund_name_en": "DC Income Plus Bond Fund (DCIP)",
+      "company_vi": "Công ty Cổ phần Quản lý Quỹ Đầu tư Dragon Capital Việt Nam",
+      "company_en": "Dragon Capital Vietfund Management Joint Stock Company",
+      "bank_vi": "Ngân hàng TNHH Một thành viên Standard Chartered (Việt Nam)",
+      "bank_en": "Standard Chartered Bank (Vietnam) Limited"
+    },
+    {
+      "source_file": "DCIP_2024_12.xlsx",
+      "as_of": "2025-01-03",
+      "fund_name_vi": "Quỹ Đầu tư Trái phiếu Gia tăng Thu nhập Cố định DC",
+      "fund_name_en": "DC Income Plus Bond Fund (DCIP)",
+      "company_vi": "Công ty Cổ phần Quản lý Quỹ Đầu tư Dragon Capital Việt Nam",
+      "company_en": "Dragon Capital Vietfund Management Joint Stock Company",
+      "bank_vi": "Ngân hàng TNHH Một thành viên Standard Chartered (Việt Nam)",
+      "bank_en": "Standard Chartered Bank (Vietnam) Limited"
+    },
+    {
+      "source_file": "DCIP_2025_01.xlsx",
+      "as_of": "2025-02-03",
+      "fund_name_vi": "Quỹ Đầu tư Trái phiếu Gia tăng Thu nhập Cố định DC",
+      "fund_name_en": "DC Income Plus Bond Fund (DCIP)",
+      "company_vi": "Công ty Cổ phần Quản lý Quỹ Đầu tư Dragon Capital Việt Nam",
+      "company_en": "Dragon Capital Vietfund Management Joint Stock Company",
+      "bank_vi": "Ngân hàng TNHH Một thành viên Standard Chartered (Việt Nam)",
+      "bank_en": "Standard Chartered Bank (Vietnam) Limited"
+    },
+    {
+      "source_file": "DCIP_2025_02.xlsx",
+      "as_of": "2025-03-03",
+      "fund_name_vi": "Quỹ Đầu tư Trái phiếu Gia tăng Thu nhập Cố định DC",
+      "fund_name_en": "DC Income Plus Bond Fund (DCIP)",
+      "company_vi": "Công ty Cổ phần Quản lý Quỹ Đầu tư Dragon Capital Việt Nam",
+      "company_en": "Dragon Capital Vietfund Management Joint Stock Company",
+      "bank_vi": "Ngân hàng TNHH Một thành viên Standard Chartered (Việt Nam)",
+      "bank_en": "Standard Chartered Bank (Vietnam) Limited"
+    },
+    {
+      "source_file": "DCIP_2025_03.xlsx",
+      "as_of": "2025-04-01",
+      "fund_name_vi": "Quỹ Đầu tư Trái phiếu Gia tăng Thu nhập Cố định DC",
+      "fund_name_en": "DC Income Plus Bond Fund (DCIP)",
+      "company_vi": "Công ty Cổ phần Quản lý Quỹ Đầu tư Dragon Capital Việt Nam",
+      "company_en": "Dragon Capital Vietfund Management Joint Stock Company",
+      "bank_vi": "Ngân hàng TNHH Một thành viên Standard Chartered (Việt Nam)",
+      "bank_en": "Standard Chartered Bank (Vietnam) Limited"
+    },
+    {
+      "source_file": "DCIP_2025_04.xlsx",
+      "as_of": "2025-05-05",
+      "fund_name_vi": "Quỹ Đầu tư Trái phiếu Gia tăng Thu nhập Cố định DC",
+      "fund_name_en": "DC Income Plus Bond Fund (DCIP)",
+      "company_vi": "Công ty Cổ phần Quản lý Quỹ Đầu tư Dragon Capital Việt Nam",
+      "company_en": "Dragon Capital Vietfund Management Joint Stock Company",
+      "bank_vi": "Ngân hàng TNHH Một thành viên Standard Chartered (Việt Nam)",
+      "bank_en": "Standard Chartered Bank (Vietnam) Limited"
+    },
+    {
+      "source_file": "DCIP_2025_05.xlsx",
+      "as_of": "2025-06-02",
+      "fund_name_vi": "Quỹ Đầu tư Trái phiếu Gia tăng Thu nhập Cố định DC",
+      "fund_name_en": "DC Income Plus Bond Fund (DCIP)",
+      "company_vi": "Công ty Cổ phần Quản lý Quỹ Đầu tư Dragon Capital Việt Nam",
+      "company_en": "Dragon Capital Vietfund Management Joint Stock Company",
+      "bank_vi": "Ngân hàng TNHH Một thành viên Standard Chartered (Việt Nam)",
+      "bank_en": "Standard Chartered Bank (Vietnam) Limited"
+    },
+    {
+      "source_file": "DCIP_2025_06.xlsx",
+      "as_of": "2025-07-01",
+      "fund_name_vi": "Quỹ Đầu tư Trái phiếu Gia tăng Thu nhập Cố định DC (DCIP)",
+      "fund_name_en": "DC Income Plus Bond Fund (DCIP)",
+      "company_vi": "Công ty Cổ phần Quản lý Quỹ Đầu tư Dragon Capital Việt Nam",
+      "company_en": "Dragon Capital Vietfund Management Joint Stock Company",
+      "bank_vi": "Ngân hàng TNHH Một thành viên Standard Chartered (Việt Nam)",
+      "bank_en": "Standard Chartered Bank (Vietnam) Limited"
+    },
+    {
+      "source_file": "DCIP_2025_07.xlsx",
+      "as_of": "2025-08-01",
+      "fund_name_vi": "Quỹ Đầu tư Trái phiếu Gia tăng Thu nhập Cố định DC (DCIP)",
+      "fund_name_en": "DC Income Plus Bond Fund (DCIP)",
+      "company_vi": "Công ty Cổ phần Quản lý Quỹ Đầu tư Dragon Capital Việt Nam",
+      "company_en": "Dragon Capital Vietfund Management Joint Stock Company",
+      "bank_vi": "Ngân hàng TNHH Một thành viên Standard Chartered (Việt Nam)",
+      "bank_en": "Standard Chartered Bank (Vietnam) Limited"
+    },
+    {
+      "source_file": "DCIP_2025_08.xlsx",
+      "as_of": "2025-09-03",
+      "fund_name_vi": "Quỹ Đầu tư Trái phiếu Gia tăng Thu nhập Cố định DC (DCIP)",
+      "fund_name_en": "DC Income Plus Bond Fund (DCIP)",
+      "company_vi": "Công ty Cổ phần Quản lý Quỹ Đầu tư Dragon Capital Việt Nam",
+      "company_en": "Dragon Capital Vietfund Management Joint Stock Company",
+      "bank_vi": "Ngân hàng TNHH Một thành viên Standard Chartered (Việt Nam)",
+      "bank_en": "Standard Chartered Bank (Vietnam) Limited"
+    },
+    {
+      "source_file": "DCIP_2025_09.xlsx",
+      "as_of": "2025-10-01",
+      "fund_name_vi": "Quỹ Đầu tư Trái phiếu Gia tăng Thu nhập Cố định DC (DCIP)",
+      "fund_name_en": "DC Income Plus Bond Fund (DCIP)",
+      "company_vi": "Công ty Cổ phần Quản lý Quỹ Đầu tư Dragon Capital Việt Nam",
+      "company_en": "Dragon Capital Vietfund Management Joint Stock Company",
+      "bank_vi": "Ngân hàng TNHH Một thành viên Standard Chartered (Việt Nam)",
+      "bank_en": "Standard Chartered Bank (Vietnam) Limited"
+    },
+    {
+      "source_file": "DCIP_2025_10.xlsx",
+      "as_of": "2025-11-03",
+      "fund_name_vi": "Quỹ Đầu tư Trái phiếu Gia tăng Thu nhập Cố định DC (DCIP)",
+      "fund_name_en": "DC Income Plus Bond Fund (DCIP)",
+      "company_vi": "Công ty Cổ phần Quản lý Quỹ Đầu tư Dragon Capital Việt Nam",
+      "company_en": "Dragon Capital Vietfund Management Joint Stock Company",
+      "bank_vi": "Ngân hàng TNHH Một thành viên Standard Chartered (Việt Nam)",
+      "bank_en": "Standard Chartered Bank (Vietnam) Limited"
+    },
+    {
+      "source_file": "DCIP_2025_11.xlsx",
+      "as_of": "2025-12-02",
+      "fund_name_vi": "Quỹ Đầu tư Trái phiếu Gia tăng Thu nhập Cố định DC (DCIP)",
+      "fund_name_en": "DC Income Plus Bond Fund (DCIP)",
+      "company_vi": "Công ty Cổ phần Quản lý Quỹ Đầu tư Dragon Capital Việt Nam",
+      "company_en": "Dragon Capital Vietfund Management Joint Stock Company",
+      "bank_vi": "Ngân hàng TNHH Một thành viên Standard Chartered (Việt Nam)",
+      "bank_en": "Standard Chartered Bank (Vietnam) Limited"
+    },
+    {
+      "source_file": "DCIP_2025_12.xlsx",
+      "as_of": "2026-01-06",
+      "fund_name_vi": "Quỹ Đầu tư Trái phiếu Gia tăng Thu nhập Cố định DC (DCIP)",
+      "fund_name_en": "DC Income Plus Bond Fund (DCIP)",
+      "company_vi": "Công ty Cổ phần Quản lý Quỹ Đầu tư Dragon Capital Việt Nam",
+      "company_en": "Dragon Capital Vietfund Management Joint Stock Company",
+      "bank_vi": "Ngân hàng TNHH Một thành viên Standard Chartered (Việt Nam)",
+      "bank_en": "Standard Chartered Bank (Vietnam) Limited"
+    },
+    {
+      "source_file": "DCIP_2026_01.xlsx",
+      "as_of": "2026-02-02",
+      "fund_name_vi": "Quỹ Đầu tư Trái phiếu Gia tăng Thu nhập Cố định DC (DCIP)",
+      "fund_name_en": "DC Income Plus Bond Fund (DCIP)",
+      "company_vi": "Công ty Cổ phần Quản lý Quỹ Đầu tư Dragon Capital Việt Nam",
+      "company_en": "Dragon Capital Vietfund Management Joint Stock Company",
+      "bank_vi": "Ngân hàng TNHH Một thành viên Standard Chartered (Việt Nam)",
+      "bank_en": "Standard Chartered Bank (Vietnam) Limited"
+    },
+    {
+      "source_file": "DCIP_2026_02.xlsx",
+      "as_of": "2026-03-02",
+      "fund_name_vi": "Quỹ Đầu tư Trái phiếu Gia tăng Thu nhập Cố định DC (DCIP)",
+      "fund_name_en": "DC Income Plus Bond Fund (DCIP)",
+      "company_vi": "Công ty Cổ phần Quản lý Quỹ Đầu tư Dragon Capital Việt Nam",
+      "company_en": "Dragon Capital Vietfund Management Joint Stock Company",
+      "bank_vi": "Ngân hàng TNHH Một thành viên Standard Chartered (Việt Nam)",
+      "bank_en": "Standard Chartered Bank (Vietnam) Limited"
+    },
+    {
+      "source_file": "DCIP_2026_03.xlsx",
+      "as_of": "2026-04-01",
+      "fund_name_vi": "Quỹ Đầu tư Trái phiếu Gia tăng Thu nhập Cố định DC (DCIP)",
+      "fund_name_en": "DC Income Plus Bond Fund (DCIP)",
+      "company_vi": "Công ty Cổ phần Quản lý Quỹ Đầu tư Dragon Capital Việt Nam",
+      "company_en": "Dragon Capital Vietfund Management Joint Stock Company",
+      "bank_vi": "Ngân hàng TNHH Một thành viên Standard Chartered (Việt Nam)",
+      "bank_en": "Standard Chartered Bank (Vietnam) Limited"
+    },
+    {
+      "source_file": "DCIP_2026_04.xlsx",
+      "as_of": "2026-05-04",
+      "fund_name_vi": "Quỹ Đầu tư Trái phiếu Gia tăng Thu nhập Cố định DC (DCIP)",
+      "fund_name_en": "DC Income Plus Bond Fund (DCIP)",
+      "company_vi": "Công ty Cổ phần Quản lý Quỹ Đầu tư Dragon Capital Việt Nam",
+      "company_en": "Dragon Capital Vietfund Management Joint Stock Company",
+      "bank_vi": "Ngân hàng TNHH Một thành viên Standard Chartered (Việt Nam)",
+      "bank_en": "Standard Chartered Bank (Vietnam) Limited"
+    },
+    {
+      "source_file": "DCIP_2026_05.xlsx",
+      "as_of": "2026-06-02",
+      "fund_name_vi": "Quỹ Đầu tư Trái phiếu Gia tăng Thu nhập Cố định DC (DCIP)",
+      "fund_name_en": "DC Income Plus Bond Fund (DCIP)",
+      "company_vi": "Công ty Cổ phần Quản lý Quỹ Đầu tư Dragon Capital Việt Nam",
+      "company_en": "Dragon Capital Vietfund Management Joint Stock Company",
+      "bank_vi": "Ngân hàng TNHH Một thành viên Standard Chartered (Việt Nam)",
+      "bank_en": "Standard Chartered Bank (Vietnam) Limited"
+    },
+    {
+      "source_file": "DCIP_2026_06.xlsx",
+      "as_of": "2026-07-02",
+      "fund_name_vi": "Quỹ Đầu tư Trái phiếu Gia tăng Thu nhập Cố định DC (DCIP)",
+      "fund_name_en": "DC Income Plus Bond Fund (DCIP)",
+      "company_vi": "Công ty Cổ phần Quản lý Quỹ Đầu tư Dragon Capital Việt Nam",
+      "company_en": "Dragon Capital Vietfund Management Joint Stock Company",
+      "bank_vi": "Ngân hàng TNHH Một thành viên Standard Chartered (Việt Nam)",
+      "bank_en": "Standard Chartered Bank (Vietnam) Limited"
+    },
+    {
+      "source_file": "DCIP_2026_07.xlsx",
+      "as_of": "2026-08-03",
+      "fund_name_vi": "Quỹ Đầu tư Trái phiếu Gia tăng Thu nhập Cố định DC (DCIP)",
+      "fund_name_en": "DC Income Plus Bond Fund (DCIP)",
+      "company_vi": "Công ty Cổ phần Quản lý Quỹ Đầu tư Dragon Capital Việt Nam",
+      "company_en": "Dragon Capital Vietfund Management Joint Stock Company",
+      "bank_vi": "Ngân hàng TNHH Một thành viên Standard Chartered (Việt Nam)",
+      "bank_en": "Standard Chartered Bank (Vietnam) Limited"
+    }
+  ]
+}

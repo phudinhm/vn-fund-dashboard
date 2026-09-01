@@ -50,7 +50,7 @@ export interface ReturnPoint {
 export interface FundMeta {
   id: string
   name_vi: string
-  type: 'mutual_fund' | 'bond' | 'balanced' | 'etf' | 'crypto' | 'gold'
+  type: 'mutual_fund' | 'bond' | 'balanced' | 'etf' | 'crypto' | 'gold' | 'index'
   start_date: string
   csv_file: string
 }

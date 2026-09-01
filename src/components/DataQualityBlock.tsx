@@ -132,7 +132,7 @@ export function DataQualityBlock({
 
           <div className="dq-timelines">
             {reports.map((r, i) => {
-              const color = colors[i % colors.length] ?? '#2563EB'
+              const color = colors[i % colors.length] ?? 'var(--color-primary)'
               return (
                 <FundTimeline
                   key={r.id}

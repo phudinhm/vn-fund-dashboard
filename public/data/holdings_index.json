@@ -37,7 +37,7 @@
   {
     "id": "DCBF",
     "update_at": "2026-07-01",
-    "source": "digiinvest"
+    "source": "report"
   },
   {
     "id": "DCDE",
@@ -52,7 +52,7 @@
   {
     "id": "DCIP",
     "update_at": "2026-07-01",
-    "source": "digiinvest"
+    "source": "report"
   },
   {
     "id": "ENF",
@@ -186,6 +186,11 @@
   },
   {
     "id": "UVEEF",
+    "update_at": "2026-07-01",
+    "source": "fmarket"
+  },
+  {
+    "id": "VBIF",
     "update_at": "2026-07-01",
     "source": "fmarket"
   },

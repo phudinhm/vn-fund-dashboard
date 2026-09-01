@@ -2,12 +2,34 @@ import { useCallback, useMemo } from 'react'
 import type { CalculatorId } from './types'
 import { useFundMetadata } from './hooks/useFundData'
 import { useUrlState } from './hooks/useUrlState'
-import { TAB_REGISTRY, type TabContext } from './tabRegistry'
-import { SEO_BY_TAB, SeoMetadata } from './components/SeoMetadata'
+import { useTheme } from './hooks/useTheme'
+import { useLanguage } from './hooks/useLanguage'
+import { useT } from './i18n'
+import { TAB_REGISTRY, type TabContext, type TabId } from './tabRegistry'
+import { SeoMetadata } from './components/SeoMetadata'
+
+/** Icon gợi ý cho từng tab — thuần trang trí, chỉ để quét nhanh bằng mắt. */
+const TAB_ICONS: Record<TabId, string> = {
+  compare: '📊',
+  watchlist: '⭐',
+  dca: '📅',
+  lsdca: '⚖️',
+  fundanalysis: '🔍',
+  overlap: '🧩',
+  rebalance: '🔄',
+  tactical: '🎯',
+  bitcoin: '₿',
+  wallofworry: '🌩️',
+  calculator: '🧮',
+  methodology: '📐',
+}
 
 export function App() {
   const { metadata, metadataError, loading: metaLoading } = useFundMetadata()
   const { state, updateState, dcaUrlParams, lsDcaUrlParams } = useUrlState()
+  const { theme, toggle: toggleTheme } = useTheme()
+  const { language, toggle: toggleLanguage } = useLanguage()
+  const t = useT()
 
   // Stable callback references (qua useCallback, dep chỉ là `updateState` vốn
   // đã ổn định) để CompareTab (React.memo) không bị coi là "props đổi" mỗi
@@ -38,50 +60,79 @@ export function App() {
   )
 
   if (metaLoading) {
-    return <div className="loading-screen">Đang tải dữ liệu...</div>
+    return <div className="loading-screen">{t('app.loading')}</div>
   }
 
   if (metadataError || !metadata) {
-    return <div className="error-screen">{metadataError || 'Lỗi tải dữ liệu'}</div>
+    return <div className="error-screen">{metadataError || t('app.error')}</div>
   }
 
   return (
     <div className="app">
       <SeoMetadata tab={state.tab} />
       <header className="app-header">
-        <h1>{SEO_BY_TAB[state.tab].heading}</h1>
+        <div className="app-header-brand">
+          <span className="app-header-mark" aria-hidden="true">MP</span>
+          <h1>{t(`heading.${state.tab}`)}</h1>
+        </div>
+        <div className="app-header-actions">
+          <button
+            className="lang-toggle-btn"
+            onClick={toggleLanguage}
+            title={t('app.language.toggle')}
+            aria-label={t('app.language.toggle')}
+          >
+            {language === 'vi' ? 'EN' : 'VI'}
+          </button>
+          <button
+            className="theme-toggle-btn"
+            onClick={toggleTheme}
+            title={theme === 'dark' ? t('app.theme.toLight') : t('app.theme.toDark')}
+            aria-label={theme === 'dark' ? t('app.theme.toLight') : t('app.theme.toDark')}
+          >
+            {theme === 'dark' ? '☀️' : '🌙'}
+          </button>
+        </div>
       </header>
 
-      {/* Tabs — duyệt registry, không hardcode */}
-      <div className="tabs">
-        {TAB_REGISTRY.map(tab => (
-          <button
-            key={tab.id}
-            className={`tab ${state.tab === tab.id ? 'tab-active' : ''}`}
-            onClick={() => updateState({ tab: tab.id })}
-          >
-            {tab.label}
-          </button>
-        ))}
+      {/* Sidebar dọc trên màn rộng, thanh cuộn ngang trên mobile — xem .app-body
+          trong index.css. 12 tab xếp ngang bị cắt mất một nửa ở màn thường. */}
+      <div className="app-body">
+        {/* Tabs — duyệt registry, không hardcode */}
+        <nav className="tabs" aria-label={t('app.nav.label')}>
+          {TAB_REGISTRY.map(tab => (
+            <button
+              key={tab.id}
+              className={`tab ${state.tab === tab.id ? 'tab-active' : ''}`}
+              onClick={() => updateState({ tab: tab.id })}
+              aria-current={state.tab === tab.id ? 'page' : undefined}
+            >
+              <span className="tab-icon" aria-hidden="true">{TAB_ICONS[tab.id]}</span>
+              {t(`tab.${tab.id}`)}
+            </button>
+          ))}
+        </nav>
+
+        {/* Panel: keepMounted = ẩn bằng CSS để giữ state; ngược lại mount khi active */}
+        <main className="app-main">
+          {TAB_REGISTRY.map(tab =>
+            tab.keepMounted ? (
+              <div
+                key={tab.id}
+                className={tab.wrapperClass ? `${tab.wrapperClass} ${state.tab === tab.id ? '' : 'tab-panel-hidden'}` : (state.tab === tab.id ? undefined : 'tab-panel-hidden')}
+              >
+                {tab.render(tabContext)}
+              </div>
+            ) : (
+              state.tab === tab.id && <div key={tab.id}>{tab.render(tabContext)}</div>
+            ),
+          )}
+        </main>
       </div>
 
-      {/* Panel: keepMounted = ẩn bằng CSS để giữ state; ngược lại mount khi active */}
-      {TAB_REGISTRY.map(tab =>
-        tab.keepMounted ? (
-          <div
-            key={tab.id}
-            className={tab.wrapperClass ? `${tab.wrapperClass} ${state.tab === tab.id ? '' : 'tab-panel-hidden'}` : (state.tab === tab.id ? undefined : 'tab-panel-hidden')}
-          >
-            {tab.render(tabContext)}
-          </div>
-        ) : (
-          state.tab === tab.id && <div key={tab.id}>{tab.render(tabContext)}</div>
-        ),
-      )}
-
       <footer className="app-footer">
-        <p>Dữ liệu từ fmarket.vn & vnstock. Cập nhật hàng ngày.</p>
-        <p>Blog: <a href="https://vohoanghac.com" target="_blank" rel="noopener noreferrer">vohoanghac.com</a></p>
+        <p>{t('app.footer.dataSource')}</p>
+        <p>{t('app.footer.by')}</p>
       </footer>
     </div>
   )
