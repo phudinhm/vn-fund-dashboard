@@ -441,6 +441,103 @@ const DICT = {
     en: 'This is illustrative and educational only, not investment advice.',
   },
 
+  // ── Bitcoin tab ──
+  'btc.title': { vi: 'Bitcoin', en: 'Bitcoin' },
+  'btc.description': {
+    vi: 'Chọn một quỹ làm nền tảng, hệ thống sẽ so sánh lợi nhuận tích lũy của danh mục gốc với các danh mục có pha trộn Bitcoin. Danh mục được tái cân bằng tỷ trọng định kỳ.',
+    en: 'Pick a fund as your base, and the tool compares the cumulative return of that portfolio on its own against the same portfolio blended with Bitcoin. Weights are rebalanced on a schedule.',
+  },
+  'btc.baseFund': { vi: 'Quỹ nền tảng', en: 'Base fund' },
+  'btc.investAmount': { vi: 'Số tiền đầu tư', en: 'Amount invested' },
+  'btc.rebalance': { vi: 'Tái cân bằng', en: 'Rebalancing' },
+  'btc.weights': { vi: 'Tỷ trọng Bitcoin trong danh mục', en: 'Bitcoin weight in the portfolio' },
+  'btc.dateRange': { vi: 'Khoảng thời gian', en: 'Time range' },
+  'btc.modeAll': { vi: 'Tất cả', en: 'All' },
+  'btc.modeYears': { vi: 'X năm qua', en: 'Last X years' },
+  'btc.numYears': { vi: 'Số năm', en: 'Number of years' },
+  'btc.fromTo': { vi: 'Từ ngày đến ngày', en: 'From / to date' },
+  'btc.run': { vi: 'Chạy mô phỏng', en: 'Run simulation' },
+  'btc.rerun': { vi: 'Chạy lại mô phỏng', en: 'Re-run simulation' },
+  'btc.staleParams': {
+    vi: 'Thông số đã thay đổi, bấm "Chạy lại mô phỏng" để cập nhật biểu đồ.',
+    en: 'Parameters changed — press "Re-run simulation" to update the charts.',
+  },
+  'btc.prompt': {
+    vi: 'Bấm "Chạy mô phỏng" để tính toán và hiển thị biểu đồ.',
+    en: 'Press "Run simulation" to compute the charts.',
+  },
+  'btc.insufficientData': {
+    vi: 'Khoảng thời gian được chọn không đủ dữ liệu. Hãy chọn khoảng thời gian dài hơn hoặc nhấn "Tất cả".',
+    en: 'There is not enough data over the range you picked. Choose a longer range, or press "All".',
+  },
+  'btc.simPeriod': { vi: 'Mô phỏng từ {from} đến {to}', en: 'Simulated from {from} to {to}' },
+  'btc.roleDivider': { vi: 'Vai trò của Bitcoin trong danh mục', en: 'What Bitcoin does to the portfolio' },
+  'btc.weightDivider': {
+    vi: 'Phân tích chi tiết theo tỷ trọng Bitcoin (0%–10%)',
+    en: 'Detail by Bitcoin weight (0%–10%)',
+  },
+
+  // ── Performance table (dùng chung: So Sánh, DCA, Bitcoin) ──
+  'perf.title': { vi: 'Thành quả hoạt động', en: 'Performance' },
+  'perf.help': {
+    vi: 'Tổng hợp các chỉ số hiệu suất của từng danh mục. Giá trị in đậm là tốt nhất trong nhóm. Sharpe = CAGR ÷ Biến động (Rf = 0%).',
+    en: 'Headline metrics for each portfolio. Bold values are the best in the group. Sharpe = CAGR ÷ volatility, with a risk-free rate of 0%.',
+  },
+  'perf.col.name': { vi: 'Danh mục', en: 'Portfolio' },
+  'perf.col.cumReturn': { vi: 'Lợi nhuận tích lũy', en: 'Cumulative return' },
+  'perf.col.cumReturnHelp': { vi: 'Tổng lợi nhuận tích lũy từ đầu kỳ đến cuối kỳ', en: 'Total return from the start of the period to the end' },
+  'perf.col.cagr': { vi: 'Hiệu suất trung bình năm', en: 'Average annual return' },
+  'perf.col.cagrHelp': { vi: 'Lợi nhuận trung bình mỗi năm, quy về gốc kép (CAGR)', en: 'Average yearly return, compounded (CAGR)' },
+  'perf.col.stdev': { vi: 'Rủi ro biến động giá (quy năm)', en: 'Volatility (annualised)' },
+  'perf.col.stdevHelp': {
+    vi: 'Độ biến động giá quy năm: đo mức dao động của danh mục. Thấp hơn = ổn định hơn.',
+    en: 'Annualised price volatility: how much the portfolio swings. Lower is steadier.',
+  },
+  'perf.col.sharpe': { vi: 'Tỷ số Sharpe (quy năm)', en: 'Sharpe ratio (annualised)' },
+  'perf.col.sharpeHelp': {
+    vi: 'Tỷ số Sharpe quy năm = CAGR ÷ Biến động (Rf = 0%). Cao hơn = hiệu quả sinh lời trên rủi ro tốt hơn.',
+    en: 'Annualised Sharpe = CAGR ÷ volatility, risk-free rate 0%. Higher means better return for the risk taken.',
+  },
+  'perf.col.maxDD': { vi: 'Mức độ sụt giảm vốn lớn nhất', en: 'Maximum drawdown' },
+  'perf.col.maxDDHelp': {
+    vi: 'Mức sụt giảm vốn lớn nhất từ đỉnh đến đáy trong toàn bộ kỳ. Gần 0 hơn = ít rủi ro hơn.',
+    en: 'The largest peak-to-trough fall over the whole period. Closer to zero is less risky.',
+  },
+  'perf.sharpeNA': {
+    vi: 'Danh mục gần như không biến động nên không tính được tỷ số Sharpe: mẫu số bằng 0. Không phải hiệu quả vô hạn, mà là thước đo này không dùng được ở đây.',
+    en: 'This portfolio barely moves, so Sharpe cannot be computed — the denominator is zero. That is not infinite efficiency; the measure simply does not apply here.',
+  },
+  'perf.takeaway.sweep': {
+    vi: '<b>{name}</b> thắng cả 2 mặt: lợi nhuận cao nhất (<b>{cagr}/năm</b>) và hiệu quả rủi ro tốt nhất (Sharpe <b>{sharpe}</b>). Ít sụt giảm nhất là <b>{ddName}</b> ({dd}).',
+    en: '<b>{name}</b> wins on both counts: the highest return (<b>{cagr}/yr</b>) and the best risk-adjusted efficiency (Sharpe <b>{sharpe}</b>). The shallowest drawdown belongs to <b>{ddName}</b> ({dd}).',
+  },
+  'perf.takeaway.split': {
+    vi: 'Lợi nhuận cao nhất: <b>{cagrName}</b> (<b>{cagr}/năm</b>). Nhưng hiệu quả sinh lời trên rủi ro tốt nhất thuộc về <b>{sharpeName}</b> (Sharpe <b>{sharpe}</b>), ít sụt giảm nhất <b>{ddName}</b> ({dd}).',
+    en: 'Highest return: <b>{cagrName}</b> (<b>{cagr}/yr</b>). But the best return for the risk taken goes to <b>{sharpeName}</b> (Sharpe <b>{sharpe}</b>), and the shallowest drawdown to <b>{ddName}</b> ({dd}).',
+  },
+
+  // ── Cumulative return chart (dùng chung) ──
+  'cumret.title': { vi: 'Lợi nhuận tích lũy', en: 'Cumulative return' },
+  'cumret.events': { vi: 'Sự kiện', en: 'Events' },
+  'cumret.eventsHelp': {
+    vi: 'Bật/tắt các mốc sự kiện quan trọng: Covid, đỉnh BTC, FTX, BTC ETF, và các kỳ bầu cử Mỹ. Nhãn giữa kỳ ghi viện nào đổi tay: CH là Cộng hoà, DC là Dân chủ. Mốc chính trị để màu xám vì chưa biết tốt hay xấu.',
+    en: 'Toggle the key markers: Covid, the Bitcoin peak, FTX, the Bitcoin ETF and US elections. Midterm labels note which chamber changed hands — R for Republican, D for Democrat. Political markers are grey because it is not yet clear whether they were good or bad.',
+  },
+  'cumret.logHelp': {
+    vi: 'Chuyển sang trục logarithmic. Hữu ích khi so sánh tài sản có mức tăng trưởng rất khác nhau (ví dụ: quỹ cổ phiếu vs Bitcoin)',
+    en: 'Switch to a logarithmic axis. Useful when comparing assets whose growth differs wildly — an equity fund against Bitcoin, say.',
+  },
+  'cumret.help': {
+    vi: 'Biểu đồ thể hiện hiệu suất tích lũy từ thời điểm bắt đầu (0%). Nếu đường ở mức 50% nghĩa là quỹ đã tăng 50% so với ban đầu. Bấm vào legend để làm mờ/hiện đường.',
+    en: 'Cumulative performance from the start of the period (0%). A line at 50% means the fund is up 50% from where it began. Click a legend entry to dim or restore that line.',
+  },
+
+  // ── Dividend notice (dùng chung) ──
+  'dividend.notice': {
+    vi: 'Quỹ <b>{funds}</b> có chi trả cổ tức. Giá NAV trên biểu đồ đã được điều chỉnh để phản ánh giả định tái đầu tư cổ tức sau thuế TNCN 5%, nên hiệu suất hiển thị đã bao gồm phần lợi nhuận từ cổ tức. Chi tiết các đợt chi trả xem ở tab <b>Tích Lũy Định Kỳ (DCA)</b>.',
+    en: '<b>{funds}</b> pays dividends. The NAV prices on these charts are adjusted to assume dividends are reinvested after the 5% personal income tax, so the performance shown already includes the dividend return. The individual payouts are listed in the <b>DCA</b> tab.',
+  },
+
   // ── Calculator tab ──
   'calc.title': { vi: 'Máy tính nhanh', en: 'Quick calculators' },
   'calc.navLabel': { vi: 'Chọn máy tính', en: 'Choose a calculator' },

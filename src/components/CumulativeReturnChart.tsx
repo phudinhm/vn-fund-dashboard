@@ -10,6 +10,7 @@ import {
   formatPercent, BASELINE_COLOR, DIMMED_COLOR,
 } from '../utils/chartPlumbing'
 import { useDimLegend } from '../hooks/useDimLegend'
+import { useT } from '../i18n'
 
 interface Props {
   series: ChartSeries[]
@@ -17,6 +18,7 @@ interface Props {
 }
 
 function CumulativeReturnChartImpl({ series, events }: Props) {
+  const t = useT()
   const [logScale, setLogScale] = useState(false)
   const [showEvents, setShowEvents] = useState(true)
 
@@ -40,25 +42,25 @@ function CumulativeReturnChartImpl({ series, events }: Props) {
   return (
     <div className="chart-container">
       <div className="chart-header">
-        <h3>Lợi nhuận tích lũy</h3>
+        <h3>{t('cumret.title')}</h3>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           {events && events.length > 0 && (
             <button
               className={`log-scale-btn${showEvents ? ' log-scale-btn-active' : ''}`}
               onClick={() => setShowEvents(v => !v)}
-              title="Bật/tắt các mốc sự kiện quan trọng: Covid, đỉnh BTC, FTX, BTC ETF, và các kỳ bầu cử Mỹ. Nhãn giữa kỳ ghi viện nào đổi tay: CH là Cộng hoà, DC là Dân chủ. Mốc chính trị để màu xám vì chưa biết tốt hay xấu."
+              title={t('cumret.eventsHelp')}
             >
-              Sự kiện
+              {t('cumret.events')}
             </button>
           )}
           <button
             className={`log-scale-btn${logScale ? ' log-scale-btn-active' : ''}`}
             onClick={() => setLogScale(v => !v)}
-            title="Chuyển sang trục logarithmic. Hữu ích khi so sánh tài sản có mức tăng trưởng rất khác nhau (ví dụ: quỹ cổ phiếu vs Bitcoin)"
+            title={t('cumret.logHelp')}
           >
             Log
           </button>
-          <span className="chart-tooltip-icon" title="Biểu đồ thể hiện hiệu suất tích lũy từ thời điểm bắt đầu (0%). Nếu đường ở mức 50% nghĩa là quỹ đã tăng 50% so với ban đầu. Bấm vào legend để làm mờ/hiện đường.">?</span>
+          <span className="chart-tooltip-icon" title={t('cumret.help')}>?</span>
         </div>
       </div>
       <ResponsiveContainer width="100%" height={350}>

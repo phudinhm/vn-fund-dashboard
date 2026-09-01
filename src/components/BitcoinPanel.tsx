@@ -26,6 +26,8 @@ import {
 import { SleepTestBlock } from './SleepTestBlock'
 import { WinRateBlock } from './WinRateBlock'
 import { loadLS, saveLS } from '../utils/localStorage'
+import { REBAL_OPTIONS } from './PortfolioCard'
+import { useT } from '../i18n'
 
 interface Props {
   funds: FundMeta[]
@@ -53,13 +55,8 @@ interface BitcoinSnapshot {
   data: Map<string, PricePoint[]>
 }
 
-const REBAL_OPTIONS: { value: RebalanceFrequency; label: string }[] = [
-  { value: 'monthly', label: 'Hàng tháng' },
-  { value: 'quarterly', label: 'Hàng quý' },
-  { value: 'yearly', label: 'Hàng năm' },
-]
-
 function BitcoinPanelImpl({ funds }: Props) {
+  const t = useT()
   const [selectedFundId, setSelectedFundId] = useState(
     () => loadLS<string>('btc_fund', DEFAULT_FUND_ID),
   )
@@ -319,16 +316,13 @@ function BitcoinPanelImpl({ funds }: Props) {
   return (
     <div className="simulation-panel">
       <div className="panel-header">
-        <h2>Bitcoin</h2>
+        <h2>{t('btc.title')}</h2>
       </div>
 
       <div className="bitcoin-controls">
-        <p className="bitcoin-description">
-          Chọn một quỹ làm nền tảng, hệ thống sẽ so sánh lợi nhuận tích lũy của danh mục gốc
-          với các danh mục có pha trộn Bitcoin. Danh mục được tái cân bằng tỷ trọng định kỳ.
-        </p>
+        <p className="bitcoin-description">{t('btc.description')}</p>
         <div className="bitcoin-ctrl-group bitcoin-ctrl-fund">
-          <label className="bitcoin-ctrl-label">Quỹ nền tảng</label>
+          <label className="bitcoin-ctrl-label">{t('btc.baseFund')}</label>
           <div className="bitcoin-fund-row">
             <Select
               className="bitcoin-fund-select"
@@ -337,8 +331,8 @@ function BitcoinPanelImpl({ funds }: Props) {
               value={selectedFundOption}
               onChange={opt => opt && setSelectedFundId(opt.value)}
               isSearchable
-              placeholder="Tìm quỹ..."
-              noOptionsMessage={() => 'Không tìm thấy'}
+              placeholder={t('fundSelector.searchPlaceholder')}
+              noOptionsMessage={() => t('fundSelector.noOptions')}
               styles={bitcoinSelectStyles}
             />
             {isSavingsAssetId(selectedFundId) && (
@@ -350,7 +344,7 @@ function BitcoinPanelImpl({ funds }: Props) {
           </div>
         </div>
         <div className="bitcoin-ctrl-group">
-          <label className="bitcoin-ctrl-label">Số tiền đầu tư</label>
+          <label className="bitcoin-ctrl-label">{t('btc.investAmount')}</label>
           <div className="bitcoin-money-wrap">
             <MoneyInput
               value={investAmount}
@@ -362,19 +356,19 @@ function BitcoinPanelImpl({ funds }: Props) {
           </div>
         </div>
         <div className="bitcoin-ctrl-group">
-          <label className="bitcoin-ctrl-label">Tái cân bằng</label>
+          <label className="bitcoin-ctrl-label">{t('btc.rebalance')}</label>
           <select
             className="bitcoin-rebal-select"
             value={rebalFreq}
             onChange={e => setRebalFreq(e.target.value as RebalanceFrequency)}
           >
             {REBAL_OPTIONS.map(opt => (
-              <option key={opt.value} value={opt.value}>{opt.label}</option>
+              <option key={opt.value} value={opt.value}>{t(opt.labelKey)}</option>
             ))}
           </select>
         </div>
         <div className="bitcoin-ctrl-group">
-          <label className="bitcoin-ctrl-label">Tỷ trọng Bitcoin trong danh mục</label>
+          <label className="bitcoin-ctrl-label">{t('btc.weights')}</label>
           <div className="bitcoin-weight-inputs">
             {btcPercents.map((pct, i) => (
               <div key={i} className="bitcoin-weight-chip">
@@ -407,16 +401,16 @@ function BitcoinPanelImpl({ funds }: Props) {
 
       <div className="dca-params-card">
         <div className="dca-param-row">
-          <label className="dca-label">Khoảng thời gian</label>
+          <label className="dca-label">{t('btc.dateRange')}</label>
           <div className="dca-date-mode">
-            <button className={`dca-mode-btn ${dateMode === 'all' ? 'dca-mode-btn-active' : ''}`} onClick={() => setDateMode('all')}>Tất cả</button>
-            <button className={`dca-mode-btn ${dateMode === 'years' ? 'dca-mode-btn-active' : ''}`} onClick={() => setDateMode('years')}>X năm qua</button>
+            <button className={`dca-mode-btn ${dateMode === 'all' ? 'dca-mode-btn-active' : ''}`} onClick={() => setDateMode('all')}>{t('btc.modeAll')}</button>
+            <button className={`dca-mode-btn ${dateMode === 'years' ? 'dca-mode-btn-active' : ''}`} onClick={() => setDateMode('years')}>{t('btc.modeYears')}</button>
           </div>
         </div>
 
         {dateMode === 'years' && (
           <div className="dca-param-row dca-years-row">
-            <label className="dca-label">Số năm</label>
+            <label className="dca-label">{t('btc.numYears')}</label>
             <div className="dca-years-selector">
               {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(n => (
                 <button key={n} className={`dca-year-btn ${yearsBack === n ? 'dca-year-btn-active' : ''}`} onClick={() => setYearsBack(n)}>{n}</button>
@@ -427,7 +421,7 @@ function BitcoinPanelImpl({ funds }: Props) {
 
         {dateMode === 'all' && (
           <div className="dca-param-row">
-            <label className="dca-label">Từ ngày đến ngày</label>
+            <label className="dca-label">{t('btc.fromTo')}</label>
             <div className="dca-date-inputs">
               <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} />
               <span className="dca-date-sep">→</span>
@@ -443,27 +437,27 @@ function BitcoinPanelImpl({ funds }: Props) {
           onClick={() => { if (selectedFundId) runCommitted() }}
           disabled={!canRun}
         >
-          {committed ? 'Chạy lại mô phỏng' : 'Chạy mô phỏng'}
+          {committed ? t('btc.rerun') : t('btc.run')}
         </button>
         {committed && isDirty && (
           <span className="btc-run-hint">
-            Thông số đã thay đổi, bấm "Chạy lại mô phỏng" để cập nhật biểu đồ.
+            {t('btc.staleParams')}
           </span>
         )}
       </div>
 
-      {loading && <div className="loading-indicator">Đang tải dữ liệu...</div>}
+      {loading && <div className="loading-indicator">{t('app.loading')}</div>}
       {error && <div className="error-banner">{error}</div>}
 
       {!committed && !loading && !error && (
         <div className="btc-run-placeholder">
-          Bấm "Chạy mô phỏng" để tính toán và hiển thị biểu đồ.
+          {t('btc.prompt')}
         </div>
       )}
 
       {committed && !loading && !error && portfolioSeries.length === 0 && committed.data.has(BTC_ID) && (
         <div className="error-banner">
-          Khoảng thời gian được chọn không đủ dữ liệu. Hãy chọn khoảng thời gian dài hơn hoặc nhấn "Tất cả".
+          {t('btc.insufficientData')}
         </div>
       )}
 
@@ -471,7 +465,7 @@ function BitcoinPanelImpl({ funds }: Props) {
         <>
           {startDate && endDate && (
             <div className="comparison-period" style={{ marginBottom: 16 }}>
-              Mô phỏng từ {formatDate(startDate)} đến {formatDate(endDate)}
+              {t('btc.simPeriod', { from: formatDate(startDate), to: formatDate(endDate) })}
             </div>
           )}
            <DividendNotice fundIds={[committed.params.fundId]} />
@@ -495,7 +489,7 @@ function BitcoinPanelImpl({ funds }: Props) {
 
           <div className="section-divider">
             <span className="section-divider-label">
-              Vai trò của Bitcoin trong danh mục
+              {t('btc.roleDivider')}
             </span>
           </div>
 
@@ -517,7 +511,7 @@ function BitcoinPanelImpl({ funds }: Props) {
 
             <div className="section-divider">
               <span className="section-divider-label">
-                Phân tích chi tiết theo tỷ trọng Bitcoin (0%–10%)
+                {t('btc.weightDivider')}
               </span>
             </div>
 
