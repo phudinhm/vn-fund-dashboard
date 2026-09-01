@@ -1491,6 +1491,118 @@ const DICT = {
   'rf.turnover12m': { vi: 'Turnover 12T: <b>{v}%</b>', en: '12-month turnover: <b>{v}%</b>' },
   'rf.periodLabel': { vi: 'Tháng {month}/{year}', en: '{month}/{year}' },
 
+  // ── DCA stats table ──
+  'dcaStats.title': { vi: 'Bảng thống kê', en: 'Statistics' },
+  'dcaStats.help': {
+    vi: 'Tổng hợp các chỉ số hiệu suất của từng danh mục trên cùng 1 hàng để dễ so sánh.',
+    en: 'Each portfolio’s headline metrics on one row, so they are easy to compare.',
+  },
+  'dcaStats.col.portfolio': { vi: 'Danh mục', en: 'Portfolio' },
+  'dcaStats.col.finalValue': { vi: 'Giá trị cuối kỳ', en: 'Ending value' },
+  'dcaStats.help.finalValue': { vi: 'Giá trị danh mục tại thời điểm cuối kỳ backtest.', en: 'The portfolio’s value at the end of the backtest period.' },
+  'dcaStats.col.invested': { vi: 'Tổng đầu tư', en: 'Total invested' },
+  'dcaStats.help.invested': {
+    vi: 'Tổng số tiền đã nạp vào danh mục (vốn ban đầu + tất cả các lần DCA).',
+    en: 'Every dong paid into the portfolio: the initial capital plus every DCA contribution.',
+  },
+  'dcaStats.col.cumReturn': { vi: 'Lợi nhuận tích lũy', en: 'Cumulative return' },
+  'dcaStats.help.cumReturn': {
+    vi: 'Lợi nhuận tích lũy trong kỳ backtest (giá trị cuối kỳ ÷ tổng đầu tư − 1).',
+    en: 'Cumulative return over the backtest: ending value ÷ total invested − 1.',
+  },
+  'dcaStats.help.cagr': {
+    vi: 'Lợi nhuận tích lũy quy năm: (Giá trị cuối ÷ Tổng đầu tư)^(1/số năm) − 1. Cho biết nếu danh mục tăng đều mỗi năm thì mỗi năm lãi bao nhiêu %. Lưu ý: chỉ số này thường thấp hơn MWRR trong DCA vì giả định toàn bộ vốn đã hoạt động từ đầu.',
+    en: 'The cumulative return annualised: (ending value ÷ total invested)^(1/years) − 1. It tells you the equal yearly return that lands on the same result. Note that for DCA this usually reads lower than MWRR, because it assumes all the capital was working from day one.',
+  },
+  'dcaStats.help.mwrr': {
+    vi: 'Money-Weighted Rate of Return: lợi nhuận thực tế của nhà đầu tư, tính đến thời điểm và số tiền từng lần nạp (IRR). Chỉ số chính để đánh giá hiệu quả chiến lược DCA. Thường cao hơn CAGR vì nhận ra rằng phần lớn vốn DCA chỉ hoạt động trong thời gian ngắn hơn toàn kỳ.',
+    en: 'Money-weighted rate of return: what the investor actually earned, counting the date and size of every contribution (the IRR). This is the main measure of a DCA strategy. It usually reads higher than CAGR because it recognises that most DCA capital was invested for less than the full period.',
+  },
+  'dcaStats.col.maxDD': { vi: 'Sụt giảm tối đa', en: 'Max drawdown' },
+  'dcaStats.help.maxDD': {
+    vi: 'Mức sụt giảm tối đa CỦA CHÍNH QUỸ (TWRR, đã tách khỏi ảnh hưởng dòng tiền DCA): mức giảm lớn nhất tính từ đỉnh giá quỹ. Đây là "bão thị trường thật", thường sâu hơn mức sụt giảm bạn thực sự trải nghiệm trên số dư tài khoản. Xem "Kiên trì qua bão" bên dưới để so sánh 2 con số.',
+    en: 'The maximum drawdown OF THE FUND ITSELF (TWRR, separated from DCA cash flows): the largest fall from the fund’s peak price. This is the real market storm, usually deeper than what you actually experienced in your balance. See "Riding out the storm" below for the two side by side.',
+  },
+  'dcaStats.col.avgDD': { vi: 'Sụt giảm TB', en: 'Avg drawdown' },
+  'dcaStats.help.avgDD': {
+    vi: 'Trung bình mức sụt giảm CỦA CHÍNH QUỸ (TWRR) so với đỉnh, tính trên tất cả các ngày trong kỳ (ngày lập đỉnh mới tính là 0%). Đây là mức "chìm dưới đỉnh" của quỹ, không phải của số dư tài khoản bạn.',
+    en: 'The average drawdown OF THE FUND ITSELF (TWRR) below its peak, across every day in the period (a day at a new high counts as 0%). This is how far below its peak the fund typically sat — not your account balance.',
+  },
+  'dcaStats.col.longestDD': { vi: 'Dưới đỉnh lâu nhất', en: 'Longest underwater' },
+  'dcaStats.help.longestDD': {
+    vi: 'Khoảng thời gian dài nhất GIÁ QUỸ (TWRR) nằm dưới đỉnh cũ, tính từ lúc lập đỉnh đến khi vượt lại đỉnh đó. Đây là khoảng thời gian thử thách sự kiên nhẫn nhất của nhà đầu tư.',
+    en: 'The longest stretch the FUND PRICE (TWRR) spent below an old peak, from setting that peak to reclaiming it. This is the stretch that tests an investor’s patience most.',
+  },
+  'dcaStats.col.volatility': { vi: 'Biến động', en: 'Volatility' },
+  'dcaStats.help.volatility': {
+    vi: 'Độ lệch chuẩn quy năm của lợi nhuận quỹ (TWRR). Con số càng cao, giá trị danh mục dao động càng mạnh, hành trình càng "xóc".',
+    en: 'The annualised standard deviation of the fund’s returns (TWRR). The higher it is, the more the portfolio value swings and the bumpier the ride.',
+  },
+  'dcaStats.help.profitFactor': {
+    vi: 'Tổng lợi nhuận các phiên tăng ÷ tổng lỗ các phiên giảm. Lớn hơn 1 = tổng lời nhiều hơn tổng lỗ. Ví dụ: 1.5× nghĩa là cứ 1 đồng lỗ thì lời được 1.5 đồng.',
+    en: 'Total gains on up sessions ÷ total losses on down sessions. Above 1 means gains outweigh losses. For example 1.5× means every dong of loss is matched by 1.5 dong of gain.',
+  },
+  'dcaStats.years': { vi: '{v} năm', en: '{v} yr' },
+  'dcaStats.months': { vi: '{v} tháng', en: '{v} mo' },
+  'dcaStats.days': { vi: '{v} ngày', en: '{v} days' },
+
+  // ── DCA journey block ──
+  'journey.headlineSingle': {
+    vi: 'Trong suốt <b>{period}</b>, đều đặn mỗi tháng bạn để dành một khoản tiền để mua <b>{name}</b>. Tổng cộng đã đầu tư <b>{invested}</b>.',
+    en: 'Over <b>{period}</b> you set money aside every month to buy <b>{name}</b>, investing <b>{invested}</b> in total.',
+  },
+  'journey.stat.invested': { vi: 'Tổng tiền đã đầu tư', en: 'Total invested' },
+  'journey.stat.value': { vi: 'Tổng giá trị danh mục', en: 'Portfolio value' },
+  'journey.stat.profit': { vi: 'Lợi nhuận', en: 'Profit' },
+  'journey.takeaway.gain': {
+    vi: '<b>Sau {period}, danh mục lời {pct}% tương đương {profit}</b>, bằng <b>{comparison}</b>. Đó là khoản sinh ra nhờ bạn đầu tư đều đặn qua từng tháng, không cần đoán đỉnh đoán đáy thị trường.',
+    en: '<b>After {period} the portfolio is up {pct}%, or {profit}</b> — the price of <b>{comparison}</b>. That came from contributing month after month, without calling a single top or bottom.',
+  },
+  'journey.takeaway.gainNoComparison': {
+    vi: '<b>Sau {period}, danh mục lời {pct}% tương đương {profit}</b>. Đó là khoản sinh ra nhờ bạn đầu tư đều đặn qua từng tháng, không cần đoán đỉnh đoán đáy thị trường.',
+    en: '<b>After {period} the portfolio is up {pct}%, or {profit}</b>. That came from contributing month after month, without calling a single top or bottom.',
+  },
+  'journey.takeaway.loss': {
+    vi: 'Sau <b>{period}</b>, danh mục vẫn đang lỗ <b>{pct}%</b>. Thị trường chứng khoán Việt Nam là thị trường cận biên, từ bull sang bear diễn ra chóng vánh. Giai đoạn đầu DCA không suôn sẻ là điều bình thường. Có thể bạn đang rơi vào vùng trũng tương tự 2018-2019 hoặc sau COVID 3/2020. Thử chọn khoảng thời gian dài hơn để thấy bức tranh đầy đủ hơn.',
+    en: 'After <b>{period}</b> the portfolio is still down <b>{pct}%</b>. Vietnam is a frontier market and the turn from bull to bear is abrupt. A rough opening stretch of DCA is normal — you may be in a trough like 2018–2019 or the one after COVID in March 2020. Try a longer time range to see the fuller picture.',
+  },
+  'journey.headlineMulti': {
+    vi: 'Cùng một lịch nạp tiền, cùng trải qua <b>{period}</b>, nhưng <b>{n} danh mục</b> lại cho kết quả rất khác nhau.',
+    en: 'Same contribution schedule, same <b>{period}</b>, and yet the <b>{n} portfolios</b> land in very different places.',
+  },
+  'journey.rankLine': { vi: 'Nạp {invested}, lời', en: 'Put in {invested}, gained' },
+  'journey.gap': {
+    vi: 'Chênh lệch giữa <b>{winner}</b> và <b>{loser}</b> là ',
+    en: 'The gap between <b>{winner}</b> and <b>{loser}</b> is ',
+  },
+  'journey.gapComparison': { vi: ', bằng <b>{thing}</b>', en: ' — the price of <b>{thing}</b>' },
+  'journey.gapTail': {
+    vi: ' Cùng số tiền, cùng khoảng thời gian, nhưng chọn quỹ khác nhau thì kết cục cũng khác nhau. Đó là lý do vì sao lựa chọn quỹ lại quan trọng đến vậy.',
+    en: ' Same money, same period, different fund, different outcome. That is why the choice of fund matters as much as it does.',
+  },
+  'journey.eoy.title': { vi: 'Hiệu suất danh mục của bạn từng năm', en: 'Your portfolio’s performance by year' },
+  'journey.eoy.intro': {
+    vi: 'Bảng này tính hiệu suất <b>có tính đến dòng tiền bạn thực sự nạp</b> (Modified Dietz method), không phải hiệu suất "nếu đầu tư 1 lần từ đầu" của bản thân quỹ. Tiền nạp càng sớm trong năm càng được tính trọng số cao (có nhiều thời gian sinh lời hơn), tiền nạp cuối năm gần như chưa kịp sinh lời. Nhờ vậy con số này phản ánh đúng trải nghiệm DCA thực tế của bạn, thay vì chỉ đo giá quỹ tăng/giảm bao nhiêu. Cột "Giá trị" là số dư danh mục tại điểm cuối năm đó (đã gồm mọi lần nạp tính đến lúc đó).',
+    en: 'This table measures performance <b>counting the money you actually contributed</b> (the Modified Dietz method), not the fund’s own "if you had invested once at the start" return. Money contributed early in the year carries a higher weight because it had more time to earn; money contributed in December has barely earned anything. That makes the figure reflect your real DCA experience rather than just the fund’s price move. The "Value" column is the portfolio balance at that year end, including every contribution up to that point.',
+  },
+  'journey.eoy.year': { vi: 'Năm', en: 'Year' },
+  'journey.eoy.gap': { vi: 'Chênh lệch', en: 'Gap' },
+  'journey.eoy.return': { vi: 'Lợi nhuận', en: 'Return' },
+  'journey.eoy.value': { vi: 'Giá trị', en: 'Value' },
+  'journey.eoy.points': { vi: '{v} điểm %', en: '{v} pts' },
+  'journey.eoy.footnote': {
+    vi: '* Năm chưa đủ dữ liệu trọn năm (năm đầu hoặc năm cuối của khoảng so sánh).',
+    en: '* A year without a full year of data (the first or last year of the comparison range).',
+  },
+  'journey.eoy.gapFootnote': {
+    vi: ' "Chênh lệch" = lợi nhuận danh mục thứ 2 trừ danh mục thứ 1, tính bằng điểm phần trăm.',
+    en: ' "Gap" is the second portfolio’s return minus the first’s, in percentage points.',
+  },
+  'journey.period.days': { vi: '{n} ngày', en: '{n} days' },
+  'journey.period.months': { vi: '{n} tháng', en: '{n} months' },
+  'journey.period.years': { vi: '{n} năm', en: '{n} years' },
+  'journey.period.yearsMonths': { vi: '{y} năm {m} tháng', en: '{y} years {m} months' },
+
   // ── Methodology tab (khung; nội dung ở src/components/methodology/) ──
   'method.tocLabel': { vi: 'Mục lục', en: 'Table of contents' },
   'method.onThisPage': { vi: 'Trong trang này', en: 'On this page' },
