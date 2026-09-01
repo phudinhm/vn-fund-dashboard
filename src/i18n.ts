@@ -1491,6 +1491,10 @@ const DICT = {
   'rf.turnover12m': { vi: 'Turnover 12T: <b>{v}%</b>', en: '12-month turnover: <b>{v}%</b>' },
   'rf.periodLabel': { vi: 'Tháng {month}/{year}', en: '{month}/{year}' },
 
+  // ── Methodology tab (khung; nội dung ở src/components/methodology/) ──
+  'method.tocLabel': { vi: 'Mục lục', en: 'Table of contents' },
+  'method.onThisPage': { vi: 'Trong trang này', en: 'On this page' },
+
   // ── Calculator tab ──
   'calc.title': { vi: 'Máy tính nhanh', en: 'Quick calculators' },
   'calc.navLabel': { vi: 'Chọn máy tính', en: 'Choose a calculator' },
