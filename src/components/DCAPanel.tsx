@@ -1033,7 +1033,7 @@ function DCAPanelImpl({ funds, shareUrl, active }: Props) {
             {/* Period info */}
             {startDate && endDate && (
               <div className="comparison-period" style={{ marginBottom: 16 }}>
-                DCA từ {formatDate(startDate)} đến {formatDate(endDate)}
+                {t('dca.periodRange', { from: formatDate(startDate), to: formatDate(endDate) })}
               </div>
             )}
 

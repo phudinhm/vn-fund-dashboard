@@ -5,12 +5,14 @@ import {
 } from 'recharts'
 import type { ChartSeries } from '../types'
 import type { BtcEvent } from '../utils/btcEvents'
+import { pickLang } from '../utils/wallOfWorryEvents'
 import {
   mergeAllSeries, getYearTicks, formatYear, formatTooltipDate,
   formatPercent, BASELINE_COLOR, DIMMED_COLOR,
 } from '../utils/chartPlumbing'
 import { useDimLegend } from '../hooks/useDimLegend'
 import { useT } from '../i18n'
+import { useLanguage } from '../hooks/useLanguage'
 
 interface Props {
   series: ChartSeries[]
@@ -19,6 +21,7 @@ interface Props {
 
 function CumulativeReturnChartImpl({ series, events }: Props) {
   const t = useT()
+  const { language } = useLanguage()
   const [logScale, setLogScale] = useState(false)
   const [showEvents, setShowEvents] = useState(true)
 
@@ -115,7 +118,7 @@ function CumulativeReturnChartImpl({ series, events }: Props) {
               strokeDasharray="3 3"
               strokeWidth={1.5}
               label={{
-                value: ev.label,
+                value: pickLang(ev.label, language),
                 position: 'top',
                 fill: ev.color,
                 fontSize: 10,

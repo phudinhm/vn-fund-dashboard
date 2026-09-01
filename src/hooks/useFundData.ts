@@ -14,6 +14,8 @@ import {
   toPricePoints,
   toPriceSeriesPoints,
 } from '../utils/priceSeries'
+import { translateStatic } from '../i18n'
+import { getLanguage } from './useLanguage'
 
 interface FundDataState {
   metadata: FundMeta[] | null
@@ -47,7 +49,7 @@ export function useFundMetadata(): FundDataState {
         if (!cancelled) {
           setState({
             metadata: null,
-            metadataError: 'Không thể tải danh sách quỹ. Vui lòng tải lại trang.',
+            metadataError: translateStatic('err.metadata', getLanguage()),
             loading: false,
           })
         }
@@ -109,9 +111,15 @@ function staticCsvSource(id: string): string {
   return `static-csv:/data/${id}.csv`
 }
 
+/**
+ * Câu lỗi dựng lúc tải, nên nó đóng băng theo ngôn ngữ tại thời điểm đó. Chấp
+ * nhận được vì banner lỗi tải chỉ sống tới lần tải lại kế tiếp, và phần lớn nội
+ * dung ở đây là câu lỗi gốc của runtime, vốn không dịch được.
+ */
 function loadErrorMessage(error: unknown): string {
-  if (error instanceof PriceSeriesValidationError) return 'Dữ liệu không hợp lệ'
-  return error instanceof Error ? error.message : 'Không tải được dữ liệu quỹ'
+  const lang = getLanguage()
+  if (error instanceof PriceSeriesValidationError) return translateStatic('err.invalidData', lang)
+  return error instanceof Error ? error.message : translateStatic('err.loadFailed', lang)
 }
 
 /**
@@ -177,7 +185,7 @@ export function useFundSeriesMap(
         if (mode === 'dual') {
           const { buy, sell, warnings: parserWarnings } = parseGoldCSV(text)
           warnings = parserWarnings.map(formatCsvPriceWarning)
-          if (buy.length === 0) throw new Error('Chưa có dữ liệu')
+          if (buy.length === 0) throw new Error(translateStatic('err.noData', getLanguage()))
           const series = createPriceSeries({
             assetId: id,
             currency: 'VND',
@@ -201,7 +209,7 @@ export function useFundSeriesMap(
         const parsed = parseCSV(text)
         warnings = parsed.warnings.map(formatCsvPriceWarning)
         const rawDaily = parsed.points
-        if (rawDaily.length === 0) throw new Error('Chưa có dữ liệu')
+        if (rawDaily.length === 0) throw new Error(translateStatic('err.noData', getLanguage()))
         const adjusted = await loadAdjustedPriceData(id, rawDaily)
         const series = createPriceSeries({
           assetId: id,

@@ -10,6 +10,7 @@ import {
 import { formatVNDFull } from '../utils/vndFormat'
 import { useDimLegend } from '../hooks/useDimLegend'
 import { useLanguage } from '../hooks/useLanguage'
+import { useT } from '../i18n'
 
 interface ValuePoint {
   date: string
@@ -27,10 +28,12 @@ interface Props {
   portfolios: PortfolioSeries[]
 }
 
-const INVESTED_LINE_NAME = 'Đã đầu tư'
-
 function PortfolioValueChartImpl({ portfolios }: Props) {
   const { language } = useLanguage()
+  const t = useT()
+  // Tên đường cũng là danh tính của nó với useDimLegend, nên đổi ngôn ngữ sẽ
+  // bỏ trạng thái làm mờ. Chấp nhận được: legend nhận diện bằng chữ hiện ra.
+  const investedName = t('pvc.invested')
   const [logScale, setLogScale] = useState(false)
   const [showEvents, setShowEvents] = useState(false)
 
@@ -60,25 +63,25 @@ function PortfolioValueChartImpl({ portfolios }: Props) {
   return (
     <div className="chart-container">
       <div className="chart-header">
-        <h3>Giá trị tài sản</h3>
+        <h3>{t('pvc.title')}</h3>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <button
             className={`log-scale-btn${showEvents ? ' log-scale-btn-active' : ''}`}
             onClick={() => setShowEvents(v => !v)}
-            title="Hiện các sự kiện Wall of Worry (chiến tranh, đại dịch, khủng hoảng...) trên biểu đồ, để thấy giá trị tài sản của bạn đã đi qua những giai đoạn nào."
+            title={t('pvc.eventsHelp')}
           >
-            Sự kiện
+            {t('pvc.events')}
           </button>
           <button
             className={`log-scale-btn${logScale ? ' log-scale-btn-active' : ''}`}
             onClick={() => setLogScale(v => !v)}
-            title="Chuyển sang trục logarithmic. Hữu ích khi xem rõ tốc độ tăng trưởng ở giai đoạn đầu, lúc giá trị còn nhỏ so với giai đoạn sau."
+            title={t('pvc.logHelp')}
           >
             Log
           </button>
           <span
             className="chart-tooltip-icon"
-            title="Biểu đồ giá trị tài sản thực tế (MWRR) của nhà đầu tư theo thời gian. Đường nét đứt là tổng chi phí đã đầu tư (cost basis). Bấm vào legend để làm mờ/hiện đường."
+            title={t('pvc.help')}
           >?</span>
         </div>
       </div>
@@ -149,13 +152,13 @@ function PortfolioValueChartImpl({ portfolios }: Props) {
             )
           })}
           {(() => {
-            const isDimmedLine = isDimmed(INVESTED_LINE_NAME)
+            const isDimmedLine = isDimmed(investedName)
             return (
               <Line
                 key="invested-shared"
                 type="stepAfter"
                 dataKey={`${portfolios[0]!.name}_invested`}
-                name={INVESTED_LINE_NAME}
+                name={investedName}
                 stroke={isDimmedLine ? DIMMED_COLOR : '#94a3b8'}
                 strokeDasharray="6 3"
                 strokeWidth={isDimmedLine ? 0.75 : 1.5}

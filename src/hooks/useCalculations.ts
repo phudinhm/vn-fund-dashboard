@@ -14,6 +14,7 @@ import {
   availableRollingPeriods,
   winRateAmong,
 } from '../utils/calculations'
+import type { TranslationKey } from '../i18n'
 
 export interface FundComparisonData {
   id: string
@@ -42,7 +43,11 @@ export interface ComparisonResult {
 
 export interface ComparisonError {
   type: 'no_overlap' | 'insufficient_data' | 'unknown'
-  message: string
+  /** Chữ nằm ở từ điển: lỗi được dựng trong useMemo, dịch sẵn ở đây thì đổi
+   *  ngôn ngữ xong banner vẫn giữ câu cũ. */
+  messageKey: TranslationKey
+  /** Câu lỗi gốc của runtime, không dịch được. Chỉ có ở nhánh 'unknown'. */
+  detail?: string
 }
 
 type ComparisonState =
@@ -86,7 +91,7 @@ export function useMultiComparison(
           status: 'error' as const,
           error: {
             type: 'insufficient_data' as const,
-            message: 'Khoảng thời gian đã chọn chỉ có một điểm dữ liệu chung. Cần ít nhất hai điểm để tính lợi nhuận.',
+            messageKey: 'err.insufficientData' as const,
           },
         }
       }
@@ -159,7 +164,7 @@ export function useMultiComparison(
           status: 'error' as const,
           error: {
             type: 'no_overlap' as const,
-            message: 'Không có dữ liệu chung giữa các quỹ trong khoảng thời gian đã chọn',
+            messageKey: 'err.noOverlap' as const,
           },
         }
       }
@@ -167,7 +172,8 @@ export function useMultiComparison(
         status: 'error' as const,
         error: {
           type: 'unknown' as const,
-          message: err instanceof Error ? err.message : 'Lỗi không xác định',
+          messageKey: 'err.unknown' as const,
+          detail: err instanceof Error ? err.message : undefined,
         },
       }
     }

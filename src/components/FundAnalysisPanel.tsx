@@ -17,7 +17,7 @@ import { FundHoldingsAnalysis } from './FundHoldingsAnalysis'
 import {
   findGroupedOption, type FundOptionGroup,
 } from '../utils/fundSelectOptions'
-import { useT, useTRich, type TranslationKey } from '../i18n'
+import { useT, useTRich, numberLocale, type TranslationKey } from '../i18n'
 import { useLanguage, type Language } from '../hooks/useLanguage'
 import { sectorName } from '../utils/sectorName'
 
@@ -984,7 +984,7 @@ function FundAnalysisPanelImpl({ funds }: Props) {
                               <span className="fund-analysis-industry">{sectorName(industryMap[s.ticker]!)}</span>
                             )}
                           </td>
-                          <td>{s.quantity > 0 ? s.quantity.toLocaleString('vi-VN') : '—'}</td>
+                          <td>{s.quantity > 0 ? s.quantity.toLocaleString(numberLocale(language)) : '—'}</td>
                           <td>{formatVND(s.value)}</td>
                           <td>{s.weightPct.toFixed(2)}%</td>
                         </tr>
@@ -1019,7 +1019,7 @@ function FundAnalysisPanelImpl({ funds }: Props) {
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} />
                     <XAxis dataKey="period" tickFormatter={formatAxisTick} tick={{ fontSize: 10 }} minTickGap={32} />
-                    <YAxis tick={{ fontSize: 11 }} width={76} domain={['auto', 'auto']} tickFormatter={(v: number) => `${Math.round(v).toLocaleString('vi-VN')}`} />
+                    <YAxis tick={{ fontSize: 11 }} width={76} domain={['auto', 'auto']} tickFormatter={(v: number) => Math.round(v).toLocaleString(numberLocale(language))} />
                     <RechartsTooltip
                       formatter={(value: number | string) => [
                         `${Number(value).toLocaleString(language === 'vi' ? 'vi-VN' : 'en-US')} đ`,

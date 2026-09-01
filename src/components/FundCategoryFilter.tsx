@@ -1,5 +1,6 @@
 import type { FundMeta } from '../types'
-import { useT, type TranslationKey } from '../i18n'
+import { useT, translateStatic, type TranslationKey } from '../i18n'
+import { getLanguage, type Language } from '../hooks/useLanguage'
 
 export type FundCategory = FundMeta['type'] | 'all'
 
@@ -46,15 +47,20 @@ function _assertExhaustiveFundType(type: never): never {
   throw new Error(`Unhandled fund type: ${String(type)}`)
 }
 
-export function getCategoryLabel(type: FundMeta['type']): string {
+/**
+ * Nhãn nhóm quỹ dùng ngoài React (tiêu đề nhóm, chuỗi ghép sẵn). Trong
+ * component thì dùng thẳng t('category.<type>') cho khỏi qua một lớp nữa.
+ */
+export function getCategoryLabel(type: FundMeta['type'], lang: Language = getLanguage()): string {
   switch (type) {
-    case 'mutual_fund': return 'Cổ phiếu'
-    case 'bond': return 'Trái phiếu'
-    case 'balanced': return 'Cân bằng'
-    case 'etf': return 'ETF'
-    case 'index': return 'Chỉ số'
-    case 'crypto': return 'Crypto'
-    case 'gold': return 'Vàng'
+    case 'mutual_fund':
+    case 'bond':
+    case 'balanced':
+    case 'etf':
+    case 'index':
+    case 'crypto':
+    case 'gold':
+      return translateStatic(`category.${type}` as TranslationKey, lang)
     default: return _assertExhaustiveFundType(type)
   }
 }

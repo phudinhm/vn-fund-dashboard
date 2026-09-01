@@ -13,7 +13,7 @@
 import { memo } from 'react'
 import type { DividendEvent, DividendNarrativeStats } from '../utils/dividendAdjust'
 import { formatVNDFull } from '../utils/vndFormat'
-import { useT, useTRich } from '../i18n'
+import { useT, useTRich, numberLocale } from '../i18n'
 
 export interface PortfolioDividendNarrative {
   portfolioId: string
@@ -174,9 +174,9 @@ function formatDate(dateStr: string): string {
 }
 
 function formatNumber(n: number): string {
-  return n.toLocaleString('vi-VN', { maximumFractionDigits: 2 })
+  return n.toLocaleString(numberLocale(), { maximumFractionDigits: 2 })
 }
 
 function formatPercent(rate: number): string {
-  return `${(rate * 100).toLocaleString('vi-VN', { maximumFractionDigits: 1 })}%`
+  return `${(rate * 100).toLocaleString(numberLocale(), { maximumFractionDigits: 1 })}%`
 }

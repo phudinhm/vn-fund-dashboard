@@ -55,7 +55,7 @@ describe('useMultiComparison', () => {
       status: 'error',
       error: {
         type: 'insufficient_data',
-        message: 'Khoảng thời gian đã chọn chỉ có một điểm dữ liệu chung. Cần ít nhất hai điểm để tính lợi nhuận.',
+        messageKey: 'err.insufficientData',
       },
     })
   })

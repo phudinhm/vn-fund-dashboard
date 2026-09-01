@@ -13,7 +13,7 @@ import {
 } from '../utils/overlap'
 import { formatVND } from '../utils/vndFormat'
 import { fundHouse } from '../utils/fundHouse'
-import { useT, useTRich, type TranslationKey } from '../i18n'
+import { useT, useTRich, numberLocale, type TranslationKey } from '../i18n'
 import { useLanguage } from '../hooks/useLanguage'
 import { sectorName } from '../utils/sectorName'
 
@@ -267,7 +267,7 @@ export function FundHoldingsAnalysis({ fund, source }: Props) {
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
                 <XAxis dataKey="period" tickFormatter={formatAxisTick} tick={{ fontSize: 10 }} minTickGap={32} />
-                <YAxis tick={{ fontSize: 11 }} width={76} domain={['auto', 'auto']} tickFormatter={(v: number) => Math.round(v).toLocaleString('vi-VN')} />
+                <YAxis tick={{ fontSize: 11 }} width={76} domain={['auto', 'auto']} tickFormatter={(v: number) => Math.round(v).toLocaleString(numberLocale(language))} />
                 <RechartsTooltip
                   formatter={(value: number | string) => [
                     `${Number(value).toLocaleString(language === 'vi' ? 'vi-VN' : 'en-US')} đ`,

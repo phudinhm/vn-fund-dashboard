@@ -1,5 +1,5 @@
 import { createElement, Fragment, type ReactNode } from 'react'
-import { useLanguage, type Language } from './hooks/useLanguage'
+import { useLanguage, getLanguage, type Language } from './hooks/useLanguage'
 
 /**
  * Từ điển song ngữ VI/EN. Phạm vi hiện tại: khung app (header, tab nav,
@@ -138,6 +138,7 @@ const DICT = {
   },
   'dca.section.all': { vi: 'Tất cả', en: 'All' },
   'dca.section.perf': { vi: 'Hiệu suất đầu tư', en: 'Performance' },
+  'dca.periodRange': { vi: 'DCA từ {from} đến {to}', en: 'DCA from {from} to {to}' },
   'dca.section.journey': { vi: 'Hành trình của bạn', en: 'Your journey' },
   'dca.section.risk': { vi: 'Rủi ro & biến động', en: 'Risk & volatility' },
   'dca.section.endgame': { vi: 'Endgame', en: 'Endgame' },
@@ -2229,6 +2230,106 @@ const DICT = {
     en: '<b>This table says nothing about next time.</b> It only recounts the times already past. A market down 50% can fall another 50%.',
   },
 
+  // ── Thông báo lỗi ──
+  'err.insufficientData': {
+    vi: 'Khoảng thời gian đã chọn chỉ có một điểm dữ liệu chung. Cần ít nhất hai điểm để tính lợi nhuận.',
+    en: 'The selected range has only one shared data point. At least two are needed to compute a return.',
+  },
+  'err.noOverlap': {
+    vi: 'Không có dữ liệu chung giữa các quỹ trong khoảng thời gian đã chọn',
+    en: 'The selected funds share no data over the chosen range',
+  },
+  'err.unknown': { vi: 'Lỗi không xác định', en: 'Unknown error' },
+  'err.metadata': { vi: 'Không thể tải danh sách quỹ. Vui lòng tải lại trang.', en: 'Could not load the fund list. Please reload the page.' },
+  'err.invalidData': { vi: 'Dữ liệu không hợp lệ', en: 'Invalid data' },
+  'err.loadFailed': { vi: 'Không tải được dữ liệu quỹ', en: 'Could not load the fund data' },
+  'err.noData': { vi: 'Chưa có dữ liệu', en: 'No data yet' },
+  'rollDist.negative': { vi: 'Âm', en: 'Negative' },
+  'rollDist.0to5': { vi: '0–5%', en: '0–5%' },
+  'rollDist.5to10': { vi: '5–10%', en: '5–10%' },
+  'rollDist.10to20': { vi: '10–20%', en: '10–20%' },
+  'rollDist.over20': { vi: '>20%', en: '>20%' },
+
+  // ── Thẻ meta cho SEO, một bộ cho mỗi tab ──
+  'seo.compare.title': { vi: 'So sánh quỹ mở và ETF Việt Nam | Fund Dashboard', en: 'Compare Vietnamese mutual funds and ETFs | Fund Dashboard' },
+  'seo.compare.description': { vi: 'So sánh hiệu suất quỹ mở, ETF và các tài sản tại Việt Nam bằng dữ liệu lịch sử NAV, CAGR, drawdown và rolling return.', en: 'Compare the performance of Vietnamese mutual funds, ETFs and other assets using historical NAV, CAGR, drawdown and rolling returns.' },
+  'seo.watchlist.title': { vi: 'Danh sách quỹ theo dõi | Fund Dashboard', en: 'Fund watchlist | Fund Dashboard' },
+  'seo.watchlist.description': { vi: 'Lưu và theo dõi các quỹ mở, ETF yêu thích với CAGR, sụt giảm tối đa và lợi nhuận 1 năm gần nhất.', en: 'Save and follow your favourite funds and ETFs with CAGR, maximum drawdown and one-year return.' },
+  'seo.dca.title': { vi: 'Mô phỏng DCA quỹ đầu tư Việt Nam | Fund Dashboard', en: 'DCA simulator for Vietnamese funds | Fund Dashboard' },
+  'seo.dca.description': { vi: 'Mô phỏng đầu tư định kỳ vào quỹ mở, ETF và các tài sản tại Việt Nam bằng dữ liệu lịch sử.', en: 'Simulate regular investing into Vietnamese funds, ETFs and other assets on historical data.' },
+  'seo.lsdca.title': { vi: 'Lump Sum vs DCA tại Việt Nam | Fund Dashboard', en: 'Lump sum vs DCA in Vietnam | Fund Dashboard' },
+  'seo.lsdca.description': { vi: 'So sánh đầu tư một lần với DCA trên lịch sử quỹ mở và ETF tại Việt Nam, kèm phân bố kết quả và các kịch bản percentile.', en: 'Compare investing all at once against DCA across the history of Vietnamese funds and ETFs, with the full distribution and percentile scenarios.' },
+  'seo.fundanalysis.title': { vi: 'Phân tích quỹ đầu tư Việt Nam | Fund Dashboard', en: 'Vietnamese fund analysis | Fund Dashboard' },
+  'seo.fundanalysis.description': { vi: 'Phân tích danh mục, tài sản và báo cáo tài chính của các quỹ đầu tư Việt Nam.', en: 'Analyse the holdings, assets and financial statements of Vietnamese investment funds.' },
+  'seo.overlap.title': { vi: 'So sánh danh mục quỹ đầu tư | Fund Dashboard', en: 'Compare fund holdings | Fund Dashboard' },
+  'seo.overlap.description': { vi: 'So sánh cổ phiếu, ngành và tỷ trọng trùng giữa hai quỹ đầu tư Việt Nam.', en: 'Compare the stocks, sectors and overlapping weights between two Vietnamese funds.' },
+  'seo.rebalance.title': { vi: 'Mô phỏng tái cân bằng danh mục | Fund Dashboard', en: 'Rebalancing simulator | Fund Dashboard' },
+  'seo.rebalance.description': { vi: 'Đánh giá độ nhạy của danh mục quỹ đầu tư khi tái cân bằng theo các chu kỳ khác nhau.', en: 'Test how sensitive a fund portfolio is to the rebalancing schedule you choose.' },
+  'seo.tactical.title': { vi: 'Phân tích phân bổ chiến thuật | Fund Dashboard', en: 'Tactical allocation analysis | Fund Dashboard' },
+  'seo.tactical.description': { vi: 'Kiểm tra chiến lược phân bổ chiến thuật trên dữ liệu lịch sử, cùng các cảnh báo về giới hạn backtest.', en: 'Test tactical allocation strategies on historical data, with plain warnings about what a backtest cannot tell you.' },
+  'seo.bitcoin.title': { vi: 'Phân tích Bitcoin và quỹ đầu tư | Fund Dashboard', en: 'Bitcoin and investment funds | Fund Dashboard' },
+  'seo.bitcoin.description': { vi: 'So sánh Bitcoin với quỹ đầu tư và các tài sản khác trên dữ liệu lịch sử.', en: 'Compare Bitcoin against investment funds and other assets on historical data.' },
+  'seo.wallofworry.title': { vi: 'Wall of Worry: những nỗi lo thị trường | Fund Dashboard', en: 'Wall of Worry: what the market feared | Fund Dashboard' },
+  'seo.wallofworry.description': { vi: 'Xem các nỗi lo thị trường từng xuất hiện và cách chúng kết thúc qua thời gian.', en: 'See the fears the market has lived through and how each one ended.' },
+  'seo.calculator.title': { vi: 'Máy tính đầu tư và lãi kép | Fund Dashboard', en: 'Investment and compounding calculators | Fund Dashboard' },
+  'seo.calculator.description': { vi: 'Tính lãi kép, CAGR và mức phí quỹ ăn mòn giá trị đầu tư theo thời gian.', en: 'Work out compound interest, CAGR and how much fund fees eat into an investment over time.' },
+  'seo.methodology.title': { vi: 'Phương pháp và dữ liệu | Fund Dashboard', en: 'Method and data | Fund Dashboard' },
+  'seo.methodology.description': { vi: 'Tìm hiểu nguồn dữ liệu, công thức và các giới hạn của những chỉ số trong Fund Dashboard.', en: 'Where the data comes from, the formulas behind each figure, and what they cannot tell you.' },
+
+  // ── Biểu đồ giá trị tài sản (PortfolioValueChart) ──
+  'pvc.title': { vi: 'Giá trị tài sản', en: 'Portfolio value' },
+  'pvc.invested': { vi: 'Đã đầu tư', en: 'Invested' },
+  'pvc.events': { vi: 'Sự kiện', en: 'Events' },
+  'pvc.eventsHelp': {
+    vi: 'Hiện các sự kiện Wall of Worry (chiến tranh, đại dịch, khủng hoảng...) trên biểu đồ, để thấy giá trị tài sản của bạn đã đi qua những giai đoạn nào.',
+    en: 'Mark the Wall of Worry events (wars, pandemics, crises) on the chart, so you can see what your portfolio lived through.',
+  },
+  'pvc.logHelp': {
+    vi: 'Chuyển sang trục logarithmic. Hữu ích khi xem rõ tốc độ tăng trưởng ở giai đoạn đầu, lúc giá trị còn nhỏ so với giai đoạn sau.',
+    en: 'Switch to a logarithmic axis. Useful for seeing early growth clearly, when the values are still small next to the later ones.',
+  },
+  'pvc.help': {
+    vi: 'Biểu đồ giá trị tài sản thực tế (MWRR) của nhà đầu tư theo thời gian. Đường nét đứt là tổng chi phí đã đầu tư (cost basis). Bấm vào legend để làm mờ/hiện đường.',
+    en: 'The investor\'s actual portfolio value (MWRR) over time. The dashed line is the total invested (cost basis). Click the legend to dim or restore a line.',
+  },
+
+  // ── Hiệu suất lịch sử theo percentile (DcaHistoricalPercentileBlock) ──
+  'hp.title': { vi: 'Hiệu suất lịch sử theo percentile', en: 'Historical performance by percentile' },
+  'hp.windowLength': { vi: 'Độ dài cửa sổ:', en: 'Window length:' },
+  'hp.years': { vi: '{n} năm', en: '{n} years' },
+  'hp.year1': { vi: '1 năm', en: '1 year' },
+  'hp.colPortfolio': { vi: 'Danh mục', en: 'Portfolio' },
+  'hp.windowCount': { vi: '{n} cửa sổ', en: '{n} windows' },
+  'hp.dateRange': { vi: '{from} đến {to}', en: '{from} to {to}' },
+  'hp.tooShort': {
+    vi: 'Khoảng dữ liệu đang chọn chưa đủ 1 năm. Dashboard giữ block này để bạn biết mốc nào chưa dùng được.',
+    en: 'The selected range is under a year. The block stays visible so you can see which horizons are not usable yet.',
+  },
+  'hp.bandBad': { vi: 'Xấu', en: 'Bad' },
+  'hp.bandSomewhatBad': { vi: 'Hơi xấu', en: 'Somewhat bad' },
+  'hp.bandMedian': { vi: 'Trung vị', en: 'Median' },
+  'hp.bandSomewhatGood': { vi: 'Hơi tốt', en: 'Somewhat good' },
+  'hp.afterYears': { vi: 'Sau {n} năm', en: 'After {n} years' },
+  'hp.narrowRange': {
+    vi: 'Khoảng dữ liệu đang chọn chưa đủ để nhìn các giai đoạn đầu tư kéo dài {years} năm.',
+    en: 'The selected range is too short to look at {years}-year investment windows.',
+  },
+  'hp.intro': {
+    vi: 'Việc bạn chọn mua tài sản gì rất quan trọng, nhưng thời điểm bạn bắt đầu xuống tiền cũng quyết định không kém đến kết quả cuối cùng. Hãy thử nhìn lại các giai đoạn đầu tư kéo dài {years} năm trong quá khứ để thấy rõ bức tranh này:',
+    en: 'What you buy matters, but when you start putting money in decides just as much of the final result. Look back at past {years}-year investment windows and the picture is clear:',
+  },
+  'hp.fundLine': { vi: 'Với quỹ <b>{name}</b>: {story}', en: 'For <b>{name}</b>: {story}' },
+  'hp.closing': {
+    vi: 'Quy tắc sống còn ở đây là: Đừng bao giờ quyết định đầu tư chỉ vì nhìn thấy mức lợi nhuận thông thường trông có vẻ hấp dẫn. Bạn phải nhìn thẳng vào kịch bản xấu nhất và tự hỏi: “Mình có chịu đựng được mức thua lỗ này không?” trước khi lựa chọn. Cuối cùng, hãy luôn nhớ rằng thị trường luôn biến động; những con số này là câu chuyện đã xảy ra trong quá khứ, không phải là một tờ giấy bảo hành cho tương lai.',
+    en: 'The rule that keeps you alive: never invest because the typical return looks attractive. Look straight at the worst case and ask yourself, "could I live through this loss?" before you choose. And remember that markets move: these numbers are what happened, not a warranty on what comes next.',
+  },
+  'hp.worstLoss': { vi: 'Ở những giai đoạn tồi tệ nhất, bạn có thể lỗ khoảng {pct}/năm.', en: 'In the worst windows you could be down about {pct} a year.' },
+  'hp.worstThin': { vi: 'Ở những giai đoạn khó khăn nhất, bạn chỉ đạt khoảng {pct}/năm.', en: 'In the hardest windows you only made about {pct} a year.' },
+  'hp.typicalGain': { vi: 'Thông thường, bạn sẽ đạt mức lãi {pct}/năm.', en: 'Typically you made {pct} a year.' },
+  'hp.typicalLoss': { vi: 'Thông thường, bạn sẽ chịu mức lỗ {pct}/năm.', en: 'Typically you lost {pct} a year.' },
+  'hp.favorableGain': { vi: 'Nếu gặp thời điểm thuận lợi, mức lãi có thể lên tới {pct}/năm.', en: 'Start at a favourable moment and the gain reached {pct} a year.' },
+  'hp.favorableLoss': { vi: 'Ngay cả ở thời điểm thuận lợi, kết quả vẫn là {pct}/năm.', en: 'Even at a favourable moment the result was still {pct} a year.' },
+
   // ── Đóng góp của Bitcoin vào lợi nhuận (BtcContributionChart) ──
   'bc.title': { vi: 'Đóng góp của Bitcoin vào lợi nhuận tích lũy', en: 'Bitcoin\'s contribution to cumulative return' },
   'bc.help': {
@@ -2758,4 +2859,15 @@ export function useDecimal(): (value: number, digits?: number) => string {
     const text = value.toFixed(digits)
     return language === 'vi' ? text.replace('.', ',') : text
   }
+}
+
+/**
+ * Mã locale cho Intl/toLocaleString. Tiếng Việt nhóm hàng nghìn bằng dấu chấm
+ * (1.234.567), tiếng Anh bằng dấu phẩy (1,234,567).
+ *
+ * Có hàm này để không rải `language === 'vi' ? 'vi-VN' : 'en-US'` khắp nơi rồi
+ * sót một chỗ, vốn là cách một bảng số sinh ra hai kiểu nhóm cùng lúc.
+ */
+export function numberLocale(lang: Language = getLanguage()): string {
+  return lang === 'vi' ? 'vi-VN' : 'en-US'
 }

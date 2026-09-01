@@ -4,6 +4,7 @@ import {
 } from 'recharts'
 import { rollingCAGR, type RollingCAGRPoint } from '../utils/dca'
 import type { ReturnPoint } from '../types'
+import { useT, useTRich, type TranslationKey } from '../i18n'
 
 export interface HistoricalPercentilePortfolio {
   id: string
@@ -33,8 +34,17 @@ interface PortfolioWindows {
 const WINDOW_OPTIONS = [1, 2, 3, 4, 5]
 const PERCENTILES = [0.10, 0.25, 0.50, 0.75]
 
+/** Tên gọi bằng lời cho từng percentile, đọc dễ hơn "P10". */
+const BAND_LABEL_KEY: Record<number, TranslationKey> = {
+  0.1: 'hp.bandBad',
+  0.25: 'hp.bandSomewhatBad',
+  0.5: 'hp.bandMedian',
+  0.75: 'hp.bandSomewhatGood',
+}
+
 function DcaHistoricalPercentileBlockImpl({ portfolios }: Props) {
   const [windowYears, setWindowYears] = useState(5)
+  const t = useT()
   const availableWindowYears = useMemo(
     () => WINDOW_OPTIONS.filter(years => portfolios.some(portfolio => hasEnoughHistory(portfolio, years))),
     [portfolios],
@@ -52,12 +62,12 @@ function DcaHistoricalPercentileBlockImpl({ portfolios }: Props) {
     <div className="chart-container dca-historical-percentile">
       <div className="chart-header">
         <div>
-          <h3>Hiệu suất lịch sử theo percentile</h3>
+          <h3>{t('hp.title')}</h3>
         </div>
       </div>
 
       <div className="dca-historical-percentile-controls">
-        <span>Độ dài cửa sổ:</span>
+        <span>{t('hp.windowLength')}</span>
         {WINDOW_OPTIONS.map(years => (
           <button
             key={years}
@@ -65,7 +75,7 @@ function DcaHistoricalPercentileBlockImpl({ portfolios }: Props) {
             onClick={() => setWindowYears(years)}
             disabled={!availableWindowYears.includes(years)}
           >
-            {years} năm
+            {years === 1 ? t('hp.year1') : t('hp.years', { n: years })}
           </button>
         ))}
       </div>
@@ -75,7 +85,7 @@ function DcaHistoricalPercentileBlockImpl({ portfolios }: Props) {
         <table className="dca-stats-table dca-historical-percentile-table">
           <thead>
             <tr>
-              <th>Danh mục</th>
+              <th>{t('hp.colPortfolio')}</th>
               {PERCENTILES.map(percentile => <th key={percentile}>P{Math.round(percentile * 100)}</th>)}
             </tr>
           </thead>
@@ -85,7 +95,7 @@ function DcaHistoricalPercentileBlockImpl({ portfolios }: Props) {
                 <td>
                   <span className="perf-dot" style={{ background: portfolio.color }} />
                   {portfolio.name}
-                  <span className="dca-historical-window-count">{totalWindows} cửa sổ</span>
+                  <span className="dca-historical-window-count">{t('hp.windowCount', { n: totalWindows })}</span>
                 </td>
                 {PERCENTILES.map(percentile => {
                   const window = windows.get(percentile)
@@ -95,7 +105,10 @@ function DcaHistoricalPercentileBlockImpl({ portfolios }: Props) {
                         <>
                           <strong>{formatPercent(window.cagr)}</strong>
                           <span className="dca-historical-window-date">
-                            {formatMonthYear(window.startDate)} đến {formatMonthYear(window.endDate)}
+                            {t('hp.dateRange', {
+                              from: formatMonthYear(window.startDate),
+                              to: formatMonthYear(window.endDate),
+                            })}
                           </span>
                         </>
                       ) : '—'}
@@ -121,9 +134,7 @@ function DcaHistoricalPercentileBlockImpl({ portfolios }: Props) {
         </div>
 
       </> : (
-        <p className="dca-historical-percentile-sub">
-          Khoảng dữ liệu đang chọn chưa đủ 1 năm. Dashboard giữ block này để bạn biết mốc nào chưa dùng được.
-        </p>
+        <p className="dca-historical-percentile-sub">{t('hp.tooShort')}</p>
       )}
     </div>
   )
@@ -145,17 +156,12 @@ function HistoricalPathChart({
   percentile: number
   portfolios: PortfolioWindows[]
 }) {
+  const t = useT()
   const data = mergeChartData(portfolios, percentile)
-  const labels: Record<number, string> = {
-    0.1: 'Xấu',
-    0.25: 'Hơi xấu',
-    0.5: 'Trung vị',
-    0.75: 'Hơi tốt',
-  }
 
   return (
     <div className="dca-historical-percentile-card">
-      <strong>{labels[percentile]} · P{Math.round(percentile * 100)}</strong>
+      <strong>{t(BAND_LABEL_KEY[percentile] ?? 'hp.bandMedian')} · P{Math.round(percentile * 100)}</strong>
       <ResponsiveContainer width="100%" height={250}>
         <LineChart data={data} margin={{ top: 12, right: 8, bottom: 2, left: 0 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" vertical={false} />
@@ -170,7 +176,7 @@ function HistoricalPathChart({
           <YAxis tickFormatter={formatPercent} tick={{ fontSize: 10, fill: '#6b7280' }} width={48} />
           <Tooltip
             formatter={(value: number, name: string) => [formatPercent(value), name]}
-            labelFormatter={(month: number) => `Sau ${(month / 12).toFixed(1)} năm`}
+            labelFormatter={(month: number) => t('hp.afterYears', { n: (month / 12).toFixed(1) })}
           />
           <Legend wrapperStyle={{ fontSize: 11 }} />
           {portfolios.map(({ portfolio, windows }) => (
@@ -273,6 +279,8 @@ function HistoricalNarrative({
   results: PortfolioWindows[]
   windowYears: number
 }) {
+  const t = useT()
+  const tr = useTRich()
   const rows = results
     .map(result => ({
       name: result.portfolio.name,
@@ -291,43 +299,32 @@ function HistoricalNarrative({
   if (rows.length === 0) {
     return (
       <p className="dca-historical-percentile-sub">
-        Khoảng dữ liệu đang chọn chưa đủ để nhìn các giai đoạn đầu tư kéo dài {windowYears} năm.
+        {t('hp.narrowRange', { years: windowYears })}
       </p>
     )
   }
 
   return (
     <div className="dca-consist-takeaway">
-      <p>
-        Việc bạn chọn mua tài sản gì rất quan trọng, nhưng thời điểm bạn bắt đầu xuống tiền cũng quyết định không kém đến kết quả cuối cùng. Hãy thử nhìn lại các giai đoạn đầu tư kéo dài {windowYears} năm trong quá khứ để thấy rõ bức tranh này:
-      </p>
+      <p>{t('hp.intro', { years: windowYears })}</p>
 
       {rows.map(row => (
         <p key={row.name}>
-          Với quỹ <strong>{row.name}</strong>: {describeHistoricalOutcome(row)}
+          {tr('hp.fundLine', { name: row.name, story: describeHistoricalOutcome(row, t) })}
         </p>
       ))}
 
-      <p>
-        Quy tắc sống còn ở đây là: Đừng bao giờ quyết định đầu tư chỉ vì nhìn thấy mức lợi nhuận thông thường trông có vẻ hấp dẫn. Bạn phải nhìn thẳng vào kịch bản xấu nhất và tự hỏi: “Mình có chịu đựng được mức thua lỗ này không?” trước khi lựa chọn. Cuối cùng, hãy luôn nhớ rằng thị trường luôn biến động; những con số này là câu chuyện đã xảy ra trong quá khứ, không phải là một tờ giấy bảo hành cho tương lai.
-      </p>
+      <p>{t('hp.closing')}</p>
     </div>
   )
 }
 
-function describeHistoricalOutcome(row: {
-  p10: number
-  p50: number
-  p75: number
-}): string {
-  const worst = row.p10 < 0
-    ? `Ở những giai đoạn tồi tệ nhất, bạn có thể lỗ khoảng ${formatPercent(row.p10)}/năm.`
-    : `Ở những giai đoạn khó khăn nhất, bạn chỉ đạt khoảng ${formatPercent(row.p10)}/năm.`
-  const typical = row.p50 >= 0
-    ? `Thông thường, bạn sẽ đạt mức lãi ${formatPercent(row.p50)}/năm.`
-    : `Thông thường, bạn sẽ chịu mức lỗ ${formatPercent(row.p50)}/năm.`
-  const favorable = row.p75 >= 0
-    ? `Nếu gặp thời điểm thuận lợi, mức lãi có thể lên tới ${formatPercent(row.p75)}/năm.`
-    : `Ngay cả ở thời điểm thuận lợi, kết quả vẫn là ${formatPercent(row.p75)}/năm.`
+function describeHistoricalOutcome(
+  row: { p10: number; p50: number; p75: number },
+  t: (key: TranslationKey, vars?: Record<string, string | number>) => string,
+): string {
+  const worst = t(row.p10 < 0 ? 'hp.worstLoss' : 'hp.worstThin', { pct: formatPercent(row.p10) })
+  const typical = t(row.p50 >= 0 ? 'hp.typicalGain' : 'hp.typicalLoss', { pct: formatPercent(row.p50) })
+  const favorable = t(row.p75 >= 0 ? 'hp.favorableGain' : 'hp.favorableLoss', { pct: formatPercent(row.p75) })
   return `${worst} ${typical} ${favorable}`
 }
