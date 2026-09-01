@@ -2229,6 +2229,52 @@ const DICT = {
     en: '<b>This table says nothing about next time.</b> It only recounts the times already past. A market down 50% can fall another 50%.',
   },
 
+  // ── Đóng góp của Bitcoin vào lợi nhuận (BtcContributionChart) ──
+  'bc.title': { vi: 'Đóng góp của Bitcoin vào lợi nhuận tích lũy', en: 'Bitcoin\'s contribution to cumulative return' },
+  'bc.help': {
+    vi: 'Đường màu đen là lợi nhuận tích lũy của danh mục nền tảng. Đường màu xanh là lợi nhuận tích lũy của danh mục có Bitcoin. Nếu trên biểu đồ xuất hiện dải màu xanh có nghĩa rằng Bitcoin giúp nhà đầu tư có tăng trưởng tốt hơn đầu tư duy nhất danh mục nền tảng, còn màu đỏ là Bitcoin làm danh mục có tăng trưởng thấp hơn danh mục nền tảng.',
+    en: 'The dark line is the cumulative return of the base portfolio. The teal line is the portfolio with Bitcoin. A green band means Bitcoin left the investor better off than the base portfolio alone; a red band means it left them worse off.',
+  },
+  'bc.btcLabel': { vi: 'Danh mục {pct}% BTC', en: '{pct}% BTC portfolio' },
+  'bc.weightRow': { vi: 'Danh mục có tỷ trọng', en: 'Portfolio weight' },
+  'bc.btcButton': { vi: '{pct}% BTC', en: '{pct}% BTC' },
+  'bc.periodRow': { vi: 'Rolling cumulative returns', en: 'Rolling cumulative returns' },
+  'bc.periodUnavailable': {
+    vi: 'Khoảng thời gian đang chọn chưa đủ dài để tính rolling {period}. Hãy chọn "Thời hạn" dài hơn ở phần trên.',
+    en: 'The selected date range is too short for a rolling {period} window. Pick a longer range above.',
+  },
+  'bc.contribution': { vi: 'BTC đóng góp', en: 'BTC contributed' },
+  'bc.legendOutperform': { vi: 'BTC vượt trội', en: 'BTC ahead' },
+  'bc.legendUnderperform': { vi: 'BTC kém hơn', en: 'BTC behind' },
+  'bc.takeaway': {
+    vi: 'Với giai đoạn <b>{period}</b> và danh mục <b>{pct}% BTC</b>: BTC giúp danh mục vượt trội <b>{winPct}%</b> số giai đoạn, đóng góp trung bình <b>{avg}</b> lợi nhuận. Giai đoạn tốt nhất: <b>{best}</b>, xấu nhất: <b>{worst}</b>.',
+    en: 'Over <b>{period}</b> windows with a <b>{pct}% BTC</b> portfolio: Bitcoin left the portfolio ahead in <b>{winPct}%</b> of windows, contributing <b>{avg}</b> on average. Best window: <b>{best}</b>; worst: <b>{worst}</b>.',
+  },
+
+  // ── Lợi nhuận theo tỷ trọng Bitcoin (BtcWeightChart) ──
+  'bw.p12': { vi: '1 năm', en: '1 year' },
+  'bw.p24': { vi: '2 năm', en: '2 years' },
+  'bw.p36': { vi: '3 năm', en: '3 years' },
+  'bw.rebalMonthly': { vi: 'hàng tháng', en: 'monthly' },
+  'bw.rebalQuarterly': { vi: 'hàng quý', en: 'quarterly' },
+  'bw.rebalYearly': { vi: 'hàng năm', en: 'yearly' },
+  'bw.title': { vi: 'Lợi nhuận tích lũy tương ứng với tỷ trọng Bitcoin', en: 'Cumulative return against Bitcoin weight' },
+  'bw.sub': {
+    vi: '{period} rolling cumulative returns\u00a0·\u00a0{fund} + Bitcoin\u00a0·\u00a0Tái cân bằng {rebal}',
+    en: '{period} rolling cumulative returns\u00a0·\u00a0{fund} + Bitcoin\u00a0·\u00a0Rebalanced {rebal}',
+  },
+  'bw.holdingPeriod': { vi: 'Thời gian nắm giữ', en: 'Holding period' },
+  'bw.axisWeight': { vi: 'Tỷ trọng Bitcoin trong danh mục', en: 'Bitcoin weight in the portfolio' },
+  'bw.axisWeightShort': { vi: 'Tỷ trọng BTC', en: 'BTC weight' },
+  'bw.axisReturn': { vi: 'Lợi nhuận tích lũy', en: 'Cumulative return' },
+  'bw.tooltipReturn': { vi: 'Lợi nhuận', en: 'Return' },
+  'bw.mean': { vi: 'Trung bình', en: 'Mean' },
+  'bw.legendDots': { vi: 'Lợi nhuận tích lũy từng giai đoạn', en: 'Cumulative return of each window' },
+  'bw.takeaway': {
+    vi: 'Trong <b>{period}</b>: ở <b>0% BTC</b>, lợi nhuận trung bình <b>{ret0}</b>. Ở <b>10% BTC</b>: <b>{ret10}</b>. Mỗi 1% BTC tăng thêm <b>{slope}</b> lợi nhuận trung bình. Tỷ trọng cho trung bình cao nhất: <b>{bestWeight}% BTC</b> ({bestRet}).',
+    en: 'Over <b>{period}</b>: at <b>0% BTC</b> the mean return is <b>{ret0}</b>. At <b>10% BTC</b>: <b>{ret10}</b>. Each extra 1% of BTC adds <b>{slope}</b> to the mean return. The weight with the highest mean: <b>{bestWeight}% BTC</b> ({bestRet}).',
+  },
+
   // ── Đóng góp vào biến động (RiskContributionChart) ──
   'rc.title': { vi: 'Đóng góp vào biến động danh mục', en: 'Contribution to portfolio volatility' },
   'rc.help': {

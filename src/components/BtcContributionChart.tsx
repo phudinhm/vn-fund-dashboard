@@ -5,6 +5,7 @@ import {
 } from 'recharts'
 import type { ReturnPoint } from '../types'
 import { rollingCumulativeReturns } from '../utils/calculations'
+import { useT, useTRich, type TranslationKey } from '../i18n'
 
 interface Props {
   portfolioReturns: ReturnPoint[][]    // [base, btc1, btc2, btc3]
@@ -12,10 +13,10 @@ interface Props {
   fundId: string
 }
 
-const PERIOD_OPTIONS = [
-  { label: '1 năm', months: 12 },
-  { label: '2 năm', months: 24 },
-  { label: '3 năm', months: 36 },
+const PERIOD_OPTIONS: { labelKey: TranslationKey; months: number }[] = [
+  { labelKey: 'bw.p12', months: 12 },
+  { labelKey: 'bw.p24', months: 24 },
+  { labelKey: 'bw.p36', months: 36 },
 ]
 
 const BASE_LINE_COLOR = '#264653'
@@ -42,6 +43,7 @@ interface TooltipProps {
 }
 
 function CustomTooltip({ active, payload, label, fundId, btcLabel }: TooltipProps) {
+  const t = useT()
   if (!active || !payload?.length || !label) return null
   const baseEntry = payload.find(p => p.dataKey === 'base')
   const btcEntry  = payload.find(p => p.dataKey === 'btc')
@@ -61,7 +63,7 @@ function CustomTooltip({ active, payload, label, fundId, btcLabel }: TooltipProp
         {btcLabel}: {btc >= 0 ? '+' : ''}{btc.toFixed(1)}%
       </p>
       <p style={{ color: diff >= 0 ? '#16a34a' : '#dc2626', fontWeight: 600 }}>
-        BTC đóng góp: {diff >= 0 ? '+' : ''}{diff.toFixed(1)}%
+        {t('bc.contribution')}: {diff >= 0 ? '+' : ''}{diff.toFixed(1)}%
       </p>
     </div>
   )
@@ -70,9 +72,11 @@ function CustomTooltip({ active, payload, label, fundId, btcLabel }: TooltipProp
 function BtcContributionChartImpl({ portfolioReturns, btcPercents, fundId }: Props) {
   const [periodIdx, setPeriodIdx] = useState(0)
   const [weightIdx, setWeightIdx] = useState(0)
+  const t = useT()
+  const tr = useTRich()
 
   const windowSize = PERIOD_OPTIONS[periodIdx]!.months
-  const btcLabel = `Danh mục ${btcPercents[weightIdx]}% BTC`
+  const btcLabel = t('bc.btcLabel', { pct: btcPercents[weightIdx] ?? 0 })
 
   // Rolling window P tháng chỉ ra kết quả nếu khoảng thời gian đang chọn ở
   // panel cha ("Thời hạn") dài HƠN P tháng. Disable nút period nào không đủ
@@ -149,16 +153,13 @@ function BtcContributionChartImpl({ portfolioReturns, btcPercents, fundId }: Pro
   return (
     <div className="perf-table-container" style={{ marginTop: 24 }}>
       <div className="chart-header">
-        <h3>Đóng góp của Bitcoin vào lợi nhuận tích lũy</h3>
-        <span
-          className="chart-tooltip-icon"
-          title="Đường màu đen là lợi nhuận tích lũy của danh mục nền tảng. Đường màu xanh là lợi nhuận tích lũy của danh mục có Bitcoin. Nếu trên biểu đồ xuất hiện dải màu xanh có nghĩa rằng Bitcoin giúp nhà đầu tư có tăng trưởng tốt hơn đầu tư duy nhất danh mục nền tảng, còn màu đỏ là Bitcoin làm danh mục có tăng trưởng thấp hơn danh mục nền tảng."
-        >?</span>
+        <h3>{t('bc.title')}</h3>
+        <span className="chart-tooltip-icon" title={t('bc.help')}>?</span>
       </div>
 
       <div className="btc-contrib-controls">
         <div className="btc-contrib-ctrl-row">
-          <span className="btc-contrib-ctrl-label">Danh mục có tỷ trọng</span>
+          <span className="btc-contrib-ctrl-label">{t('bc.weightRow')}</span>
           <div className="btc-contrib-btn-group">
             {btcPercents.map((pct, i) => (
               <button
@@ -166,13 +167,13 @@ function BtcContributionChartImpl({ portfolioReturns, btcPercents, fundId }: Pro
                 className={`btc-contrib-btn${weightIdx === i ? ' btc-contrib-btn--active' : ''}`}
                 onClick={() => setWeightIdx(i)}
               >
-                {pct}% BTC
+                {t('bc.btcButton', { pct })}
               </button>
             ))}
           </div>
         </div>
         <div className="btc-contrib-ctrl-row">
-          <span className="btc-contrib-ctrl-label">Rolling cumulative returns</span>
+          <span className="btc-contrib-ctrl-label">{t('bc.periodRow')}</span>
           <div className="btc-contrib-btn-group">
             {PERIOD_OPTIONS.map((opt, i) => {
               const available = periodAvailability[i]
@@ -182,9 +183,9 @@ function BtcContributionChartImpl({ portfolioReturns, btcPercents, fundId }: Pro
                   className={`btc-contrib-btn${periodIdx === i ? ' btc-contrib-btn--active' : ''}`}
                   onClick={() => setPeriodIdx(i)}
                   disabled={!available}
-                  title={available ? undefined : `Khoảng thời gian đang chọn chưa đủ dài để tính rolling ${opt.label}. Hãy chọn "Thời hạn" dài hơn ở phần trên.`}
+                  title={available ? undefined : t('bc.periodUnavailable', { period: t(opt.labelKey) })}
                 >
-                  {opt.label}
+                  {t(opt.labelKey)}
                 </button>
               )
             })}
@@ -287,22 +288,24 @@ function BtcContributionChartImpl({ portfolioReturns, btcPercents, fundId }: Pro
         </span>
         <span className="btc-contrib-legend-item">
           <span className="btc-contrib-legend-swatch" style={{ background: GREEN_FILL, border: '1px solid #16a34a' }} />
-          BTC vượt trội
+          {t('bc.legendOutperform')}
         </span>
         <span className="btc-contrib-legend-item">
           <span className="btc-contrib-legend-swatch" style={{ background: RED_FILL, border: '1px solid #dc2626' }} />
-          BTC kém hơn
+          {t('bc.legendUnderperform')}
         </span>
       </div>
       <div className={`chart-takeaway chart-takeaway--${takeawayVariant}`}>
         <span className="chart-takeaway-icon">{takeawayIcon}</span>
         <div className="chart-takeaway-body">
-          Với giai đoạn <strong>{PERIOD_OPTIONS[periodIdx]!.label}</strong> và danh mục
-          {' '}<strong>{btcPercents[weightIdx]}% BTC</strong>: BTC giúp danh mục vượt trội
-          {' '}<strong>{winPct.toFixed(0)}%</strong> số giai đoạn, đóng góp trung bình
-          {' '}<strong>{avgDiff >= 0 ? '+' : ''}{avgDiff.toFixed(1)}%</strong> lợi nhuận.
-          {' '}Giai đoạn tốt nhất: <strong>+{bestDiff.toFixed(1)}%</strong>,
-          xấu nhất: <strong>{worstDiff.toFixed(1)}%</strong>.
+          {tr('bc.takeaway', {
+            period: t(PERIOD_OPTIONS[periodIdx]!.labelKey),
+            pct: btcPercents[weightIdx] ?? 0,
+            winPct: winPct.toFixed(0),
+            avg: `${avgDiff >= 0 ? '+' : ''}${avgDiff.toFixed(1)}%`,
+            best: `+${bestDiff.toFixed(1)}%`,
+            worst: `${worstDiff.toFixed(1)}%`,
+          })}
         </div>
       </div>
     </div>

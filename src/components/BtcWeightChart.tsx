@@ -5,6 +5,7 @@ import {
 } from 'recharts'
 import type { ReturnPoint, RebalanceFrequency } from '../types'
 import { rollingCumulativeReturns } from '../utils/calculations'
+import { useT, useTRich, type TranslationKey } from '../i18n'
 
 interface Props {
   // Pre-simulated returns for BTC weights 0%–10% (index 0 = 0%, index 10 = 10%)
@@ -14,10 +15,10 @@ interface Props {
   fundId: string
 }
 
-const PERIOD_OPTIONS = [
-  { label: '1 năm', months: 12 },
-  { label: '2 năm', months: 24 },
-  { label: '3 năm', months: 36 },
+const PERIOD_OPTIONS: { labelKey: TranslationKey; months: number }[] = [
+  { labelKey: 'bw.p12', months: 12 },
+  { labelKey: 'bw.p24', months: 24 },
+  { labelKey: 'bw.p36', months: 36 },
 ]
 
 const WEIGHTS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
@@ -37,17 +38,19 @@ function SmallDot(props: Record<string, unknown>) {
   return <circle cx={cx} cy={cy} r={2.5} fill={DOT_COLOR} fillOpacity={0.22} />
 }
 
-const REBAL_LABEL: Record<RebalanceFrequency, string> = {
-  monthly:   'hàng tháng',
-  quarterly: 'hàng quý',
-  yearly:    'hàng năm',
+const REBAL_LABEL_KEY: Record<RebalanceFrequency, TranslationKey> = {
+  monthly:   'bw.rebalMonthly',
+  quarterly: 'bw.rebalQuarterly',
+  yearly:    'bw.rebalYearly',
 }
 
 function BtcWeightChartImpl({ allSimReturns, rebalFreq, fundId }: Props) {
   const [periodIdx, setPeriodIdx] = useState(2) // default: 3 năm
+  const t = useT()
+  const tr = useTRich()
 
   const windowSize  = PERIOD_OPTIONS[periodIdx]!.months
-  const periodLabel = PERIOD_OPTIONS[periodIdx]!.label
+  const periodLabel = t(PERIOD_OPTIONS[periodIdx]!.labelKey)
 
   const { allPoints, meanPoints } = useMemo<{
     allPoints: DataPoint[]
@@ -85,18 +88,20 @@ function BtcWeightChartImpl({ allSimReturns, rebalFreq, fundId }: Props) {
   return (
     <div className="perf-table-container" style={{ marginTop: 24 }}>
       <div className="chart-header">
-        <h3>Lợi nhuận tích lũy tương ứng với tỷ trọng Bitcoin</h3>
+        <h3>{t('bw.title')}</h3>
       </div>
       <p className="btc-weight-chart-sub">
-        {periodLabel} rolling cumulative returns
-        &nbsp;·&nbsp;{fundId} + Bitcoin
-        &nbsp;·&nbsp;Tái cân bằng {REBAL_LABEL[rebalFreq]}
+        {t('bw.sub', {
+          period: periodLabel,
+          fund: fundId,
+          rebal: t(REBAL_LABEL_KEY[rebalFreq]),
+        })}
       </p>
 
       {/* Period selector */}
       <div className="btc-contrib-controls" style={{ marginTop: 10 }}>
         <div className="btc-contrib-ctrl-row">
-          <span className="btc-contrib-ctrl-label">Thời gian nắm giữ</span>
+          <span className="btc-contrib-ctrl-label">{t('bw.holdingPeriod')}</span>
           <div className="btc-contrib-btn-group">
             {PERIOD_OPTIONS.map((opt, i) => (
               <button
@@ -104,7 +109,7 @@ function BtcWeightChartImpl({ allSimReturns, rebalFreq, fundId }: Props) {
                 className={`btc-contrib-btn${periodIdx === i ? ' btc-contrib-btn--active' : ''}`}
                 onClick={() => setPeriodIdx(i)}
               >
-                {opt.label}
+                {t(opt.labelKey)}
               </button>
             ))}
           </div>
@@ -117,13 +122,13 @@ function BtcWeightChartImpl({ allSimReturns, rebalFreq, fundId }: Props) {
           <XAxis
             type="number"
             dataKey="weight"
-            name="Tỷ trọng BTC"
+            name={t('bw.axisWeightShort')}
             domain={[-0.4, 10.4]}
             ticks={WEIGHTS}
             tickFormatter={v => v + '%'}
             tick={{ fontSize: 11 }}
             label={{
-              value: 'Tỷ trọng Bitcoin trong danh mục',
+              value: t('bw.axisWeight'),
               position: 'insideBottom',
               offset: -28,
               fontSize: 12,
@@ -133,12 +138,12 @@ function BtcWeightChartImpl({ allSimReturns, rebalFreq, fundId }: Props) {
           <YAxis
             type="number"
             dataKey="ret"
-            name="Lợi nhuận tích lũy"
+            name={t('bw.axisReturn')}
             tickFormatter={v => v + '%'}
             tick={{ fontSize: 11 }}
             width={58}
             label={{
-              value: 'Lợi nhuận tích lũy',
+              value: t('bw.axisReturn'),
               angle: -90,
               position: 'insideLeft',
               offset: 14,
@@ -155,7 +160,7 @@ function BtcWeightChartImpl({ allSimReturns, rebalFreq, fundId }: Props) {
               return (
                 <div className="custom-tooltip">
                   <p>BTC: <strong>{pt.weight}%</strong></p>
-                  <p>Lợi nhuận: <strong>{pt.ret >= 0 ? '+' : ''}{pt.ret.toFixed(1)}%</strong></p>
+                  <p>{t('bw.tooltipReturn')}: <strong>{pt.ret >= 0 ? '+' : ''}{pt.ret.toFixed(1)}%</strong></p>
                 </div>
               )
             }}
@@ -173,7 +178,7 @@ function BtcWeightChartImpl({ allSimReturns, rebalFreq, fundId }: Props) {
             strokeWidth={2}
             line={{ stroke: MEAN_COLOR, strokeWidth: 2 }}
             lineType="joint"
-            name="Trung bình"
+            name={t('bw.mean')}
             isAnimationActive={false}
             r={3}
           />
@@ -183,23 +188,25 @@ function BtcWeightChartImpl({ allSimReturns, rebalFreq, fundId }: Props) {
       <div className="btc-contrib-legend" style={{ marginTop: 2 }}>
         <span className="btc-contrib-legend-item">
           <span className="btc-contrib-legend-swatch" style={{ background: DOT_COLOR, opacity: 0.4 }} />
-          Lợi nhuận tích lũy từng giai đoạn
+          {t('bw.legendDots')}
         </span>
         <span className="btc-contrib-legend-item">
           <span className="btc-contrib-legend-line" style={{ background: MEAN_COLOR }} />
-          Trung bình
+          {t('bw.mean')}
         </span>
       </div>
       {slope !== null && ret0 !== undefined && ret10 !== undefined && (
         <div className={`chart-takeaway chart-takeaway--${slope > 0 ? 'green' : 'red'}`}>
           <span className="chart-takeaway-icon">{slope > 0 ? '📈' : '📉'}</span>
           <div className="chart-takeaway-body">
-            Trong <strong>{periodLabel}</strong>: ở <strong>0% BTC</strong>, lợi nhuận trung bình
-            {' '}<strong>{ret0 >= 0 ? '+' : ''}{ret0.toFixed(1)}%</strong>. Ở
-            {' '}<strong>10% BTC</strong>: <strong>{ret10 >= 0 ? '+' : ''}{ret10.toFixed(1)}%</strong>.
-            {' '}Mỗi 1% BTC tăng thêm <strong>{slope >= 0 ? '+' : ''}{slope.toFixed(2)}%</strong>
-            {' '}lợi nhuận trung bình. Tỷ trọng cho trung bình cao nhất:
-            {' '}<strong>{bestWeight.weight}% BTC</strong> ({bestWeight.ret >= 0 ? '+' : ''}{bestWeight.ret.toFixed(1)}%).
+            {tr('bw.takeaway', {
+              period: periodLabel,
+              ret0: `${ret0 >= 0 ? '+' : ''}${ret0.toFixed(1)}%`,
+              ret10: `${ret10 >= 0 ? '+' : ''}${ret10.toFixed(1)}%`,
+              slope: `${slope >= 0 ? '+' : ''}${slope.toFixed(2)}%`,
+              bestWeight: bestWeight.weight,
+              bestRet: `${bestWeight.ret >= 0 ? '+' : ''}${bestWeight.ret.toFixed(1)}%`,
+            })}
           </div>
         </div>
       )}
