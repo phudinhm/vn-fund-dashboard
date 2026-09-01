@@ -12,6 +12,7 @@ import {
   type OverlapResult, type SectorDriftRow, type Holding, type AssetType,
 } from '../utils/overlap'
 import { useT, type TranslationKey } from '../i18n'
+import { sectorName } from '../utils/sectorName'
 
 interface Props {
   funds: FundMeta[]
@@ -442,7 +443,7 @@ function OverlapPanelImpl({ funds }: Props) {
                     {result.overlap.map(o => (
                       <tr key={o.stockCode}>
                         <td className="dca-stats-td-name">{o.stockCode}</td>
-                        <td>{o.industryA || o.industryB}</td>
+                        <td>{sectorName(o.industryA || o.industryB)}</td>
                         <td>{formatPct(o.weightA)}</td>
                         <td>{formatPct(o.weightB)}</td>
                       </tr>
@@ -538,11 +539,11 @@ function OverlapPanelImpl({ funds }: Props) {
                     ticks={axis.ticks}
                     tickFormatter={v => `${v}%`}
                   />
-                  <YAxis type="category" dataKey="industry" width={170} tick={{ fontSize: 12 }} />
+                  <YAxis type="category" dataKey="industry" width={170} tick={{ fontSize: 12 }} tickFormatter={(v: string) => sectorName(v)} />
                   <Tooltip
                     formatter={(value: number, name: string, props) => {
                       const idx = (props as { payload?: SectorDriftRow }).payload
-                      return [`${value.toFixed(2)}% (A − B)`, `${idx?.industry ?? name}`]
+                      return [`${value.toFixed(2)}% (A − B)`, sectorName(idx?.industry ?? name)]
                     }}
                     labelFormatter={() => ''}
                   />
@@ -610,7 +611,7 @@ function PortfolioTable({ rows }: { rows: Holding[] }) {
                 {g.rows.map(o => (
                   <tr key={`${g.type}-${o.stockCode}`}>
                     <td className="dca-stats-td-name">{o.stockCode}</td>
-                    {g.type === 'STOCK' && <td>{o.industry}</td>}
+                    {g.type === 'STOCK' && <td>{sectorName(o.industry)}</td>}
                     <td>{formatPct(o.weightPct)}</td>
                     <td>{o.assetValue > 0 ? formatVND(o.assetValue) : '—'}</td>
                   </tr>

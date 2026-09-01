@@ -17,6 +17,9 @@ import { FundHoldingsAnalysis } from './FundHoldingsAnalysis'
 import {
   findGroupedOption, type FundOptionGroup,
 } from '../utils/fundSelectOptions'
+import { useT, useTRich, type TranslationKey } from '../i18n'
+import { useLanguage, type Language } from '../hooks/useLanguage'
+import { sectorName } from '../utils/sectorName'
 
 /**
  * Tab "Phân Tích Quỹ" — đọc báo cáo tài chính tháng chính thức (Thông tư
@@ -94,17 +97,17 @@ const INDUSTRY_COLORS = ['#3b82f6', '#f59e0b', '#059669', '#8b5cf6', '#ef4444', 
 
 /** Các section kết quả (kiểu tab DCA): bấm pill để chỉ hiện section đó. */
 const ANALYSIS_SECTIONS = [
-  { id: 'all', label: 'Tất cả' },
-  { id: 'allocation', label: 'Cấu trúc & Phân bổ' },
-  { id: 'perf', label: 'Hiệu suất & Rủi ro' },
-  { id: 'size', label: 'Quy mô & Dòng tiền' },
-  { id: 'cost', label: 'Chi phí & Hiệu quả' },
-  { id: 'redflags', label: 'Red Flags' },
+  { id: 'all', labelKey: 'fa.sec.all' as TranslationKey },
+  { id: 'allocation', labelKey: 'fa.sec.allocation' as TranslationKey },
+  { id: 'perf', labelKey: 'fa.sec.perf' as TranslationKey },
+  { id: 'size', labelKey: 'fa.sec.size' as TranslationKey },
+  { id: 'cost', labelKey: 'fa.sec.cost' as TranslationKey },
+  { id: 'redflags', labelKey: 'fa.sec.redFlags' as TranslationKey },
 ] as const
 type AnalysisSectionId = typeof ANALYSIS_SECTIONS[number]['id']
 
 /** Các loại tài sản cho stacked bar cơ cấu (khớp ASSET_COLORS). */
-const ALLOC_KEYS = ['Cổ phiếu', 'Trái phiếu', 'Tiền mặt', 'Tài sản khác'] as const
+const ALLOC_KEYS = ['stock', 'bond', 'cash', 'other'] as const
 const ALLOC_FIELDS = ['stockValue', 'bondValue', 'cashValue', 'otherValue'] as const
 
 interface PeriodOption {
@@ -134,11 +137,14 @@ const selectStyles = {
   }),
 }
 
-/** "2026-07-31" → "Tháng 7/2026" */
-function formatPeriodLabel(periodEnd: string): string {
-  const [y, m] = periodEnd.split('-')
-  if (!y || !m) return periodEnd
-  return `Tháng ${Number(m)}/${y}`
+/** "2026-07-31" → "Tháng 7/2026" (vi) hoặc "7/2026" (en) */
+function usePeriodLabel(): (periodEnd: string) => string {
+  const t = useT()
+  return (periodEnd: string) => {
+    const [y, m] = periodEnd.split('-')
+    if (!y || !m) return periodEnd
+    return t('fa.periodLabel', { month: Number(m), year: y })
+  }
 }
 
 /** "2026-07-31" → "7/26" (nhãn trục X gọn cho 92 bar). */
@@ -152,13 +158,14 @@ function formatAxisTick(periodEnd: string): string {
  * Định dạng tiền kiểu digiinvest: "5.971,7 tỷ" — nhóm nghìn bằng dấu chấm,
  * dấu phẩy thập phân, 1 số lẻ từ 10 tỷ trở lên, 2 số lẻ dưới 10 tỷ.
  */
-function formatVNDLocale(value: number): string {
+function formatVNDLocale(value: number, lang: Language): string {
   const sign = value < 0 ? '-' : ''
   const ty = Math.abs(value) / 1_000_000_000
   const decimals = ty >= 10 ? 1 : 2
   const [int = '0', frac = '0'] = ty.toFixed(decimals).split('.')
-  const grouped = int.replace(/\B(?=(\d{3})+(?!\d))/g, '.')
-  return `${sign}${grouped},${frac} tỷ`
+  const vi = lang === 'vi'
+  const grouped = int.replace(/\B(?=(\d{3})+(?!\d))/g, vi ? '.' : ',')
+  return `${sign}${grouped}${vi ? ',' : '.'}${frac} ${vi ? 'tỷ' : 'bn'}`
 }
 
 /** Chữ ký delta có dấu, vd "+16,3%" / "-17,2%". value = phân số (0.163). */
@@ -178,13 +185,15 @@ export function industryAllocationForPeriod(
   portfolio: Map<string, FundPeriodSummary> | null,
   period: string | null,
   industryMap: Record<string, string>,
+  /** Nhãn cho mã không tra được ngành. Tên ngành là dữ liệu, chỉ nhãn này là UI. */
+  otherLabel = 'Khác',
 ) {
   const stocks = period ? portfolio?.get(period)?.stocks : null
   if (!stocks) return []
 
   const byIndustry = new Map<string, number>()
   for (const stock of stocks) {
-    const industry = industryMap[stock.ticker] ?? 'Khác'
+    const industry = sectorName(industryMap[stock.ticker] ?? otherLabel)
     byIndustry.set(industry, (byIndustry.get(industry) ?? 0) + stock.weightPct)
   }
 
@@ -194,6 +203,10 @@ export function industryAllocationForPeriod(
 }
 
 function FundAnalysisPanelImpl({ funds }: Props) {
+  const t = useT()
+  const tr = useTRich()
+  const { language } = useLanguage()
+  const formatPeriodLabel = usePeriodLabel()
   const [fundId, setFundId] = useState<string>(() =>
     loadLS<string>('fund_analysis_fund', REPORT_FUNDS[0]!))
   /** Quỹ nào có dữ liệu danh mục (holdings) + nguồn của nó. */
@@ -259,7 +272,7 @@ function FundAnalysisPanelImpl({ funds }: Props) {
       const fl = flResp.ok ? await flResp.text() : ''
       const ind = indResp.ok ? (await indResp.json()) as Record<string, string> : {}
       if (!pf) {
-        setError('Quỹ này chưa có dữ liệu báo cáo tài chính.')
+        setError(t('fa.noReports'))
       }
       setPortfolio(parseTidyPortfolio(pf))
       setAssets(parseTidyAssets(as))
@@ -271,7 +284,7 @@ function FundAnalysisPanelImpl({ funds }: Props) {
 
     load().catch(() => {
       if (!cancelled) {
-        setError('Không tải được dữ liệu báo cáo.')
+        setError(t('fa.loadFailed'))
         setLoading(false)
       }
     })
@@ -305,10 +318,10 @@ function FundAnalysisPanelImpl({ funds }: Props) {
       .map(f => ({ value: f.id, label: f.name_vi }))
 
     const groups: FundOptionGroup[] = [
-      { label: `Báo cáo tài chính đầy đủ (${reportOptions.length})`, options: reportOptions },
+      { label: t('fa.group.fullReports', { n: reportOptions.length }), options: reportOptions },
     ]
     if (holdingsOnly.length > 0) {
-      groups.push({ label: `Phân tích theo danh mục (${holdingsOnly.length})`, options: holdingsOnly })
+      groups.push({ label: t('fa.group.holdingsOnly', { n: holdingsOnly.length }), options: holdingsOnly })
     }
     return groups
   }, [funds, holdingsSource])
@@ -322,7 +335,7 @@ function FundAnalysisPanelImpl({ funds }: Props) {
 
   const periodOptions: PeriodOption[] = useMemo(
     () => [
-      { value: null, label: 'Mới nhất' },
+      { value: null, label: t('fa.latest') },
       ...periods.map(p => ({ value: p, label: formatPeriodLabel(p) })),
     ],
     [periods],
@@ -339,10 +352,10 @@ function FundAnalysisPanelImpl({ funds }: Props) {
     const a = piePeriodSummary?.allocation
     if (!a) return []
     const items = [
-      { name: 'Cổ phiếu', value: a.stockValue, field: 'stockValue' as const, color: ASSET_COLORS.stock },
-      { name: 'Trái phiếu', value: a.bondValue, field: 'bondValue' as const, color: ASSET_COLORS.bond },
-      { name: 'Tiền mặt', value: a.cashValue, field: 'cashValue' as const, color: ASSET_COLORS.cash },
-      { name: 'Tài sản khác', value: a.otherValue, field: 'otherValue' as const, color: ASSET_COLORS.other },
+      { name: t('fa.asset.stock'), value: a.stockValue, field: 'stockValue' as const, color: ASSET_COLORS.stock },
+      { name: t('fa.asset.bond'), value: a.bondValue, field: 'bondValue' as const, color: ASSET_COLORS.bond },
+      { name: t('fa.asset.cash'), value: a.cashValue, field: 'cashValue' as const, color: ASSET_COLORS.cash },
+      { name: t('fa.asset.other'), value: a.otherValue, field: 'otherValue' as const, color: ASSET_COLORS.other },
     ]
     return items.filter(d => d.value > 0)
   }, [piePeriodSummary])
@@ -372,11 +385,11 @@ function FundAnalysisPanelImpl({ funds }: Props) {
     const delta = pieTotal - prevTotal
     return {
       label: formatPeriodLabel(prevPeriod),
-      absLabel: formatVNDLocale(Math.abs(delta)),
+      absLabel: formatVNDLocale(Math.abs(delta), language),
       pctLabel: signedPct(delta / prevTotal),
       positive: delta >= 0,
     }
-  }, [prevSummary, prevPeriod, pieTotal])
+  }, [prevSummary, prevPeriod, pieTotal, language, formatPeriodLabel])
 
   const categoryDelta = (field: 'stockValue' | 'bondValue' | 'cashValue' | 'otherValue', value: number) => {
     const prevVal = prevSummary?.allocation[field]
@@ -385,7 +398,7 @@ function FundAnalysisPanelImpl({ funds }: Props) {
     // Kỳ trước = 0 (vd trái phiếu mới xuất hiện) thì không có % — chỉ ghi số tuyệt đối.
     const pctLabel = prevVal > 0 ? ` (${signedPct(delta / prevVal)})` : ''
     return {
-      label: `${formatVNDLocale(Math.abs(delta))}${pctLabel}`,
+      label: `${formatVNDLocale(Math.abs(delta), language)}${pctLabel}`,
       positive: delta >= 0,
       show: delta !== 0,
     }
@@ -423,10 +436,10 @@ function FundAnalysisPanelImpl({ funds }: Props) {
       const pct = (v: number) => (tot ? (v / tot) * 100 : 0)
       return {
         period: p,
-        'Cổ phiếu': pct(a?.stockValue ?? 0),
-        'Trái phiếu': pct(a?.bondValue ?? 0),
-        'Tiền mặt': pct(a?.cashValue ?? 0),
-        'Tài sản khác': pct(a?.otherValue ?? 0),
+        stock: pct(a?.stockValue ?? 0),
+        bond: pct(a?.bondValue ?? 0),
+        cash: pct(a?.cashValue ?? 0),
+        other: pct(a?.otherValue ?? 0),
       }
     }),
     [portfolio, chartPeriods],
@@ -456,8 +469,8 @@ function FundAnalysisPanelImpl({ funds }: Props) {
       const s = income?.get(p)
       return {
         period: p,
-        'Thực hiện': s?.realizedGain ?? 0,
-        'Chưa thực hiện': s?.unrealizedGain ?? 0,
+        realized: s?.realizedGain ?? 0,
+        unrealized: s?.unrealizedGain ?? 0,
       }
     }),
     [income, chartPeriods],
@@ -469,8 +482,8 @@ function FundAnalysisPanelImpl({ funds }: Props) {
       const s = income?.get(p)
       return {
         period: p,
-        'Cổ tức': s?.dividends ?? 0,
-        'Lãi tiền gửi': s?.interestIncome ?? 0,
+        dividends: s?.dividends ?? 0,
+        interest: s?.interestIncome ?? 0,
       }
     }),
     [income, chartPeriods],
@@ -482,8 +495,8 @@ function FundAnalysisPanelImpl({ funds }: Props) {
       const s = income?.get(p)
       return {
         period: p,
-        'Phí quản lý': s?.managementFee ?? 0,
-        'Phí giao dịch': s?.brokerageFee ?? 0,
+        mgmtFee: s?.managementFee ?? 0,
+        brokerageFee: s?.brokerageFee ?? 0,
       }
     }),
     [income, chartPeriods],
@@ -507,8 +520,8 @@ function FundAnalysisPanelImpl({ funds }: Props) {
       const s = income?.get(p)
       return {
         period: p,
-        'Phát hành': s?.subscriptionFlow ?? null,
-        'Mua lại': s?.redemptionFlow ?? null,
+        subscription: s?.subscriptionFlow ?? null,
+        redemption: s?.redemptionFlow ?? null,
       }
     }),
     [income, chartPeriods],
@@ -529,8 +542,8 @@ function FundAnalysisPanelImpl({ funds }: Props) {
       const s = income?.get(p)
       return {
         period: p,
-        'Đầu tư': s?.investmentProfit ?? 0,
-        'Dòng tiền': s?.navChangeByFlow ?? 0,
+        investment: s?.investmentProfit ?? 0,
+        flow: s?.navChangeByFlow ?? 0,
       }
     }),
     [income, chartPeriods],
@@ -588,8 +601,8 @@ function FundAnalysisPanelImpl({ funds }: Props) {
       const s = flow?.get(p)
       return {
         period: p,
-        'Phí quản lý': s?.mgmtFeeRatio ?? 0,
-        'Tổng chi phí': s?.expenseRatio ?? 0,
+        mgmtFee: s?.mgmtFeeRatio ?? 0,
+        totalCost: s?.expenseRatio ?? 0,
       }
     }),
     [flow, chartPeriods],
@@ -620,14 +633,14 @@ function FundAnalysisPanelImpl({ funds }: Props) {
 
   // ── Nhóm 3: phân bổ ngành theo kỳ đang chọn (donut) ──
   const industryAlloc = useMemo(() => {
-    return industryAllocationForPeriod(portfolio, pieResolved, industryMap)
+    return industryAllocationForPeriod(portfolio, pieResolved, industryMap, t('fa.industry.other'))
   }, [portfolio, pieResolved, industryMap])
 
   // Top 6 ngành + "Còn lại", kèm màu cho donut.
   const industryPie = useMemo(() => {
     const top = industryAlloc.slice(0, 6).map(d => ({ ...d }))
     const rest = industryAlloc.slice(6).reduce((s, x) => s + x.value, 0)
-    if (rest > 0.01) top.push({ name: 'Còn lại', value: rest })
+    if (rest > 0.01) top.push({ name: t('fa.asset.rest'), value: rest })
     return top.map((d, i) => ({ ...d, color: INDUSTRY_COLORS[i % INDUSTRY_COLORS.length]! }))
   }, [industryAlloc])
 
@@ -684,7 +697,7 @@ function FundAnalysisPanelImpl({ funds }: Props) {
     () => chartPeriods.map(p => ({
       period: p,
       AUM: assets?.get(p)?.nav ?? 0,
-      'Dòng tiền': income?.get(p)?.navChangeByFlow ?? 0,
+      flow: income?.get(p)?.navChangeByFlow ?? 0,
     })),
     [assets, income, chartPeriods],
   )
@@ -709,7 +722,7 @@ function FundAnalysisPanelImpl({ funds }: Props) {
       classNamePrefix="fund-search"
       options={periodOptions}
       value={value === null
-        ? { value: null, label: 'Mới nhất' }
+        ? { value: null, label: t('fa.latest') }
         : { value, label: formatPeriodLabel(value) }}
       onChange={opt => opt && onChange(opt.value)}
       isClearable={false}
@@ -728,14 +741,14 @@ function FundAnalysisPanelImpl({ funds }: Props) {
   return (
     <div className="simulation-panel dca-panel">
       <div className="panel-header">
-        <h2>Phân Tích Quỹ</h2>
+        <h2>{t('fa.title')}</h2>
       </div>
 
       {/* ── Thông số ── */}
       <div className="dca-params-card">
-        <h3 className="dca-section-title">Thông số</h3>
+        <h3 className="dca-section-title">{t('calc.params')}</h3>
         <div className="dca-param-row">
-          <label className="dca-label">Quỹ</label>
+          <label className="dca-label">{t('fa.fund')}</label>
           <div className="overlap-select">
             <Select<FundOption, false, FundOptionGroup>
               className="fund-search-select"
@@ -744,8 +757,8 @@ function FundAnalysisPanelImpl({ funds }: Props) {
               value={selectedFund}
               onChange={opt => opt && setFundId(opt.value)}
               isSearchable
-              placeholder="Tìm quỹ..."
-              noOptionsMessage={() => 'Không tìm thấy'}
+              placeholder={t('fundSelector.searchPlaceholder')}
+              noOptionsMessage={() => t('fundSelector.noOptions')}
               styles={selectStyles}
             />
           </div>
@@ -760,7 +773,7 @@ function FundAnalysisPanelImpl({ funds }: Props) {
         />
       )}
 
-      {isReportFund && loading && <div className="loading-indicator">Đang tải dữ liệu...</div>}
+      {isReportFund && loading && <div className="loading-indicator">{t('app.loading')}</div>}
 
       {isReportFund && !loading && portfolio && (
         <>
@@ -772,7 +785,7 @@ function FundAnalysisPanelImpl({ funds }: Props) {
                 className={`dca-anchor-btn${activeSection === s.id ? ' dca-anchor-btn--active' : ''}`}
                 onClick={() => setActiveSection(s.id)}
               >
-                {s.label}
+                {t(s.labelKey)}
               </button>
             ))}
           </div>
@@ -780,27 +793,31 @@ function FundAnalysisPanelImpl({ funds }: Props) {
           {/* ════════════ Nhóm 3: Cấu trúc & Phân bổ ════════════ */}
           <div style={{ display: showSection('allocation') }}>
             <div className="section-divider">
-              <span className="section-divider-label">Cấu trúc & Phân bổ</span>
+              <span className="section-divider-label">{t('fa.sec.allocation')}</span>
             </div>
 
             {/* ── Tổng tài sản snapshot (donut 4 loại + kỳ báo cáo) ── */}
             <div className="chart-container">
               <div className="chart-header">
-                <h3>Tổng tài sản</h3>
+                <h3>{t('fa.totalAssets')}</h3>
               </div>
               <div className="dca-param-row">
-                <label className="dca-label">Kỳ báo cáo</label>
+                <label className="dca-label">{t('fa.reportPeriod')}</label>
                 <div className="overlap-select">{selectPeriod(piePeriod, setPiePeriod)}</div>
               </div>
               {piePeriodSummary && pieData.length > 0 ? (
                 <>
                   <div className="fund-analysis-summary">
                     <div className="fund-analysis-total-left">
-                      <div className="fund-analysis-total-caption">Tổng tài sản</div>
-                      <div className="fund-analysis-total-value">{formatVNDLocale(pieTotal)}</div>
+                      <div className="fund-analysis-total-caption">{t('fa.totalAssets')}</div>
+                      <div className="fund-analysis-total-value">{formatVNDLocale(pieTotal, language)}</div>
                       {headerDelta && (
                         <div className={`fund-analysis-delta ${headerDelta.positive ? 'pos' : 'neg'}`}>
-                          So với kỳ {headerDelta.label}: {headerDelta.absLabel} ({headerDelta.pctLabel})
+                          {t('fa.vsPeriod', {
+                            period: headerDelta.label,
+                            abs: headerDelta.absLabel,
+                            pct: headerDelta.pctLabel,
+                          })}
                         </div>
                       )}
                     </div>
@@ -820,7 +837,7 @@ function FundAnalysisPanelImpl({ funds }: Props) {
                               <span className="fund-analysis-alloc-dot" style={{ backgroundColor: d.color }} />
                               <span className="fund-analysis-alloc-name">{d.name}</span>
                             </div>
-                            <div className="fund-analysis-alloc-value">{formatVNDLocale(d.value)}</div>
+                            <div className="fund-analysis-alloc-value">{formatVNDLocale(d.value, language)}</div>
                             <div className="fund-analysis-alloc-meta">
                               <span className="fund-analysis-alloc-pct">
                                 {pieTotal > 0 ? ((d.value / pieTotal) * 100).toFixed(1) : 0}%
@@ -839,20 +856,22 @@ function FundAnalysisPanelImpl({ funds }: Props) {
                   {pieAssets && pieAssets.nav > 0 && (
                     <p className="fund-analysis-nav">
                       NAV: <strong>{formatVND(pieAssets.nav)}</strong>
-                      {pieAssets.navPerUnit > 0 && <> · NAV/CCQ: <strong>{Math.round(pieAssets.navPerUnit).toLocaleString('vi-VN')} đ</strong></>}
-                      {' '}(kỳ {formatPeriodLabel(pieResolved!)})
+                      {pieAssets.navPerUnit > 0 && <> · {tr('fa.navPerUnit', {
+                        v: Math.round(pieAssets.navPerUnit).toLocaleString(language === 'vi' ? 'vi-VN' : 'en-US'),
+                      })}</>}
+                      {' '}{t('fa.periodSuffix', { period: formatPeriodLabel(pieResolved!) })}
                     </p>
                   )}
                 </>
               ) : (
-                <p className="overlap-empty">Không có dữ liệu danh mục kỳ này.</p>
+                <p className="overlap-empty">{t('fa.noPortfolioData')}</p>
               )}
             </div>
 
             <div className="fund-analysis-charts-grid">
               <div className="chart-container">
                 <div className="chart-header">
-                  <h3>Phân bổ theo ngành nghề</h3>
+                  <h3>{t('fa.industryTitle')}</h3>
                 </div>
                 {industryPie.length > 0 ? (
                   <>
@@ -878,17 +897,18 @@ function FundAnalysisPanelImpl({ funds }: Props) {
                     </div>
                   </>
                 ) : (
-                  <p className="overlap-empty">Kỳ này không có dữ liệu ngành.</p>
+                  <p className="overlap-empty">{t('fa.noIndustryData')}</p>
                 )}
                 <p className="fund-analysis-chart-note">
-                  Tỷ trọng cổ phiếu theo ngành, kỳ {pieResolved ? formatPeriodLabel(pieResolved) : 'đang chọn'}.
-                  Nếu một hai ngành chiếm quá nửa, danh mục dễ bị kéo theo ngành đó.
+                  {t('fa.industryNote', {
+                    period: pieResolved ? formatPeriodLabel(pieResolved) : t('fa.currentPeriod'),
+                  })}
                 </p>
               </div>
 
               <div className="chart-container">
                 <div className="chart-header">
-                  <h3>Top 10 cổ phiếu nắm giữ lớn nhất</h3>
+                  <h3>{t('fa.top10Title')}</h3>
                 </div>
                 {top10Stocks.length > 0 ? (
                   <ResponsiveContainer width="100%" height={240}>
@@ -897,25 +917,26 @@ function FundAnalysisPanelImpl({ funds }: Props) {
                       <XAxis type="number" tickFormatter={(v: number) => `${v}%`} tick={{ fontSize: 11 }} />
                       <YAxis type="category" dataKey="ticker" width={72} interval={0} tick={{ fontSize: 11 }} tickFormatter={(t: string) => (t.length > 12 ? `${t.slice(0, 11)}…` : t)} />
                       <RechartsTooltip
-                        formatter={(value: number | string) => [`${Number(value).toFixed(2)}%`, 'Tỷ trọng']}
-                        labelFormatter={(t: string) => `${t}${industryMap[t] ? ` · ${industryMap[t]}` : ''}`}
+                        formatter={(value: number | string) => [`${Number(value).toFixed(2)}%`, t('fa.weight')]}
+                        labelFormatter={(ticker: string) => `${ticker}${industryMap[ticker] ? ` · ${sectorName(industryMap[ticker]!)}` : ''}`}
                       />
                       <Bar dataKey="weightPct" fill={ASSET_COLORS.stock} isAnimationActive={false} />
                     </BarChart>
                   </ResponsiveContainer>
                 ) : (
-                  <p className="overlap-empty">Kỳ này không có cổ phiếu.</p>
+                  <p className="overlap-empty">{t('fa.noStocks')}</p>
                 )}
                 <p className="fund-analysis-chart-note">
-                  Tỷ trọng trong NAV, kỳ {pieResolved ? formatPeriodLabel(pieResolved) : 'đang chọn'}.
-                  Vài mã đứng đầu quyết định phần lớn hiệu suất cả danh mục.
+                  {t('fa.top10Note', {
+                    period: pieResolved ? formatPeriodLabel(pieResolved) : t('fa.currentPeriod'),
+                  })}
                 </p>
               </div>
             </div>
 
             <div className="chart-container">
               <div className="chart-header">
-                <h3>Mức độ tập trung danh mục (top 5)</h3>
+                <h3>{t('fa.concentrationTitle')}</h3>
                 </div>
                 <ResponsiveContainer width="100%" height={240}>
                   <LineChart data={top5Concentration} margin={{ left: 8, right: 8, top: 8, bottom: 4 }}>
@@ -930,18 +951,17 @@ function FundAnalysisPanelImpl({ funds }: Props) {
                   </LineChart>
                 </ResponsiveContainer>
                 <p className="fund-analysis-chart-note">
-                  Tổng tỷ trọng 5 cổ phiếu lớn nhất mỗi kỳ. Đường dốc lên liên tục nghĩa là quỹ đang
-                  mất dần tính đa dạng hóa.
+                  {t('fa.concentrationNote')}
                 </p>
               </div>
 
             {/* ── Danh mục quỹ (bảng, kèm kỳ báo cáo riêng) ── */}
             <div className="chart-container">
               <div className="chart-header">
-                <h3>Danh mục quỹ</h3>
+                <h3>{t('fa.portfolioTitle')}</h3>
               </div>
               <div className="dca-param-row">
-                <label className="dca-label">Kỳ báo cáo</label>
+                <label className="dca-label">{t('fa.reportPeriod')}</label>
                 <div className="overlap-select">{selectPeriod(tablePeriod, setTablePeriod)}</div>
               </div>
               {tableStocks.length > 0 ? (
@@ -949,10 +969,10 @@ function FundAnalysisPanelImpl({ funds }: Props) {
                   <table className="dca-stats-table overlap-table">
                     <thead>
                       <tr>
-                        <th>Chứng khoán</th>
-                        <th>Khối lượng nắm giữ</th>
-                        <th>Tổng giá trị</th>
-                        <th>Tỷ trọng</th>
+                        <th>{t('fa.col.security')}</th>
+                        <th>{t('fa.col.quantity')}</th>
+                        <th>{t('fa.col.value')}</th>
+                        <th>{t('fa.weight')}</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -961,7 +981,7 @@ function FundAnalysisPanelImpl({ funds }: Props) {
                           <td>
                             <span className="fund-analysis-symbol">{s.ticker}</span>
                             {industryMap[s.ticker] && (
-                              <span className="fund-analysis-industry">{industryMap[s.ticker]}</span>
+                              <span className="fund-analysis-industry">{sectorName(industryMap[s.ticker]!)}</span>
                             )}
                           </td>
                           <td>{s.quantity > 0 ? s.quantity.toLocaleString('vi-VN') : '—'}</td>
@@ -973,7 +993,7 @@ function FundAnalysisPanelImpl({ funds }: Props) {
                   </table>
                 </div>
               ) : (
-                <p className="overlap-empty">Kỳ này không có cổ phiếu trong danh mục.</p>
+                <p className="overlap-empty">{t('fa.noStocksInPortfolio')}</p>
               )}
             </div>
           </div>
@@ -981,13 +1001,13 @@ function FundAnalysisPanelImpl({ funds }: Props) {
           {/* ════════════ Nhóm 1: Hiệu suất & Rủi ro ════════════ */}
           <div style={{ display: showSection('perf') }}>
             <div className="section-divider">
-              <span className="section-divider-label">Hiệu suất & Rủi ro</span>
+              <span className="section-divider-label">{t('fa.sec.perf')}</span>
             </div>
 
             <div className="fund-analysis-charts-grid">
               <div className="chart-container">
                 <div className="chart-header">
-                  <h3>NAV/CCQ (giá quỹ) qua các tháng</h3>
+                  <h3>{t('fa.navChartTitle')}</h3>
                 </div>
                 <ResponsiveContainer width="100%" height={240}>
                   <AreaChart data={navCcqSeries} margin={{ left: 8, right: 8, top: 8, bottom: 4 }}>
@@ -1001,20 +1021,23 @@ function FundAnalysisPanelImpl({ funds }: Props) {
                     <XAxis dataKey="period" tickFormatter={formatAxisTick} tick={{ fontSize: 10 }} minTickGap={32} />
                     <YAxis tick={{ fontSize: 11 }} width={76} domain={['auto', 'auto']} tickFormatter={(v: number) => `${Math.round(v).toLocaleString('vi-VN')}`} />
                     <RechartsTooltip
-                      formatter={(value: number | string) => [`${Number(value).toLocaleString('vi-VN')} đ`, 'NAV/CCQ']}
+                      formatter={(value: number | string) => [
+                        `${Number(value).toLocaleString(language === 'vi' ? 'vi-VN' : 'en-US')} đ`,
+                        t('fa.navLabel'),
+                      ]}
                       labelFormatter={(p: string) => formatPeriodLabel(p)}
                     />
                     <Area type="monotone" dataKey="value" stroke={NAV_CCQ_COLOR} strokeWidth={2} fill="url(#navCcqFill)" isAnimationActive={false} />
                   </AreaChart>
                 </ResponsiveContainer>
                 <p className="fund-analysis-chart-note">
-                  Giá trị tài sản ròng trên mỗi chứng chỉ quỹ cuối kỳ (báo cáo 2219) — giá bạn mua/bán.
+                  {t('fa.navNote')}
                 </p>
               </div>
 
               <div className="chart-container">
                 <div className="chart-header">
-                  <h3>Mức sụt giảm từ đỉnh (drawdown)</h3>
+                  <h3>{t('fa.ddChartTitle')}</h3>
                 </div>
                 <ResponsiveContainer width="100%" height={240}>
                   <AreaChart data={drawdownSeriesData} margin={{ left: 8, right: 8, top: 8, bottom: 4 }}>
@@ -1022,16 +1045,18 @@ function FundAnalysisPanelImpl({ funds }: Props) {
                     <XAxis dataKey="period" tickFormatter={formatAxisTick} tick={{ fontSize: 10 }} minTickGap={32} />
                     <YAxis tickFormatter={(v: number) => `${Math.round(v)}%`} tick={{ fontSize: 11 }} width={54} />
                     <RechartsTooltip
-                      formatter={(value: number | string) => [`${Number(value).toFixed(1)}%`, 'Sụt giảm']}
+                      formatter={(value: number | string) => [`${Number(value).toFixed(1)}%`, t('fa.ddLabel')]}
                       labelFormatter={(p: string) => formatPeriodLabel(p)}
                     />
                     <Area type="monotone" dataKey="value" stroke={DRAWDOWN_COLOR} strokeWidth={2} fill="rgba(220,38,38,0.25)" isAnimationActive={false} />
                   </AreaChart>
                 </ResponsiveContainer>
                 <p className="fund-analysis-chart-note">
-                  Khoảng cách từ đỉnh cao nhất trước đó, tính trên NAV/CCQ. Đáy sâu nhất lịch sử:
-                  {maxDD < 0 ? ` −${(Math.abs(maxDD) * 100).toFixed(0)}%` : ' chưa đủ số liệu'}.
-                  Cú sập càng sâu, càng cần nhiều thời gian hồi phục.
+                  {t('fa.ddNote', {
+                    deepest: maxDD < 0
+                      ? ` −${(Math.abs(maxDD) * 100).toFixed(0)}%`
+                      : t('fa.ddNotEnough'),
+                  })}
                 </p>
               </div>
             </div>
@@ -1039,7 +1064,7 @@ function FundAnalysisPanelImpl({ funds }: Props) {
             <div className="fund-analysis-charts-grid">
               <div className="chart-container">
                 <div className="chart-header">
-                  <h3>Lợi nhuận quỹ theo tháng</h3>
+                  <h3>{t('fa.profitChartTitle')}</h3>
                 </div>
                 <ResponsiveContainer width="100%" height={240}>
                   <BarChart data={profitSeries} margin={{ left: 8, right: 8, top: 8, bottom: 4 }}>
@@ -1047,7 +1072,7 @@ function FundAnalysisPanelImpl({ funds }: Props) {
                     <XAxis dataKey="period" tickFormatter={formatAxisTick} tick={{ fontSize: 10 }} minTickGap={32} />
                     <YAxis tickFormatter={(v: number) => formatVNDAxis(v)} tick={{ fontSize: 11 }} width={76} />
                     <RechartsTooltip
-                      formatter={(value: number | string) => [formatVND(Number(value)), 'Lợi nhuận quỹ']}
+                      formatter={(value: number | string) => [formatVND(Number(value)), t('fa.profitLabel')]}
                       labelFormatter={(p: string) => formatPeriodLabel(p)}
                     />
                     <Bar dataKey="value" isAnimationActive={false}>
@@ -1058,14 +1083,13 @@ function FundAnalysisPanelImpl({ funds }: Props) {
                   </BarChart>
                 </ResponsiveContainer>
                 <p className="fund-analysis-chart-note">
-                  Lợi nhuận của quỹ = thay đổi NAV do hoạt động đầu tư (2237) = thu nhập ròng +
-                  lãi/lỗ khi bán + lãi/lỗ theo giá thị trường (gồm cả phần cổ phiếu tăng/giảm chưa bán).
+                  {t('fa.profitNote')}
                 </p>
               </div>
 
               <div className="chart-container">
                 <div className="chart-header">
-                  <h3>Lợi nhuận theo tháng (% NAV/CCQ)</h3>
+                  <h3>{t('fa.navPctChartTitle')}</h3>
                 </div>
                 <ResponsiveContainer width="100%" height={240}>
                   <BarChart data={navCcqReturnSeries} margin={{ left: 8, right: 8, top: 8, bottom: 4 }}>
@@ -1073,7 +1097,7 @@ function FundAnalysisPanelImpl({ funds }: Props) {
                     <XAxis dataKey="period" tickFormatter={formatAxisTick} tick={{ fontSize: 10 }} minTickGap={32} />
                     <YAxis tickFormatter={(v: number) => `${v.toFixed(1)}%`} tick={{ fontSize: 11 }} width={54} />
                     <RechartsTooltip
-                      formatter={(value: number | string) => [`${Number(value).toFixed(2)}%`, 'Thay đổi NAV/CCQ']}
+                      formatter={(value: number | string) => [`${Number(value).toFixed(2)}%`, t('fa.navPctLabel')]}
                       labelFormatter={(p: string) => formatPeriodLabel(p)}
                     />
                     <Bar dataKey="value" isAnimationActive={false}>
@@ -1084,8 +1108,7 @@ function FundAnalysisPanelImpl({ funds }: Props) {
                   </BarChart>
                 </ResponsiveContainer>
                 <p className="fund-analysis-chart-note">
-                  Tỷ suất sinh lời mỗi tháng trên MỖI chứng chỉ (thay đổi % NAV/CCQ). Tính trên-đơn-vị
-                  nên đã tự loại ảnh hưởng dòng tiền. Xanh = lời, đỏ = lỗ.
+                  {t('fa.navPctNote')}
                 </p>
               </div>
             </div>
@@ -1093,7 +1116,7 @@ function FundAnalysisPanelImpl({ funds }: Props) {
             <div className="fund-analysis-charts-grid">
               <div className="chart-container">
                 <div className="chart-header">
-                  <h3>Lãi/lỗ thực hiện (khi bán)</h3>
+                  <h3>{t('fa.realizedChartTitle')}</h3>
                 </div>
                 <ResponsiveContainer width="100%" height={240}>
                   <BarChart data={gainSeries} margin={{ left: 8, right: 8, top: 8, bottom: 4 }}>
@@ -1101,25 +1124,24 @@ function FundAnalysisPanelImpl({ funds }: Props) {
                     <XAxis dataKey="period" tickFormatter={formatAxisTick} tick={{ fontSize: 10 }} minTickGap={32} />
                     <YAxis tickFormatter={(v: number) => formatVNDAxis(v)} tick={{ fontSize: 11 }} width={76} />
                     <RechartsTooltip
-                      formatter={(value: number | string) => [formatVND(Number(value)), 'Lãi/lỗ thực hiện']}
+                      formatter={(value: number | string) => [formatVND(Number(value)), t('fa.realizedLabel')]}
                       labelFormatter={(p: string) => formatPeriodLabel(p)}
                     />
-                    <Bar dataKey="Thực hiện" isAnimationActive={false}>
+                    <Bar dataKey="realized" isAnimationActive={false}>
                       {gainSeries.map(d => (
-                        <Cell key={d.period} fill={d['Thực hiện'] >= 0 ? PROFIT_POS : PROFIT_NEG} />
+                        <Cell key={d.period} fill={d.realized >= 0 ? PROFIT_POS : PROFIT_NEG} />
                       ))}
                     </Bar>
                   </BarChart>
                 </ResponsiveContainer>
                 <p className="fund-analysis-chart-note">
-                  Lãi/lỗ khi quỹ BÁN cổ phiếu trong tháng (2235). Xanh = lời, đỏ = lỗ. Chỉ là phần đã
-                  chốt bằng cách bán, chưa tính phần còn đang giữ.
+                  {t('fa.realizedNote')}
                 </p>
               </div>
 
               <div className="chart-container">
                 <div className="chart-header">
-                  <h3>Lãi/lỗ chưa thực hiện (theo giá thị trường)</h3>
+                  <h3>{t('fa.unrealizedChartTitle')}</h3>
                 </div>
                 <ResponsiveContainer width="100%" height={240}>
                   <BarChart data={gainSeries} margin={{ left: 8, right: 8, top: 8, bottom: 4 }}>
@@ -1127,19 +1149,18 @@ function FundAnalysisPanelImpl({ funds }: Props) {
                     <XAxis dataKey="period" tickFormatter={formatAxisTick} tick={{ fontSize: 10 }} minTickGap={32} />
                     <YAxis tickFormatter={(v: number) => formatVNDAxis(v)} tick={{ fontSize: 11 }} width={76} />
                     <RechartsTooltip
-                      formatter={(value: number | string) => [formatVND(Number(value)), 'Lãi/lỗ chưa thực hiện']}
+                      formatter={(value: number | string) => [formatVND(Number(value)), t('fa.unrealizedLabel')]}
                       labelFormatter={(p: string) => formatPeriodLabel(p)}
                     />
-                    <Bar dataKey="Chưa thực hiện" isAnimationActive={false}>
+                    <Bar dataKey="unrealized" isAnimationActive={false}>
                       {gainSeries.map(d => (
-                        <Cell key={d.period} fill={d['Chưa thực hiện'] >= 0 ? PROFIT_POS : PROFIT_NEG} />
+                        <Cell key={d.period} fill={d.unrealized >= 0 ? PROFIT_POS : PROFIT_NEG} />
                       ))}
                     </Bar>
                   </BarChart>
                 </ResponsiveContainer>
                 <p className="fund-analysis-chart-note">
-                  Lãi/lỗ do cổ phiếu lên/xuống giá khi quỹ VẪN ĐANG GIỮ (2236, chưa bán). Phần này làm
-                  giá quỹ (NAV/CCQ) biến động mạnh nhất. Xanh = lời, đỏ = lỗ.
+                  {t('fa.unrealizedNote')}
                 </p>
               </div>
             </div>
@@ -1148,21 +1169,17 @@ function FundAnalysisPanelImpl({ funds }: Props) {
           {/* ════════════ Nhóm 2: Quy mô & Dòng tiền ════════════ */}
           <div style={{ display: showSection('size') }}>
             <div className="section-divider">
-              <span className="section-divider-label">Quy mô & Dòng tiền</span>
+              <span className="section-divider-label">{t('fa.sec.size')}</span>
             </div>
 
             <div className="fund-analysis-insight">
-              Hiệu quả THẬT của quỹ (NAV/CCQ) chỉ ~1,18x kể từ đỉnh 2022. Tổng tài sản tăng 3,5x chủ
-              yếu do dòng tiền mới (số chứng chỉ ×3), không phải do đầu tư. Tổng tài sản của quỹ mở
-              bằng giá nhân số lượng, nên nó tăng khi nhà đầu tư nạp tiền mới. Xem chart "Thay đổi tổng
-              NAV" để biết mỗi tháng tăng trưởng đến từ đầu tư hay từ dòng tiền. Dòng tiền âm liên tục
-              là tín hiệu nhà đầu tư mất niềm tin; tiền mặt cao thì quỹ đang phòng thủ.
+              {t('fa.sizeIntro')}
             </div>
 
             <div className="fund-analysis-charts-grid">
               <div className="chart-container">
                 <div className="chart-header">
-                  <h3>Quy mô quỹ (AUM) qua các tháng</h3>
+                  <h3>{t('fa.aumTitle')}</h3>
                 </div>
                 <ResponsiveContainer width="100%" height={240}>
                   <AreaChart data={aumSeries} margin={{ left: 8, right: 8, top: 8, bottom: 4 }}>
@@ -1176,20 +1193,20 @@ function FundAnalysisPanelImpl({ funds }: Props) {
                     <XAxis dataKey="period" tickFormatter={formatAxisTick} tick={{ fontSize: 10 }} minTickGap={32} />
                     <YAxis tickFormatter={(v: number) => formatVNDAxis(v)} tick={{ fontSize: 11 }} width={76} />
                     <RechartsTooltip
-                      formatter={(value: number | string) => [formatVND(Number(value)), 'AUM (tài sản ròng)']}
+                      formatter={(value: number | string) => [formatVND(Number(value)), t('fa.aumLabel')]}
                       labelFormatter={(p: string) => formatPeriodLabel(p)}
                     />
                     <Area type="monotone" dataKey="value" stroke={SERIES_COLOR} strokeWidth={2} fill="url(#aumFill)" isAnimationActive={false} />
                   </AreaChart>
                 </ResponsiveContainer>
                 <p className="fund-analysis-chart-note">
-                  Quy mô quỹ tính theo tài sản ròng (NAV cuối kỳ, mục 2243), đã trừ nợ phải trả.
+                  {t('fa.aumNote')}
                 </p>
               </div>
 
               <div className="chart-container">
                 <div className="chart-header">
-                  <h3>Số chứng chỉ quỹ đang lưu hành</h3>
+                  <h3>{t('fa.unitsTitle')}</h3>
                 </div>
                 <ResponsiveContainer width="100%" height={240}>
                   <LineChart data={unitsSeries} margin={{ left: 8, right: 8, top: 8, bottom: 4 }}>
@@ -1197,7 +1214,10 @@ function FundAnalysisPanelImpl({ funds }: Props) {
                     <XAxis dataKey="period" tickFormatter={formatAxisTick} tick={{ fontSize: 10 }} minTickGap={32} />
                     <YAxis tickFormatter={(v: number) => `${Math.round(v / 1e6)}tr`} tick={{ fontSize: 11 }} width={54} />
                     <RechartsTooltip
-                      formatter={(value: number | string) => [`${Number(value).toLocaleString('vi-VN')} chứng chỉ`, 'Lưu hành']}
+                      formatter={(value: number | string) => [
+                        t('fa.unitsValue', { v: Number(value).toLocaleString(language === 'vi' ? 'vi-VN' : 'en-US') }),
+                        t('fa.unitsLabel'),
+                      ]}
                       labelFormatter={(p: string) => formatPeriodLabel(p)}
                     />
                     <Line type="monotone" dataKey="value" stroke={UNITS_COLOR} strokeWidth={2} dot={false} isAnimationActive={false} />
@@ -1209,7 +1229,7 @@ function FundAnalysisPanelImpl({ funds }: Props) {
             <div className="fund-analysis-charts-grid">
               <div className="chart-container">
                 <div className="chart-header">
-                  <h3>Thay đổi NAV do phát hành CCQ (2239.3.1)</h3>
+                  <h3>{t('fa.subChartTitle')}</h3>
                 </div>
                 <ResponsiveContainer width="100%" height={240}>
                   <BarChart data={subRedSeries} margin={{ left: 8, right: 8, top: 8, bottom: 4 }}>
@@ -1217,21 +1237,20 @@ function FundAnalysisPanelImpl({ funds }: Props) {
                     <XAxis dataKey="period" tickFormatter={formatAxisTick} tick={{ fontSize: 10 }} minTickGap={32} />
                     <YAxis tickFormatter={(v: number) => formatVNDAxis(v)} tick={{ fontSize: 11 }} width={76} />
                     <RechartsTooltip
-                      formatter={(value: number | string) => [formatVND(Number(value)), 'Phát hành']}
+                      formatter={(value: number | string) => [formatVND(Number(value)), t('fa.series.subscription')]}
                       labelFormatter={(p: string) => formatPeriodLabel(p)}
                     />
-                    <Bar dataKey="Phát hành" fill={PROFIT_POS} isAnimationActive={false} />
+                    <Bar dataKey="subscription" fill={PROFIT_POS} isAnimationActive={false} />
                   </BarChart>
                 </ResponsiveContainer>
                 <p className="fund-analysis-chart-note">
-                  Thay đổi giá trị tài sản ròng do phát hành thêm chứng chỉ quỹ (2239.3.1). Báo cáo
-                  chỉ tách riêng mục này từ 12/2020, các tháng trước để trống.
+                  {t('fa.subNote')}
                 </p>
               </div>
 
               <div className="chart-container">
                 <div className="chart-header">
-                  <h3>Thay đổi NAV do mua lại CCQ (2239.3.2)</h3>
+                  <h3>{t('fa.redChartTitle')}</h3>
                 </div>
                 <ResponsiveContainer width="100%" height={240}>
                   <BarChart data={subRedSeries} margin={{ left: 8, right: 8, top: 8, bottom: 4 }}>
@@ -1239,15 +1258,14 @@ function FundAnalysisPanelImpl({ funds }: Props) {
                     <XAxis dataKey="period" tickFormatter={formatAxisTick} tick={{ fontSize: 10 }} minTickGap={32} />
                     <YAxis tickFormatter={(v: number) => formatVNDAxis(v)} tick={{ fontSize: 11 }} width={76} />
                     <RechartsTooltip
-                      formatter={(value: number | string) => [formatVND(Number(value)), 'Mua lại']}
+                      formatter={(value: number | string) => [formatVND(Number(value)), t('fa.series.redemption')]}
                       labelFormatter={(p: string) => formatPeriodLabel(p)}
                     />
-                    <Bar dataKey="Mua lại" fill={PROFIT_NEG} isAnimationActive={false} />
+                    <Bar dataKey="redemption" fill={PROFIT_NEG} isAnimationActive={false} />
                   </BarChart>
                 </ResponsiveContainer>
                 <p className="fund-analysis-chart-note">
-                  Thay đổi giá trị tài sản ròng do quỹ mua lại chứng chỉ (2239.3.2), số âm là tiền
-                  rút ra. Phát hành trừ mua lại ra dòng tiền ròng của tháng.
+                  {t('fa.redNote')}
                 </p>
               </div>
             </div>
@@ -1255,7 +1273,7 @@ function FundAnalysisPanelImpl({ funds }: Props) {
             <div className="fund-analysis-charts-grid">
               <div className="chart-container">
                 <div className="chart-header">
-                  <h3>Dòng tiền ròng (phát hành − mua lại CCQ)</h3>
+                  <h3>{t('fa.netFlowTitle')}</h3>
                 </div>
                 <ResponsiveContainer width="100%" height={240}>
                   <BarChart data={flowSeries} margin={{ left: 8, right: 8, top: 8, bottom: 4 }}>
@@ -1263,7 +1281,7 @@ function FundAnalysisPanelImpl({ funds }: Props) {
                     <XAxis dataKey="period" tickFormatter={formatAxisTick} tick={{ fontSize: 10 }} minTickGap={32} />
                     <YAxis tickFormatter={(v: number) => formatVNDAxis(v)} tick={{ fontSize: 11 }} width={76} />
                     <RechartsTooltip
-                      formatter={(value: number | string) => [formatVND(Number(value)), 'Dòng tiền ròng']}
+                      formatter={(value: number | string) => [formatVND(Number(value)), t('fa.netFlowLabel')]}
                       labelFormatter={(p: string) => formatPeriodLabel(p)}
                     />
                     <Bar dataKey="value" isAnimationActive={false}>
@@ -1274,14 +1292,13 @@ function FundAnalysisPanelImpl({ funds }: Props) {
                   </BarChart>
                 </ResponsiveContainer>
                 <p className="fund-analysis-chart-note">
-                  Xanh = nhà đầu tư nạp thêm tiền, đỏ = rút vốn ra. Con số chính xác từ báo cáo
-                  (2239.3), bằng hiệu của hai chart phát hành và mua lại bên trên.
+                  {t('fa.netFlowNote')}
                 </p>
               </div>
 
               <div className="chart-container">
                 <div className="chart-header">
-                  <h3>Thay đổi tổng NAV: đầu tư vs dòng tiền</h3>
+                  <h3>{t('fa.navSplitTitle')}</h3>
                 </div>
                 <ResponsiveContainer width="100%" height={240}>
                   <BarChart data={navChangeSeries} margin={{ left: 8, right: 8, top: 8, bottom: 4 }}>
@@ -1292,31 +1309,26 @@ function FundAnalysisPanelImpl({ funds }: Props) {
                       formatter={(value: number | string, name: string) => [formatVND(Number(value)), name]}
                       labelFormatter={(p: string) => formatPeriodLabel(p)}
                     />
-                    <Bar dataKey="Đầu tư" fill={INVEST_COLOR} isAnimationActive={false} />
-                    <Bar dataKey="Dòng tiền" fill={FLOW_NAV_COLOR} isAnimationActive={false} />
+                    <Bar dataKey="investment" fill={INVEST_COLOR} isAnimationActive={false} />
+                    <Bar dataKey="flow" fill={FLOW_NAV_COLOR} isAnimationActive={false} />
                   </BarChart>
                 </ResponsiveContainer>
                 <div className="fund-analysis-stack-legend">
-                  <span className="fund-analysis-stack-legend-item"><span className="fund-analysis-stack-legend-dot" style={{ backgroundColor: INVEST_COLOR }} />Đầu tư (2237)</span>
-                  <span className="fund-analysis-stack-legend-item"><span className="fund-analysis-stack-legend-dot" style={{ backgroundColor: FLOW_NAV_COLOR }} />Dòng tiền (2239.3)</span>
+                  <span className="fund-analysis-stack-legend-item"><span className="fund-analysis-stack-legend-dot" style={{ backgroundColor: INVEST_COLOR }} />{t('fa.legend.investment')}</span>
+                  <span className="fund-analysis-stack-legend-item"><span className="fund-analysis-stack-legend-dot" style={{ backgroundColor: FLOW_NAV_COLOR }} />{t('fa.legend.flow')}</span>
                 </div>
                 <p className="fund-analysis-chart-note">
-                  Mỗi tháng, tổng NAV được tính bằng:<br />
-                  1. Lợi nhuận đầu tư (2237): quỹ làm ra bao nhiêu tiền.<br />
-                  2. Dòng tiền (2239.3): nhà đầu tư nạp thêm hay rút ra.<br />
+                  {t('fa.navSplitNote1')}<br />
+                  {t('fa.navSplitNote2')}<br />
+                  {t('fa.navSplitNote3')}<br />
                   <br />
-                  Chart này tách 2 thứ ra, để thấy quỹ lớn nhờ đâu. Lớn nhờ lợi nhuận là thật. Lớn nhờ
-                  tiền mới chưa nói lên chất lượng.<br />
+                  {t('fa.navSplitNote4')}<br />
                   <br />
-                  DCDS từ cuối 2018: lợi nhuận đầu tư cộng dồn 713 tỷ, dòng tiền 4.722 tỷ. Tức 87% tăng
-                  trưởng đến từ tiền mới, chỉ 13% từ quỹ làm ra. Tổng NAV gấp 5,3 lần nhưng quỹ thật sự
-                  sinh lời chưa tới 1 lần.<br />
+                  {t('fa.navSplitNote5')}<br />
                   <br />
-                  Năm nay lại ngược, cũng đáng chú ý: 7 tháng đầu 2026 hút 895 tỷ tiền mới, nhưng lợi
-                  nhuận đầu tư âm 652 tỷ. Tiền mới vào nhiều vẫn không cứu được lỗ.<br />
+                  {t('fa.navSplitNote6')}<br />
                   <br />
-                  Quỹ phình to không có nghĩa là quỹ làm ra tiền. Muốn biết quỹ có giỏi không, phải
-                  nhìn NAV/CCQ, tức lợi nhuận trên từng chứng chỉ.
+                  {t('fa.navSplitNote7')}
                 </p>
               </div>
             </div>
@@ -1324,7 +1336,7 @@ function FundAnalysisPanelImpl({ funds }: Props) {
             <div className="fund-analysis-charts-grid">
               <div className="chart-container">
                 <div className="chart-header">
-                  <h3>Tiền mặt / cổ phiếu (% tổng tài sản) qua các tháng</h3>
+                  <h3>{t('fa.allocPctTitle')}</h3>
                 </div>
                 <ResponsiveContainer width="100%" height={240}>
                   <AreaChart data={allocationSeries} margin={{ left: 8, right: 8, top: 8, bottom: 4 }}>
@@ -1357,14 +1369,13 @@ function FundAnalysisPanelImpl({ funds }: Props) {
                   ))}
                 </div>
                 <p className="fund-analysis-chart-note">
-                  Tỷ trọng từng loại tài sản trong tổng tài sản (cộng lại đúng 100%). Tiền mặt cao trong
-                  downtrend là phòng thủ tốt, nhưng cao trong uptrend là bỏ lỡ cơ hội.
+                  {t('fa.allocPctNote')}
                 </p>
               </div>
 
               <div className="chart-container">
                 <div className="chart-header">
-                  <h3>Tiền mặt qua các tháng</h3>
+                  <h3>{t('fa.cashTitle')}</h3>
                 </div>
                 <ResponsiveContainer width="100%" height={240}>
                   <BarChart data={cashSeries} margin={{ left: 8, right: 8, top: 8, bottom: 4 }}>
@@ -1372,15 +1383,14 @@ function FundAnalysisPanelImpl({ funds }: Props) {
                     <XAxis dataKey="period" tickFormatter={formatAxisTick} tick={{ fontSize: 10 }} minTickGap={32} />
                     <YAxis tickFormatter={(v: number) => formatVNDAxis(v)} tick={{ fontSize: 11 }} width={76} />
                     <RechartsTooltip
-                      formatter={(value: number | string) => [formatVND(Number(value)), 'Tiền mặt']}
+                      formatter={(value: number | string) => [formatVND(Number(value)), t('fa.asset.cash')]}
                       labelFormatter={(p: string) => formatPeriodLabel(p)}
                     />
                     <Bar dataKey="value" fill={CASH_SERIES_COLOR} isAnimationActive={false} />
                   </BarChart>
                 </ResponsiveContainer>
                 <p className="fund-analysis-chart-note">
-                  Tiền mặt và tương đương tiền quỹ nắm giữ mỗi cuối kỳ (Cash at Bank + Cash Equivalents
-                  + Money market). Tăng vọt nghĩa là quỹ bán cổ phiếu và đang giữ tiền.
+                  {t('fa.cashNote')}
                 </p>
               </div>
             </div>
@@ -1388,7 +1398,7 @@ function FundAnalysisPanelImpl({ funds }: Props) {
             <div className="fund-analysis-charts-grid">
               <div className="chart-container">
                 <div className="chart-header">
-                  <h3>Tiền gửi ngân hàng (2203)</h3>
+                  <h3>{t('fa.depositTitle')}</h3>
                 </div>
                 <ResponsiveContainer width="100%" height={240}>
                   <BarChart data={bankDepositSeries} margin={{ left: 8, right: 8, top: 8, bottom: 4 }}>
@@ -1396,21 +1406,20 @@ function FundAnalysisPanelImpl({ funds }: Props) {
                     <XAxis dataKey="period" tickFormatter={formatAxisTick} tick={{ fontSize: 10 }} minTickGap={32} />
                     <YAxis tickFormatter={(v: number) => formatVNDAxis(v)} tick={{ fontSize: 11 }} width={76} />
                     <RechartsTooltip
-                      formatter={(value: number | string) => [formatVND(Number(value)), 'Tiền gửi ngân hàng']}
+                      formatter={(value: number | string) => [formatVND(Number(value)), t('fa.depositLabel')]}
                       labelFormatter={(p: string) => formatPeriodLabel(p)}
                     />
                     <Bar dataKey="value" fill={BANK_DEPOSIT_COLOR} isAnimationActive={false} />
                   </BarChart>
                 </ResponsiveContainer>
                 <p className="fund-analysis-chart-note">
-                  Tiền gửi ngân hàng (mục 2203) chiếm phần lớn trong tổng tiền mặt. Phần chênh
-                  với chart "Tiền mặt qua các tháng" là tương đương tiền và công cụ thị trường tiền tệ.
+                  {t('fa.depositNote')}
                 </p>
               </div>
 
               <div className="chart-container">
                 <div className="chart-header">
-                  <h3>Tỷ lệ tiền mặt theo % AUM</h3>
+                  <h3>{t('fa.cashPctTitle')}</h3>
                 </div>
                 <ResponsiveContainer width="100%" height={240}>
                   <BarChart data={cashAumSeries} margin={{ left: 8, right: 8, top: 8, bottom: 4 }}>
@@ -1418,15 +1427,14 @@ function FundAnalysisPanelImpl({ funds }: Props) {
                     <XAxis dataKey="period" tickFormatter={formatAxisTick} tick={{ fontSize: 10 }} minTickGap={32} />
                     <YAxis domain={[0, 'auto']} tickFormatter={(v: number) => `${Math.round(v)}%`} tick={{ fontSize: 11 }} width={48} />
                     <RechartsTooltip
-                      formatter={(value: number | string) => [`${Number(value).toFixed(1)}%`, 'Tiền mặt % AUM']}
+                      formatter={(value: number | string) => [`${Number(value).toFixed(1)}%`, t('fa.cashPctLabel')]}
                       labelFormatter={(p: string) => formatPeriodLabel(p)}
                     />
                     <Bar dataKey="value" fill={BANK_DEPOSIT_COLOR} isAnimationActive={false} />
                   </BarChart>
                 </ResponsiveContainer>
                 <p className="fund-analysis-chart-note">
-                  Tỷ lệ tiền mặt trên quy mô tài sản ròng (AUM). Cao nghĩa là quỹ giữ nhiều tiền mặt,
-                  phòng thủ hoặc chờ đợi cơ hội mua vào.
+                  {t('fa.cashPctNote')}
                 </p>
               </div>
             </div>
@@ -1434,7 +1442,7 @@ function FundAnalysisPanelImpl({ funds }: Props) {
             <div className="fund-analysis-charts-grid">
               <div className="chart-container">
                 <div className="chart-header">
-                  <h3>Số nhà đầu tư</h3>
+                  <h3>{t('fa.investorsTitle')}</h3>
                 </div>
                 <ResponsiveContainer width="100%" height={240}>
                   <BarChart data={investorSeries} margin={{ left: 8, right: 8, top: 8, bottom: 4 }}>
@@ -1442,21 +1450,23 @@ function FundAnalysisPanelImpl({ funds }: Props) {
                     <XAxis dataKey="period" tickFormatter={formatAxisTick} tick={{ fontSize: 10 }} minTickGap={32} />
                     <YAxis tickFormatter={(v: number) => `${Math.round(v / 1000)}k`} tick={{ fontSize: 11 }} width={50} />
                     <RechartsTooltip
-                      formatter={(value: number | string) => [`${Number(value).toLocaleString('vi-VN')} nhà đầu tư`, 'Số nhà đầu tư']}
+                      formatter={(value: number | string) => [
+                        t('fa.investorsValue', { v: Number(value).toLocaleString(language === 'vi' ? 'vi-VN' : 'en-US') }),
+                        t('fa.investorsTitle'),
+                      ]}
                       labelFormatter={(p: string) => formatPeriodLabel(p)}
                     />
                     <Bar dataKey="value" fill={INVESTOR_COLOR} isAnimationActive={false} />
                   </BarChart>
                 </ResponsiveContainer>
                 <p className="fund-analysis-chart-note">
-                  Số nhà đầu tư cuối kỳ (22841). Tăng nhanh cùng số chứng chỉ lưu hành nghĩa là quỹ
-                  hút dòng tiền bán lẻ mạnh (07/2026: 74.212 nhà đầu tư).
+                  {t('fa.investorsNote')}
                 </p>
               </div>
 
               <div className="chart-container">
                 <div className="chart-header">
-                  <h3>Công ty quản lý & bên liên quan sở hữu (2282)</h3>
+                  <h3>{t('fa.managerOwnTitle')}</h3>
                 </div>
                 <ResponsiveContainer width="100%" height={240}>
                   <LineChart data={relatedPartySeries} margin={{ left: 8, right: 8, top: 8, bottom: 4 }}>
@@ -1464,16 +1474,14 @@ function FundAnalysisPanelImpl({ funds }: Props) {
                     <XAxis dataKey="period" tickFormatter={formatAxisTick} tick={{ fontSize: 10 }} minTickGap={32} />
                     <YAxis domain={[0, 'auto']} tickFormatter={(v: number) => `${Math.round(v * 100)}%`} tick={{ fontSize: 11 }} width={44} />
                     <RechartsTooltip
-                      formatter={(value: number | string) => [`${(Number(value) * 100).toFixed(2)}%`, 'Công ty quản lý + bên liên quan']}
+                      formatter={(value: number | string) => [`${(Number(value) * 100).toFixed(2)}%`, t('fa.managerOwnLabel')]}
                       labelFormatter={(p: string) => formatPeriodLabel(p)}
                     />
                     <Line type="monotone" dataKey="value" stroke={OWNERSHIP_FMC_COLOR} strokeWidth={2} dot={false} isAnimationActive={false} />
                   </LineChart>
                 </ResponsiveContainer>
                 <p className="fund-analysis-chart-note">
-                  Tỷ lệ chứng chỉ do công ty quản lý quỹ và bên liên quan nắm giữ (2282). Con số nhảy
-                  theo thời điểm, không phải thước đo niềm tin: họ kiếm tiền bằng phí quản lý, không
-                  cần nắm nhiều chứng chỉ.
+                  {t('fa.managerOwnNote')}
                 </p>
               </div>
             </div>
@@ -1481,7 +1489,7 @@ function FundAnalysisPanelImpl({ funds }: Props) {
             <div className="fund-analysis-charts-grid">
               <div className="chart-container">
                 <div className="chart-header">
-                  <h3>Top 10 nhà đầu tư lớn nhất (2283)</h3>
+                  <h3>{t('fa.top10InvTitle')}</h3>
                 </div>
                 <ResponsiveContainer width="100%" height={240}>
                   <LineChart data={top10Series} margin={{ left: 8, right: 8, top: 8, bottom: 4 }}>
@@ -1489,21 +1497,20 @@ function FundAnalysisPanelImpl({ funds }: Props) {
                     <XAxis dataKey="period" tickFormatter={formatAxisTick} tick={{ fontSize: 10 }} minTickGap={32} />
                     <YAxis domain={[0, 'auto']} tickFormatter={(v: number) => `${Math.round(v * 100)}%`} tick={{ fontSize: 11 }} width={44} />
                     <RechartsTooltip
-                      formatter={(value: number | string) => [`${(Number(value) * 100).toFixed(2)}%`, 'Top 10 nhà đầu tư']}
+                      formatter={(value: number | string) => [`${(Number(value) * 100).toFixed(2)}%`, t('fa.top10InvLabel')]}
                       labelFormatter={(p: string) => formatPeriodLabel(p)}
                     />
                     <Line type="monotone" dataKey="value" stroke={TOP10_COLOR} strokeWidth={2} dot={false} isAnimationActive={false} />
                   </LineChart>
                 </ResponsiveContainer>
                 <p className="fund-analysis-chart-note">
-                  10 nhà đầu tư lớn nhất nắm bao nhiêu phần trăm quỹ (2283). Tập trung cao nghĩa là
-                  vài tổ chức lớn chi phối; họ rút vốn sẽ ảnh hưởng mạnh tới quỹ.
+                  {t('fa.top10InvNote')}
                 </p>
               </div>
 
               <div className="chart-container">
                 <div className="chart-header">
-                  <h3>Nhà đầu tư nước ngoài (2284)</h3>
+                  <h3>{t('fa.foreignTitle')}</h3>
                 </div>
                 <ResponsiveContainer width="100%" height={240}>
                   <LineChart data={foreignSeries} margin={{ left: 8, right: 8, top: 8, bottom: 4 }}>
@@ -1511,15 +1518,14 @@ function FundAnalysisPanelImpl({ funds }: Props) {
                     <XAxis dataKey="period" tickFormatter={formatAxisTick} tick={{ fontSize: 10 }} minTickGap={32} />
                     <YAxis domain={[0, 'auto']} tickFormatter={(v: number) => `${Math.round(v * 100)}%`} tick={{ fontSize: 11 }} width={44} />
                     <RechartsTooltip
-                      formatter={(value: number | string) => [`${(Number(value) * 100).toFixed(2)}%`, 'Nhà đầu tư nước ngoài']}
+                      formatter={(value: number | string) => [`${(Number(value) * 100).toFixed(2)}%`, t('fa.foreignLabel')]}
                       labelFormatter={(p: string) => formatPeriodLabel(p)}
                     />
                     <Line type="monotone" dataKey="value" stroke={FOREIGN_COLOR} strokeWidth={2} dot={false} isAnimationActive={false} />
                   </LineChart>
                 </ResponsiveContainer>
                 <p className="fund-analysis-chart-note">
-                  Tỷ lệ chứng chỉ do nhà đầu tư nước ngoài nắm (2284). Giảm thường đi cùng thị trường
-                  điều chỉnh, khi vốn ngoại rút khỏi cổ phiếu Việt Nam.
+                  {t('fa.foreignNote')}
                 </p>
               </div>
             </div>
@@ -1528,20 +1534,17 @@ function FundAnalysisPanelImpl({ funds }: Props) {
           {/* ════════════ Nhóm 4: Chi phí & Hiệu quả ════════════ */}
           <div style={{ display: showSection('cost') }}>
             <div className="section-divider">
-              <span className="section-divider-label">Chi phí & Hiệu quả</span>
+              <span className="section-divider-label">{t('fa.sec.cost')}</span>
             </div>
 
             <p className="fund-analysis-narrative">
-              Phí là thứ duy nhất chắc chắn mất. Phí quản lý khoảng 1,95%/năm, tổng chi phí 2,1%/năm,
-              lấy đi đều đặn bất kể thị trường ra sao. Turnover cao nghĩa là quỹ giao dịch nhiều, sinh
-              phí cho công ty chứng khoán, chưa chắc sinh lời cho nhà đầu tư. Cổ tức nhận về theo mùa,
-              thường dồn vào quý 2 và quý 3.
+              {t('fa.costIntro')}
             </p>
 
             <div className="fund-analysis-charts-grid">
               <div className="chart-container">
                 <div className="chart-header">
-                  <h3>Thu nhập: cổ tức + lãi tiền gửi</h3>
+                  <h3>{t('fa.incomeTitle')}</h3>
                 </div>
                 <ResponsiveContainer width="100%" height={240}>
                   <BarChart data={incomeSrcSeries} margin={{ left: 8, right: 8, top: 8, bottom: 4 }}>
@@ -1552,30 +1555,25 @@ function FundAnalysisPanelImpl({ funds }: Props) {
                       formatter={(value: number | string, name: string) => [formatVND(Number(value)), name]}
                       labelFormatter={(p: string) => formatPeriodLabel(p)}
                     />
-                    <Bar dataKey="Cổ tức" stackId="a" fill={DIVIDEND_COLOR} isAnimationActive={false} />
-                    <Bar dataKey="Lãi tiền gửi" stackId="a" fill={INTEREST_COLOR} isAnimationActive={false} />
+                    <Bar dataKey="dividends" stackId="a" fill={DIVIDEND_COLOR} isAnimationActive={false} />
+                    <Bar dataKey="interest" stackId="a" fill={INTEREST_COLOR} isAnimationActive={false} />
                   </BarChart>
                 </ResponsiveContainer>
                 <div className="fund-analysis-stack-legend">
-                  <span className="fund-analysis-stack-legend-item"><span className="fund-analysis-stack-legend-dot" style={{ backgroundColor: DIVIDEND_COLOR }} />Cổ tức (2221.1)</span>
-                  <span className="fund-analysis-stack-legend-item"><span className="fund-analysis-stack-legend-dot" style={{ backgroundColor: INTEREST_COLOR }} />Lãi tiền gửi (2222)</span>
+                  <span className="fund-analysis-stack-legend-item"><span className="fund-analysis-stack-legend-dot" style={{ backgroundColor: DIVIDEND_COLOR }} />{t('fa.legend.dividends')}</span>
+                  <span className="fund-analysis-stack-legend-item"><span className="fund-analysis-stack-legend-dot" style={{ backgroundColor: INTEREST_COLOR }} />{t('fa.legend.interest')}</span>
                 </div>
                 <p className="fund-analysis-chart-note">
-                  Tiền mặt quỹ thu vào: cổ tức (2221.1) + lãi tiền gửi (2222). Đây là thu nhập lãi từ
-                  tiền gửi, KHÔNG phải lợi nhuận quỹ. Cổ tức lớn hơn hẳn lãi tiền gửi vì quỹ là quỹ
-                  cổ phiếu.
+                  {t('fa.incomeNote1')}
                 </p>
                 <p className="fund-analysis-chart-note fund-analysis-note-em">
-                  Cổ tức dồn về theo mùa (Q2-Q3, sau ĐHĐCĐ). Đợt cao 05-07/2026 chủ yếu do cổ phiếu lớn
-                  chi trả: VIC ~11.000đ/CP (tháng 5, ~31 tỷ), BID ~2.000đ/CP (tháng 6, ~25 tỷ), ACB
-                  ~1.800đ/CP (tháng 7, ~17 tỷ). Suy luận từ tổng cổ tức chia số CP nắm giữ, không phải
-                  lỗi số liệu.
+                  {t('fa.incomeNote2')}
                 </p>
               </div>
 
               <div className="chart-container">
                 <div className="chart-header">
-                  <h3>Chi phí: phí quản lý + giao dịch</h3>
+                  <h3>{t('fa.costChartTitle')}</h3>
                 </div>
                 <ResponsiveContainer width="100%" height={240}>
                   <BarChart data={costSeries} margin={{ left: 8, right: 8, top: 8, bottom: 4 }}>
@@ -1586,27 +1584,22 @@ function FundAnalysisPanelImpl({ funds }: Props) {
                       formatter={(value: number | string, name: string) => [formatVND(Number(value)), name]}
                       labelFormatter={(p: string) => formatPeriodLabel(p)}
                     />
-                    <Bar dataKey="Phí quản lý" stackId="a" fill={MGMT_FEE_COLOR} isAnimationActive={false} />
-                    <Bar dataKey="Phí giao dịch" stackId="a" fill={BROKERAGE_COLOR} isAnimationActive={false} />
+                    <Bar dataKey="mgmtFee" stackId="a" fill={MGMT_FEE_COLOR} isAnimationActive={false} />
+                    <Bar dataKey="brokerageFee" stackId="a" fill={BROKERAGE_COLOR} isAnimationActive={false} />
                   </BarChart>
                 </ResponsiveContainer>
                 <div className="fund-analysis-stack-legend">
-                  <span className="fund-analysis-stack-legend-item"><span className="fund-analysis-stack-legend-dot" style={{ backgroundColor: MGMT_FEE_COLOR }} />Phí quản lý (2225)</span>
-                  <span className="fund-analysis-stack-legend-item"><span className="fund-analysis-stack-legend-dot" style={{ backgroundColor: BROKERAGE_COLOR }} />Phí giao dịch (2231)</span>
+                  <span className="fund-analysis-stack-legend-item"><span className="fund-analysis-stack-legend-dot" style={{ backgroundColor: MGMT_FEE_COLOR }} />{t('fa.legend.mgmtFee')}</span>
+                  <span className="fund-analysis-stack-legend-item"><span className="fund-analysis-stack-legend-dot" style={{ backgroundColor: BROKERAGE_COLOR }} />{t('fa.legend.brokerageFee')}</span>
                 </div>
                 <p className="fund-analysis-chart-note">
-                  Chi phí là thứ duy nhất chắc chắn mất. Hai loại phí lớn:<br />
-                  1. Phí quản lý (2225): khoảng 1,95%/năm, trừ đều vào NAV mỗi ngày. Không tránh được,
-                  dù quỹ lời hay lỗ.<br />
-                  2. Phí giao dịch (2231): mỗi lần quỹ mua bán cổ phiếu là một lần trả tiền môi giới.
-                  Tỉ lệ thuận với turnover.<br />
+                  {t('fa.costNote1')}<br />
+                  {t('fa.costNote2')}<br />
+                  {t('fa.costNote3')}<br />
                   <br />
-                  Nhìn 2 cột cạnh nhau để so: phí giao dịch tiến gần phí quản lý nghĩa là quỹ đang chạy
-                  quá nhiều vòng. Quỹ chạy nhiều, môi giới vui, bạn chưa chắc vui.<br />
+                  {t('fa.costNote4')}<br />
                   <br />
-                  DCDS 07/2026: phí giao dịch 6,06 tỷ, đã bằng 63% phí quản lý 9,66 tỷ. Hai năm 2022 và
-                  2026 quỹ lỗ nặng mà phí vẫn trừ đều. Đó là bản chất của phí: nó không cần biết thị
-                  trường ra sao.
+                  {t('fa.costNote5')}
                 </p>
               </div>
             </div>
@@ -1614,7 +1607,7 @@ function FundAnalysisPanelImpl({ funds }: Props) {
             <div className="fund-analysis-charts-grid">
               <div className="chart-container">
                 <div className="chart-header">
-                  <h3>Chi phí / NAV (%)</h3>
+                  <h3>{t('fa.costRatioTitle')}</h3>
                 </div>
                 <ResponsiveContainer width="100%" height={240}>
                   <LineChart data={feeRatioSeries} margin={{ left: 8, right: 8, top: 8, bottom: 4 }}>
@@ -1625,18 +1618,16 @@ function FundAnalysisPanelImpl({ funds }: Props) {
                       formatter={(value: number | string, name: string) => [`${(Number(value) * 100).toFixed(2)}%`, name]}
                       labelFormatter={(p: string) => formatPeriodLabel(p)}
                     />
-                    <Line type="monotone" dataKey="Phí quản lý" stroke={MGMT_FEE_COLOR} strokeWidth={2} dot={false} isAnimationActive={false} />
-                    <Line type="monotone" dataKey="Tổng chi phí" stroke={TOTAL_COST_COLOR} strokeWidth={2} dot={false} isAnimationActive={false} />
+                    <Line type="monotone" dataKey="mgmtFee" stroke={MGMT_FEE_COLOR} strokeWidth={2} dot={false} isAnimationActive={false} />
+                    <Line type="monotone" dataKey="totalCost" stroke={TOTAL_COST_COLOR} strokeWidth={2} dot={false} isAnimationActive={false} />
                   </LineChart>
                 </ResponsiveContainer>
                 <div className="fund-analysis-stack-legend">
-                  <span className="fund-analysis-stack-legend-item"><span className="fund-analysis-stack-legend-dot" style={{ backgroundColor: MGMT_FEE_COLOR }} />Phí quản lý/NAV (2265)</span>
-                  <span className="fund-analysis-stack-legend-item"><span className="fund-analysis-stack-legend-dot" style={{ backgroundColor: TOTAL_COST_COLOR }} />Tổng chi phí/NAV (2269)</span>
+                  <span className="fund-analysis-stack-legend-item"><span className="fund-analysis-stack-legend-dot" style={{ backgroundColor: MGMT_FEE_COLOR }} />{t('fa.legend.mgmtRatio')}</span>
+                  <span className="fund-analysis-stack-legend-item"><span className="fund-analysis-stack-legend-dot" style={{ backgroundColor: TOTAL_COST_COLOR }} />{t('fa.legend.totalRatio')}</span>
                 </div>
                 <p className="fund-analysis-chart-note">
-                  Chi phí so với NAV bình quân, tính theo năm: phí quản lý ~1,95%, tổng chi phí ~2,1%.
-                  Đây là phần ăn mòn hàng năm của quỹ. 2022 nhích lên vì NAV giảm mạnh, không phải vì
-                  phí tăng.
+                  {t('fa.costRatioNote')}
                 </p>
               </div>
 
@@ -1657,10 +1648,7 @@ function FundAnalysisPanelImpl({ funds }: Props) {
                   </BarChart>
                 </ResponsiveContainer>
                 <p className="fund-analysis-chart-note">
-                  Portfolio turnover rate — tỷ lệ danh mục được mua-bán trong kỳ (2270). 07/2026 đạt
-                  683,99%, tức quỹ giao dịch gần 7 lần giá trị danh mục trong 12 tháng gần nhất. Cao
-                  nghĩa là quản lý chủ động xoay vòng; xem chart "Lãi/lỗ thực hiện" để thấy đợt bán
-                  lớn tương ứng.
+                  {t('fa.turnoverNote')}
                 </p>
               </div>
             </div>
@@ -1669,21 +1657,17 @@ function FundAnalysisPanelImpl({ funds }: Props) {
           {/* ════════════ Nhóm 5: Red Flags ════════════ */}
           <div style={{ display: showSection('redflags') }}>
             <div className="section-divider">
-              <span className="section-divider-label">Dấu vết nghi vấn (Red Flags)</span>
+              <span className="section-divider-label">{t('fa.sec.redFlags')}</span>
             </div>
 
             <p className="fund-analysis-narrative">
-              Những con số này ít ai đọc, nhưng chúng nói về rủi ro thật. Quỹ mở về nguyên tắc không
-              dùng đòn bẩy; nếu nợ phải trả tăng vọt, cần hỏi vì sao. Tiền thu từ bán chứng khoán chưa
-              về nhiều nghĩa là dòng tiền đang kẹt ở khâu thanh toán. So AUM với dòng tiền: AUM tăng mà
-              dòng tiền âm kéo dài là dấu hiệu đáng ngờ, có thể giá trị tài sản đang được định giá lại
-              chứ không phải tiền thật vào.
+              {t('fa.redFlagsIntro')}
             </p>
 
             <div className="fund-analysis-charts-grid">
               <div className="chart-container">
                 <div className="chart-header">
-                  <h3>Nợ phải trả</h3>
+                  <h3>{t('fa.liabilitiesTitle')}</h3>
                 </div>
                 <ResponsiveContainer width="100%" height={240}>
                   <LineChart data={liabilitySeries} margin={{ left: 8, right: 8, top: 8, bottom: 4 }}>
@@ -1691,31 +1675,27 @@ function FundAnalysisPanelImpl({ funds }: Props) {
                     <XAxis dataKey="period" tickFormatter={formatAxisTick} tick={{ fontSize: 10 }} minTickGap={32} />
                     <YAxis tickFormatter={(v: number) => formatVNDAxis(v)} tick={{ fontSize: 11 }} width={76} />
                     <RechartsTooltip
-                      formatter={(value: number | string) => [formatVND(Number(value)), 'Nợ phải trả']}
+                      formatter={(value: number | string) => [formatVND(Number(value)), t('fa.liabilitiesLabel')]}
                       labelFormatter={(p: string) => formatPeriodLabel(p)}
                     />
                     <Line type="monotone" dataKey="value" stroke={LIAB_COLOR} strokeWidth={2} dot={false} isAnimationActive={false} />
                   </LineChart>
                 </ResponsiveContainer>
                 <p className="fund-analysis-chart-note">
-                  Quỹ mở Việt Nam theo nguyên tắc không đòn bẩy. Quỹ không vay nợ để đầu tư. Khoản "nợ
-                  phải trả" này là nợ hoạt động:<br />
-                  1. Tiền phải trả nhà đầu tư mua lại chứng chỉ.<br />
-                  2. Phí quản lý, phí lưu ký chưa thanh toán.<br />
-                  3. Chi phí khác còn treo.<br />
+                  {t('fa.liabNote1')}<br />
+                  {t('fa.liabNote2')}<br />
+                  {t('fa.liabNote3')}<br />
+                  {t('fa.liabNote4')}<br />
                   <br />
-                  Số này nhỏ là sạch. Nó phình lên vào tháng có đợt rút vốn lớn, rồi tự xẹp khi quỹ trả
-                  tiền xong. Chỉ lo khi nó tăng vọt bất thường mà không rõ lý do.<br />
+                  {t('fa.liabNote5')}<br />
                   <br />
-                  DCDS 07/2026 có 248 tỷ nợ, khoảng 4% tài sản. Thực ra con số này đang giảm: từ 517 tỷ
-                  hồi tháng 3 xuống 248 tỷ. Nghĩa là các đợt mua lại lớn đã được thanh toán dần. Không
-                  có gì bất thường.
+                  {t('fa.liabNote6')}
                 </p>
               </div>
 
               <div className="chart-container">
                 <div className="chart-header">
-                  <h3>Phải thu từ bán chứng khoán chưa về</h3>
+                  <h3>{t('fa.receivableTitle')}</h3>
                 </div>
                 <ResponsiveContainer width="100%" height={240}>
                   <BarChart data={settlementSeries} margin={{ left: 8, right: 8, top: 8, bottom: 4 }}>
@@ -1723,34 +1703,29 @@ function FundAnalysisPanelImpl({ funds }: Props) {
                     <XAxis dataKey="period" tickFormatter={formatAxisTick} tick={{ fontSize: 10 }} minTickGap={32} />
                     <YAxis tickFormatter={(v: number) => formatVNDAxis(v)} tick={{ fontSize: 11 }} width={76} />
                     <RechartsTooltip
-                      formatter={(value: number | string) => [formatVND(Number(value)), 'Phải thu bán CK']}
+                      formatter={(value: number | string) => [formatVND(Number(value)), t('fa.receivableLabel')]}
                       labelFormatter={(p: string) => formatPeriodLabel(p)}
                     />
                     <Bar dataKey="value" fill={SETTLE_COLOR} isAnimationActive={false} />
                   </BarChart>
                 </ResponsiveContainer>
                 <p className="fund-analysis-chart-note">
-                  Bán cổ phiếu xong, tiền không về ngay. Phải chờ thanh toán vài ngày. Khoản đang chờ
-                  đó nằm ở đây (2208).<br />
+                  {t('fa.recvNote1')}<br />
                   <br />
-                  Số này nhỏ là bình thường. Cao nghĩa là một trong hai chuyện:<br />
-                  1. Quỹ đang bán khối lượng lớn, tiền đang trên đường về.<br />
-                  2. Thanh toán bị kẹt, tiền mắc ở khâu trung gian.<br />
+                  {t('fa.recvNote2')}<br />
+                  {t('fa.recvNote3')}<br />
+                  {t('fa.recvNote4')}<br />
                   <br />
-                  Rủi ro thật nằm ở chuyện thứ 2: đối tác không trả tiền. Giao dịch càng to, mất càng
-                  đau.<br />
+                  {t('fa.recvNote5')}<br />
                   <br />
-                  DCDS tháng 7/2026 có 334 tỷ đang chờ về, cả năm dao động 178 tới 365 tỷ. Con số cao,
-                  nhưng lý do chính là quỹ bán mạnh trong thị trường giảm (lãi thực hiện âm 267 tỷ cùng
-                  tháng). Tiền về trễ không phải là thảm họa, chỉ là tín hiệu quỹ đang bán nhiều. Kết
-                  hợp với chart Lãi/lỗ thực hiện mới ra câu chuyện đầy đủ.
+                  {t('fa.recvNote6')}
                 </p>
               </div>
             </div>
 
             <div className="chart-container">
               <div className="chart-header">
-                <h3>Độ lệch pha AUM và dòng tiền</h3>
+                <h3>{t('fa.aumFlowTitle')}</h3>
               </div>
               <ResponsiveContainer width="100%" height={240}>
                 <LineChart data={aumFlowSeries} margin={{ left: 8, right: 8, top: 8, bottom: 4 }}>
@@ -1763,32 +1738,30 @@ function FundAnalysisPanelImpl({ funds }: Props) {
                     labelFormatter={(p: string) => formatPeriodLabel(p)}
                   />
                   <Line yAxisId="aum" type="monotone" dataKey="AUM" stroke={AUM_AXIS_COLOR} strokeWidth={2} dot={false} isAnimationActive={false} />
-                  <Line yAxisId="flow" type="monotone" dataKey="Dòng tiền" stroke={FLOW_AXIS_COLOR} strokeWidth={2} dot={false} isAnimationActive={false} />
+                  <Line yAxisId="flow" type="monotone" dataKey="flow" stroke={FLOW_AXIS_COLOR} strokeWidth={2} dot={false} isAnimationActive={false} />
                 </LineChart>
               </ResponsiveContainer>
               <div className="fund-analysis-stack-legend">
-                <span className="fund-analysis-stack-legend-item"><span className="fund-analysis-stack-legend-dot" style={{ backgroundColor: AUM_AXIS_COLOR }} />AUM (trái)</span>
-                <span className="fund-analysis-stack-legend-item"><span className="fund-analysis-stack-legend-dot" style={{ backgroundColor: FLOW_AXIS_COLOR }} />Dòng tiền (phải)</span>
+                <span className="fund-analysis-stack-legend-item"><span className="fund-analysis-stack-legend-dot" style={{ backgroundColor: AUM_AXIS_COLOR }} />{t('fa.legend.aumLeft')}</span>
+                <span className="fund-analysis-stack-legend-item"><span className="fund-analysis-stack-legend-dot" style={{ backgroundColor: FLOW_AXIS_COLOR }} />{t('fa.legend.flowRight')}</span>
               </div>
               <p className="fund-analysis-chart-note">
-                Mỗi tháng, AUM được tính bằng:<br />
-                1. Tiền mới nhà đầu tư nạp vào hay rút ra (đường dòng tiền).<br />
-                2. Lợi nhuận đầu tư, tức giá tài sản lên hay xuống.<br />
+                {t('fa.aumFlowNote1')}<br />
+                {t('fa.aumFlowNote2')}<br />
+                {t('fa.aumFlowNote3')}<br />
                 <br />
-                Hai đường chạy ngược nhau là có chuyện:<br />
-                1. AUM lên mà dòng tiền âm: tăng nhờ GIÁ tài sản, vốn đang chảy ra.<br />
-                2. AUM xuống mà dòng tiền dương: hút được vốn nhưng giá giảm mạnh hơn.<br />
-                3. Cả 2 cùng lên: khỏe. Cùng xuống: xấu.<br />
+                {t('fa.aumFlowNote4')}<br />
+                {t('fa.aumFlowNote5')}<br />
+                {t('fa.aumFlowNote6')}<br />
+                {t('fa.aumFlowNote7')}<br />
                 <br />
-                DCDS năm nay đang ở mục 2:<br />
-                1. Hút gần 838 tỷ tiền mới trong 7 tháng, chỉ một tháng rút nhẹ.<br />
-                2. Tổng tài sản vẫn tụt: 6.311 tỷ (tháng 2) → 5.723 tỷ (tháng 7).<br />
-                3. Vì lợi nhuận đầu tư âm 652 tỷ, thị trường giảm 17% so với đỉnh.<br />
-                4. Người mua ở đỉnh, một chứng chỉ giá 112 nghìn, giờ còn 93 nghìn.<br />
+                {t('fa.aumFlowNote8')}<br />
+                {t('fa.aumFlowNote9')}<br />
+                {t('fa.aumFlowNote10')}<br />
+                {t('fa.aumFlowNote11')}<br />
+                {t('fa.aumFlowNote12')}<br />
                 <br />
-                Tiền vào nhiều không cứu được sự sụt giảm của tài sản. Hút vốn là chuyện của phân phối,
-                làm ra tiền mới là chuyện của đầu tư. Chart này chỉ tách hai chuyện đó ra, để bạn không
-                nhầm.
+                {t('fa.aumFlowNote13')}
               </p>
             </div>
 
