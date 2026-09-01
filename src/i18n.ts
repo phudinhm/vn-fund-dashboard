@@ -1603,6 +1603,92 @@ const DICT = {
   'journey.period.years': { vi: '{n} năm', en: '{n} years' },
   'journey.period.yearsMonths': { vi: '{y} năm {m} tháng', en: '{y} years {m} months' },
 
+  // ── DCA ratio chart ──
+  'ratio.title': { vi: 'Danh mục nào đang dẫn trước?', en: 'Which portfolio is ahead?' },
+  'ratio.help': {
+    vi: 'Tỷ số giá trị giữa 2 danh mục theo thời gian. Đường đi lên nghĩa là danh mục thứ nhất đang tăng nhanh hơn (hoặc giảm chậm hơn) danh mục thứ hai, kể cả khi cả hai cùng tăng hay cùng giảm.',
+    en: 'The ratio of the two portfolios’ values over time. A rising line means the first is growing faster (or falling more slowly) than the second — even when both are rising or both falling.',
+  },
+  'ratio.intro': {
+    vi: 'Hai đường giá trị chồng lên nhau rất khó nhìn ra giai đoạn nào danh mục nào mạnh hơn. Biểu đồ này lấy giá trị ',
+    en: 'Two value lines on top of each other make it hard to see which portfolio was stronger when. This chart divides the value of ',
+  },
+  'ratio.introTail': {
+    vi: ': đường đi lên là danh mục thứ nhất đang mạnh hơn trong giai đoạn đó, đi xuống là ngược lại.',
+    en: ': the line rises when the first is the stronger of the two over that stretch, and falls when it is the other way round.',
+  },
+  'ratio.vs': { vi: 'so với', en: 'versus' },
+  'ratio.seriesName': { vi: 'Tỷ số giá trị', en: 'Value ratio' },
+  'ratio.winsLabel': { vi: '{name} thắng', en: '{name} ahead' },
+  'ratio.narrative1': {
+    vi: 'Nhìn suốt cả giai đoạn, <b>{nameA}</b> chiến thắng {pctA}% thời gian, <b>{nameB}</b> chiến thắng {pctB}% thời gian còn lại.',
+    en: 'Across the whole period <b>{nameA}</b> was ahead {pctA}% of the time and <b>{nameB}</b> the remaining {pctB}%.',
+  },
+  'ratio.narrative2': {
+    vi: 'Giai đoạn chiến thắng dài nhất thuộc về <b>{name}</b>, kéo dài liên tục khoảng {duration} (từ {from} đến {to}).',
+    en: 'The longest unbroken run belongs to <b>{name}</b>, lasting about {duration} (from {from} to {to}).',
+  },
+  'ratio.narrative3': {
+    vi: 'Hiện tại <b>{name}</b> đang chiến thắng, giữ vững từ {from} đến nay.',
+    en: 'Right now <b>{name}</b> is ahead, and has been since {from}.',
+  },
+  'ratio.narrative4': {
+    vi: 'Không có gì đảm bảo thứ tự này sẽ giữ nguyên. Thị trường cận biên như Việt Nam có thể đổi ngôi chóng vánh, nên đừng neo quá chặt vào con số dẫn đầu hiện tại.',
+    en: 'Nothing guarantees this order holds. A frontier market like Vietnam can swap places quickly, so do not anchor too hard on whoever is leading today.',
+  },
+  'ratio.days': { vi: '{n} ngày', en: '{n} days' },
+  'ratio.months': { vi: '{n} tháng', en: '{n} months' },
+  'ratio.years': { vi: '{n} năm', en: '{n} years' },
+
+  // ── DCA return explainer (CAGR vs MWRR) ──
+  'explainer.title': { vi: 'Vì sao có 2 con số lợi nhuận khác nhau (CAGR vs MWRR)?', en: 'Why are there two different return figures (CAGR vs MWRR)?' },
+  'explainer.intro': {
+    vi: 'Nhiều nhà đầu tư nhìn thấy 2 con số lợi nhuận chênh lệch nhau và bối rối: <i>"Tôi đã đầu tư tổng cộng 108 triệu đồng... nếu mà tăng trưởng 30%/năm thì không thể nào tôi chỉ có 168 triệu được. Quá vô lý!"</i> Thật ra cả hai đều đúng, chỉ là đo khác nhau.',
+    en: 'Plenty of investors see two different return figures and get confused: <i>"I put in 108 million in total… if it grew 30% a year there is no way I would only have 168 million. That makes no sense!"</i> In fact both figures are right; they measure different things.',
+  },
+  'explainer.perYear': { vi: '{v}%/năm', en: '{v}%/yr' },
+  'explainer.cagrAnswers': {
+    vi: 'Trả lời: <i>"Toàn bộ số tiền tôi đã đầu tư đã tăng trưởng bao nhiêu phần trăm mỗi năm?"</i> Giả định tất cả vốn đã hoạt động từ ngày đầu tiên.',
+    en: 'It answers: <i>"By what percentage per year did everything I invested grow?"</i> It assumes all the capital was working from day one.',
+  },
+  'explainer.mwrrAnswers': {
+    vi: 'Trả lời: <i>"Từng khoản tôi nạp vào tăng trưởng trung bình bao nhiêu phần trăm mỗi năm?"</i> Chiết khấu từng dòng tiền theo thời gian thực tế nắm giữ.',
+    en: 'It answers: <i>"On average, by what percentage per year did each contribution grow?"</i> It discounts every cash flow by how long it was actually held.',
+  },
+  'explainer.analogyTitle': { vi: '🌱 Ví dụ "cây giống"', en: '🌱 The "saplings" analogy' },
+  'explainer.analogy1': {
+    vi: 'Mỗi tháng bạn dành ra một khoản tiền để mua cây giống về trồng. Hãy xem mỗi cái cây là một khoản đầu tư.',
+    en: 'Each month you set aside some money to buy saplings and plant them. Think of every tree as one investment.',
+  },
+  'explainer.analogy2': {
+    vi: 'Sau ba năm, bạn bán hết số cây đang có. Tổng số tiền bán được xem như là doanh thu từ khoản đầu tư. Câu hỏi đặt ra là: <i>"Làm sao bạn biết khoản đầu tư này tốt tới đâu?"</i>',
+    en: 'After three years you sell every tree you have. The total is the proceeds of the investment. The question is: <i>how do you tell how good that investment was?</i>',
+  },
+  'explainer.analogyCagr': {
+    vi: '<b>CAGR</b> coi như bạn có đủ tiền từ đầu để mua tất cả cây trong ngày đầu tiên. Chia lợi nhuận cuối cùng cho tổng vốn, quy về hằng năm.',
+    en: '<b>CAGR</b> pretends you had enough money on day one to buy every tree at once. It divides the final gain by total capital and annualises.',
+  },
+  'explainer.analogyMwrr': {
+    vi: '<b>MWRR</b> tính tăng trưởng của <i>từng cái cây riêng biệt</i>. Cây trồng lâu có nhiều thời gian sinh trưởng sẽ mang về nhiều tiền hơn cây mới mua.',
+    en: '<b>MWRR</b> measures the growth of <i>each tree separately</i>. A tree planted long ago had more time to grow and brings in more than one bought recently.',
+  },
+  'explainer.dcaPoint': {
+    vi: 'Với DCA, khoản tiền bạn nạp tháng đầu tiên đã nắm giữ nhiều năm, nhưng khoản tiền tháng trước chỉ mới nắm giữ vài tuần. MWRR nhận ra điều này nên ',
+    en: 'With DCA, the money you contributed in the first month has been held for years, while last month’s has been held for weeks. MWRR recognises that, so it ',
+  },
+  'explainer.mwrrHigher': {
+    vi: 'thường cao hơn CAGR. Trong ví dụ của bạn, MWRR cao hơn CAGR <b>{gap}%/năm</b>.',
+    en: 'usually reads above CAGR. In your case MWRR is <b>{gap}%/yr</b> higher than CAGR.',
+  },
+  'explainer.mwrrGap': {
+    vi: 'chênh lệch với CAGR khoảng <b>{gap}%/năm</b>.',
+    en: 'differs from CAGR by about <b>{gap}%/yr</b>.',
+  },
+  'explainer.whichToUse': {
+    vi: '<b>Nên nhìn con số nào?</b> Nếu bạn muốn biết tiền của mình thực tế đã tăng trưởng ra sao, <b>MWRR là chỉ số chính cho chiến lược DCA</b>. Nhưng nếu bạn quen so sánh với các hình thức đầu tư khác (gửi tiết kiệm, trái phiếu) thì CAGR vẫn hữu ích. Nó trả lời câu hỏi đơn giản hơn: <i>"toàn bộ số tiền tôi đã đầu tư tăng bao nhiêu phần trăm mỗi năm?"</i>',
+    en: '<b>Which should you look at?</b> If you want to know how your money actually grew, <b>MWRR is the main measure for a DCA strategy</b>. But if you are used to comparing against other options — bank savings, bonds — CAGR is still useful. It answers the simpler question: <i>by what percentage per year did everything I invested grow?</i>',
+  },
+
   // ── Methodology tab (khung; nội dung ở src/components/methodology/) ──
   'method.tocLabel': { vi: 'Mục lục', en: 'Table of contents' },
   'method.onThisPage': { vi: 'Trong trang này', en: 'On this page' },
