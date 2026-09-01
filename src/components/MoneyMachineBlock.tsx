@@ -1,6 +1,7 @@
 import { memo, useMemo } from 'react'
 import type { PortfolioStats } from './PerformanceTable'
-import { formatVND, vndComparison, signedVND } from '../utils/vndFormat'
+import { formatVND, vndComparisonKey, signedVND } from '../utils/vndFormat'
+import { useT } from '../i18n'
 
 interface Props {
   investAmount: number
@@ -17,6 +18,7 @@ interface Props {
  * đơn vị quen thuộc (xe máy, ô tô, nghỉ hưu) thay vì % trừu tượng.
  */
 function MoneyMachineBlockImpl({ investAmount, stats, fundId, startDate, endDate }: Props) {
+  const t = useT()
   const cards = useMemo(() => {
     if (stats.length < 2) return null
     const base = stats[0]!
@@ -44,7 +46,8 @@ function MoneyMachineBlockImpl({ investAmount, stats, fundId, startDate, endDate
   // Chọn card có delta dương lớn nhất để kể câu chuyện.
   const bestCard = cards.reduce((best, c) => (c.delta > best.delta ? c : best), cards[0]!)
   const bestPct = bestCard.name.match(/([\d.]+)% Bitcoin/)?.[1] ?? ''
-  const comparison = vndComparison(bestCard.delta)
+  const comparisonKey = vndComparisonKey(bestCard.delta)
+  const comparison = comparisonKey ? t(comparisonKey) : null
   const periodStr = startDate && endDate ? `từ ${formatPeriod(startDate)} đến ${formatPeriod(endDate)}` : ''
   const yearsStr = startDate && endDate ? yearsBetween(startDate, endDate) : ''
 

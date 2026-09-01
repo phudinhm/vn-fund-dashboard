@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
-import { formatVND, formatVNDAxis, formatVNDFull, vndComparison, signedVND } from './vndFormat'
+import { formatVND, formatVNDAxis, formatVNDFull, vndComparisonKey, signedVND } from './vndFormat'
+import { translateStatic } from '../i18n'
 
 describe('formatVND', () => {
   it('formats the examples the function documents', () => {
@@ -73,34 +74,51 @@ describe('formatVNDFull', () => {
   })
 })
 
-describe('vndComparison', () => {
+describe('vndComparisonKey', () => {
   it('says nothing when the amount is too small to compare', () => {
-    expect(vndComparison(14_999_999)).toBeNull()
-    expect(vndComparison(0)).toBeNull()
+    expect(vndComparisonKey(14_999_999)).toBeNull()
+    expect(vndComparisonKey(0)).toBeNull()
   })
 
   it('picks the anchor whose price is closest, not the last one passed', () => {
     // 500 triệu sits between the 400 triệu used car and the 550 triệu Vios.
     // On a log scale 550 is the nearer of the two.
-    expect(vndComparison(500_000_000)).toContain('Vios')
-    expect(vndComparison(410_000_000)).toContain('ô tô cũ')
+    expect(vndComparisonKey(500_000_000)).toBe('vndCompare.newSedan')
+    expect(vndComparisonKey(410_000_000)).toBe('vndCompare.usedCar')
   })
 
   it('matches an anchor exactly on its own price', () => {
-    expect(vndComparison(20_000_000)).toContain('xe máy số')
-    expect(vndComparison(1_000_000_000)).toContain('CX-5')
+    expect(vndComparisonKey(20_000_000)).toBe('vndCompare.motorbike')
+    expect(vndComparisonKey(1_000_000_000)).toBe('vndCompare.suv')
   })
 
   it('treats a loss the same as a gain of the same size', () => {
-    expect(vndComparison(-550_000_000)).toBe(vndComparison(550_000_000))
+    expect(vndComparisonKey(-550_000_000)).toBe(vndComparisonKey(550_000_000))
   })
 
   it('falls back to the cheapest anchor just above the floor', () => {
-    expect(vndComparison(15_000_000)).toContain('xe máy số')
+    expect(vndComparisonKey(15_000_000)).toBe('vndCompare.motorbike')
   })
 
   it('sticks to the most expensive anchor beyond the top of the scale', () => {
-    expect(vndComparison(500_000_000_000)).toContain('nghỉ hưu sớm 15-20 năm')
+    expect(vndComparisonKey(500_000_000_000)).toBe('vndCompare.earlyRetireLong')
+  })
+
+  it('every anchor key exists in the dictionary, in both languages', () => {
+    // Union VndComparisonKey phải là tập con của TranslationKey. tsc bắt được
+    // chuyện thiếu key, nhưng chỉ khi có chỗ gọi t() — test này canh trực tiếp.
+    const amounts = [
+      15_000_000, 20_000_000, 30_000_000, 45_000_000, 100_000_000, 250_000_000,
+      400_000_000, 550_000_000, 1_000_000_000, 2_000_000_000, 5_000_000_000,
+      10_000_000_000, 25_000_000_000, 500_000_000_000,
+    ]
+    for (const amount of amounts) {
+      const key = vndComparisonKey(amount)
+      expect(key).not.toBeNull()
+      for (const lang of ['vi', 'en'] as const) {
+        expect(translateStatic(key!, lang).trim().length).toBeGreaterThan(0)
+      }
+    }
   })
 })
 

@@ -8,7 +8,8 @@
  * phải kể: "đã nạp X, giờ có Y, lời ròng Z, đó bằng cái gì trong đời thực".
  */
 import { Fragment, memo } from 'react'
-import { formatVND, vndComparison } from '../utils/vndFormat'
+import { formatVND, vndComparisonKey } from '../utils/vndFormat'
+import { useT } from '../i18n'
 import { dcaYearlyMWRR } from '../utils/dca'
 
 export interface JourneyPortfolio {
@@ -30,6 +31,7 @@ interface Props {
 }
 
 function DcaJourneyBlockImpl({ portfolios, startDate, endDate }: Props) {
+  const t = useT()
   if (portfolios.length === 0) return null
 
   const period = describePeriod(startDate, endDate)
@@ -39,7 +41,8 @@ function DcaJourneyBlockImpl({ portfolios, startDate, endDate }: Props) {
     const p = portfolios[0]!
     const netProfit = p.finalValue - p.totalInvested
     const profitPct = p.totalInvested > 0 ? (netProfit / p.totalInvested) * 100 : 0
-    const comparison = netProfit > 0 ? vndComparison(netProfit) : null
+    const comparisonKey = netProfit > 0 ? vndComparisonKey(netProfit) : null
+    const comparison = comparisonKey ? t(comparisonKey) : null
 
     return (
       <div className="dca-journey-block">
@@ -102,7 +105,8 @@ function DcaJourneyBlockImpl({ portfolios, startDate, endDate }: Props) {
   const winner = sorted[0]!
   const loser = sorted[sorted.length - 1]!
   const gap = winner.finalValue - loser.finalValue
-  const gapComparison = gap > 0 ? vndComparison(gap) : null
+  const gapComparisonKey = gap > 0 ? vndComparisonKey(gap) : null
+  const gapComparison = gapComparisonKey ? t(gapComparisonKey) : null
 
   return (
     <div className="dca-journey-block">

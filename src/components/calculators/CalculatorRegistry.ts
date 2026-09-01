@@ -1,5 +1,6 @@
 import type { ComponentType } from 'react'
 import type { CalculatorId } from '../../types'
+import type { TranslationKey } from '../../i18n'
 import { CompoundInterestCalc } from './CompoundInterestCalc'
 import { CagrCalc } from './CagrCalc'
 import { FundFeeErosionCalc } from './FundFeeErosionCalc'
@@ -17,9 +18,10 @@ import { FundFeeErosionCalc } from './FundFeeErosionCalc'
  */
 export interface CalculatorEntry {
   id: CalculatorId
-  label: string
-  /** Mô tả ngắn hiện dưới nút điều hướng */
-  description: string
+  /** Key từ điển cho nhãn nút, dịch tại chỗ render */
+  labelKey: TranslationKey
+  /** Key từ điển cho mô tả ngắn hiện dưới nút điều hướng */
+  descriptionKey: TranslationKey
   /** Đường dẫn dự kiến khi tách route riêng, chưa dùng */
   urlSlug: string
   component: ComponentType
@@ -28,22 +30,22 @@ export interface CalculatorEntry {
 export const CALCULATORS: CalculatorEntry[] = [
   {
     id: 'compound',
-    label: 'Lãi kép',
-    description: 'Vốn ban đầu và tiền góp thêm mỗi tháng sinh ra bao nhiêu sau N năm',
+    labelKey: 'calc.compound.label',
+    descriptionKey: 'calc.compound.desc',
     urlSlug: 'may-tinh-lai-kep',
     component: CompoundInterestCalc,
   },
   {
     id: 'cagr',
-    label: 'Quy đổi CAGR',
-    description: 'Từ hai mốc giá trị ra lợi nhuận kép mỗi năm',
+    labelKey: 'calc.cagr.label',
+    descriptionKey: 'calc.cagr.desc',
     urlSlug: 'may-tinh-cagr',
     component: CagrCalc,
   },
   {
     id: 'fee-erosion',
-    label: 'Phí quỹ ăn mòn',
-    description: 'Phí thu mỗi năm lấy mất bao nhiêu tài sản sau N năm',
+    labelKey: 'calc.fee.label',
+    descriptionKey: 'calc.fee.desc',
     urlSlug: 'may-tinh-phi-quy',
     component: FundFeeErosionCalc,
   },

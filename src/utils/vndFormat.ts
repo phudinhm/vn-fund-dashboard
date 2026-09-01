@@ -32,32 +32,49 @@ export function formatVNDFull(value: number): string {
 }
 
 /**
- * Trả về câu so sánh đời thực cho một khoản tiền (thường là delta).
- * Null nếu số tiền quá nhỏ để có câu phù hợp.
+ * Trả về key từ điển cho câu so sánh đời thực của một khoản tiền (thường là
+ * delta). Null nếu số tiền quá nhỏ để có câu phù hợp.
+ *
+ * Trả key thay vì trả thẳng câu tiếng Việt vì app có cả bản tiếng Anh: chỗ gọi
+ * tự dịch bằng t(). Hàm này chỉ lo chọn mốc nào hợp nhất.
  *
  * Mỗi mốc gắn với giá thực tế VN 2026 của món đồ đó (retail-friendly):
  * xe máy → ô tô → nghỉ hưu. Chọn mốc có giá gần nhất theo tỷ lệ (log-scale)
  * thay vì "vượt ngưỡng nào thì lấy ngưỡng đó", để tránh trường hợp một số tiền
  * gần gấp đôi giá thực của món đồ vẫn bị gán nhãn món đồ đó.
  */
-export function vndComparison(value: number): string | null {
+export type VndComparisonKey =
+  | 'vndCompare.motorbike'
+  | 'vndCompare.iphone'
+  | 'vndCompare.scooter'
+  | 'vndCompare.premiumScooter'
+  | 'vndCompare.bigBike'
+  | 'vndCompare.usedCar'
+  | 'vndCompare.newSedan'
+  | 'vndCompare.suv'
+  | 'vndCompare.luxuryCar'
+  | 'vndCompare.smallBusiness'
+  | 'vndCompare.earlyRetire'
+  | 'vndCompare.earlyRetireLong'
+
+export function vndComparisonKey(value: number): VndComparisonKey | null {
   const v = Math.abs(value)
   if (v < 15_000_000) return null
 
   // Giá thực tế ước tính của từng món đồ (không phải ngưỡng tối thiểu)
-  const anchors: { price: number; label: string }[] = [
-    { price: 20_000_000,     label: 'một chiếc xe máy số phổ thông (Honda Wave, Wave Alpha)' },
-    { price: 30_000_000,     label: 'một chiếc iPhone mới' },
-    { price: 45_000_000,     label: 'một chiếc xe tay ga phổ thông (Honda Vision, Air Blade)' },
-    { price: 100_000_000,    label: 'một chiếc xe SH hoặc Vespa xịn' },
-    { price: 250_000_000,    label: 'một chiếc mô tô phân khối lớn (Royal Enfield, Kawasaki Z-series)' },
-    { price: 400_000_000,    label: 'một chiếc ô tô cũ cho gia đình' },
-    { price: 550_000_000,    label: 'một chiếc Toyota Vios hoặc Honda City mới' },
-    { price: 1_000_000_000,  label: 'một chiếc Mazda CX-5 hoặc Honda CR-V' },
-    { price: 2_000_000_000,  label: 'một chiếc Mercedes C-Class hoặc BMW 3-Series' },
-    { price: 5_000_000_000,  label: 'vốn để mở một quán cà phê hoặc cửa hàng nhỏ' },
-    { price: 10_000_000_000, label: 'nghỉ hưu sớm với lãi gửi ngân hàng ~400 triệu/năm' },
-    { price: 25_000_000_000, label: 'nghỉ hưu sớm 15-20 năm' },
+  const anchors: { price: number; key: VndComparisonKey }[] = [
+    { price: 20_000_000,     key: 'vndCompare.motorbike' },
+    { price: 30_000_000,     key: 'vndCompare.iphone' },
+    { price: 45_000_000,     key: 'vndCompare.scooter' },
+    { price: 100_000_000,    key: 'vndCompare.premiumScooter' },
+    { price: 250_000_000,    key: 'vndCompare.bigBike' },
+    { price: 400_000_000,    key: 'vndCompare.usedCar' },
+    { price: 550_000_000,    key: 'vndCompare.newSedan' },
+    { price: 1_000_000_000,  key: 'vndCompare.suv' },
+    { price: 2_000_000_000,  key: 'vndCompare.luxuryCar' },
+    { price: 5_000_000_000,  key: 'vndCompare.smallBusiness' },
+    { price: 10_000_000_000, key: 'vndCompare.earlyRetire' },
+    { price: 25_000_000_000, key: 'vndCompare.earlyRetireLong' },
   ]
 
   // Chọn mốc có tỷ lệ giá/value gần 1 nhất (so sánh trên thang log để công bằng
@@ -71,7 +88,7 @@ export function vndComparison(value: number): string | null {
       chosen = a
     }
   }
-  return chosen.label
+  return chosen.key
 }
 
 /**
