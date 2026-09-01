@@ -41,6 +41,8 @@ import {
   PortfolioCard,
   portfolioSelectStyles,
 } from './PortfolioCard'
+import { useT, useTRich, type TranslationKey } from '../i18n'
+import { useLanguage } from '../hooks/useLanguage'
 
 interface Props {
   funds: FundMeta[]
@@ -83,6 +85,9 @@ function hydrateLsDcaPortfolio(
 }
 
 function LumpSumDCAPanelImpl({ funds, shareUrl, active }: Props) {
+  const t = useT()
+  const tr = useTRich()
+  const { language } = useLanguage()
   const nextIdRef = useRef(1)
 
   // URL payload comes from App; this hook keeps localStorage precedence and the persist gate.
@@ -505,15 +510,17 @@ function LumpSumDCAPanelImpl({ funds, shareUrl, active }: Props) {
   }
 
   function fmtCapital(n: number): string {
-    if (n >= 1_000_000_000) return `${(n / 1_000_000_000).toFixed(n % 1_000_000_000 === 0 ? 0 : 1)} tỷ đồng`
-    if (n >= 1_000_000) return `${Math.round(n / 1_000_000)} triệu đồng`
-    return n.toLocaleString('vi-VN') + ' đồng'
+    if (n >= 1_000_000_000) {
+      return t('lsdca.billionDong', { v: (n / 1_000_000_000).toFixed(n % 1_000_000_000 === 0 ? 0 : 1) })
+    }
+    if (n >= 1_000_000) return t('lsdca.millionDong', { v: Math.round(n / 1_000_000) })
+    return t('lsdca.dong', { v: n.toLocaleString(language === 'vi' ? 'vi-VN' : 'en-US') })
   }
 
   function fmtGrowthOrCagr(growthRatio: number): string {
     if (showCagr && committed && committed.params.horizonMonths > 0) {
       const annualized = Math.pow(growthRatio, 12 / committed.params.horizonMonths) - 1
-      return fmtPct(annualized) + '/năm'
+      return t('lsdca.perYear', { v: fmtPct(annualized) })
     }
     return fmtGrowth(growthRatio)
   }
@@ -523,7 +530,7 @@ function LumpSumDCAPanelImpl({ funds, shareUrl, active }: Props) {
       <div className={label ? 'lsdca-heatmap-compare' : undefined}>
         {label && <p className="lsdca-heatmap-compare-label">{label}</p>}
         <div className="lsdca-heatmap-wrapper">
-          <div className="lsdca-hm-yaxis-title">Thời gian nắm giữ</div>
+          <div className="lsdca-hm-yaxis-title">{t('lsdca.yAxisTitle')}</div>
           <div className="lsdca-heatmap-inner">
             <div
               className="lsdca-heatmap"
@@ -531,18 +538,18 @@ function LumpSumDCAPanelImpl({ funds, shareUrl, active }: Props) {
             >
               <div />
               {HEATMAP_DCA_MONTHS.map(m => (
-                <div key={m} className="lsdca-hm-col-header">{m} tháng</div>
+                <div key={m} className="lsdca-hm-col-header">{t('lsdca.months', { n: m })}</div>
               ))}
               {data.map((row, ri) => (
                 <React.Fragment key={ri}>
-                  <div className="lsdca-hm-row-header">{HEATMAP_HOLDING_YEARS[ri]} năm</div>
+                  <div className="lsdca-hm-row-header">{t('lsdca.years', { n: HEATMAP_HOLDING_YEARS[ri]! })}</div>
                   {row.map((cell, ci) => {
                     if (cell.winRate === null) {
                       return (
                         <div
                           key={ci}
                           className="lsdca-hm-cell lsdca-hm-cell--na"
-                          title="Không đủ dữ liệu lịch sử"
+                          title={t('lsdca.noHistory')}
                         >—</div>
                       )
                     }
@@ -557,7 +564,14 @@ function LumpSumDCAPanelImpl({ funds, shareUrl, active }: Props) {
                       <div
                         key={ci}
                         className={`lsdca-hm-cell lsdca-hm-cell--${tier}${thin ? ' lsdca-hm-cell-lown' : ''}`}
-                        title={`Giữ ${cell.holdingYears} năm, DCA ${cell.dcaMonths} tháng → LS thắng ${(cell.winRate * 100).toFixed(1)}% (${wins}/${cell.totalScenarios} kịch bản chồng lấn, chỉ ${cell.independentWindows} giai đoạn tách rời)`}
+                        title={t('lsdca.cellTooltip', {
+                          years: cell.holdingYears,
+                          months: cell.dcaMonths,
+                          rate: (cell.winRate * 100).toFixed(1),
+                          wins,
+                          total: cell.totalScenarios,
+                          independent: cell.independentWindows,
+                        })}
                       >
                         <div className="lsdca-hm-fraction">
                           {wins}<span className="lsdca-hm-slash">/</span>{cell.totalScenarios}
@@ -566,10 +580,10 @@ function LumpSumDCAPanelImpl({ funds, shareUrl, active }: Props) {
                           <div className="lsdca-hm-bar" style={{ width: `${cell.winRate * 100}%` }} />
                         </div>
                         <div className="lsdca-hm-pct">
-                          {thin && '⚠ '}{(cell.winRate * 100).toFixed(0)}% LS thắng
+                          {thin && '⚠ '}{t('lsdca.cellWinRate', { rate: (cell.winRate * 100).toFixed(0) })}
                         </div>
                         <div className="lsdca-hm-indep">
-                          {cell.independentWindows} giai đoạn tách rời
+                          {t('lsdca.cellEpisodes', { n: cell.independentWindows })}
                         </div>
                       </div>
                     )
@@ -577,7 +591,7 @@ function LumpSumDCAPanelImpl({ funds, shareUrl, active }: Props) {
                 </React.Fragment>
               ))}
             </div>
-            <div className="lsdca-hm-xaxis-title">Thời gian DCA (tháng)</div>
+            <div className="lsdca-hm-xaxis-title">{t('lsdca.xAxisTitle')}</div>
           </div>
         </div>
       </div>
@@ -598,17 +612,14 @@ function LumpSumDCAPanelImpl({ funds, shareUrl, active }: Props) {
           } : null,
         })} />
       </div>
-      <p className="lsdca-subtitle">
-        So sánh hai chiến lược triển khai cùng một khoản vốn: đầu tư toàn bộ ngay từ đầu (Lump Sum)
-        hay chia đều trong N tháng (DCA).
-      </p>
+      <p className="lsdca-subtitle">{t('lsdca.intro')}</p>
 
       {/* ── Parameters ── */}
       <div className="dca-params-card">
-        <h3 className="dca-section-title">Thông số</h3>
+        <h3 className="dca-section-title">{t('calc.params')}</h3>
 
         <div className="dca-param-row">
-          <label className="dca-label">Tổng vốn đầu tư</label>
+          <label className="dca-label">{t('lsdca.capital')}</label>
           <div className="dca-amount-input-wrap">
             <div className="dca-amount-input">
               <MoneyInput value={totalCapital} onChange={setTotalCapital} min={1_000_000} />
@@ -619,7 +630,7 @@ function LumpSumDCAPanelImpl({ funds, shareUrl, active }: Props) {
         </div>
 
         <div className="dca-param-row">
-          <label className="dca-label">Trải DCA trong</label>
+          <label className="dca-label">{t('lsdca.spreadOver')}</label>
           <div className="lsdca-horizon-buttons">
             {HORIZON_OPTIONS.map(m => (
               <button
@@ -627,46 +638,46 @@ function LumpSumDCAPanelImpl({ funds, shareUrl, active }: Props) {
                 className={`lsdca-horizon-btn ${horizonMonths === m ? 'lsdca-horizon-btn-active' : ''}`}
                 onClick={() => setHorizonMonths(m)}
               >
-                {m} tháng
+                {t('lsdca.months', { n: m })}
               </button>
             ))}
           </div>
         </div>
 
         <div className="dca-param-row">
-          <label className="dca-label">Tần suất DCA</label>
+          <label className="dca-label">{t('lsdca.frequency')}</label>
           <div className="lsdca-freq-btns">
             <button
               className={`dca-mode-btn ${freq === 'monthly' ? 'dca-mode-btn-active' : ''}`}
               onClick={() => setFreq('monthly')}
             >
-              Hàng tháng
+              {t('lsdca.freq.monthly')}
             </button>
             <button
               className={`dca-mode-btn ${freq === 'weekly' ? 'dca-mode-btn-active' : ''}`}
               onClick={() => setFreq('weekly')}
             >
-              Hàng tuần
+              {t('lsdca.freq.weekly')}
             </button>
           </div>
         </div>
 
         <div className="dca-param-row">
-          <label className="dca-label">Vốn chờ chưa đầu tư</label>
+          <label className="dca-label">{t('lsdca.idleCapital')}</label>
           <select
             className="dca-freq-select"
             value={cashMode}
             onChange={e => setCashMode(e.target.value as CashMode)}
           >
-            <option value="flat">Không sinh lãi</option>
-            <option value="savings">Lãi suất tiết kiệm</option>
-            <option value="fund">Đầu tư vào quỹ khác</option>
+            <option value="flat">{t('lsdca.idle.flat')}</option>
+            <option value="savings">{t('lsdca.idle.savings')}</option>
+            <option value="fund">{t('lsdca.idle.fund')}</option>
           </select>
         </div>
 
         {cashMode === 'savings' && (
           <div className="dca-param-row">
-            <label className="dca-label">Lãi suất tiết kiệm (%/năm)</label>
+            <label className="dca-label">{t('lsdca.savingsRate')}</label>
             <div className="dca-amount-input">
               <input
                 type="number"
@@ -683,15 +694,15 @@ function LumpSumDCAPanelImpl({ funds, shareUrl, active }: Props) {
 
         {cashMode === 'fund' && (
           <div className="dca-param-row">
-            <label className="dca-label">Quỹ đầu tư khi chờ</label>
+            <label className="dca-label">{t('lsdca.parkFund')}</label>
             <Select
               className="lsdca-cash-fund-select"
               classNamePrefix="fund-search"
               options={cashFundOptions}
               value={cashFundOptions.find(o => o.value === cashFundId) || null}
               onChange={opt => setCashFundId(opt?.value || '')}
-              placeholder="Chọn quỹ trái phiếu..."
-              noOptionsMessage={() => 'Không tìm thấy'}
+              placeholder={t('lsdca.parkPlaceholder')}
+              noOptionsMessage={() => t('fundSelector.noOptions')}
               isSearchable
               styles={portfolioSelectStyles}
             />
@@ -699,9 +710,9 @@ function LumpSumDCAPanelImpl({ funds, shareUrl, active }: Props) {
         )}
 
         <p className="dca-note">
-          * Phân tích tất cả các kịch bản rolling.<br />
-          * Nếu bạn DCA từ lương mỗi tháng thì tab này không có ứng dụng với bạn. Nó chỉ áp dụng khi có sẵn một cục tiền lớn và đang phân vân nên đầu tư hết luôn hay rải dần.<br />
-          * Về lãi suất tiết kiệm: mỗi kỳ chỉ rút ra đúng phần chia đều để đầu tư, phần còn lại vẫn gửi tiết kiệm sinh lãi nhưng khoản lãi đó không mang vào đầu tư. Nhờ vậy tổng vốn LS và DCA luôn bằng nhau.
+          {t('lsdca.paramsNote1')}<br />
+          {t('lsdca.paramsNote2')}<br />
+          {t('lsdca.paramsNote3')}
         </p>
       </div>
 
@@ -724,7 +735,7 @@ function LumpSumDCAPanelImpl({ funds, shareUrl, active }: Props) {
 
       {!portfolio && (
         <button className="sim-add-portfolio-btn" onClick={addPortfolio}>
-          + Thêm Danh Mục
+          {t('lsdca.addPortfolio')}
         </button>
       )}
 
@@ -735,30 +746,28 @@ function LumpSumDCAPanelImpl({ funds, shareUrl, active }: Props) {
             onClick={runAnalysis}
             disabled={!canRun}
           >
-            Chạy Phân Tích
+            {t('lsdca.run')}
           </button>
           {isDirty && (
-            <span className="btc-run-hint">
-              Thông số đã thay đổi, bấm "Chạy Phân Tích" để cập nhật kết quả.
-            </span>
+            <span className="btc-run-hint">{t('lsdca.staleParams')}</span>
           )}
         </div>
       )}
 
-      {loading && <div className="loading-indicator">Đang tải dữ liệu...</div>}
+      {loading && <div className="loading-indicator">{t('app.loading')}</div>}
       {dataError && !loading && <div className="error-banner">{dataError}</div>}
 
       {/* Pre-run hint */}
       {!committed && !loading && portfolio && (
         <div className="lsdca-pre-run-hint">
-          ↑ Chọn quỹ, điều chỉnh thông số rồi bấm <strong>Chạy Phân Tích</strong> để xem kết quả so sánh
+          {tr('lsdca.prompt')}
         </div>
       )}
 
       {/* ── Results ── */}
       {committed && !results && !loading && (
         <div className="error-banner">
-          Không đủ dữ liệu. Horizon dài hơn cửa sổ dữ liệu, hoặc quỹ chưa tải xong.
+          {t('lsdca.insufficientData')}
         </div>
       )}
 
@@ -771,45 +780,54 @@ function LumpSumDCAPanelImpl({ funds, shareUrl, active }: Props) {
           ].filter(Boolean)))} />
 
           <div className="lsdca-window-info">
-            Phân tích <strong>{results.summary.totalScenarios}</strong> kịch bản rolling
+            {tr('lsdca.scenarioCount', { n: results.summary.totalScenarios })}
             &nbsp;({results.effectiveWindow})
           </div>
 
           {/* ── Summary card ── */}
           <div className="lsdca-summary-card">
             <div className="lsdca-winner-row">
-              <span className="lsdca-winner-label">Lump Sum thắng</span>
+              <span className="lsdca-winner-label">{t('lsdca.lsWins')}</span>
               <span className={`lsdca-winner-value ${results.summary.lsWinRate >= 0.5 ? 'lsdca-ls-color' : 'lsdca-dca-color'}`}>
                 {(results.summary.lsWinRate * 100).toFixed(1)}%
               </span>
               <span className="lsdca-winner-sub">
-                ({Math.round(results.summary.lsWinRate * results.summary.totalScenarios)}/{results.summary.totalScenarios} kịch bản)
+                {t('lsdca.scenariosOf', {
+                  won: Math.round(results.summary.lsWinRate * results.summary.totalScenarios),
+                  total: results.summary.totalScenarios,
+                })}
               </span>
               <button
                 className={`lsdca-cagr-btn ${showCagr ? 'lsdca-cagr-btn-active' : ''}`}
                 onClick={() => setShowCagr(v => !v)}
                 title={showCagr
-                  ? 'Đang xem lời/năm (quy đổi). Nhấn để xem tổng lời/lỗ cả kỳ đầu tư'
-                  : `Nhấn để xem lời/năm: nếu mức lãi sau ${committed!.params.horizonMonths}th này mà đều mỗi năm, thì được bao nhiêu %/năm?`}
+                  ? t('lsdca.cagrToggleOn')
+                  : t('lsdca.cagrToggleOff', { months: committed!.params.horizonMonths })}
               >
-                {showCagr ? '✓ Lời/năm' : 'Xem lời/năm'}
+                {t(showCagr ? 'lsdca.cagrOn' : 'lsdca.cagrOff')}
               </button>
             </div>
 
             <div className="lsdca-stats-context">
-              Trung bình sau <strong>{committed!.params.horizonMonths} tháng</strong> đầu tư,
-              tính qua <strong>{results.summary.totalScenarios} kịch bản</strong> lịch sử
+              {tr('lsdca.avgIntro', {
+                months: committed!.params.horizonMonths,
+                n: results.summary.totalScenarios,
+              })}
             </div>
 
             <div className="lsdca-stats-grid">
               <div className="lsdca-stat-col">
                 <div className="lsdca-stat-header lsdca-ls-color">Lump Sum</div>
                 <div className="lsdca-stat-row">
-                  <span>{showCagr ? 'Lời TB (mỗi năm)' : `Lời TB (${committed!.params.horizonMonths}th)`}</span>
+                  <span>{showCagr
+                    ? t('lsdca.avgPerYear')
+                    : t('lsdca.avgPeriod', { months: committed!.params.horizonMonths })}</span>
                   <span>{fmtGrowthOrCagr(results.summary.meanLSGrowth)}</span>
                 </div>
                 <div className="lsdca-stat-row lsdca-stat-row-secondary">
-                  <span>{showCagr ? 'Trung vị (mỗi năm)' : `Trung vị (${committed!.params.horizonMonths}th)`}</span>
+                  <span>{showCagr
+                    ? t('lsdca.medianPerYear')
+                    : t('lsdca.medianPeriod', { months: committed!.params.horizonMonths })}</span>
                   <span>{fmtGrowthOrCagr(results.summary.medianLSGrowth)}</span>
                 </div>
               </div>
@@ -819,11 +837,15 @@ function LumpSumDCAPanelImpl({ funds, shareUrl, active }: Props) {
               <div className="lsdca-stat-col">
                 <div className="lsdca-stat-header lsdca-dca-color">DCA</div>
                 <div className="lsdca-stat-row">
-                  <span>{showCagr ? 'Lời TB (mỗi năm)' : `Lời TB (${committed!.params.horizonMonths}th)`}</span>
+                  <span>{showCagr
+                    ? t('lsdca.avgPerYear')
+                    : t('lsdca.avgPeriod', { months: committed!.params.horizonMonths })}</span>
                   <span>{fmtGrowthOrCagr(results.summary.meanDCAGrowth)}</span>
                 </div>
                 <div className="lsdca-stat-row lsdca-stat-row-secondary">
-                  <span>{showCagr ? 'Trung vị (mỗi năm)' : `Trung vị (${committed!.params.horizonMonths}th)`}</span>
+                  <span>{showCagr
+                    ? t('lsdca.medianPerYear')
+                    : t('lsdca.medianPeriod', { months: committed!.params.horizonMonths })}</span>
                   <span>{fmtGrowthOrCagr(results.summary.medianDCAGrowth)}</span>
                 </div>
               </div>
@@ -831,16 +853,16 @@ function LumpSumDCAPanelImpl({ funds, shareUrl, active }: Props) {
             </div>
 
             <div className="lsdca-percentiles">
-              <span className="lsdca-pct-label">LS vượt DCA bao nhiêu?</span>
+              <span className="lsdca-pct-label">{t('lsdca.gapLabel')}</span>
               {([
-                ['Kịch bản rất xấu', results.summary.p10],
-                ['Kịch bản xấu',     results.summary.p25],
-                ['Kịch bản thường',  results.summary.medianDiff],
-                ['Kịch bản tốt',     results.summary.p75],
-                ['Kịch bản rất tốt', results.summary.p90],
-              ] as [string, number][]).map(([label, val]) => (
-                <span key={label} className="lsdca-pct-item">
-                  <span className="lsdca-pct-name">{label}</span>
+                ['lsdca.scenario.veryBad', results.summary.p10],
+                ['lsdca.scenario.bad',     results.summary.p25],
+                ['lsdca.scenario.typical', results.summary.medianDiff],
+                ['lsdca.scenario.good',    results.summary.p75],
+                ['lsdca.scenario.veryGood', results.summary.p90],
+              ] as [TranslationKey, number][]).map(([labelKey, val]) => (
+                <span key={labelKey} className="lsdca-pct-item">
+                  <span className="lsdca-pct-name">{t(labelKey)}</span>
                   <span className={val >= 0 ? 'lsdca-ls-color' : 'lsdca-dca-color'}>
                     {fmtPct(val)}
                   </span>
@@ -851,39 +873,37 @@ function LumpSumDCAPanelImpl({ funds, shareUrl, active }: Props) {
 
           {/* ── Heatmap ── */}
           <div className="lsdca-chart-card">
-            <h4 className="lsdca-chart-title">Xác suất chiến thắng của chiến lược Đầu tư toàn bộ vốn ngay từ đầu</h4>
-            <p className="lsdca-chart-sub">
-              Ý nghĩa: Con số trong ô là tỷ lệ % các kịch bản lịch sử mà việc giải ngân một lần hiệu quả hơn việc chia nhỏ vốn trong N tháng (tính trên cùng một thời hạn đầu tư).
-            </p>
+            <h4 className="lsdca-chart-title">{t('lsdca.heatmap.title')}</h4>
+            <p className="lsdca-chart-sub">{t('lsdca.heatmap.meaning')}</p>
 
             {renderHeatmapGrid(results.heatmap)}
 
             {/* Legend, đặt ngay dưới heatmap chính để đọc màu trước khi qua phần khác */}
             <div className="lsdca-hm-legend-chips">
               <span className="lsdca-hm-chip lsdca-hm-chip--weak">
-                &lt; 50%: DCA thắng nhiều hơn
+                {t('lsdca.legend.dcaWins')}
               </span>
               <span className="lsdca-hm-chip lsdca-hm-chip--medium">
-                50–70%: LS nhỉnh hơn
+                {t('lsdca.legend.lsEdge')}
               </span>
               <span className="lsdca-hm-chip lsdca-hm-chip--strong">
-                ≥ 70%: LS vượt trội
+                {t('lsdca.legend.lsStrong')}
               </span>
             </div>
 
             {/* Compare fund picker */}
             <div className="lsdca-hm-compare">
-              <span className="lsdca-hm-compare-label">So sánh với quỹ khác:</span>
+              <span className="lsdca-hm-compare-label">{t('lsdca.compareWith')}</span>
               <Select
                 className="lsdca-cash-fund-select"
                 classNamePrefix="fund-search"
-                options={[{ value: '', label: 'Không so sánh' }, ...fundOptions]}
+                options={[{ value: '', label: t('lsdca.noCompare') }, ...fundOptions]}
                 value={compareFundId
                   ? (fundOptions.find(o => o.value === compareFundId) ?? null)
-                  : { value: '', label: 'Không so sánh' }}
+                  : { value: '', label: t('lsdca.noCompare') }}
                 onChange={opt => setCompareFundId(opt?.value || '')}
-                placeholder="Chọn quỹ để so sánh heatmap..."
-                noOptionsMessage={() => 'Không tìm thấy'}
+                placeholder={t('lsdca.comparePlaceholder')}
+                noOptionsMessage={() => t('fundSelector.noOptions')}
                 isSearchable
                 styles={portfolioSelectStyles}
               />
@@ -894,11 +914,7 @@ function LumpSumDCAPanelImpl({ funds, shareUrl, active }: Props) {
             )}
 
             <p className="lsdca-hm-indep-note">
-              Mỗi ô ghi hai con số. Phân số bên trên là số kịch bản lịch sử, nhưng chúng
-              chồng lấn nhau rất nặng: hai lần thử cách nhau một tháng thì đi qua gần như
-              cùng một quãng thời gian. Dòng dưới cùng đếm số quãng thật sự không dùng
-              chung ngày nào. Ô nào có dưới {MIN_INDEPENDENT_WINDOWS} giai đoạn tách rời
-              thì bị làm mờ và có dấu ⚠. Khối bên dưới giải thích kỹ hơn kèm ví dụ.
+              {t('lsdca.overlapNote', { min: MIN_INDEPENDENT_WINDOWS })}
             </p>
 
             {/* Explanation toggle */}
@@ -907,24 +923,17 @@ function LumpSumDCAPanelImpl({ funds, shareUrl, active }: Props) {
                 className="dca-glossary-toggle"
                 onClick={() => setShowExplainer(v => !v)}
               >
-                Cách đọc bảng này {showExplainer ? '▲' : '▼'}
+                {t('lsdca.explainerToggle', { arrow: showExplainer ? '▲' : '▼' })}
               </button>
               {showExplainer && (
                 <div className="dca-glossary-content">
-                  <p>
-                    Giả sử bạn có sẵn <strong>100 triệu</strong> và dự định đầu tư trong <strong>2 năm</strong>.
-                    Bạn đang cân nhắc giữa hai cách:
-                  </p>
+                  <p>{tr('lsdca.explainer1')}</p>
                   <ul>
-                    <li><strong>Đầu tư một lần:</strong> Bỏ toàn bộ 100 triệu ngay hôm nay, giữ đến hết 2 năm rồi bán.</li>
-                    <li><strong>DCA 3 tháng:</strong> Chia ra đầu tư đều mỗi tháng trong 3 tháng đầu (~33 triệu/tháng), sau đó giữ nguyên đến hết 2 năm rồi bán.</li>
+                    <li>{tr('lsdca.explainerLumpSum')}</li>
+                    <li>{tr('lsdca.explainerDca')}</li>
                   </ul>
-                  <p>
-                    Ô <strong>"2 năm / 3 tháng"</strong> cho biết: nhìn lại toàn bộ lịch sử, có <strong>60.4%</strong> số lần mà cách đầu tư một lần mang lại kết quả tốt hơn.
-                  </p>
-                  <p className="lsdca-hm-explainer-note">
-                    💡 Con số càng cao → đầu tư một lần càng có lợi thế. DCA trải càng dài thì vốn ngồi chờ càng lâu, nên lợi thế của đầu tư một lần càng lớn (thể hiện qua màu xanh đậm hơn ở cột bên phải).
-                  </p>
+                  <p>{tr('lsdca.explainer2')}</p>
+                  <p className="lsdca-hm-explainer-note">{t('lsdca.explainer3')}</p>
                 </div>
               )}
             </div>
@@ -952,12 +961,8 @@ function LumpSumDCAPanelImpl({ funds, shareUrl, active }: Props) {
 
           {/* ── Histogram ── */}
           <div className="lsdca-chart-card">
-            <h4 className="lsdca-chart-title">
-              LS vượt DCA bao nhiêu? Phân bố kết quả các kịch bản lịch sử
-            </h4>
-            <p className="lsdca-chart-sub">
-              Xanh = Lump Sum thắng &nbsp;|&nbsp; Đỏ = DCA thắng
-            </p>
+            <h4 className="lsdca-chart-title">{t('lsdca.distTitle')}</h4>
+            <p className="lsdca-chart-sub">{tr('lsdca.distLegend')}</p>
             <ResponsiveContainer width="100%" height={240}>
               <BarChart
                 data={results.histogram}
@@ -974,8 +979,8 @@ function LumpSumDCAPanelImpl({ funds, shareUrl, active }: Props) {
                 />
                 <YAxis tick={{ fontSize: 11 }} allowDecimals={false} />
                 <Tooltip
-                  formatter={(value: number) => [`${value} kịch bản`, 'Số lần']}
-                  labelFormatter={(label: string) => `Chênh lệch: ${label}`}
+                  formatter={(value: number) => [t('lsdca.distTooltip', { n: value }), t('lsdca.distTooltipLabel')]}
+                  labelFormatter={(label: string) => t('lsdca.distTooltipGap', { label })}
                 />
                 <Bar dataKey="count" radius={[3, 3, 0, 0]} isAnimationActive={false}>
                   {results.histogram.map((bucket, i) => (
@@ -1006,7 +1011,7 @@ function LumpSumDCAPanelImpl({ funds, shareUrl, active }: Props) {
 
       {!portfolio && !committed && (
         <div className="chart-empty">
-          Bấm "+ Thêm Danh Mục" để bắt đầu phân tích.
+          {t('lsdca.emptyState')}
         </div>
       )}
     </div>

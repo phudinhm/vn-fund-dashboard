@@ -1,6 +1,7 @@
 import { memo, useMemo } from 'react'
 import type { FundComparisonData } from '../hooks/useCalculations'
 import { correlationMatrix, averageCorrelation } from '../utils/correlation'
+import { useT, useTRich, type TranslationKey } from '../i18n'
 
 interface Props {
   funds: FundComparisonData[]
@@ -36,21 +37,17 @@ function formatR(r: number | null): string {
 }
 
 /** Diễn giải mức tương quan trung bình thành câu người thường hiểu. */
-function verdict(avg: number | null): string {
-  if (avg === null) return 'Chưa đủ dữ liệu để đánh giá mức đa dạng hoá.'
-  if (avg >= 0.9) {
-    return 'Các tài sản này gần như đi chung một nhịp. Ghép chúng lại hầu như không giảm được rủi ro — lúc thị trường sập thì sập cùng nhau.'
-  }
-  if (avg >= 0.7) {
-    return 'Tương quan cao. Có giảm rủi ro đôi chút, nhưng đừng kỳ vọng danh mục đứng vững khi thị trường chung đi xuống.'
-  }
-  if (avg >= 0.4) {
-    return 'Tương quan vừa phải. Ghép lại có tác dụng đa dạng hoá thật, dù vẫn cùng chịu ảnh hưởng của thị trường chung.'
-  }
-  return 'Tương quan thấp. Đây là nhóm tài sản bổ trợ nhau tốt — khi cái này giảm, cái kia không nhất thiết giảm theo.'
+function verdictKey(avg: number | null): TranslationKey {
+  if (avg === null) return 'corr.verdict.noData'
+  if (avg >= 0.9) return 'corr.verdict.veryHigh'
+  if (avg >= 0.7) return 'corr.verdict.high'
+  if (avg >= 0.4) return 'corr.verdict.moderate'
+  return 'corr.verdict.low'
 }
 
 function CorrelationBlockImpl({ funds, colors, displayName }: Props) {
+  const t = useT()
+  const tr = useTRich()
   const matrix = useMemo(
     () => correlationMatrix(funds.map(f => f.returns.map(r => r.value))),
     [funds],
@@ -82,10 +79,10 @@ function CorrelationBlockImpl({ funds, colors, displayName }: Props) {
   return (
     <div className="chart-container">
       <div className="chart-header">
-        <h3>Tương quan lợi nhuận</h3>
+        <h3>{t('corr.title')}</h3>
         <span
           className="chart-tooltip-icon"
-          title="Hệ số tương quan Pearson trên chuỗi lợi nhuận đã căn cùng mốc ngày. 1 = đi hoàn toàn cùng nhịp, 0 = không liên quan, -1 = ngược nhịp hoàn toàn."
+          title={t('corr.help')}
         >?</span>
       </div>
 
@@ -99,7 +96,7 @@ function CorrelationBlockImpl({ funds, colors, displayName }: Props) {
                   <span style={{ color: colors[i % colors.length] }}>{displayName(f.id)}</span>
                 </th>
               ))}
-              <th className="corr-head corr-avg-head">TB</th>
+              <th className="corr-head corr-avg-head">{t('corr.avgCol')}</th>
             </tr>
           </thead>
           <tbody>
@@ -130,20 +127,14 @@ function CorrelationBlockImpl({ funds, colors, displayName }: Props) {
       </div>
 
       <p className="fund-analysis-chart-note">
-        {overallAvg !== null && (
-          <>Tương quan trung bình giữa các cặp: <strong>{overallAvg.toFixed(2)}</strong>. </>
-        )}
-        {verdict(overallAvg)}
-        {' '}Cột <strong>TB</strong> là mức tương quan trung bình của từng tài sản với phần
-        còn lại — số càng cao thì tài sản đó càng ít đóng góp vào đa dạng hoá.
+        {overallAvg !== null && tr('corr.summary', { avg: overallAvg.toFixed(2) })}
+        {t(verdictKey(overallAvg))}
+        {tr('corr.colNote')}
       </p>
       {/* Cảnh báo phương pháp: bỏ qua điều này thì người đọc dễ tưởng quỹ mở
           đa dạng hoá tốt hơn thực tế. */}
       <p className="fund-analysis-chart-note corr-caveat">
-        <strong>Lưu ý cách đo:</strong> quỹ mở định giá NAV cuối ngày, còn ETF khớp lệnh
-        liên tục trên sàn. Hai mốc định giá không trùng nhau nên tương quan đo được giữa
-        quỹ mở và ETF thường <em>thấp hơn</em> mức đi cùng nhịp thật. Hãy đọc bảng này theo
-        hướng so sánh tương đối giữa các cặp, đừng coi con số tuyệt đối là chính xác.
+        {tr('corr.caveat')}
       </p>
     </div>
   )

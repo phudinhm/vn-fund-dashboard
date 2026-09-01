@@ -4,7 +4,7 @@ import type { FundMeta, PricePoint } from '../types'
 import { useWatchlist } from '../hooks/useWatchlist'
 import { useMultiFundSeries } from '../hooks/useFundData'
 import { weeklyReturns, cagr, maxDrawdown } from '../utils/calculations'
-import { useT, type TranslationKey } from '../i18n'
+import { useT, numberLocale, type TranslationKey } from '../i18n'
 import {
   buildGroupedFundOptions, type FundOption, type FundOptionGroup,
 } from '../utils/fundSelectOptions'
@@ -212,7 +212,7 @@ export function WatchlistPanel({ funds, onCompare }: Props) {
                 <div className="watchlist-stat">
                   <span className="watchlist-stat-label">{t('watchlist.stat.latestPrice')}</span>
                   <span className="watchlist-stat-value">
-                    {latest ? `${Math.round(latest.price).toLocaleString('vi-VN')} đ` : '—'}
+                    {latest ? `${Math.round(latest.price).toLocaleString(numberLocale())} đ` : '—'}
                   </span>
                   {latest && <span className="watchlist-stat-date">{formatDate(latest.date)}</span>}
                 </div>

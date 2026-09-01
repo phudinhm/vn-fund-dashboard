@@ -4,6 +4,7 @@ import {
 } from 'recharts'
 import type { FundFeeErosionPoint } from '../../utils/calculators'
 import { formatVNDAxis, formatVNDFull } from '../../utils/vndFormat'
+import { useT, useDecimal } from '../../i18n'
 
 /**
  * Biểu đồ phí ăn mòn: hai đường và khoảng đỏ giữa chúng.
@@ -25,15 +26,17 @@ interface TooltipProps {
 }
 
 function CustomTooltip({ active, payload }: TooltipProps) {
+  const t = useT()
+  const dec = useDecimal()
   const point = payload?.[0]?.payload
   if (!active || !point) return null
   return (
     <div className="custom-tooltip">
-      <p className="ct-date">Năm thứ {point.year}</p>
-      <p style={{ color: MAU_KHONG_PHI }}>Nếu không mất phí: {formatVNDFull(point.finalValueNoFee)}</p>
-      <p style={{ color: MAU_THUC_NHAN }}>Thực nhận: {formatVNDFull(point.finalValueWithFee)}</p>
+      <p className="ct-date">{t('calc.tooltip.yearN', { n: point.year })}</p>
+      <p style={{ color: MAU_KHONG_PHI }}>{t('calc.fee.tooltipNoFee', { v: formatVNDFull(point.finalValueNoFee) })}</p>
+      <p style={{ color: MAU_THUC_NHAN }}>{t('calc.fee.tooltipWithFee', { v: formatVNDFull(point.finalValueWithFee) })}</p>
       <p style={{ color: '#b53333', fontWeight: 600 }}>
-        Phí lấy mất: {formatVNDFull(point.feeLost)} ({(point.erosionPct * 100).toFixed(2).replace('.', ',')}%)
+        {t('calc.fee.tooltipLost', { v: formatVNDFull(point.feeLost), pct: dec(point.erosionPct * 100) })}
       </p>
     </div>
   )
@@ -44,6 +47,8 @@ interface Props {
 }
 
 function FundFeeErosionChartImpl({ series }: Props) {
+  const t = useT()
+  const dec = useDecimal()
   if (series.length < 2) return null
 
   const cuoiKy = series[series.length - 1]!
@@ -52,11 +57,8 @@ function FundFeeErosionChartImpl({ series }: Props) {
   return (
     <div className="calc-chart">
       <div className="chart-header">
-        <h3>Khoảng phí nới rộng qua từng năm</h3>
-        <span
-          className="chart-tooltip-icon"
-          title="Đường xám phía trên là tài sản bạn có nếu không mất đồng phí nào. Đường xanh phía dưới là số thực nhận sau khi trừ phí. Khoảng đỏ giữa hai đường là phần phí lấy đi. Khoảng này rộng ra nhanh dần chứ không đều, vì phí năm nào cũng thu trên phần tài sản đã bị bào mòn từ những năm trước."
-        >?</span>
+        <h3>{t('calc.fee.chartTitle')}</h3>
+        <span className="chart-tooltip-icon" title={t('calc.fee.chartHelp')}>?</span>
       </div>
 
       <ResponsiveContainer width="100%" height={280}>
@@ -65,9 +67,9 @@ function FundFeeErosionChartImpl({ series }: Props) {
           <XAxis
             dataKey="year"
             tick={{ fontSize: 11 }}
-            tickFormatter={y => (y === 0 ? 'Bắt đầu' : `${y}n`)}
+            tickFormatter={y => (y === 0 ? t('calc.axis.start') : t('calc.axis.year', { n: y }))}
           />
-          <YAxis tick={{ fontSize: 11 }} tickFormatter={formatVNDAxis} width={62} />
+          <YAxis tick={{ fontSize: 11 }} tickFormatter={v => formatVNDAxis(v)} width={62} />
           <Tooltip content={<CustomTooltip />} />
 
           {/* Lớp nền trong suốt, đẩy dải đỏ lên đúng vị trí đường thực nhận */}
@@ -111,25 +113,27 @@ function FundFeeErosionChartImpl({ series }: Props) {
       <div className="calc-legend">
         <span className="calc-legend-item">
           <span className="calc-legend-line calc-legend-line--dashed" style={{ background: MAU_KHONG_PHI }} />
-          Nếu không mất phí
+          {t('calc.fee.legendNoFee')}
         </span>
         <span className="calc-legend-item">
           <span className="calc-legend-line" style={{ background: MAU_THUC_NHAN }} />
-          Thực nhận sau phí
+          {t('calc.fee.legendWithFee')}
         </span>
         <span className="calc-legend-item">
           <span className="calc-legend-swatch" style={{ background: MAU_PHI_FILL, border: '1px solid #b53333' }} />
-          Phần phí lấy mất
+          {t('calc.fee.legendLost')}
         </span>
       </div>
 
       <p className="calc-note">
-        Tới năm thứ {giuaKy.year}, phí mới lấy {formatVNDFull(giuaKy.feeLost)}. Nửa chặng còn lại
-        nó lấy thêm {formatVNDFull(cuoiKy.feeLost - giuaKy.feeLost)}, gần gấp{' '}
-        {giuaKy.feeLost > 0
-          ? ((cuoiKy.feeLost - giuaKy.feeLost) / giuaKy.feeLost).toFixed(1).replace('.', ',')
-          : '0'}{' '}
-        lần nửa đầu. Phí không ăn đều mỗi năm một ít, nó ăn trên khoản tài sản đã lớn lên.
+        {t('calc.fee.chartNote', {
+          midYear: giuaKy.year,
+          midLost: formatVNDFull(giuaKy.feeLost),
+          restLost: formatVNDFull(cuoiKy.feeLost - giuaKy.feeLost),
+          multiple: giuaKy.feeLost > 0
+            ? dec((cuoiKy.feeLost - giuaKy.feeLost) / giuaKy.feeLost, 1)
+            : '0',
+        })}
       </p>
     </div>
   )

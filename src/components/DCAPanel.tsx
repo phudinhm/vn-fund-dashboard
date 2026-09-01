@@ -43,6 +43,7 @@ import {
   MAX_PORTFOLIOS,
   MAX_FUNDS_PER_PORTFOLIO,
 } from './PortfolioCard'
+import { useT, type TranslationKey } from '../i18n'
 
 interface Props {
   funds: FundMeta[]
@@ -132,26 +133,28 @@ interface DcaSnapshot {
  */
 type DcaSectionId = 'all' | 'perf' | 'journey' | 'risk' | 'endgame'
 
-const DCA_SECTIONS: { id: DcaSectionId; label: string }[] = [
-  { id: 'all', label: 'Tất cả' },
-  { id: 'perf', label: 'Hiệu suất đầu tư' },
-  { id: 'journey', label: 'Hành trình của bạn' },
-  { id: 'risk', label: 'Rủi ro & biến động' },
-  { id: 'endgame', label: 'Endgame' },
+// Danh sách ở cấp module nên giữ KEY, dịch lúc render (t() cần hook).
+const DCA_SECTIONS: { id: DcaSectionId; labelKey: TranslationKey }[] = [
+  { id: 'all', labelKey: 'dca.section.all' },
+  { id: 'perf', labelKey: 'dca.section.perf' },
+  { id: 'journey', labelKey: 'dca.section.journey' },
+  { id: 'risk', labelKey: 'dca.section.risk' },
+  { id: 'endgame', labelKey: 'dca.section.endgame' },
 ]
 
-const FREQ_OPTIONS: { value: DCAFrequency; label: string }[] = [
-  { value: 'daily', label: 'Hàng ngày' },
-  { value: 'weekly', label: '1 tuần' },
-  { value: 'biweekly', label: '2 tuần' },
-  { value: 'monthly', label: '1 tháng' },
-  { value: 'quarterly', label: '1 quý' },
-  { value: 'semiannual', label: '6 tháng' },
-  { value: 'yearly', label: '1 năm' },
+const FREQ_OPTIONS: { value: DCAFrequency; labelKey: TranslationKey }[] = [
+  { value: 'daily', labelKey: 'dca.freq.daily' },
+  { value: 'weekly', labelKey: 'dca.freq.weekly' },
+  { value: 'biweekly', labelKey: 'dca.freq.biweekly' },
+  { value: 'monthly', labelKey: 'dca.freq.monthly' },
+  { value: 'quarterly', labelKey: 'dca.freq.quarterly' },
+  { value: 'semiannual', labelKey: 'dca.freq.semiannual' },
+  { value: 'yearly', labelKey: 'dca.freq.yearly' },
 ]
 
 function DCAPanelImpl({ funds, shareUrl, active }: Props) {
   const nextIdRef = useRef(1)
+  const t = useT()
 
   // URL payload comes from App; this hook keeps localStorage precedence and the persist gate.
   const {
@@ -804,7 +807,7 @@ function DCAPanelImpl({ funds, shareUrl, active }: Props) {
   return (
     <div className="simulation-panel dca-panel">
       <div className="panel-header">
-        <h2>Tích Lũy Định Kỳ (DCA)</h2>
+        <h2>{t('dca.title')}</h2>
         <ShareButton getUrl={() => buildDcaUrl({
           initialAmount, cashflowAmount, cashflowFreq,
           dateMode, yearsBack, dateFrom, dateTo,
@@ -817,23 +820,23 @@ function DCAPanelImpl({ funds, shareUrl, active }: Props) {
 
       {/* ── Parameters Section ── */}
       <div className="dca-params-card">
-        <h3 className="dca-section-title">Thông số</h3>
+        <h3 className="dca-section-title">{t('dca.params')}</h3>
 
         {/* Date Range Mode */}
         <div className="dca-param-row">
-          <label className="dca-label">Khoảng thời gian</label>
+          <label className="dca-label">{t('dca.timeRange')}</label>
           <div className="dca-date-mode">
             <button
               className={`dca-mode-btn ${dateMode === 'all' ? 'dca-mode-btn-active' : ''}`}
               onClick={() => setDateMode('all')}
             >
-              Tất cả
+              {t('dca.modeAll')}
             </button>
             <button
               className={`dca-mode-btn ${dateMode === 'years' ? 'dca-mode-btn-active' : ''}`}
               onClick={() => setDateMode('years')}
             >
-              X năm qua
+              {t('dca.modeYears')}
             </button>
           </div>
         </div>
@@ -841,7 +844,7 @@ function DCAPanelImpl({ funds, shareUrl, active }: Props) {
         {/* Years selector (only when mode = years) */}
         {dateMode === 'years' && (
           <div className="dca-param-row dca-years-row">
-            <label className="dca-label">Số năm</label>
+            <label className="dca-label">{t('dca.numYears')}</label>
             <div className="dca-years-selector">
               {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(n => (
                 <button
@@ -859,7 +862,7 @@ function DCAPanelImpl({ funds, shareUrl, active }: Props) {
         {/* Custom date range (only when mode = all) */}
         {dateMode === 'all' && (
           <div className="dca-param-row">
-            <label className="dca-label">Từ ngày đến ngày</label>
+            <label className="dca-label">{t('dca.dateRange')}</label>
             <div className="dca-date-inputs">
               <input
                 type="date"
@@ -878,7 +881,7 @@ function DCAPanelImpl({ funds, shareUrl, active }: Props) {
 
         {/* Initial Amount */}
         <div className="dca-param-row">
-          <label className="dca-label">Số tiền đầu tiên</label>
+          <label className="dca-label">{t('dca.initialAmount')}</label>
           <div className="dca-amount-input">
             <MoneyInput value={initialAmount} onChange={setInitialAmount} min={0} />
             <span className="dca-currency">₫</span>
@@ -887,14 +890,14 @@ function DCAPanelImpl({ funds, shareUrl, active }: Props) {
 
         {/* DCA Cash Flow subsection — mặc định 0, tức là mô phỏng đầu tư 1 lần */}
         <div className="dca-subsection">
-          <h4 className="dca-subsection-title">Dòng Tiền DCA</h4>
+          <h4 className="dca-subsection-title">{t('dca.cashflowTitle')}</h4>
           <p className="dca-subsection-hint">
-            Để 0 nếu chỉ muốn mô phỏng đầu tư 1 lần. Nhập số tiền nếu muốn lên kế hoạch DCA định kỳ.
+            {t('dca.cashflowHint')}
           </p>
 
           {/* Cashflow Amount */}
           <div className="dca-param-row">
-            <label className="dca-label">Số tiền đầu tư định kỳ</label>
+            <label className="dca-label">{t('dca.recurringAmount')}</label>
             <div className="dca-amount-input">
               <MoneyInput value={cashflowAmount} onChange={setCashflowAmount} min={0} />
               <span className="dca-currency">₫</span>
@@ -903,31 +906,31 @@ function DCAPanelImpl({ funds, shareUrl, active }: Props) {
 
           {/* Cashflow Frequency */}
           <div className="dca-param-row">
-            <label className="dca-label">Tần suất đầu tư</label>
+            <label className="dca-label">{t('dca.frequency')}</label>
             <select
               className="dca-freq-select"
               value={cashflowFreq}
               onChange={e => setCashflowFreq(e.target.value as DCAFrequency)}
             >
               {FREQ_OPTIONS.map(opt => (
-                <option key={opt.value} value={opt.value}>{opt.label}</option>
+                <option key={opt.value} value={opt.value}>{t(opt.labelKey)}</option>
               ))}
             </select>
           </div>
         </div>
 
         <p className="dca-note">
-          * Thời gian đầu, các quỹ cập nhật thông tin giá vào các ngày khác nhau. Trong trường hợp này, hệ thống sẽ tự chọn giá vào ngày giao dịch cuối cùng trong tuần.
+          {t('dca.priceDateNote')}
         </p>
       </div>
 
       {/* ── Portfolio Cards ── */}
       <div className="dca-portfolios-card">
         <div className="dca-portfolios-card-header">
-          <h3 className="dca-section-title">Danh mục</h3>
+          <h3 className="dca-section-title">{t('dca.portfolios')}</h3>
           {portfolios.length < MAX_PORTFOLIOS && (
             <button className="dca-add-portfolio-btn" onClick={addPortfolio}>
-              + Thêm Danh Mục
+              {t('dca.addPortfolio')}
             </button>
           )}
         </div>
@@ -958,11 +961,11 @@ function DCAPanelImpl({ funds, shareUrl, active }: Props) {
             onClick={runSimulation}
             disabled={!canRun}
           >
-            {committed ? 'Chạy lại DCA' : 'Chạy DCA'}
+            {committed ? t('dca.rerun') : t('dca.run')}
           </button>
           {isDirty && (
             <span className="btc-run-hint">
-              Thông số đã thay đổi, bấm "Chạy lại DCA" để cập nhật biểu đồ.
+              {t('dca.staleParams')}
             </span>
           )}
         </div>
@@ -997,13 +1000,13 @@ function DCAPanelImpl({ funds, shareUrl, active }: Props) {
               className={`dca-anchor-btn${activeSection === s.id ? ' dca-anchor-btn--active' : ''}`}
               onClick={() => setActiveSection(s.id)}
             >
-              {s.label}
+              {t(s.labelKey)}
             </button>
           ))}
         </div>
       )}
 
-      {isLoading && <div className="loading-indicator">Đang tải dữ liệu...</div>}
+      {isLoading && <div className="loading-indicator">{t('dca.loading')}</div>}
 
       {!isLoading && dataError && (
         <div className="error-banner">{dataError}</div>
@@ -1012,7 +1015,7 @@ function DCAPanelImpl({ funds, shareUrl, active }: Props) {
       {/* Error when no results */}
       {committed && committed.params.portfolios.length > 0 && validResults.length === 0 && !isLoading && !dataError && (
         <div className="error-banner">
-          Không đủ dữ liệu để tính toán. Hãy chọn khoảng thời gian dài hơn hoặc chọn "Tất cả".
+          {t('dca.insufficientData')}
         </div>
       )}
 
@@ -1024,13 +1027,13 @@ function DCAPanelImpl({ funds, shareUrl, active }: Props) {
         <>
           <div style={{ display: showSection('perf') }}>
             <div className="section-divider">
-              <span className="section-divider-label">Hiệu suất đầu tư</span>
+              <span className="section-divider-label">{t('dca.section.perf')}</span>
             </div>
 
             {/* Period info */}
             {startDate && endDate && (
               <div className="comparison-period" style={{ marginBottom: 16 }}>
-                DCA từ {formatDate(startDate)} đến {formatDate(endDate)}
+                {t('dca.periodRange', { from: formatDate(startDate), to: formatDate(endDate) })}
               </div>
             )}
 
@@ -1065,7 +1068,7 @@ function DCAPanelImpl({ funds, shareUrl, active }: Props) {
             {/* Journey narrative */}
             {startDate && endDate && (
               <div className="section-divider">
-                <span className="section-divider-label">Hành trình của bạn</span>
+                <span className="section-divider-label">{t('dca.section.journey')}</span>
               </div>
             )}
             {startDate && endDate && (
@@ -1099,7 +1102,7 @@ function DCAPanelImpl({ funds, shareUrl, active }: Props) {
           <div style={{ display: showSection('risk') }}>
             {/* Kiên trì qua bão */}
             <div className="section-divider">
-              <span className="section-divider-label">Rủi ro &amp; biến động</span>
+              <span className="section-divider-label">{t('dca.section.risk')}</span>
             </div>
 
             {/* Tổng quan lợi nhuận đổi lấy rủi ro, trước khi đi vào chi tiết từng chart */}
@@ -1145,7 +1148,7 @@ function DCAPanelImpl({ funds, shareUrl, active }: Props) {
 
       {portfolios.length === 0 && (
         <div className="chart-empty">
-          Bấm "Thêm Danh Mục" để bắt đầu mô phỏng DCA.
+          {t('dca.emptyState')}
         </div>
       )}
 

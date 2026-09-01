@@ -7,7 +7,7 @@
  * và baseline không tái cân bằng) để trả lời câu hỏi: chọn lịch rebalance
  * nào có thực sự thay đổi kết quả không?
  */
-import { useState, useMemo, memo } from 'react'
+import { useState, useEffect, useMemo, memo } from 'react'
 import Select from 'react-select'
 import {
   ScatterChart, Scatter, XAxis, YAxis, CartesianGrid,
@@ -19,7 +19,7 @@ import { useFundSeriesMap } from '../hooks/useFundData'
 import { useCommittedRun } from '../hooks/useCommittedRun'
 import { alignFundsToCommonGridDaily } from '../utils/weeklyResample'
 import {
-  runRebalanceSensitivity, summarize, GROUP_LABELS, SCHEDULES,
+  runRebalanceSensitivity, summarize, GROUP_LABEL_KEYS, SCHEDULES,
   type VariantResult, type VariantGroup, type ScheduleId, type BandSweep,
 } from '../utils/rebalanceSensitivity'
 import { PortfolioCard, portfolioSelectStyles } from './PortfolioCard'
@@ -27,6 +27,8 @@ import {
   savingsAssetId,
   SAVINGS_OPTION_LABEL, DEFAULT_SAVINGS_RATE,
 } from '../utils/savingsAsset'
+import { useT, useTRich, useDecimal, translateStatic } from '../i18n'
+import { useLanguage } from '../hooks/useLanguage'
 
 interface Props {
   funds: FundMeta[]
@@ -46,7 +48,25 @@ const GROUP_COLORS: Record<VariantGroup, string> = {
   none: '#141413',
 }
 
-const SCHEDULE_OPTIONS = SCHEDULES.map(s => ({ value: s.id, label: s.label }))
+/**
+ * Nhãn của một biến thể, dựng từ group/offset/threshold thay vì lấy chuỗi dựng
+ * sẵn trong util — để đổi ngôn ngữ là đổi luôn nhãn trên chart và trong bảng.
+ */
+function useVariantLabel(): (v: VariantResult) => string {
+  const t = useT()
+  const dec = useDecimal()
+  return (v: VariantResult) => {
+    if (v.group === 'band-abs') return t('rebal.variant.bandAbs', { v: dec(v.threshold ?? 0, 1) })
+    if (v.group === 'band-rel') return t('rebal.variant.bandRel', { v: dec(v.threshold ?? 0, 1) })
+    if (v.group === 'none') return t('rebal.group.none')
+    const sched = t(GROUP_LABEL_KEYS[v.group])
+    const maxOffset = SCHEDULES.find(x => x.id === v.group)?.maxOffset ?? 0
+    if (maxOffset === 0) return sched
+    return v.offset === 0
+      ? t('rebal.variant.lastDay', { sched })
+      : t('rebal.variant.offset', { sched, n: v.offset ?? 0 })
+  }
+}
 
 type DateRangeMode = 'all' | 'years'
 
@@ -66,6 +86,10 @@ interface RebalanceSnapshot {
 }
 
 function RebalanceSensitivityPanelImpl({ funds }: Props) {
+  const t = useT()
+  const tr = useTRich()
+  const dec = useDecimal()
+  const { language } = useLanguage()
   // ── Thông số ──
   const [dateMode, setDateMode] = useState<DateRangeMode>('all')
   const [yearsBack, setYearsBack] = useState(5)
@@ -85,7 +109,7 @@ function RebalanceSensitivityPanelImpl({ funds }: Props) {
   const [portfolio, setPortfolio] = useState<PortfolioCardState>(() => ({
     id: 'rebal1',
     num: 1,
-    name: 'Danh mục',
+    name: translateStatic('rebal.portfolioName', language),
     isNameCustom: false,
     slots: [
       { fundId: '', weight: 50 },
@@ -93,6 +117,18 @@ function RebalanceSensitivityPanelImpl({ funds }: Props) {
     ],
     rebalFreq: 'quarterly',
   }))
+
+  // Tên mặc định đi theo ngôn ngữ; người dùng tự đặt tên rồi thì giữ nguyên.
+  useEffect(() => {
+    setPortfolio(p => p.isNameCustom
+      ? p
+      : { ...p, name: translateStatic('rebal.portfolioName', language) })
+  }, [language])
+
+  const scheduleOptions = useMemo(
+    () => SCHEDULES.map(sched => ({ value: sched.id, label: t(GROUP_LABEL_KEYS[sched.id]) })),
+    [language],
+  )
 
   const fundOptions = useMemo(() => [
     ...funds.map(f => ({ value: f.id, label: f.name_vi })),
@@ -210,47 +246,38 @@ function RebalanceSensitivityPanelImpl({ funds }: Props) {
   return (
     <div className="simulation-panel">
       <div className="panel-header">
-        <h2>Độ Nhạy Tái Cân Bằng</h2>
+        <h2>{t('rebal.title')}</h2>
       </div>
 
       <div className="rebal-intro-card">
-      <p className="dca-ratio-sub">
-        Giả sử danh mục của bạn là 50% quỹ A, 50% quỹ B. Theo thời gian, giá 2 quỹ tăng
-        khác nhau nên tỷ trọng thực tế sẽ lệch dần khỏi 50/50 (vd 58/42), và "tái cân bằng"
-        là hành động bán bớt quỹ đang nhiều, mua thêm quỹ đang ít để đưa về lại đúng mục
-        tiêu. Câu hỏi công cụ này trả lời: <strong>tái cân bằng vào lúc nào thì tốt hơn?</strong>{' '}
-        Mỗi cách chọn "khi nào tái cân bằng" (vd: cứ mỗi quý một lần, hoặc chỉ khi lệch quá
-        5%) gọi là một <strong>biến thể</strong>. Công cụ tự động thử hàng trăm biến thể
-        khác nhau trên cùng một danh mục, để xem chọn biến thể nào cũng cho kết quả gần
-        giống nhau, hay có biến thể vượt trội hẳn.
-      </p>
+      <p className="dca-ratio-sub">{tr('rebal.intro')}</p>
       </div>
 
       {/* ── Thông số ── */}
       <div className="dca-params-card">
-        <h3 className="dca-section-title">Thông số</h3>
+        <h3 className="dca-section-title">{t('calc.params')}</h3>
 
         <div className="dca-param-row">
-          <label className="dca-label">Khoảng thời gian</label>
+          <label className="dca-label">{t('rebal.dateRange')}</label>
           <div className="dca-date-mode">
             <button
               className={`dca-mode-btn ${dateMode === 'all' ? 'dca-mode-btn-active' : ''}`}
               onClick={() => setDateMode('all')}
             >
-              Tất cả
+              {t('rebal.modeAll')}
             </button>
             <button
               className={`dca-mode-btn ${dateMode === 'years' ? 'dca-mode-btn-active' : ''}`}
               onClick={() => setDateMode('years')}
             >
-              X năm qua
+              {t('rebal.modeYears')}
             </button>
           </div>
         </div>
 
         {dateMode === 'years' && (
           <div className="dca-param-row dca-years-row">
-            <label className="dca-label">Số năm</label>
+            <label className="dca-label">{t('rebal.numYears')}</label>
             <div className="dca-years-selector">
               {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(n => (
                 <button
@@ -267,7 +294,7 @@ function RebalanceSensitivityPanelImpl({ funds }: Props) {
 
         {dateMode === 'all' && (
           <div className="dca-param-row">
-            <label className="dca-label">Từ ngày đến ngày</label>
+            <label className="dca-label">{t('rebal.fromTo')}</label>
             <div className="dca-date-inputs">
               <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} />
               <span className="dca-date-sep">→</span>
@@ -277,30 +304,24 @@ function RebalanceSensitivityPanelImpl({ funds }: Props) {
         )}
 
         <div className="dca-param-row">
-          <label className="dca-label">Tần suất phân tích</label>
+          <label className="dca-label">{t('rebal.schedules')}</label>
           <div className="rebal-schedule-select">
             <Select
               isMulti
-              options={SCHEDULE_OPTIONS}
-              value={SCHEDULE_OPTIONS.filter(o => selectedSchedules.includes(o.value))}
+              options={scheduleOptions}
+              value={scheduleOptions.filter(o => selectedSchedules.includes(o.value))}
               onChange={opts => setSelectedSchedules(opts.map(o => o.value))}
-              placeholder="Chọn tần suất..."
-              noOptionsMessage={() => 'Không còn tần suất nào'}
+              placeholder={t('rebal.schedulesPlaceholder')}
+              noOptionsMessage={() => t('rebal.schedulesNoOptions')}
               closeMenuOnSelect={false}
               styles={portfolioSelectStyles}
             />
           </div>
         </div>
-        <p className="rebal-inline-note">
-          Với mỗi tần suất, công cụ không chỉ thử đúng 1 cách mà thử luôn{' '}
-          <strong>mọi ngày có thể tái cân bằng trong kỳ</strong>. Ví dụ "Hàng quý" không chỉ
-          nghĩa là cân lại đúng ngày cuối quý, mà còn thử cân lại sớm hơn vài ngày, sớm hơn
-          vài tuần... mỗi ngày thử là 1 biến thể riêng, để xem chọn đúng ngày trong kỳ có
-          quan trọng không.
-        </p>
+        <p className="rebal-inline-note">{tr('rebal.schedulesNote')}</p>
 
         <div className="dca-param-row">
-          <label className="dca-label">Biến thể theo ngưỡng lệch</label>
+          <label className="dca-label">{t('rebal.bands')}</label>
           <div className="rebal-band-config">
             <div className="rebal-band-row">
               <label className="rebal-check">
@@ -309,7 +330,7 @@ function RebalanceSensitivityPanelImpl({ funds }: Props) {
                   checked={includeAbsBands}
                   onChange={e => setIncludeAbsBands(e.target.checked)}
                 />
-                Lệch tuyệt đối
+                {t('rebal.bandAbs')}
               </label>
               <BandSweepInputs
                 sweep={absSweep}
@@ -317,11 +338,7 @@ function RebalanceSensitivityPanelImpl({ funds }: Props) {
                 disabled={!includeAbsBands}
               />
             </div>
-            <p className="rebal-inline-note">
-              Bỏ qua lịch cố định, chỉ tái cân bằng khi tỷ trọng một quỹ lệch khỏi mục tiêu
-              quá X <strong>điểm phần trăm</strong>. Ví dụ mục tiêu 50%, ngưỡng 5%: chờ đến
-              khi tỷ trọng vượt 55% hoặc tụt dưới 45% mới cân lại.
-            </p>
+            <p className="rebal-inline-note">{tr('rebal.bandAbsNote')}</p>
             <div className="rebal-band-row">
               <label className="rebal-check">
                 <input
@@ -329,7 +346,7 @@ function RebalanceSensitivityPanelImpl({ funds }: Props) {
                   checked={includeRelBands}
                   onChange={e => setIncludeRelBands(e.target.checked)}
                 />
-                Lệch tương đối
+                {t('rebal.bandRel')}
               </label>
               <BandSweepInputs
                 sweep={relSweep}
@@ -337,17 +354,12 @@ function RebalanceSensitivityPanelImpl({ funds }: Props) {
                 disabled={!includeRelBands}
               />
             </div>
-            <p className="rebal-inline-note">
-              Giống lệch tuyệt đối, nhưng ngưỡng tính theo % <strong>CỦA</strong> tỷ trọng
-              mục tiêu, không phải điểm phần trăm. Ví dụ mục tiêu 50%, ngưỡng 10%: 10% của
-              50% là 5 điểm %, nên cũng chờ đến khi vượt 55% hoặc tụt dưới 45%. Với quỹ có
-              tỷ trọng mục tiêu nhỏ (vd 10%), 2 cách này sẽ ra ngưỡng rất khác nhau.
-            </p>
+            <p className="rebal-inline-note">{tr('rebal.bandRelNote')}</p>
           </div>
         </div>
 
         <div className="dca-param-row">
-          <label className="dca-label">Phí giao dịch mỗi lần cân</label>
+          <label className="dca-label">{t('rebal.fee')}</label>
           <div className="rebal-fee-row">
             <input
               type="range"
@@ -358,22 +370,17 @@ function RebalanceSensitivityPanelImpl({ funds }: Props) {
               value={feePct}
               onChange={e => setFeePct(Number(e.target.value))}
             />
-            <span className="rebal-fee-value">{feePct.toFixed(1).replace('.', ',')}%</span>
+            <span className="rebal-fee-value">{dec(feePct, 1)}%</span>
           </div>
         </div>
 
-        <p className="dca-note">
-          * Không cần chọn ngày nếu muốn dùng toàn bộ lịch sử chung của các quỹ. Mô phỏng
-          mua một lần, giá đã điều chỉnh cổ tức, chưa tính thuế. Phí giao dịch (nếu đặt lớn
-          hơn 0%) trừ trên CẢ chiều mua lẫn bán của phần tài sản lệch tỷ trọng mỗi lần cân,
-          và chỉ áp cho các lần tái cân bằng — không tính cho lần mua ban đầu.
-        </p>
+        <p className="dca-note">{t('rebal.paramsNote')}</p>
       </div>
 
       {/* ── Danh mục ── */}
       <div className="dca-portfolios-card">
         <div className="dca-portfolios-card-header">
-          <h3 className="dca-section-title">Danh mục</h3>
+          <h3 className="dca-section-title">{t('rebal.portfolio')}</h3>
         </div>
         <div className="dca-portfolio-grid">
           <PortfolioCard
@@ -409,36 +416,30 @@ function RebalanceSensitivityPanelImpl({ funds }: Props) {
           />
         </div>
         {nonZeroSlots.length < 2 && (
-          <p className="dca-note">* Cần ít nhất 2 quỹ có tỷ trọng lớn hơn 0.</p>
+          <p className="dca-note">{t('rebal.needTwoFunds')}</p>
         )}
         {!hasVariantSource && (
-          <p className="dca-note">
-            * Cần chọn ít nhất 1 tần suất phân tích hoặc bật 1 dải ngưỡng lệch.
-          </p>
+          <p className="dca-note">{t('rebal.needVariantSource')}</p>
         )}
       </div>
 
       <div className="btc-run-row">
         <button className="sim-run-btn" onClick={runAnalysis} disabled={!canRun}>
-          {committed ? 'Phân tích lại' : 'Phân tích'}
+          {committed ? t('rebal.rerun') : t('rebal.run')}
         </button>
         {isDirty && (
-          <span className="btc-run-hint">
-            Thông số đã thay đổi, bấm "Phân tích lại" để cập nhật kết quả.
-          </span>
+          <span className="btc-run-hint">{t('rebal.staleParams')}</span>
         )}
       </div>
 
-      {loading && <div className="loading-indicator">Đang tải dữ liệu...</div>}
+      {loading && <div className="loading-indicator">{t('app.loading')}</div>}
 
       {!loading && dataError && (
         <div className="error-banner">{dataError}</div>
       )}
 
       {committed && !loading && !result && !dataError && (
-        <div className="error-banner">
-          Không đủ dữ liệu để phân tích. Kiểm tra lại quỹ đã chọn hoặc khoảng thời gian.
-        </div>
+        <div className="error-banner">{t('rebal.insufficientData')}</div>
       )}
 
       {result && <SensitivityResults result={result} />}
@@ -465,12 +466,13 @@ function BandSweepInputs({
   onChange: (s: BandSweep) => void
   disabled: boolean
 }) {
+  const t = useT()
   const clamp = (v: number, min: number, max: number) =>
     Math.max(min, Math.min(max, isNaN(v) ? min : v))
   return (
     <div className={`rebal-sweep-inputs${disabled ? ' rebal-sweep-inputs--disabled' : ''}`}>
       <label>
-        Từ
+        {t('rebal.sweepFrom')}
         <input
           type="number" min={0.5} max={50} step={0.5}
           value={sweep.start}
@@ -480,7 +482,7 @@ function BandSweepInputs({
         %
       </label>
       <label>
-        Bước
+        {t('rebal.sweepStep')}
         <input
           type="number" min={0.5} max={10} step={0.5}
           value={sweep.step}
@@ -490,7 +492,7 @@ function BandSweepInputs({
         %
       </label>
       <label>
-        Đến
+        {t('rebal.sweepTo')}
         <input
           type="number" min={0.5} max={50} step={0.5}
           value={sweep.end}
@@ -506,6 +508,9 @@ function BandSweepInputs({
 // ─── Kết quả ─────────────────────────────────────────────
 
 function SensitivityResults({ result }: { result: NonNullable<ReturnType<typeof runRebalanceSensitivity>> }) {
+  const t = useT()
+  const dec = useDecimal()
+  const variantLabel = useVariantLabel()
   const { variants, startDate, endDate, years } = result
 
   const cagrs = variants.map(v => v.cagr)
@@ -537,48 +542,44 @@ function SensitivityResults({ result }: { result: NonNullable<ReturnType<typeof 
   return (
     <>
       <div className="section-divider">
-        <span className="section-divider-label">Kết quả</span>
+        <span className="section-divider-label">{t('rebal.results')}</span>
       </div>
 
       <div className="comparison-period" style={{ marginBottom: 16 }}>
-        Phân tích {variants.length} biến thể tái cân bằng, từ {formatDate(startDate)} đến{' '}
-        {formatDate(endDate)} ({years.toFixed(1).replace('.', ',')} năm)
+        {t('rebal.resultsPeriod', {
+          n: variants.length,
+          from: formatDate(startDate),
+          to: formatDate(endDate),
+          years: dec(years, 1),
+        })}
       </div>
 
       {/* Stat cards */}
       <div className="dca-storm-grid">
         <div className="dca-storm-stat">
-          <div className="dca-storm-stat-label">Biến thể tốt nhất</div>
-          <div className="dca-storm-stat-value">{(best.cagr * 100).toFixed(2)}%/năm</div>
-          <div className="dca-storm-stat-sub">{best.label}</div>
+          <div className="dca-storm-stat-label">{t('rebal.stat.best')}</div>
+          <div className="dca-storm-stat-value">{t('rebal.perYear', { v: dec(best.cagr * 100) })}</div>
+          <div className="dca-storm-stat-sub">{variantLabel(best)}</div>
         </div>
         <div className="dca-storm-stat">
-          <div className="dca-storm-stat-label">Biến thể tệ nhất</div>
-          <div className="dca-storm-stat-value">{(worst.cagr * 100).toFixed(2)}%/năm</div>
-          <div className="dca-storm-stat-sub">{worst.label}</div>
+          <div className="dca-storm-stat-label">{t('rebal.stat.worst')}</div>
+          <div className="dca-storm-stat-value">{t('rebal.perYear', { v: dec(worst.cagr * 100) })}</div>
+          <div className="dca-storm-stat-sub">{variantLabel(worst)}</div>
         </div>
         <div className="dca-storm-stat">
-          <div className="dca-storm-stat-label">Chênh lệch tốt nhất − tệ nhất</div>
-          <div className="dca-storm-stat-value">{spread.toFixed(2)} điểm %</div>
-          <div className="dca-storm-stat-sub">CAGR mỗi năm</div>
+          <div className="dca-storm-stat-label">{t('rebal.stat.spread')}</div>
+          <div className="dca-storm-stat-value">{t('rebal.points', { v: dec(spread) })}</div>
+          <div className="dca-storm-stat-sub">{t('rebal.stat.spreadSub')}</div>
         </div>
       </div>
 
       {/* Scatter */}
       <div className="chart-container">
         <div className="chart-header">
-          <h3>Mỗi chấm là một biến thể</h3>
-          <span
-            className="chart-tooltip-icon"
-            title="Trục ngang: mức sụt giảm tối đa của biến thể đó. Trục dọc: CAGR (lợi nhuận quy năm). Mỗi chấm là một biến thể (một cách chọn lịch tái cân bằng cụ thể)."
-          >?</span>
+          <h3>{t('rebal.scatter.title')}</h3>
+          <span className="chart-tooltip-icon" title={t('rebal.scatter.help')}>?</span>
         </div>
-        <p className="rebal-inline-note">
-          Càng lên cao = lợi nhuận càng cao. Càng qua phải = từng mất giá càng sâu (rủi ro
-          càng lớn). Nếu các chấm nằm co cụm gần nhau như bên dưới, nghĩa là chọn biến thể
-          nào cũng cho kết quả gần giống nhau, không cần lăn tăn quá nhiều về lịch tái cân
-          bằng.
-        </p>
+        <p className="rebal-inline-note">{t('rebal.scatter.note')}</p>
         <ResponsiveContainer width="100%" height={360}>
           <ScatterChart margin={{ top: 10, right: 30, left: 10, bottom: 24 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="#eee" />
@@ -588,7 +589,7 @@ function SensitivityResults({ result }: { result: NonNullable<ReturnType<typeof 
               domain={['auto', 'auto']}
               tickFormatter={(v: number) => `-${v.toFixed(0)}%`}
               tick={{ fontSize: 12 }}
-              label={{ value: 'Sụt giảm tối đa (sâu hơn →)', position: 'insideBottom', offset: -14, fontSize: 12, fill: '#5e5d59' }}
+              label={{ value: t('rebal.scatter.xAxis'), position: 'insideBottom', offset: -14, fontSize: 12, fill: '#5e5d59' }}
             />
             <YAxis
               type="number"
@@ -604,10 +605,10 @@ function SensitivityResults({ result }: { result: NonNullable<ReturnType<typeof 
                 const p = payload[0].payload as VariantResult & { pain: number; cagrPct: number }
                 return (
                   <div style={{ background: '#fff', border: '1px solid #e8e6dc', borderRadius: 6, padding: '8px 12px', fontSize: 12 }}>
-                    <strong style={{ color: GROUP_COLORS[p.group] }}>{p.label}</strong>
-                    <div>CAGR: {p.cagrPct.toFixed(2)}%/năm</div>
-                    <div>Sụt giảm tối đa: -{p.pain.toFixed(1)}%</div>
-                    <div>Số lần tái cân bằng: {p.rebalCount}</div>
+                    <strong style={{ color: GROUP_COLORS[p.group] }}>{variantLabel(p)}</strong>
+                    <div>{t('rebal.scatter.cagr', { v: dec(p.cagrPct) })}</div>
+                    <div>{t('rebal.scatter.drawdown', { v: dec(p.pain, 1) })}</div>
+                    <div>{t('rebal.scatter.count', { v: p.rebalCount })}</div>
                   </div>
                 )
               }}
@@ -628,7 +629,7 @@ function SensitivityResults({ result }: { result: NonNullable<ReturnType<typeof 
           {scatterSeries.map(s => (
             <span key={s.group} className="rebal-scatter-legend-item">
               <span className="rebal-scatter-legend-dot" style={{ background: s.color }} />
-              {GROUP_LABELS[s.group]}
+              {t(GROUP_LABEL_KEYS[s.group])}
             </span>
           ))}
         </div>
@@ -637,24 +638,21 @@ function SensitivityResults({ result }: { result: NonNullable<ReturnType<typeof 
       {/* Bảng theo nhóm */}
       <div className="chart-container">
         <div className="chart-header">
-          <h3>Thống kê theo lịch</h3>
-          <span
-            className="chart-tooltip-icon"
-            title="Mỗi tần suất được chạy với mọi ngày có thể tái cân bằng trong kỳ. Cột CAGR hiện median, kèm khoảng [thấp nhất – cao nhất] giữa các ngày đó: khoảng này chính là phần 'may rủi' do chọn đúng ngày nào để cân lại. Sharpe trong bảng là Sharpe 'thuần', không trừ lãi suất phi rủi ro (risk-free)."
-          >?</span>
+          <h3>{t('rebal.table.title')}</h3>
+          <span className="chart-tooltip-icon" title={t('rebal.table.help')}>?</span>
         </div>
         <div className="dca-stats-table-scroll">
           <table className="dca-stats-table">
             <thead>
               <tr>
-                <th>Lịch</th>
-                <th>Số biến thể</th>
-                <th>CAGR (median)</th>
-                <th>CAGR [min – max]</th>
-                <th>Sụt giảm tối đa</th>
-                <th>Biến động</th>
-                <th>Sharpe</th>
-                <th>Số lần cân lại</th>
+                <th>{t('rebal.col.schedule')}</th>
+                <th>{t('rebal.col.variants')}</th>
+                <th>{t('rebal.col.cagrMedian')}</th>
+                <th>{t('rebal.col.cagrRange')}</th>
+                <th>{t('rebal.col.maxDrawdown')}</th>
+                <th>{t('rebal.col.volatility')}</th>
+                <th>{t('rebal.col.sharpe')}</th>
+                <th>{t('rebal.col.rebalCount')}</th>
               </tr>
             </thead>
             <tbody>
@@ -668,18 +666,18 @@ function SensitivityResults({ result }: { result: NonNullable<ReturnType<typeof 
                   <tr key={g.group}>
                     <td>
                       <span className="perf-dot" style={{ background: GROUP_COLORS[g.group] }} />
-                      {GROUP_LABELS[g.group]}
+                      {t(GROUP_LABEL_KEYS[g.group])}
                     </td>
                     <td>{g.items.length}</td>
-                    <td style={{ fontWeight: 600 }}>{(c.median * 100).toFixed(2)}%</td>
+                    <td style={{ fontWeight: 600 }}>{dec(c.median * 100)}%</td>
                     <td>
                       {g.items.length > 1
-                        ? `${(c.min * 100).toFixed(2)}% – ${(c.max * 100).toFixed(2)}%`
+                        ? `${dec(c.min * 100)}% – ${dec(c.max * 100)}%`
                         : '—'}
                     </td>
-                    <td className="dca-loss">{(dd.median * 100).toFixed(1)}%</td>
-                    <td>{(sd.median * 100).toFixed(1)}%</td>
-                    <td>{sh.median.toFixed(2)}</td>
+                    <td className="dca-loss">{dec(dd.median * 100, 1)}%</td>
+                    <td>{dec(sd.median * 100, 1)}%</td>
+                    <td>{dec(sh.median)}</td>
                     <td>{Math.round(rc.median)}</td>
                   </tr>
                 )
@@ -709,6 +707,10 @@ function SensitivityNarrative({
   none: VariantResult | undefined
   cagrs: number[]
 }) {
+  const t = useT()
+  const tr = useTRich()
+  const dec = useDecimal()
+  const variantLabel = useVariantLabel()
   const median = summarize(cagrs).median
   const noneVsMedian = none ? (none.cagr - median) * 100 : null
 
@@ -720,18 +722,17 @@ function SensitivityNarrative({
     <div className={`chart-takeaway chart-takeaway--${variant}`}>
       <span className="chart-takeaway-icon">{icon}</span>
       <div className="chart-takeaway-body">
-        Chênh lệch CAGR giữa lịch tốt nhất ({best.label}, {(best.cagr * 100).toFixed(2)}%/năm)
-        {' '}và tệ nhất ({worst.label}, {(worst.cagr * 100).toFixed(2)}%/năm) là{' '}
-        <strong>{spread.toFixed(2)} điểm %</strong> mỗi năm.{' '}
-        {small
-          ? 'Chọn tần suất hay ngày cân lại nào cũng gần như không đổi kết quả, quan trọng hơn là giữ đúng tỷ trọng mục tiêu qua thời gian.'
-          : 'Đừng vội chọn biến thể tốt nhất của quá khứ, thứ hạng có thể đổi trong tương lai (xem khoảng [min – max] ở bảng trên).'}
-        {none && noneVsMedian !== null && (
-          <>
-            {' '}Riêng <strong>không tái cân bằng</strong> đạt {(none.cagr * 100).toFixed(2)}%/năm,{' '}
-            {noneVsMedian >= 0 ? 'cao hơn' : 'thấp hơn'} median {Math.abs(noneVsMedian).toFixed(2)} điểm %:
-            tỷ trọng trôi dần về quỹ tăng mạnh nhất nên rủi ro tập trung cũng tăng theo.
-          </>
+        {tr('rebal.narrative.spread', {
+          best: variantLabel(best),
+          bestCagr: dec(best.cagr * 100),
+          worst: variantLabel(worst),
+          worstCagr: dec(worst.cagr * 100),
+          spread: dec(spread),
+        })}
+        {t(small ? 'rebal.narrative.small' : 'rebal.narrative.large')}
+        {none && noneVsMedian !== null && tr(
+          noneVsMedian >= 0 ? 'rebal.narrative.noneHigher' : 'rebal.narrative.noneLower',
+          { cagr: dec(none.cagr * 100), gap: dec(Math.abs(noneVsMedian)) },
         )}
       </div>
     </div>

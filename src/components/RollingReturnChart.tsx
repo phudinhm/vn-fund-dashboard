@@ -12,6 +12,7 @@ import {
 } from '../utils/chartPlumbing'
 import { countIndependentWindows } from '../utils/dateWindow'
 import { useDimLegend } from '../hooks/useDimLegend'
+import { useT, type TranslationKey } from '../i18n'
 
 interface Props {
   series: ChartSeries[]
@@ -29,21 +30,29 @@ function spanMonths(points: ReturnPoint[]): number {
 
 /** Chu kỳ rolling, đơn vị tháng kèm nhãn hiển thị. */
 const PERIODS = [
-  { value: 6, label: '6 tháng' },
-  { value: 12, label: '1 năm' },
-  { value: 24, label: '2 năm' },
-  { value: 36, label: '3 năm' },
-  { value: 48, label: '4 năm' },
-  { value: 60, label: '5 năm' },
-  { value: 72, label: '6 năm' },
-  { value: 84, label: '7 năm' },
-  { value: 96, label: '8 năm' },
-  { value: 108, label: '9 năm' },
-  { value: 120, label: '10 năm' },
+  { value: 6, labelKey: 'roll.months6' as TranslationKey, years: 0 },
+  { value: 12, labelKey: 'roll.years' as TranslationKey, years: 1 },
+  { value: 24, labelKey: 'roll.years' as TranslationKey, years: 2 },
+  { value: 36, labelKey: 'roll.years' as TranslationKey, years: 3 },
+  { value: 48, labelKey: 'roll.years' as TranslationKey, years: 4 },
+  { value: 60, labelKey: 'roll.years' as TranslationKey, years: 5 },
+  { value: 72, labelKey: 'roll.years' as TranslationKey, years: 6 },
+  { value: 84, labelKey: 'roll.years' as TranslationKey, years: 7 },
+  { value: 96, labelKey: 'roll.years' as TranslationKey, years: 8 },
+  { value: 108, labelKey: 'roll.years' as TranslationKey, years: 9 },
+  { value: 120, labelKey: 'roll.years' as TranslationKey, years: 10 },
 ] as const
 
-function periodLabel(months: number): string {
-  return PERIODS.find(p => p.value === months)?.label ?? `${months} tháng`
+/** Nhãn chu kỳ dịch tại chỗ render: "5 năm" / "5 years". */
+function usePeriodLabel(): (months: number) => string {
+  const t = useT()
+  return (months: number) => {
+    const p = PERIODS.find(x => x.value === months)
+    if (!p) return t('roll.monthsN', { n: months })
+    if (p.years === 0) return t(p.labelKey)
+    // Tiếng Anh phân biệt số ít/số nhiều: "1 year" chứ không phải "1 years".
+    return p.years === 1 ? t('roll.year1') : t(p.labelKey, { n: p.years })
+  }
 }
 
 interface RollingStats {
@@ -83,6 +92,8 @@ function fmtPct(v: number): string {
 }
 
 export function RollingReturnChart({ series, period, availablePeriods, onPeriodChange }: Props) {
+  const t = useT()
+  const periodLabel = usePeriodLabel()
   const seriesKey = series.map(s => s.name).join(',')
   const { handleLegendClick, isDimmed } = useDimLegend(seriesKey)
 
@@ -104,10 +115,10 @@ export function RollingReturnChart({ series, period, availablePeriods, onPeriodC
                 key={p.value}
                 className={`period-btn ${p.value === period ? 'period-btn-active' : ''} ${hasData ? '' : 'period-btn-disabled'}`}
                 disabled={!hasData}
-                title={hasData ? undefined : `Chưa đủ dữ liệu để tính chu kỳ ${p.label}`}
+                title={hasData ? undefined : t('roll.noDataFor', { period: periodLabel(p.value) })}
                 onClick={() => onPeriodChange(p.value)}
               >
-                {p.label}
+                {periodLabel(p.value)}
               </button>
             )
           })}
@@ -115,7 +126,7 @@ export function RollingReturnChart({ series, period, availablePeriods, onPeriodC
       </div>
       {data.length === 0 ? (
         <div className="chart-empty">
-          Chưa đủ dữ liệu cho chu kỳ {periodLabel(period)}. Hãy chọn chu kỳ ngắn hơn hoặc khoảng thời gian rộng hơn.
+          {t('roll.noDataMsg', { period: periodLabel(period) })}
         </div>
       ) : (
         <ResponsiveContainer width="100%" height={350}>
@@ -188,42 +199,20 @@ export function RollingReturnChart({ series, period, availablePeriods, onPeriodC
 }
 
 function RollingReturnsNote() {
+  const t = useT()
   return (
     <div className="rolling-note">
-      <p>
-        Lợi nhuận cuốn chiếu ra đời để làm nổi bật một chuyện: tần suất và biên độ của
-        những chu kỳ sinh lời tốt nhất lẫn tệ nhất của một khoản đầu tư. Cách đo này
-        mang lại cái nhìn toàn diện về lịch sử hiệu suất của quỹ, không bị các kết quả
-        ngắn hạn gần nhất kéo lệch, như thời điểm chốt sổ cuối tháng hay cuối quý.
-      </p>
-      <p>
-        Ví dụ, lợi nhuận cuốn chiếu 5 năm của năm 2015 là kết quả đo từ ngày 1/1/2011
-        đến ngày 31/12/2015. Tương tự, lợi nhuận cuốn chiếu 5 năm của năm 2016 là mức
-        sinh lời bình quân hàng năm từ 2012 đến hết năm 2016.
-      </p>
-      <p>
-        Nhờ vậy, bạn hiểu rõ hơn hiệu quả thật của quỹ tại từng thời điểm. Một khoản
-        đầu tư báo tỷ suất sinh lời 9%/năm suốt 10 năm chỉ có nghĩa: nếu bạn mua vào
-        ngày 1/1 năm đầu và bán vào ngày 31/12 năm thứ 10, bạn nhận được mức lãi tương
-        đương 9% mỗi năm. Nhưng bức tranh bên trong 10 năm đó có thể rất dữ dội.
-      </p>
-      <p>
-        Khoản đầu tư ấy có thể tăng vọt 35% vào năm thứ 4, rồi sụt 17% vào năm thứ 8.
-        Trung bình vẫn là 9% mỗi năm, nhưng con số bình quân ấy che đậy đi rủi ro và
-        sự trồi sụt thực tế của tài sản.
-      </p>
-      <p>
-        Thay vì đo máy móc từ ngày 1/1 đến 31/12, lợi nhuận cuốn chiếu trượt khung
-        thời gian liên tục: từ 1/2 năm nay đến 31/1 năm sau, rồi từ 1/3 năm nay đến
-        28/2 năm sau, và cứ thế. Bằng cách trượt liên tục, lợi nhuận cuốn chiếu 10 năm
-        phơi bày trọn vẹn những khoảng thời gian tỏa sáng rực rỡ nhất lẫn tồi tệ nhất
-        của khoản đầu tư.
-      </p>
+      <p>{t('roll.explain1')}</p>
+      <p>{t('roll.explain2')}</p>
+      <p>{t('roll.explain3')}</p>
+      <p>{t('roll.explain4')}</p>
+      <p>{t('roll.explain5')}</p>
     </div>
   )
 }
 
 function RollingStatsTable({ series, period }: { series: ChartSeries[]; period: number }) {
+  const t = useT()
   const rows = series.map(s => {
     const stats = computeRollingStats(s.data, period)
     const distribution = rollingReturnDistribution(s.data.map(p => p.value))
@@ -249,18 +238,18 @@ function RollingStatsTable({ series, period }: { series: ChartSeries[]; period: 
         <span className="cmp-table--rolling__divider" style={{ left: dividerLeft }} />
       )}
       <div className="cmp-table-row cmp-table-head cmp-table-group-head">
-        <span>Quỹ</span>
-        <span className="cmp-group-title">Thống Kê Tỷ Suất Sinh Lợi (%)</span>
-        <span className="cmp-group-title">Phân bổ lợi nhuận (% số lần xuất hiện)</span>
+        <span>{t('roll.col.fund')}</span>
+        <span className="cmp-group-title">{t('roll.group.stats')}</span>
+        <span className="cmp-group-title">{t('roll.group.distribution')}</span>
       </div>
       <div className="cmp-table-row cmp-table-head cmp-table-head--rolling">
-        <span>Quỹ</span>
-        <span>Thấp nhất</span>
+        <span>{t('roll.col.fund')}</span>
+        <span>{t('roll.col.min')}</span>
         <span>P10</span>
-        <span>Trung vị</span>
+        <span>{t('roll.col.median')}</span>
         <span>P90</span>
-        <span>Cao nhất</span>
-        <span ref={amRef}>Âm</span>
+        <span>{t('roll.col.max')}</span>
+        <span ref={amRef}>{t('roll.col.negative')}</span>
         <span>0–5%</span>
         <span>5–10%</span>
         <span>10–20%</span>
@@ -273,12 +262,12 @@ function RollingStatsTable({ series, period }: { series: ChartSeries[]; period: 
             <span>
               <strong>{r.name}</strong>
               <small className="rolling-sample-count">
-                {r.stats.count} cửa sổ · {r.stats.independentWindows} cửa sổ độc lập
+                {t('roll.windows', { n: r.stats.count, ind: r.stats.independentWindows })}
               </small>
             </span>
           </span>
           {r.stats.count === 0 ? (
-            <span className="cmp-underwater">Chưa đủ dữ liệu</span>
+            <span className="cmp-underwater">{t('roll.notEnough')}</span>
           ) : (
             <>
               <span className="cmp-num-neg">{fmtPct(r.stats.min)}</span>

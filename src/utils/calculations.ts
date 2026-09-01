@@ -1,6 +1,7 @@
 import type { ReturnPoint, YearlyReturn, MonthlyReturn } from '../types'
 import { daysBetween } from './dateMath'
 import { rollingWindowStarts } from './dateWindow'
+import type { TranslationKey } from '../i18n'
 
 /**
  * CALCULATION ENGINE
@@ -831,13 +832,13 @@ export function availableRollingPeriods(
 }
 
 /** Nhãn 5 khoảng phân bổ lợi nhuận rolling, theo thứ tự từ thấp đến cao. */
-export const ROLLING_DISTRIBUTION_LABELS = [
-  'Âm',
-  '0–5%',
-  '5–10%',
-  '10–20%',
-  '>20%',
-] as const
+export const ROLLING_DISTRIBUTION_LABEL_KEYS = [
+  'rollDist.negative',
+  'rollDist.0to5',
+  'rollDist.5to10',
+  'rollDist.10to20',
+  'rollDist.over20',
+] as const satisfies readonly TranslationKey[]
 
 /**
  * Đếm tần suất các quan sát rơi vào 5 khoảng lợi nhuận rolling, trả về tỉ lệ
@@ -850,7 +851,7 @@ export const ROLLING_DISTRIBUTION_LABELS = [
  *   10–20%: 0.10 ≤ x < 0.20
  *   >20%:   x ≥ 0.20
  *
- * Trả về mảng 5 số thập phân (0.15 = 15%), cùng thứ tự ROLLING_DISTRIBUTION_LABELS.
+ * Trả về mảng 5 số thập phân (0.15 = 15%), cùng thứ tự ROLLING_DISTRIBUTION_LABEL_KEYS.
  * Tổng 5 số luôn bằng 1 khi có ít nhất một quan sát.
  */
 export function rollingReturnDistribution(values: number[]): number[] {

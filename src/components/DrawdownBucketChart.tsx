@@ -2,6 +2,9 @@ import { memo, useState } from 'react'
 import type { DrawdownBucketRow } from '../utils/lsVsDca'
 import { MIN_DRAWDOWN_EPISODES, dcaEndingForNarrative } from '../utils/lsVsDca'
 import { formatVND } from '../utils/vndFormat'
+import { useT, useTRich, translateStatic } from '../i18n'
+import { useLanguage } from '../hooks/useLanguage'
+import type { Language } from '../hooks/useLanguage'
 
 /** "2015-01-14" thành "01/2015". */
 function fmtMonth(date: string): string {
@@ -28,10 +31,11 @@ interface Props {
 }
 
 /** Nhãn nút, suy từ số tháng giữ thêm nên thêm mốc mới không phải sửa gì ở đây. */
-function modeLabel(extraMonths: number): string {
-  if (extraMonths <= 0) return 'Bán ngay khi rải xong'
+function modeLabel(extraMonths: number, lang: Language): string {
+  if (extraMonths <= 0) return translateStatic('ddb.sellNow', lang)
   const years = extraMonths / 12
-  return `Giữ thêm ${years === 1 ? '1 năm' : `${years} năm`} rồi bán`
+  if (years === 1) return translateStatic('ddb.holdOneYear', lang)
+  return translateStatic('ddb.holdYears', lang, { n: years })
 }
 
 /**
@@ -49,6 +53,9 @@ function modeLabel(extraMonths: number): string {
  */
 function DrawdownBucketChartImpl({ views, totalCapital, dcaMonths }: Props) {
   const [modeIdx, setModeIdx] = useState(0)
+  const t = useT()
+  const tr = useTRich()
+  const { language } = useLanguage()
   const view = views[Math.min(modeIdx, views.length - 1)] ?? views[0]!
   const { rows, baselineWinRate, baselineCostOfCapital, totalScenarios } = view
 
@@ -69,52 +76,46 @@ function DrawdownBucketChartImpl({ views, totalCapital, dcaMonths }: Props) {
   return (
     <div className="perf-table-container">
       <div className="chart-header">
-        <h3>Vào lệnh lúc thị trường đã giảm sâu thì sao?</h3>
-        <span
-          className="chart-tooltip-icon"
-          title="Mức giảm đo so với đỉnh cao nhất tính tới đúng ngày bắt đầu, không phải đỉnh của cả chuỗi. Ngày 1/2015 không thể biết đỉnh 2021 nằm ở đâu."
-        >?</span>
+        <h3>{t('ddb.title')}</h3>
+        <span className="chart-tooltip-icon" title={t('ddb.help')}>?</span>
       </div>
 
-      <p className="holdcost-intro">
-        Mấy khối trên gộp chung mọi thời điểm bắt đầu, lúc thị trường đang đỉnh cũng như lúc
-        đang sập. Khối này tách riêng ra: nếu bạn vào lệnh đúng lúc giá đã rơi khỏi đỉnh một
-        quãng, thì đầu tư một lần và DCA khác nhau thế nào. Vẫn rải đều{' '}
-        <strong>{dcaMonths} tháng</strong> như các khối khác.
-      </p>
+      <p className="holdcost-intro">{tr('ddb.intro', { months: dcaMonths })}</p>
 
       <div className="holdcost-modes">
-        <span className="holdcost-modes-label">Bán khi nào</span>
+        <span className="holdcost-modes-label">{t('ddb.sellWhen')}</span>
         {views.map((v, i) => (
           <button
             key={v.extraMonths}
             className={`lsdca-horizon-btn ${i === modeIdx ? 'lsdca-horizon-btn-active' : ''}`}
             onClick={() => setModeIdx(i)}
             title={v.extraMonths <= 0
-              ? `Rải xong ${dcaMonths} tháng là bán luôn`
-              : `Rải xong ${dcaMonths} tháng rồi giữ thêm ${v.extraMonths / 12} năm nữa mới bán`}
+              ? t('ddb.modeSellNow', { months: dcaMonths })
+              : t('ddb.modeHold', { months: dcaMonths, years: v.extraMonths / 12 })}
           >
-            {modeLabel(v.extraMonths)}
+            {modeLabel(v.extraMonths, language)}
           </button>
         ))}
       </div>
 
       <p className="holdcost-mode-note">
         {view.extraMonths > 0
-          ? <>Rải đều {dcaMonths} tháng, giữ tiếp thêm {view.extraMonths / 12} năm nữa rồi mới
-            bán, tổng cộng {dcaMonths + view.extraMonths} tháng kể từ ngày vào lệnh. Giữ lâu hơn
-            thì cần nhiều dữ liệu tương lai hơn, nên số kịch bản ở mỗi dải ít đi so với chế độ
-            bán ngay.</>
-          : <>Rải đều {dcaMonths} tháng rồi bán luôn, không giữ thêm ngày nào. Đây là cách
-            tính dùng chung với khối tóm tắt và histogram bên trên.</>}
+          ? t('ddb.noteHold', {
+              months: dcaMonths,
+              years: view.extraMonths / 12,
+              total: dcaMonths + view.extraMonths,
+            })
+          : t('ddb.noteSellNow', { months: dcaMonths })}
       </p>
 
       <div className="ddbucket-baseline">
-        <span className="ddbucket-baseline-label">Mốc so sánh, tính trên cả {totalScenarios.toLocaleString('vi-VN')} kịch bản</span>
+        <span className="ddbucket-baseline-label">
+          {t('ddb.baselineLabel', { n: totalScenarios.toLocaleString(language === 'vi' ? 'vi-VN' : 'en-US') })}
+        </span>
         <span className="ddbucket-baseline-value">
-          Đầu tư một lần thắng <strong>{(baselineWinRate * 100).toFixed(0)}%</strong>
+          {tr('ddb.lsWins', { pct: (baselineWinRate * 100).toFixed(0) })}
           {' · '}
-          chênh trung vị{' '}
+          {t('ddb.medianGap')}
           <strong className={baselineCostOfCapital < 0 ? 'cycle-neg' : 'cycle-pos'}>
             {baselineCostOfCapital < 0 ? '−' : '+'}{formatVND(Math.abs(baselineCostOfCapital * totalCapital))}
           </strong>
@@ -128,16 +129,20 @@ function DrawdownBucketChartImpl({ views, totalCapital, dcaMonths }: Props) {
           const cost = r.medianCostOfCapital
           return (
             <div
-              key={r.label}
+              key={r.labelKey}
               className="holdcost-row"
               title={empty
-                ? 'Quỹ này chưa từng giảm tới mức đó'
+                ? t('ddb.neverFell')
                 : r.medianLsGrowth !== null && r.medianCostOfCapital !== null
-                  ? `${r.label}: đầu tư một lần về đích ${formatVND(r.medianLsGrowth * totalCapital)}, DCA về đích ${formatVND(dcaEndingForNarrative(r.medianLsGrowth, r.medianCostOfCapital) * totalCapital)}.`
+                  ? t('ddb.rowTooltip', {
+                      label: t(r.labelKey),
+                      ls: formatVND(r.medianLsGrowth * totalCapital),
+                      dca: formatVND(dcaEndingForNarrative(r.medianLsGrowth, r.medianCostOfCapital) * totalCapital),
+                    })
                   : undefined}
             >
               <div className="holdcost-label ddbucket-label">
-                <span className="ddbucket-band">{r.label}</span>
+                <span className="ddbucket-band">{t(r.labelKey)}</span>
                 {r.episodeStarts.length > 0 && (
                   <span className="ddbucket-dates">
                     {r.episodeStarts.map(fmtMonth).join(' · ')}
@@ -158,17 +163,17 @@ function DrawdownBucketChartImpl({ views, totalCapital, dcaMonths }: Props) {
               </div>
               <div className="holdcost-value">
                 {empty
-                  ? <span className="holdcost-na">chưa từng giảm tới mức này</span>
+                  ? <span className="holdcost-na">{t('ddb.naNeverFell')}</span>
                   : <>
                       <span className={cost! < 0 ? 'cycle-neg' : 'cycle-pos'}>
                         {cost! < 0 ? '−' : '+'}{formatVND(Math.abs(cost! * totalCapital))}
                       </span>
                       <span className="holdcost-indep">
-                        {(r.lsWinRate! * 100).toFixed(0)}% LS thắng
+                        {t('ddb.lsWinRate', { pct: (r.lsWinRate! * 100).toFixed(0) })}
                         {' · '}
-                        {r.scenarios} kịch bản
+                        {t('ddb.scenarios', { n: r.scenarios })}
                         {' · '}
-                        {thin && '⚠ '}{r.episodes} giai đoạn
+                        {thin && '⚠ '}{t('ddb.episodes', { n: r.episodes })}
                       </span>
                     </>
                 }
@@ -178,54 +183,37 @@ function DrawdownBucketChartImpl({ views, totalCapital, dcaMonths }: Props) {
         })}
       </div>
 
-      <p className="holdcost-axis-caption">
-        Trái vạch giữa: DCA về đích ít tiền hơn. Phải: DCA về đích nhiều hơn.
-      </p>
+      <p className="holdcost-axis-caption">{t('ddb.axisNote')}</p>
 
       <div className="holdcost-note">
+        <p>{t('ddb.episodeNote1')}</p>
         <p>
-          Để minh bạch số liệu, dưới mỗi dải giảm giá đều ghi rõ các tháng bắt đầu của từng
-          giai đoạn để bạn dễ dàng kiểm chứng.
+          {t('ddb.episodeNote2', {
+            months: view.extraMonths > 0 ? dcaMonths + view.extraMonths : dcaMonths,
+          })}
         </p>
         <p>
-          Cách tính rất đơn giản: Chọn tháng sớm nhất làm mốc, sau đó bỏ qua toàn bộ các
-          tháng nằm trong chu kỳ nắm giữ{' '}
-          {view.extraMonths > 0 ? dcaMonths + view.extraMonths : dcaMonths} tháng tiếp theo.
-          Tháng đầu tiên xuất hiện sau chu kỳ đó sẽ được chọn làm mốc mới, và cứ thế tiếp tục.
-        </p>
-        <p>
-          Bằng cách này, các giai đoạn sẽ hoàn toàn tách biệt về mặt thời gian. Điều này
-          giải thích vì sao số lượng giai đoạn luôn nhỏ hơn rất nhiều so với tổng số kịch
-          bản.{deepest && deepest.scenarios > 0 && (
-            <> Chẳng hạn, ở mức <strong>{deepest.label.toLowerCase()}</strong>, dù có đến{' '}
-            {deepest.scenarios} kịch bản nhưng thực tế chúng chỉ nằm trong{' '}
-            <strong>{deepest.episodes} giai đoạn</strong> độc lập.</>)} Hàng trăm kịch bản
-          kia đơn giản là do cùng một khoảng thời gian được đếm đi đếm lại.
+          {t('ddb.episodeNote3')}
+          {deepest && deepest.scenarios > 0 && tr('ddb.episodeExample', {
+            label: t(deepest.labelKey).toLowerCase(),
+            scenarios: deepest.scenarios,
+            episodes: deepest.episodes,
+          })}
+          {t('ddb.episodeNote4')}
         </p>
         <p>
           {solid.length === 0
-            ? <><strong>Không dòng nào đủ để kết luận.</strong> Mọi dòng đều dựa trên dưới{' '}
-              {MIN_DRAWDOWN_EPISODES} giai đoạn. Xem cho biết thị trường đã từng ra sao,
-              đừng xem như quy luật.</>
-            : <>Chỉ <strong>{solid.length} trên {filled.length} dòng có số liệu</strong> đạt từ{' '}
-              {MIN_DRAWDOWN_EPISODES} giai đoạn trở lên. Các dòng còn lại bị làm mờ kèm dấu ⚠.</>}
-          {' '}Và ngay cả dòng đạt ngưỡng cũng chỉ là vài giai đoạn, không phải vài trăm.
+            ? tr('ddb.allThin', { min: MIN_DRAWDOWN_EPISODES })
+            : tr('ddb.someSolid', {
+                solid: solid.length,
+                total: filled.length,
+                min: MIN_DRAWDOWN_EPISODES,
+              })}
+          {t('ddb.evenSolidThin')}
         </p>
-        <p>
-          <strong>Hai giai đoạn vẫn có thể cùng một đợt sập.</strong> Chúng không dùng chung
-          ngày nào, nhưng nếu cùng nằm trong một bear market thì cùng phụ thuộc một lần hồi
-          phục về sau.
-        </p>
-        <p>
-          Hãy hình dung hai thời điểm giá cùng giảm 50 - 60%. Nếu bạn mua vào, một năm sau
-          có thể bạn sẽ lỗ nặng, nhưng cũng có thể lãi gấp vài lần. Điều gì quyết định
-          chuyện này? Đó là khoảng thời gian kể từ khi giá tạo đỉnh, chứ không thuần túy là
-          độ sâu của nhịp giảm. Bạn có thể thấy rõ quy luật này ở khối dữ liệu bên dưới.
-        </p>
-        <p>
-          <strong>Bảng này không nói lần sau sẽ ra sao.</strong> Nó chỉ kể lại mấy lần đã
-          rồi. Thị trường giảm 50% rồi vẫn giảm tiếp 50% nữa được.
-        </p>
+        <p>{tr('ddb.sharedCrash')}</p>
+        <p>{t('ddb.depthNote')}</p>
+        <p>{tr('ddb.closing')}</p>
       </div>
     </div>
   )

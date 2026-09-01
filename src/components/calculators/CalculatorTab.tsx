@@ -1,5 +1,6 @@
 import type { CalculatorId } from '../../types'
 import { CALCULATORS, findCalculator } from './CalculatorRegistry'
+import { useT } from '../../i18n'
 
 /**
  * Container cho tab "Máy tính".
@@ -14,16 +15,17 @@ interface CalculatorTabProps {
 }
 
 export function CalculatorTab({ calcId, onSelect }: CalculatorTabProps) {
+  const t = useT()
   const active = findCalculator(calcId)
   const ActiveCalculator = active.component
 
   return (
     <div className="calc-tab">
       <div className="calc-intro">
-        <h2 className="calc-title">Máy tính nhanh</h2>
+        <h2 className="calc-title">{t('calc.title')}</h2>
       </div>
 
-      <nav className="calc-nav" aria-label="Chọn máy tính">
+      <nav className="calc-nav" aria-label={t('calc.navLabel')}>
         {CALCULATORS.map(calc => (
           <button
             key={calc.id}
@@ -32,8 +34,8 @@ export function CalculatorTab({ calcId, onSelect }: CalculatorTabProps) {
             aria-current={calc.id === active.id ? 'page' : undefined}
             onClick={() => onSelect(calc.id)}
           >
-            <span className="calc-nav-label">{calc.label}</span>
-            <span className="calc-nav-desc">{calc.description}</span>
+            <span className="calc-nav-label">{t(calc.labelKey)}</span>
+            <span className="calc-nav-desc">{t(calc.descriptionKey)}</span>
           </button>
         ))}
       </nav>

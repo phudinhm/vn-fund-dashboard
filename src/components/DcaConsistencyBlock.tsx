@@ -19,6 +19,7 @@ import type { PricePoint, RebalanceFrequency } from '../types'
 import { simulateDCA, dcaMWRR, type DCASlot, type DCAFrequency } from '../utils/dca'
 import { formatVND } from '../utils/vndFormat'
 import { MoneyInput } from './MoneyInput'
+import { useT, useTRich, type TranslationKey } from '../i18n'
 
 export interface ConsistencyPortfolio {
   id: string
@@ -41,19 +42,17 @@ interface Props {
 }
 
 function DcaConsistencyBlockImpl({ portfolios }: Props) {
+  const t = useT()
+  const tr = useTRich()
   const valid = portfolios.filter(p => p.simulationInputs !== null && p.valueSeries.length > 0)
   const [extraAmount, setExtraAmount] = useState(() => valid[0]?.simulationInputs?.params.cashflowAmount ?? 0)
   if (portfolios.length === 0 || valid.length === 0) return null
 
   return (
     <div className="dca-consist-block">
-      <h3 className="dca-consist-title">Nếu bạn hoảng loạn dừng đầu tư khi thấy đỏ?</h3>
+      <h3 className="dca-consist-title">{t('consist.panicTitle')}</h3>
       <p className="dca-consist-sub">
-        Nhà đầu tư cá nhân thường có xu hướng bỏ DCA trong bối cảnh thị trường giảm sâu vì sợ
-        mất thêm tiền, rồi chần chừ không dám đầu tư lại cho đến khi thị trường hồi phục. Đây
-        là phép đối chứng bằng chính dữ liệu quỹ của bạn: so sánh đầu tư đều đặn qua từng tháng
-        bất chấp biến động, với hai biến thể hành vi dừng đầu tư khi quỹ giảm <strong>-15%</strong>{' '}
-        và <strong>-25%</strong> từ đỉnh.
+        {tr('consist.panicIntro')}
       </p>
 
       {valid.map((p, index) => (
@@ -77,6 +76,8 @@ function ConsistencyForPortfolio({ portfolio, extraAmount, onExtraAmountChange, 
   onExtraAmountChange: (v: number) => void
   showTakeaways: boolean
 }) {
+  const t = useT()
+  const tr = useTRich()
   const scenarios = useMemo(() => {
     const inputs = portfolio.simulationInputs!
     const baseline = runBaseline(inputs)
@@ -190,7 +191,10 @@ function ConsistencyForPortfolio({ portfolio, extraAmount, onExtraAmountChange, 
           />
           <Tooltip
             labelFormatter={formatDateFull}
-            formatter={(v: number, name: string) => [formatVND(Math.round(v)), labelForKey(name)]}
+            formatter={(v: number, name: string) => {
+              const key = labelKeyFor(name)
+              return [formatVND(Math.round(v)), key ? t(key) : name]
+            }}
             contentStyle={{ fontSize: 12, borderRadius: 6 }}
           />
           <Line type="monotone" dataKey="base" name="base" stroke="#111827" strokeWidth={2} dot={false} isAnimationActive={false} />
@@ -200,38 +204,38 @@ function ConsistencyForPortfolio({ portfolio, extraAmount, onExtraAmountChange, 
       </ResponsiveContainer>
 
       <div className="dca-consist-chart-legend">
-        <LegendItem color="#111827" dash="" label="Đầu tư đều đặn" />
-        <LegendItem color="#f97316" dash="4 2" label="Dừng đầu tư khi DD < -15%" />
-        <LegendItem color="#dc2626" dash="2 2" label="Dừng đầu tư khi DD < -25%" />
+        <LegendItem color="#111827" dash="" label={t('consist.legend.steady')} />
+        <LegendItem color="#f97316" dash="4 2" label={t('consist.legend.stop15')} />
+        <LegendItem color="#dc2626" dash="2 2" label={t('consist.legend.stop25')} />
       </div>
 
       <table className="dca-consist-table">
         <thead>
           <tr>
-            <th>Kịch bản</th>
-            <th>Đã đầu tư</th>
-            <th>Giá trị cuối</th>
-            <th>Lời ròng</th>
-            <th>% Lợi nhuận</th>
+            <th>{t('consist.col.scenario')}</th>
+            <th>{t('consist.col.invested')}</th>
+            <th>{t('consist.col.finalValue')}</th>
+            <th>{t('consist.col.netProfit')}</th>
+            <th>{t('consist.col.returnPct')}</th>
             <th>
               MWRR
               <span
                 className="dca-info-icon"
-                title="Money-Weighted Rate of Return: lãi suất kép hàng năm có tính đến ĐÚNG thời điểm mỗi đồng được nạp vào, khác '% Lợi nhuận' (không phân biệt tiền vào sớm hay muộn). Đây là cách so sánh công bằng nhất giữa các kịch bản có tổng vốn và lịch nạp khác nhau."
+                title={t('consist.help.mwrr')}
               >?</span>
             </th>
             <th>
-              Chi phí cơ hội
+              {t('consist.col.opportunityCost')}
               <span
                 className="dca-info-icon"
-                title="Panic bỏ nạp nên đầu tư ít tiền hơn hẳn — nếu so thẳng giá trị cuối, chênh lệch sẽ bị thổi phồng bởi phần 'chưa đầu tư', không phải do đầu tư kém. Cột này giả định số tiền bị bỏ nạp vẫn nằm trong túi bạn (tiền mặt, không sinh lời), cộng lại vào giá trị cuối của panic rồi mới so với kịch bản nạp đều đặn — ra đúng phần thiệt hại do mua sai thời điểm và mất lãi kép."
+                title={t('consist.help.opportunityCost')}
               >?</span>
             </th>
           </tr>
         </thead>
         <tbody>
           <tr className="dca-consist-row--baseline">
-            <td><strong>Đầu tư đều đặn</strong></td>
+            <td><strong>{t('consist.row.steady')}</strong></td>
             <td>{formatVND(scenarios.baseline.totalInvested)}</td>
             <td>{formatVND(Math.round(scenarios.baseline.finalValue))}</td>
             <td>{formatVND(Math.round(baseProfit))}</td>
@@ -243,7 +247,7 @@ function ConsistencyForPortfolio({ portfolio, extraAmount, onExtraAmountChange, 
             <td>
               Panic -15%{' '}
               <span className="dca-consist-skip">
-                ({scenarios.panic15.skippedCount} lần bỏ · giữ {formatVND(scenarios.panic15.skippedCash)} tiền mặt)
+                {t('consist.skipSub', { n: scenarios.panic15.skippedCount, cash: formatVND(scenarios.panic15.skippedCash) })}
               </span>
             </td>
             <td>{formatVND(scenarios.panic15.totalInvested)}</td>
@@ -259,7 +263,7 @@ function ConsistencyForPortfolio({ portfolio, extraAmount, onExtraAmountChange, 
             <td>
               Panic -25%{' '}
               <span className="dca-consist-skip">
-                ({scenarios.panic25.skippedCount} lần bỏ · giữ {formatVND(scenarios.panic25.skippedCash)} tiền mặt)
+                {t('consist.skipSub', { n: scenarios.panic25.skippedCount, cash: formatVND(scenarios.panic25.skippedCash) })}
               </span>
             </td>
             <td>{formatVND(scenarios.panic25.totalInvested)}</td>
@@ -276,10 +280,7 @@ function ConsistencyForPortfolio({ portfolio, extraAmount, onExtraAmountChange, 
 
       <p className="dca-note">
         * "Chi phí cơ hội" đã cộng lại phần tiền bị bỏ nạp (giả định giữ làm tiền mặt, không
-        sinh lời) trước khi so với kịch bản đầu tư đều đặn — nên đây là thiệt hại thực do mua
-        sai thời điểm và mất lãi kép, không lẫn với việc panic đơn giản là có ít vốn hơn. "MWRR"
-        là cách so sánh khác, có tính thời gian: lãi suất kép hàng năm theo đúng ngày mỗi đồng
-        được nạp vào.
+        {t('consist.tableNote')}
       </p>
 
       {showTakeaways && (
@@ -293,10 +294,10 @@ function ConsistencyForPortfolio({ portfolio, extraAmount, onExtraAmountChange, 
         />
       )}
 
-      <h4 className="dca-consist-subtitle">Ngược lại, nếu bạn tăng tiền khi thấy đỏ?</h4>
+      <h4 className="dca-consist-subtitle">{t('consist.boostTitle')}</h4>
 
       <div className="dca-consist-boost-control">
-        <label>Tăng thêm mỗi lần nạp khi giảm sâu</label>
+        <label>{t('consist.boostLabel')}</label>
         <div className="dca-amount-input">
           <MoneyInput value={extraAmount} onChange={onExtraAmountChange} min={0} />
           <span className="dca-currency">₫</span>
@@ -304,11 +305,7 @@ function ConsistencyForPortfolio({ portfolio, extraAmount, onExtraAmountChange, 
       </div>
 
       <p className="dca-consist-sub">
-        Một số nhà đầu tư chọn cách ngược với hoảng loạn: chủ động nạp thêm tiền đúng lúc quỹ
-        giảm sâu, tức mua thêm khi giá rẻ. Đây là phép thử tương tự ở trên, nhưng đảo chiều: so
-        sánh đầu tư đều đặn với hai biến thể tăng thêm{' '}
-        <strong>{formatVND(extraAmount)}</strong> mỗi lần quỹ giảm <strong>-15%</strong> và{' '}
-        <strong>-25%</strong> từ đỉnh.
+        {tr('consist.boostIntro', { extra: formatVND(extraAmount) })}
       </p>
 
       <ResponsiveContainer width="100%" height={240}>
@@ -327,7 +324,10 @@ function ConsistencyForPortfolio({ portfolio, extraAmount, onExtraAmountChange, 
           />
           <Tooltip
             labelFormatter={formatDateFull}
-            formatter={(v: number, name: string) => [formatVND(Math.round(v)), labelForKey(name)]}
+            formatter={(v: number, name: string) => {
+              const key = labelKeyFor(name)
+              return [formatVND(Math.round(v)), key ? t(key) : name]
+            }}
             contentStyle={{ fontSize: 12, borderRadius: 6 }}
           />
           <Line type="monotone" dataKey="base" name="base" stroke="#111827" strokeWidth={2} dot={false} isAnimationActive={false} />
@@ -337,31 +337,31 @@ function ConsistencyForPortfolio({ portfolio, extraAmount, onExtraAmountChange, 
       </ResponsiveContainer>
 
       <div className="dca-consist-chart-legend">
-        <LegendItem color="#111827" dash="" label="Đầu tư đều đặn" />
-        <LegendItem color="#0891b2" dash="4 2" label="Tăng tiền khi DD < -15%" />
-        <LegendItem color="#7c3aed" dash="2 2" label="Tăng tiền khi DD < -25%" />
+        <LegendItem color="#111827" dash="" label={t('consist.legend.steady')} />
+        <LegendItem color="#0891b2" dash="4 2" label={t('consist.legend.boost15')} />
+        <LegendItem color="#7c3aed" dash="2 2" label={t('consist.legend.boost25')} />
       </div>
 
       <table className="dca-consist-table">
         <thead>
           <tr>
-            <th>Kịch bản</th>
-            <th>Đã đầu tư</th>
-            <th>Giá trị cuối</th>
-            <th>Lời ròng</th>
-            <th>% Lợi nhuận</th>
+            <th>{t('consist.col.scenario')}</th>
+            <th>{t('consist.col.invested')}</th>
+            <th>{t('consist.col.finalValue')}</th>
+            <th>{t('consist.col.netProfit')}</th>
+            <th>{t('consist.col.returnPct')}</th>
             <th>
               MWRR
               <span
                 className="dca-info-icon"
-                title="Money-Weighted Rate of Return: lãi suất kép hàng năm có tính đến ĐÚNG thời điểm mỗi đồng được nạp vào, khác '% Lợi nhuận' (không phân biệt tiền vào sớm hay muộn). Đây là cách so sánh công bằng nhất giữa các kịch bản có tổng vốn và lịch nạp khác nhau."
+                title={t('consist.help.mwrr')}
               >?</span>
             </th>
           </tr>
         </thead>
         <tbody>
           <tr className="dca-consist-row--baseline">
-            <td><strong>Đầu tư đều đặn</strong></td>
+            <td><strong>{t('consist.row.steady')}</strong></td>
             <td>{formatVND(scenarios.baseline.totalInvested)}</td>
             <td>{formatVND(Math.round(scenarios.baseline.finalValue))}</td>
             <td>{formatVND(Math.round(baseProfit))}</td>
@@ -370,9 +370,9 @@ function ConsistencyForPortfolio({ portfolio, extraAmount, onExtraAmountChange, 
           </tr>
           <tr>
             <td>
-              Tăng tiền -15%{' '}
+              {t('consist.boostRow15')}{' '}
               <span className="dca-consist-skip">
-                ({boostScenarios.boost15.boostedCount} lần · thêm {formatVND(boostScenarios.boost15.extraInvested)})
+                {t('consist.boostSub', { n: boostScenarios.boost15.boostedCount, extra: formatVND(boostScenarios.boost15.extraInvested) })}
               </span>
             </td>
             <td>{formatVND(boostScenarios.boost15.totalInvested)}</td>
@@ -383,9 +383,9 @@ function ConsistencyForPortfolio({ portfolio, extraAmount, onExtraAmountChange, 
           </tr>
           <tr>
             <td>
-              Tăng tiền -25%{' '}
+              {t('consist.boostRow25')}{' '}
               <span className="dca-consist-skip">
-                ({boostScenarios.boost25.boostedCount} lần · thêm {formatVND(boostScenarios.boost25.extraInvested)})
+                {t('consist.boostSub', { n: boostScenarios.boost25.boostedCount, extra: formatVND(boostScenarios.boost25.extraInvested) })}
               </span>
             </td>
             <td>{formatVND(boostScenarios.boost25.totalInvested)}</td>
@@ -399,9 +399,7 @@ function ConsistencyForPortfolio({ portfolio, extraAmount, onExtraAmountChange, 
 
       <p className="dca-note">
         * Bảng này không có cột "chi phí cơ hội" như bảng trên, vì tăng tiền đầu tư NHIỀU vốn hơn
-        (khác với panic đầu tư ít vốn hơn). "% Lợi nhuận" tính trên mỗi đồng đã đầu tư nhưng không phân
-        biệt tiền vào sớm hay muộn — cột "MWRR" mới là so sánh công bằng nhất, vì có tính đúng số
-        năm mỗi đồng đã có để sinh lời.
+        {t('consist.boostTableNote')}
       </p>
 
       {showTakeaways && (
@@ -441,18 +439,15 @@ function ConsistencyTakeaway({
   skipped25: number
   skippedCash15: number
 }) {
+  const t = useT()
+  const tr = useTRich()
   // Case 1: Panic không skip lần nào, có thể do thị trường êm ả, hoặc do quỹ vẫn giảm sâu
   // nhưng gọn trong khoảng ngắn giữa 2 lần nạp, không lần kiểm tra hàng tháng nào rơi đúng
   // lúc (hook skipContributionWhen chỉ check tại contribution date, không phải mỗi ngày).
   if (skipped15 === 0 && skipped25 === 0) {
     return (
       <div className="dca-consist-takeaway">
-        Trong kỳ này, không lần nạp tiền hàng tháng nào rơi đúng vào lúc quỹ giảm sâu quá
-        -15%, nên cả ba kịch bản cho kết quả giống nhau. Điều này không có nghĩa quỹ chưa
-        từng giảm đến mức đó. Quỹ vẫn có thể đã giảm sâu như vậy, chỉ là gọn trong vài tuần
-        ngắn giữa hai lần nạp, không lần kiểm tra hàng tháng nào rơi đúng lúc. Xem bảng
-        "Các đợt sụt giảm lớn nhất" ở trên để biết quỹ thực sự từng giảm sâu đến đâu, hoặc
-        thử kéo dài kỳ backtest để xem mình sẽ xử lý thế nào khi có bão thật.
+        {t('consist.noTrigger')}
       </div>
     )
   }
@@ -463,16 +458,10 @@ function ConsistencyTakeaway({
     return (
       <div className="dca-consist-takeaway">
         <p>
-          Trong kỳ này, việc dừng đầu tư khi quỹ giảm sâu <strong>-25%</strong> lại cho kết quả
-          tốt hơn đầu tư đều đặn một chút (hơn <strong>{formatVND(Math.abs(Math.round(gap25)))}</strong>,
-          đã tính cả phần tiền mặt giữ lại chứ không chỉ nhờ đầu tư ít hơn). Lý do: kỳ này quỹ có
-          xu hướng đi xuống kéo dài, mua thêm ở vùng giảm bị lỗ tiếp.
+          {tr('consist.panicWon1', { gap: formatVND(Math.abs(Math.round(gap25))) })}
         </p>
         <p>
-          Nhưng cẩn thận trước khi kết luận rằng panic tốt. Chiến lược này chỉ thắng khi bạn
-          đoán đúng rằng thị trường sẽ tiếp tục giảm, điều không ai đoán được trước. Với phần
-          lớn chu kỳ dài hạn của thị trường Việt Nam, đầu tư đều đặn qua đáy là cách duy nhất
-          tận dụng lãi kép sau hồi phục.
+          {t('consist.panicWon2')}
         </p>
       </div>
     )
@@ -482,21 +471,26 @@ function ConsistencyTakeaway({
   return (
     <div className="dca-consist-takeaway">
       <p>
-        Một trong những sai lầm tâm lý lớn nhất của nhà đầu tư là muốn đứng ngoài quan sát khi thị trường giông bão. Nhiều người nghĩ rằng tạm ngừng rót vốn lúc tài sản đang lao dốc là cách để bảo vệ bản thân. Nhưng thực tế chứng minh: kiên định đầu tư xuyên qua khủng hoảng mới là lựa chọn mang lại kết quả tốt nhất.
+        {t('consist.panicCost1')}
       </p>
       <p>
-        Hãy nhìn vào các con số để thấy rõ cái giá của sự hoảng loạn. Nếu bạn sợ hãi và ngừng rót vốn khi danh mục sụt giảm <strong>-15%</strong>, đúng là bạn sẽ giữ lại được một khoản tiền mặt an toàn (cụ thể là <strong>{formatVND(skippedCash15)} đồng</strong> cất trong két thay vì đem đi mua tài sản). Nhưng khi chu kỳ thị trường bình phục, tổng tài sản của bạn lại thấp hơn đến <strong>{formatVND(Math.round(gap15))} đồng</strong> so với người kiên trì rót vốn đều đặn, ngay cả khi đã cộng gộp số tiền mặt bạn cố tình cất giữ. Kể cả khi bạn chịu đựng giỏi hơn một chút và chỉ bỏ chạy khi thị trường giảm <strong>-25%</strong>, bạn vẫn thiệt hại <strong>{formatVND(Math.round(gap25))} đồng tiền lãi</strong>. Sự hoảng sợ càng đến sớm, cơ hội bạn bỏ lỡ càng lớn.
+        {tr('consist.panicCost2', {
+          cash15: formatVND(skippedCash15),
+          gap15: formatVND(Math.round(gap15)),
+          gap25: formatVND(Math.round(gap25)),
+        })}
       </p>
       <p>
-        Tại sao sự chênh lệch này lại lớn đến vậy? Nguyên lý rất đơn giản: những lúc thị trường bi quan và giảm sâu nhất chính là lúc tài sản được bán với giá rẻ mạt nhất. Những khoản đầu tư bạn dũng cảm thực hiện ngay giữa tâm bão sẽ là cỗ máy tạo ra nhiều lợi nhuận nhất khi mọi thứ phục hồi. Việc rời bỏ cuộc chơi vì sợ hãi đồng nghĩa với việc bạn tự tước đi cơ hội mua tài sản giá hời. Đó là cái giá rất đắt cho việc để cảm xúc dẫn dắt các quyết định tài chính.
+        {t('consist.panicCost3')}
       </p>
       {gap25 > 0 && gap15 > 0 && Math.abs(gap15 - gap25) > 0 && (
         <p>
-          Chú ý: panic -25% (bỏ {skipped25} lần) thậm chí mất{' '}
-          <strong>{formatVND(Math.round(gap25))}</strong>,
-          panic -15% (bỏ {skipped15} lần) mất{' '}
-          <strong>{formatVND(Math.round(gap15))}</strong>.
-          Càng panic sớm càng bỏ lỡ nhiều cơ hội.
+          {tr('consist.panicCostNote', {
+            n25: skipped25,
+            loss25: formatVND(Math.round(gap25)),
+            n15: skipped15,
+            loss15: formatVND(Math.round(gap15)),
+          })}
         </p>
       )}
     </div>
@@ -515,11 +509,12 @@ function BoostTakeaway({
   boosted25: number
   extraAmount: number
 }) {
+  const t = useT()
+  const tr = useTRich()
   if (extraAmount <= 0) {
     return (
       <div className="dca-consist-takeaway">
-        Nhập số tiền tăng thêm ở trên để xem thử: nếu bạn mua thêm mỗi khi thị trường giảm sâu,
-        kết quả sẽ khác gì so với đầu tư đều đặn.
+        {t('consist.boostPrompt')}
       </div>
     )
   }
@@ -527,10 +522,7 @@ function BoostTakeaway({
   if (boosted15 === 0 && boosted25 === 0) {
     return (
       <div className="dca-consist-takeaway">
-        Trong kỳ này, không lần nạp tiền hàng tháng nào rơi đúng vào lúc quỹ giảm sâu quá
-        -15%, nên tăng tiền chưa có cơ hội áp dụng. Cả ba kịch bản cho kết quả giống nhau.
-        Quỹ vẫn có thể từng giảm đến mức đó, chỉ là không rơi đúng vào ngày bạn định kỳ
-        nạp tiền.
+        {t('consist.boostNoTrigger')}
       </div>
     )
   }
@@ -545,27 +537,20 @@ function BoostTakeaway({
   return (
     <div className="dca-consist-takeaway">
       <p>
-        Nếu bạn tăng thêm tiền mỗi khi quỹ giảm <strong>{bestLabel}</strong> từ đỉnh ({bestCount} lần,
-        tổng cộng nạp thêm <strong>{formatVND(bestExtra)}</strong>), MWRR (lãi suất kép hàng năm có
-        tính đến thời điểm dòng tiền) {better ? 'nhỉnh hơn' : 'lại kém hơn'} kịch bản đầu tư đều đặn
-        ({formatSignedPercent(bestMWRR)}/năm so với {formatSignedPercent(baseMWRR)}/năm). Đây là phép
-        so sánh công bằng hơn "% Lợi nhuận" thô ở bảng trên, vì MWRR tính đúng số năm mỗi đồng đã có
-        để sinh lời, không để chuyện tiền vào sớm hay muộn làm lệch kết quả.
+        {tr('consist.boostTakeaway1', {
+          threshold: bestLabel,
+          count: bestCount,
+          extra: formatVND(bestExtra),
+          verdict: t(better ? 'consist.verdictBetter' : 'consist.verdictWorse'),
+          best: formatSignedPercent(bestMWRR),
+          base: formatSignedPercent(baseMWRR),
+        })}
       </p>
       <p>
-        Mốc <strong>-15%</strong> dễ chạm: chỉ cần giá lùi nhẹ so với đỉnh gần nhất là đã tính
-        "giảm sâu", nên nó kích hoạt tới <strong>{boosted15} lần</strong> suốt hành trình, kể cả
-        những năm quỹ đã tăng trưởng rất nhiều. Vấn đề là thấp hơn đỉnh gần đây không có nghĩa là
-        rẻ: sau nhiều năm giá quỹ tăng gấp vài lần, một lần giảm -15% ở giai đoạn sau vẫn có thể
-        đắt hơn hẳn mức giá bình thường của những năm đầu. Mốc <strong>-25%</strong> khó chạm hơn
-        (chỉ <strong>{boosted25} lần</strong>), nên phần lớn chỉ bắt trúng những đợt sụt thật sự
-        nặng như bear 2018-2019 hay COVID 3/2020, những lúc giá thực sự bị ép xuống thấp.
+        {tr('consist.boostTakeaway2', { n15: boosted15, n25: boosted25 })}
       </p>
       <p>
-        Cách này cũng đòi hỏi bạn có sẵn tiền mặt đúng lúc thị trường đang đáng sợ nhất, điều
-        không dễ về cả tâm lý lẫn tài chính. Quá khứ không đảm bảo tương lai: nếu quỹ tiếp tục
-        giảm ngay sau lần tăng tiền, phần vốn đầu tư thêm đó vẫn phải chờ hồi phục như mọi khoản đầu
-        tư khác.
+        {t('consist.boostTakeaway3')}
       </p>
     </div>
   )
@@ -694,13 +679,13 @@ function runBoostBuy(
   }
 }
 
-function labelForKey(key: string): string {
-  if (key === 'base') return 'Đầu tư đều đặn'
-  if (key === 'p15') return 'Panic -15%'
-  if (key === 'p25') return 'Panic -25%'
-  if (key === 'b15') return 'Tăng tiền -15%'
-  if (key === 'b25') return 'Tăng tiền -25%'
-  return key
+function labelKeyFor(key: string): TranslationKey | null {
+  if (key === 'base') return 'consist.row.steady'
+  if (key === 'p15') return 'consist.panic15'
+  if (key === 'p25') return 'consist.panic25'
+  if (key === 'b15') return 'consist.boostRow15'
+  if (key === 'b25') return 'consist.boostRow25'
+  return null
 }
 
 function formatGap(gap: number): string {

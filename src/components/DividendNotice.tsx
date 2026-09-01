@@ -10,6 +10,7 @@
  */
 import { useEffect, useState } from 'react'
 import { loadDividends } from '../utils/dividendAdjust'
+import { useTRich } from '../i18n'
 
 interface Props {
   /** Danh sách fundId đang được chọn (hiển thị trên biểu đồ) */
@@ -17,6 +18,7 @@ interface Props {
 }
 
 export function DividendNotice({ fundIds }: Props) {
+  const tr = useTRich()
   const [dividendFunds, setDividendFunds] = useState<Set<string>>(new Set())
 
   useEffect(() => {
@@ -41,10 +43,7 @@ export function DividendNotice({ fundIds }: Props) {
     <div className="dividend-notice">
       <span className="dividend-notice-icon">💵</span>
       <div className="dividend-notice-body">
-        Quỹ <strong>{matched.join(', ')}</strong> có chi trả cổ tức. Giá NAV trên biểu
-        đồ đã được điều chỉnh để phản ánh giả định tái đầu tư cổ tức sau thuế TNCN 5%,
-        nên hiệu suất hiển thị đã bao gồm phần lợi nhuận từ cổ tức. Chi tiết các đợt
-        chi trả xem ở tab <strong>Tích Lũy Định Kỳ (DCA)</strong>.
+        {tr('dividend.notice', { funds: matched.join(', ') })}
       </div>
     </div>
   )

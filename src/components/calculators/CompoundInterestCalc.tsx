@@ -1,8 +1,9 @@
 import { useState, useMemo } from 'react'
 import { compoundInterest, compoundInterestSeries } from '../../utils/calculators'
-import { formatVNDFull, vndComparison } from '../../utils/vndFormat'
+import { formatVNDFull, vndComparisonKey } from '../../utils/vndFormat'
 import { MoneyField, PercentField, YearsField, ResultRow } from './CalcFields'
 import { CompoundInterestChart } from './CompoundInterestChart'
+import { useT, useTRich, useDecimal } from '../../i18n'
 
 /**
  * Máy tính lãi kép, có tuỳ chọn góp thêm hàng tháng.
@@ -15,6 +16,9 @@ import { CompoundInterestChart } from './CompoundInterestChart'
  * số thì họ sửa.
  */
 export function CompoundInterestCalc() {
+  const t = useT()
+  const tr = useTRich()
+  const dec = useDecimal()
   const [principal, setPrincipal] = useState(100_000_000)
   const [annualRate, setAnnualRate] = useState(0.08)
   const [years, setYears] = useState(20)
@@ -31,37 +35,40 @@ export function CompoundInterestCalc() {
   )
 
   const nhanBaoNhieuLan = result.contributions > 0 ? result.finalValue / result.contributions : 0
-  const vatSoSanh = vndComparison(result.interestEarned)
+  const vatSoSanhKey = vndComparisonKey(result.interestEarned)
 
   return (
     <div className="calc-body">
       <div className="dca-params-card">
-        <h3 className="dca-section-title">Thông số</h3>
+        <h3 className="dca-section-title">{t('calc.params')}</h3>
 
-        <MoneyField label="Vốn ban đầu" value={principal} onChange={setPrincipal} />
-        <PercentField label="Lợi nhuận mỗi năm" value={annualRate} onChange={setAnnualRate} max={50} />
-        <YearsField label="Số năm đầu tư" value={years} onChange={setYears} />
+        <MoneyField label={t('calc.compound.principal')} value={principal} onChange={setPrincipal} />
+        <PercentField label={t('calc.compound.rate')} value={annualRate} onChange={setAnnualRate} max={50} />
+        <YearsField label={t('calc.compound.years')} value={years} onChange={setYears} />
         <MoneyField
-          label="Góp thêm mỗi tháng"
+          label={t('calc.compound.monthly')}
           value={monthlyContribution}
           onChange={setMonthlyContribution}
-          hint="Để 0 nếu chỉ bỏ vốn một lần rồi để yên"
+          hint={t('calc.compound.monthlyHint')}
         />
       </div>
 
       <div className="calc-result-card">
-        <h3 className="dca-section-title">Sau {years} năm</h3>
+        <h3 className="dca-section-title">{t('calc.afterYears', { n: years })}</h3>
 
-        <ResultRow label="Giá trị cuối kỳ" value={formatVNDFull(result.finalValue)} primary tone="good" />
-        <ResultRow label="Tổng tiền bạn đầu tư" value={formatVNDFull(result.contributions)} />
-        <ResultRow label="Phần lãi kép sinh ra" value={formatVNDFull(result.interestEarned)} tone="good" />
+        <ResultRow label={t('calc.compound.finalValue')} value={formatVNDFull(result.finalValue)} primary tone="good" />
+        <ResultRow label={t('calc.compound.contributions')} value={formatVNDFull(result.contributions)} />
+        <ResultRow label={t('calc.compound.interest')} value={formatVNDFull(result.interestEarned)} tone="good" />
 
         <p className="calc-takeaway">
-          Bạn đầu tư <strong>{formatVNDFull(result.contributions)}</strong>, sau {years} năm còn lại{' '}
-          <strong>{formatVNDFull(result.finalValue)}</strong>, tức là gấp{' '}
-          <strong>{nhanBaoNhieuLan.toFixed(2).replace('.', ',')} lần</strong>. Phần chênh{' '}
-          {formatVNDFull(result.interestEarned)} không phải do bạn nạp thêm đồng nào
-          {vatSoSanh ? `, đủ mua ${vatSoSanh}` : ''}.
+          {tr('calc.compound.takeaway', {
+            invested: formatVNDFull(result.contributions),
+            years,
+            final: formatVNDFull(result.finalValue),
+            multiple: dec(nhanBaoNhieuLan),
+            interest: formatVNDFull(result.interestEarned),
+            comparison: vatSoSanhKey ? t('calc.compound.comparison', { thing: t(vatSoSanhKey) }) : '',
+          })}
         </p>
 
         <CompoundInterestChart series={series} />

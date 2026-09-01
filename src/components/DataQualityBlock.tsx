@@ -14,6 +14,7 @@
 import { useMemo, useState } from 'react'
 import type { PricePoint } from '../types'
 import { buildFundQualityReport, type FundQualityReport } from '../utils/dataQuality'
+import { useT, useTRich } from '../i18n'
 
 /**
  * Ngưỡng báo cam cho freshness.
@@ -45,6 +46,8 @@ export function DataQualityBlock({
   alignedStart,
   alignedEnd,
 }: Props) {
+  const t = useT()
+  const tr = useTRich()
   const [expanded, setExpanded] = useState(false)
 
   const reports = useMemo<FundQualityReport[]>(() => {
@@ -99,36 +102,31 @@ export function DataQualityBlock({
         <span className="dq-header-main">
           {hasWarnings ? (
             <>
-              <strong>Chất lượng dữ liệu: có cảnh báo</strong>
+              <strong>{t('dq.warning')}</strong>
               <span className="dq-header-sub">
-                Cập nhật tới {formatDate(lastUpdated)}
-                {freshest.daysStale > 0 ? ` (${freshest.daysStale} ngày trước)` : ''}
-                {anyGaps ? '. Phát hiện khoảng thiếu giá.' : ''}
-                {anyCoverageIssue ? ' Có quỹ không phủ hết khoảng bạn chọn.' : ''}
+                {t('dq.updatedTo', { date: formatDate(lastUpdated) })}
+                {freshest.daysStale > 0 ? t('dq.daysAgo', { n: freshest.daysStale }) : ''}
+                {anyGaps ? t('dq.gapsFound') : ''}
+                {anyCoverageIssue ? t('dq.coverageIssue') : ''}
               </span>
             </>
           ) : (
             <>
-              <strong>Dữ liệu đầy đủ</strong>
+              <strong>{t('dq.ok')}</strong>
               <span className="dq-header-sub">
-                Cập nhật tới {formatDate(lastUpdated)}
-                {freshest.daysStale > 0 ? ` (${freshest.daysStale} ngày trước)` : ''}.
-                Không phát hiện lỗ hổng trong kỳ đang so sánh.
+                {t('dq.updatedTo', { date: formatDate(lastUpdated) })}
+                {freshest.daysStale > 0 ? t('dq.daysAgo', { n: freshest.daysStale }) : ''}
+                {t('dq.noGaps')}
               </span>
             </>
           )}
         </span>
-        <span className="dq-toggle">{expanded ? 'Thu gọn' : 'Xem chi tiết'}</span>
+        <span className="dq-toggle">{t(expanded ? 'dq.collapse' : 'dq.expand')}</span>
       </button>
 
       {expanded && (
         <div className="dq-body">
-          <p className="dq-intro">
-            Mỗi quỹ có lịch sử dữ liệu khác nhau. Một số quỹ mới lập chỉ có vài
-            năm, một số quỹ cũ có thể bị thiếu giá trong các đợt đặc biệt như
-            COVID. Dashboard này công khai những giới hạn đó để bạn cẩn thận
-            hơn khi đọc các con số bên dưới.
-          </p>
+          <p className="dq-intro">{t('dq.intro')}</p>
 
           <div className="dq-timelines">
             {reports.map((r, i) => {
@@ -149,16 +147,13 @@ export function DataQualityBlock({
 
           {alignedStart && alignedEnd && (
             <p className="dq-aligned">
-              Khoảng so sánh thực tế đã được căn chỉnh theo giao điểm của tất
-              cả các quỹ: <strong>{formatDate(alignedStart)}</strong> tới{' '}
-              <strong>{formatDate(alignedEnd)}</strong>. Mọi con số trong các
-              block bên dưới đều tính trên khoảng này.
+              {tr('dq.alignedRange', { from: formatDate(alignedStart), to: formatDate(alignedEnd) })}
             </p>
           )}
 
           {reportsWithIssues.length > 0 && (
             <div className="dq-issues">
-              <h4 className="dq-issues-title">Chi tiết cảnh báo</h4>
+              <h4 className="dq-issues-title">{t('dq.issuesTitle')}</h4>
               {reportsWithIssues.map(r => (
                 <FundIssueList
                   key={r.id}
@@ -192,6 +187,7 @@ function FundTimeline({
   requestedFrom: string | null
   requestedTo: string | null
 }) {
+  const t = useT()
   const start = new Date(report.startDate).getTime()
   const end = new Date(report.endDate).getTime()
 
@@ -229,7 +225,7 @@ function FundTimeline({
               key={i}
               className="dq-timeline-gap"
               style={{ left: `${gLeftPct}%`, width: `${gWidthPct}%` }}
-              title={`Thiếu ~${g.weeksMissing} tuần: ${g.fromDate} → ${g.toDate}`}
+              title={t('dq.gapTooltip', { weeks: g.weeksMissing, from: g.fromDate, to: g.toDate })}
             />
           )
         })}
@@ -237,14 +233,14 @@ function FundTimeline({
           <div
             className="dq-timeline-marker"
             style={{ left: `${reqFromPct}%` }}
-            title={`Bạn chọn từ ${requestedFrom}`}
+            title={t('dq.pickedFrom', { date: requestedFrom ?? '' })}
           />
         )}
         {reqToPct !== null && (
           <div
             className="dq-timeline-marker"
             style={{ left: `${reqToPct}%` }}
-            title={`Bạn chọn tới ${requestedTo}`}
+            title={t('dq.pickedTo', { date: requestedTo ?? '' })}
           />
         )}
       </div>
@@ -266,29 +262,24 @@ function FundIssueList({
   requestedFrom: string | null
   requestedTo: string | null
 }) {
+  const tr = useTRich()
   return (
     <div className="dq-issue-card">
       <div className="dq-issue-head"><strong>{report.id}</strong></div>
       <ul className="dq-issue-list">
         {report.startsAfterRequested && requestedFrom && (
           <li>
-            Quỹ bắt đầu từ <strong>{formatDate(report.startDate)}</strong>,
-            muộn hơn ngày bạn chọn ({formatDate(requestedFrom)}). Khoảng trước
-            đó không tính vào phép so sánh.
+            {tr('dq.startsLate', { start: formatDate(report.startDate), requested: formatDate(requestedFrom) })}
           </li>
         )}
         {report.endsBeforeRequested && requestedTo && (
           <li>
-            Dữ liệu chỉ tới <strong>{formatDate(report.endDate)}</strong>, sớm
-            hơn ngày bạn chọn ({formatDate(requestedTo)}). Khoảng sau đó không
-            có giá.
+            {tr('dq.endsEarly', { end: formatDate(report.endDate), requested: formatDate(requestedTo) })}
           </li>
         )}
         {report.gaps.map((g, i) => (
           <li key={i}>
-            Thiếu khoảng <strong>{g.weeksMissing} tuần</strong> từ{' '}
-            {formatDate(g.fromDate)} tới {formatDate(g.toDate)}. Có thể do tạm
-            ngưng giao dịch hoặc dữ liệu API thiếu.
+            {tr('dq.gap', { weeks: g.weeksMissing, from: formatDate(g.fromDate), to: formatDate(g.toDate) })}
           </li>
         ))}
       </ul>

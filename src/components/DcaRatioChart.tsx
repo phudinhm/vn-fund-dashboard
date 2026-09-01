@@ -14,6 +14,8 @@ import {
   Line, XAxis, YAxis, CartesianGrid,
   Tooltip, ResponsiveContainer, ReferenceLine, ComposedChart, Customized,
 } from 'recharts'
+import { useT, useTRich, translateStatic } from '../i18n'
+import { useLanguage, type Language } from '../hooks/useLanguage'
 
 interface ValuePoint {
   date: string
@@ -37,6 +39,9 @@ const UP_COLOR = '#059669'
 const DOWN_COLOR = '#dc2626'
 
 function DcaRatioChartImpl({ portfolios }: Props) {
+  const t = useT()
+  const tr = useTRich()
+  const { language } = useLanguage()
   const [idA, setIdA] = useState<string>('')
   const [idB, setIdB] = useState<string>('')
 
@@ -85,25 +90,21 @@ function DcaRatioChartImpl({ portfolios }: Props) {
     ? 0.5
     : Math.max(0, Math.min(1, (maxRatio - 1) / (maxRatio - minRatio)))
 
-  const narrative = buildRatioNarrative(ratioData)
+  const narrative = buildRatioNarrative(ratioData, language)
 
   return (
     <div className="chart-container">
       <div className="chart-header">
-        <h3>Danh mục nào đang dẫn trước?</h3>
-        <span
-          className="chart-tooltip-icon"
-          title="Tỷ số giá trị giữa 2 danh mục theo thời gian. Đường đi lên nghĩa là danh mục thứ nhất đang tăng nhanh hơn (hoặc giảm chậm hơn) danh mục thứ hai, kể cả khi cả hai cùng tăng hay cùng giảm."
-        >?</span>
+        <h3>{t('ratio.title')}</h3>
+        <span className="chart-tooltip-icon" title={t('ratio.help')}>?</span>
       </div>
 
       <p className="dca-ratio-sub">
-        Hai đường giá trị chồng lên nhau rất khó nhìn ra giai đoạn nào danh mục nào
-        mạnh hơn. Biểu đồ này lấy giá trị{' '}
-        <strong style={{ color: effectiveA.color }}>{effectiveA.name}</strong> chia cho{' '}
-        <strong style={{ color: effectiveB.color }}>{effectiveB.name}</strong>: đường
-        đi lên là danh mục thứ nhất đang mạnh hơn trong giai đoạn đó, đi xuống là
-        ngược lại.
+        {t('ratio.intro')}
+        <strong style={{ color: effectiveA.color }}>{effectiveA.name}</strong>
+        {' / '}
+        <strong style={{ color: effectiveB.color }}>{effectiveB.name}</strong>
+        {t('ratio.introTail')}
       </p>
 
       {portfolios.length > 2 && (
@@ -117,7 +118,7 @@ function DcaRatioChartImpl({ portfolios }: Props) {
               <option key={p.id} value={p.id}>{p.name}</option>
             ))}
           </select>
-          <span className="dca-ratio-vs">so với</span>
+          <span className="dca-ratio-vs">{t('ratio.vs')}</span>
           <select
             className="dca-freq-select"
             value={effectiveB.id}
@@ -132,7 +133,7 @@ function DcaRatioChartImpl({ portfolios }: Props) {
 
       <div className="dca-ratio-headline">
         <span className="dca-ratio-value" style={{ color: lastRatio >= 1 ? UP_COLOR : DOWN_COLOR }}>
-          {formatRatio(lastRatio)}
+          {formatRatio(lastRatio, language)}
         </span>
       </div>
 
@@ -149,12 +150,12 @@ function DcaRatioChartImpl({ portfolios }: Props) {
           />
           <YAxis
             domain={['auto', 'auto']}
-            tickFormatter={formatRatio}
+            tickFormatter={(v: number) => formatRatio(v, language)}
             tick={{ fontSize: 12 }}
             width={60}
           />
           <Tooltip
-            formatter={(value: number) => [formatRatioFull(value), 'Tỷ số giá trị']}
+            formatter={(value: number) => [formatRatioFull(value, language), t('ratio.seriesName')]}
             labelFormatter={formatTooltipDate}
           />
           <ReferenceLine
@@ -163,7 +164,10 @@ function DcaRatioChartImpl({ portfolios }: Props) {
             strokeDasharray="6 3"
           />
           <Customized
-            component={renderZoneLabels(effectiveA.name, effectiveB.name)}
+            component={renderZoneLabels(
+              t('ratio.winsLabel', { name: effectiveA.name }),
+              t('ratio.winsLabel', { name: effectiveB.name }),
+            )}
           />
           <defs>
             <linearGradient id="dcaRatioSplit" x1="0" y1="0" x2="0" y2="1">
@@ -174,7 +178,7 @@ function DcaRatioChartImpl({ portfolios }: Props) {
           <Line
             type="monotone"
             dataKey="ratio"
-            name="Tỷ số giá trị"
+            name={t('ratio.seriesName')}
             stroke="url(#dcaRatioSplit)"
             strokeWidth={2}
             dot={false}
@@ -185,24 +189,26 @@ function DcaRatioChartImpl({ portfolios }: Props) {
 
       {narrative && (
         <p className="dca-ratio-narrative">
-          Nhìn suốt cả giai đoạn, <strong style={{ color: UP_COLOR }}>{effectiveA.name}</strong>{' '}
-          chiến thắng {narrative.pctA}% thời gian, <strong style={{ color: DOWN_COLOR }}>{effectiveB.name}</strong>{' '}
-          chiến thắng {narrative.pctB}% thời gian còn lại.
+          {tr('ratio.narrative1', {
+            nameA: effectiveA.name,
+            pctA: narrative.pctA,
+            nameB: effectiveB.name,
+            pctB: narrative.pctB,
+          })}
           {' '}
-          Giai đoạn chiến thắng dài nhất thuộc về{' '}
-          <strong style={{ color: narrative.longestSide === 'A' ? UP_COLOR : DOWN_COLOR }}>
-            {narrative.longestSide === 'A' ? effectiveA.name : effectiveB.name}
-          </strong>, kéo dài liên tục khoảng {narrative.longestDurationText} (từ{' '}
-          {formatDate(narrative.longestRun.startTs)} đến {formatDate(narrative.longestRun.endTs)}).
+          {tr('ratio.narrative2', {
+            name: narrative.longestSide === 'A' ? effectiveA.name : effectiveB.name,
+            duration: narrative.longestDurationText,
+            from: formatDate(narrative.longestRun.startTs),
+            to: formatDate(narrative.longestRun.endTs),
+          })}
           {' '}
-          Hiện tại{' '}
-          <strong style={{ color: narrative.currentSide === 'A' ? UP_COLOR : DOWN_COLOR }}>
-            {narrative.currentSide === 'A' ? effectiveA.name : effectiveB.name}
-          </strong>{' '}
-          đang chiến thắng, giữ vững từ {formatDate(narrative.currentRun.startTs)} đến nay.
+          {tr('ratio.narrative3', {
+            name: narrative.currentSide === 'A' ? effectiveA.name : effectiveB.name,
+            from: formatDate(narrative.currentRun.startTs),
+          })}
           {' '}
-          Không có gì đảm bảo thứ tự này sẽ giữ nguyên. Thị trường cận biên như Việt Nam có thể đổi
-          ngôi chóng vánh, nên đừng neo quá chặt vào con số dẫn đầu hiện tại.
+          {t('ratio.narrative4')}
         </p>
       )}
     </div>
@@ -218,7 +224,7 @@ export const DcaRatioChart = memo(DcaRatioChartImpl)
  * góc trên luôn thuộc vùng "A thắng" và góc dưới luôn thuộc vùng "B thắng".
  * paintOrder=stroke tạo viền trắng quanh chữ, đọc được cả khi line cắt qua.
  */
-function renderZoneLabels(nameA: string, nameB: string) {
+function renderZoneLabels(labelA: string, labelB: string) {
   return (props: { offset?: { top: number; left: number; width: number; height: number } }) => {
     const o = props.offset
     if (!o) return <g />
@@ -229,8 +235,8 @@ function renderZoneLabels(nameA: string, nameB: string) {
     }
     return (
       <g style={{ pointerEvents: 'none' }}>
-        <text {...common} y={o.top + 16} fill={UP_COLOR}>▲ {nameA} thắng</text>
-        <text {...common} y={o.top + o.height - 8} fill={DOWN_COLOR}>▼ {nameB} thắng</text>
+        <text {...common} y={o.top + 16} fill={UP_COLOR}>▲ {labelA}</text>
+        <text {...common} y={o.top + o.height - 8} fill={DOWN_COLOR}>▼ {labelB}</text>
       </g>
     )
   }
@@ -260,6 +266,7 @@ interface RatioNarrative {
  */
 function buildRatioNarrative(
   ratioData: { timestamp: number; ratio: number }[],
+  lang: Language,
 ): RatioNarrative | null {
   if (ratioData.length < 2) return null
 
@@ -288,26 +295,31 @@ function buildRatioNarrative(
     pctB: 100 - pctA,
     longestRun,
     longestSide: longestRun.side,
-    longestDurationText: formatDuration(longestRun.endTs - longestRun.startTs),
+    longestDurationText: formatDuration(longestRun.endTs - longestRun.startTs, lang),
     currentRun,
     currentSide: currentRun.side,
   }
 }
 
-function formatDuration(ms: number): string {
+function formatDuration(ms: number, lang: Language): string {
   const days = ms / (24 * 60 * 60 * 1000)
-  if (days < 45) return `${Math.round(days)} ngày`
+  if (days < 45) return translateStatic('ratio.days', lang, { n: Math.round(days) })
   const months = days / 30.44
-  if (months < 18) return `${Math.round(months)} tháng`
-  return `${(days / 365.25).toFixed(1).replace('.', ',')} năm`
+  if (months < 18) return translateStatic('ratio.months', lang, { n: Math.round(months) })
+  return translateStatic('ratio.years', lang, { n: decimal(days / 365.25, 1, lang) })
 }
 
-function formatRatio(v: number): string {
-  return v.toFixed(2).replace('.', ',') + '×'
+function decimal(v: number, digits: number, lang: Language): string {
+  const text = v.toFixed(digits)
+  return lang === 'vi' ? text.replace('.', ',') : text
 }
 
-function formatRatioFull(v: number): string {
-  return v.toFixed(3).replace('.', ',') + '×'
+function formatRatio(v: number, lang: Language): string {
+  return decimal(v, 2, lang) + '×'
+}
+
+function formatRatioFull(v: number, lang: Language): string {
+  return decimal(v, 3, lang) + '×'
 }
 
 function getYearTicks(data: { timestamp: number }[]): number[] {

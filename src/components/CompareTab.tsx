@@ -180,7 +180,9 @@ function CompareTabImpl({
       )}
 
       {comparison.status === 'error' && (
-        <div className="error-banner">{comparison.error.message}</div>
+        <div className="error-banner">
+          {comparison.error.detail ?? t(comparison.error.messageKey)}
+        </div>
       )}
 
       {comparison.status === 'ready' && (

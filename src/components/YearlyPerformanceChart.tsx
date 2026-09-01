@@ -6,6 +6,7 @@ import {
 import type { YearlyReturn } from '../types'
 import { formatPercentFull, BASELINE_COLOR, DIMMED_COLOR } from '../utils/chartPlumbing'
 import { useDimLegend } from '../hooks/useDimLegend'
+import { useT } from '../i18n'
 
 interface YearlySeries {
   name: string
@@ -18,6 +19,7 @@ interface Props {
 }
 
 export function YearlyPerformanceChart({ series }: Props) {
+  const t = useT()
   const seriesKey = series.map(s => s.name).join(',')
   const { handleLegendClick, isDimmed } = useDimLegend(seriesKey)
 
@@ -46,8 +48,8 @@ export function YearlyPerformanceChart({ series }: Props) {
   return (
     <div className="chart-container">
       <div className="chart-header">
-        <h3>Hiệu suất theo từng năm</h3>
-        <span className="chart-tooltip-icon" title="So sánh lợi nhuận các quỹ trong mỗi năm. Năm có dấu * là năm chưa đầy đủ dữ liệu. Bấm vào legend để làm mờ/hiện cột.">?</span>
+        <h3>{t('yearly.title')}</h3>
+        <span className="chart-tooltip-icon" title={t('yearly.help')}>?</span>
       </div>
       <ResponsiveContainer width="100%" height={350}>
         <BarChart data={data} margin={{ top: 20, right: 20, left: 10, bottom: 5 }}>

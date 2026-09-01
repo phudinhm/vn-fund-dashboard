@@ -13,6 +13,9 @@ import {
 } from '../utils/overlap'
 import { formatVND } from '../utils/vndFormat'
 import { fundHouse } from '../utils/fundHouse'
+import { useT, useTRich, numberLocale, type TranslationKey } from '../i18n'
+import { useLanguage } from '../hooks/useLanguage'
+import { sectorName } from '../utils/sectorName'
 
 /**
  * Phân tích quỹ dựa trên DANH MỤC (holdings), dùng cho 52 quỹ chưa có báo cáo
@@ -44,11 +47,11 @@ const ASSET_COLORS: Record<AssetType, string> = {
   OTHER: '#94a3b8',
 }
 
-const ASSET_LABELS: Record<AssetType, string> = {
-  STOCK: 'Cổ phiếu',
-  BOND: 'Trái phiếu',
-  CASH: 'Tiền mặt',
-  OTHER: 'Tài sản khác',
+const ASSET_LABEL_KEYS: Record<AssetType, TranslationKey> = {
+  STOCK: 'fa.asset.stock',
+  BOND: 'fa.asset.bond',
+  CASH: 'fa.asset.cash',
+  OTHER: 'fa.asset.other',
 }
 
 const INDUSTRY_COLORS = ['#3b82f6', '#f59e0b', '#059669', '#8b5cf6', '#ef4444', '#0ea5e9', '#f97316', '#64748b']
@@ -77,11 +80,14 @@ const selectStyles = {
   }),
 }
 
-/** "2026-07-01" → "Tháng 7/2026" */
-function formatPeriodLabel(period: string): string {
-  const [y, m] = period.split('-')
-  if (!y || !m) return period
-  return `Tháng ${Number(m)}/${y}`
+/** "2026-07-01" → "Tháng 7/2026" (vi) hoặc "7/2026" (en) */
+function usePeriodLabel(): (period: string) => string {
+  const t = useT()
+  return (period: string) => {
+    const [y, m] = period.split('-')
+    if (!y || !m) return period
+    return t('fa.periodLabel', { month: Number(m), year: y })
+  }
 }
 
 /** "2026-07-01" → "7/26" cho nhãn trục X. */
@@ -97,22 +103,22 @@ function formatPercent(value: number | null): string {
 }
 
 /** Tổng tỷ trọng theo loại tài sản cho một kỳ. */
-function allocationByType(holdings: Holding[]) {
+function allocationByType(holdings: Holding[], label: (key: TranslationKey) => string) {
   const byType = new Map<AssetType, number>()
   for (const h of holdings) {
     byType.set(h.type, (byType.get(h.type) ?? 0) + h.weightPct)
   }
   return (['STOCK', 'BOND', 'CASH', 'OTHER'] as AssetType[])
-    .map(type => ({ type, name: ASSET_LABELS[type], value: byType.get(type) ?? 0, color: ASSET_COLORS[type] }))
+    .map(type => ({ type, name: label(ASSET_LABEL_KEYS[type]), value: byType.get(type) ?? 0, color: ASSET_COLORS[type] }))
     .filter(d => d.value > 0.001)
 }
 
 /** Tổng tỷ trọng theo ngành, chỉ tính cổ phiếu. */
-function allocationByIndustry(holdings: Holding[]) {
+function allocationByIndustry(holdings: Holding[], otherLabel: string) {
   const byIndustry = new Map<string, number>()
   for (const h of holdings) {
     if (h.type !== 'STOCK') continue
-    const key = h.industry || 'Khác'
+    const key = sectorName(h.industry || otherLabel)
     byIndustry.set(key, (byIndustry.get(key) ?? 0) + h.weightPct)
   }
   return [...byIndustry.entries()]
@@ -121,6 +127,10 @@ function allocationByIndustry(holdings: Holding[]) {
 }
 
 export function FundHoldingsAnalysis({ fund, source }: Props) {
+  const t = useT()
+  const tr = useTRich()
+  const { language } = useLanguage()
+  const formatPeriodLabel = usePeriodLabel()
   const [csvText, setCsvText] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -144,7 +154,7 @@ export function FundHoldingsAnalysis({ fund, source }: Props) {
       })
       .catch(() => {
         if (cancelled) return
-        setError('Không tải được dữ liệu danh mục của quỹ này.')
+        setError(t('fh.loadFailed'))
         setLoading(false)
       })
 
@@ -163,19 +173,19 @@ export function FundHoldingsAnalysis({ fund, source }: Props) {
 
   const periodOptions: PeriodOption[] = useMemo(
     () => [
-      { value: null, label: 'Mới nhất' },
+      { value: null, label: t('fa.latest') },
       ...periods.map(p => ({ value: p, label: formatPeriodLabel(p) })),
     ],
     [periods],
   )
 
-  const assetAlloc = useMemo(() => allocationByType(holdings), [holdings])
-  const industryAlloc = useMemo(() => allocationByIndustry(holdings), [holdings])
+  const assetAlloc = useMemo(() => allocationByType(holdings, t), [holdings])
+  const industryAlloc = useMemo(() => allocationByIndustry(holdings, t('fa.industry.other')), [holdings])
 
   const industryPie = useMemo(() => {
     const top = industryAlloc.slice(0, 6).map(d => ({ ...d }))
     const rest = industryAlloc.slice(6).reduce((s, x) => s + x.value, 0)
-    if (rest > 0.01) top.push({ name: 'Còn lại', value: rest })
+    if (rest > 0.01) top.push({ name: t('fa.asset.rest'), value: rest })
     return top.map((d, i) => ({ ...d, color: INDUSTRY_COLORS[i % INDUSTRY_COLORS.length]! }))
   }, [industryAlloc])
 
@@ -223,7 +233,7 @@ export function FundHoldingsAnalysis({ fund, source }: Props) {
   }
 
   if (loading) {
-    return <div className="loading-indicator">Đang tải dữ liệu...</div>
+    return <div className="loading-indicator">{t('app.loading')}</div>
   }
 
   return (
@@ -231,23 +241,21 @@ export function FundHoldingsAnalysis({ fund, source }: Props) {
       {/* Nói rõ panel này dựa trên nguồn nào và thiếu gì so với quỹ có báo cáo
           đầy đủ, để không ai hiểu nhầm là quỹ kém minh bạch hơn thực tế. */}
       <div className="fa-scope-note">
-        <strong>Phân tích theo danh mục.</strong>{' '}
-        {house && <>Quỹ do <strong>{house}</strong> quản lý. </>}
-        Dữ liệu danh mục từ {isTopTenOnly ? 'fmarket (chỉ top 10 khoản nắm giữ)' : 'digiinvest (danh mục đầy đủ)'},
-        hiệu suất tính từ chuỗi giá NAV/CCQ.
-        {' '}Các phần cần báo cáo tài chính tháng (dòng tiền vào/ra, phí quản lý,
-        vòng quay danh mục, số nhà đầu tư, red flags) chỉ có ở quỹ Dragon Capital
-        — nơi báo cáo được công bố dưới dạng file bóc tách được.
+        {tr('fh.scopeNote')}
+        {house && tr('fh.managedBy', { house })}
+        {t('fh.sourceNote', {
+          source: t(isTopTenOnly ? 'fh.sourceTopTen' : 'fh.sourceFull'),
+        })}
       </div>
 
       {/* ── Hiệu suất & rủi ro ── */}
       <div className="section-divider">
-        <span className="section-divider-label">Hiệu suất &amp; Rủi ro</span>
+        <span className="section-divider-label">{t('fa.sec.perf')}</span>
       </div>
 
       <div className="fund-analysis-charts-grid">
         <div className="chart-container">
-          <div className="chart-header"><h3>NAV/CCQ (giá quỹ)</h3></div>
+          <div className="chart-header"><h3>{t('fh.navTitle')}</h3></div>
           {navSeries.length > 1 ? (
             <ResponsiveContainer width="100%" height={240}>
               <AreaChart data={navSeries} margin={{ left: 8, right: 8, top: 8, bottom: 4 }}>
@@ -259,25 +267,28 @@ export function FundHoldingsAnalysis({ fund, source }: Props) {
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
                 <XAxis dataKey="period" tickFormatter={formatAxisTick} tick={{ fontSize: 10 }} minTickGap={32} />
-                <YAxis tick={{ fontSize: 11 }} width={76} domain={['auto', 'auto']} tickFormatter={(v: number) => Math.round(v).toLocaleString('vi-VN')} />
+                <YAxis tick={{ fontSize: 11 }} width={76} domain={['auto', 'auto']} tickFormatter={(v: number) => Math.round(v).toLocaleString(numberLocale(language))} />
                 <RechartsTooltip
-                  formatter={(value: number | string) => [`${Number(value).toLocaleString('vi-VN')} đ`, 'NAV/CCQ']}
+                  formatter={(value: number | string) => [
+                    `${Number(value).toLocaleString(language === 'vi' ? 'vi-VN' : 'en-US')} đ`,
+                    t('fa.navLabel'),
+                  ]}
                   labelFormatter={(p: string) => p}
                 />
                 <Area type="monotone" dataKey="value" stroke={NAV_COLOR} strokeWidth={2} fill="url(#holdingsNavFill)" isAnimationActive={false} />
               </AreaChart>
             </ResponsiveContainer>
           ) : (
-            <p className="overlap-empty">Chưa có chuỗi giá cho quỹ này.</p>
+            <p className="overlap-empty">{t('fh.noPriceSeries')}</p>
           )}
           <p className="fund-analysis-chart-note">
-            Giá trị tài sản ròng trên mỗi chứng chỉ quỹ — giá bạn mua/bán.
-            {fundCagr !== null && <> CAGR từ đầu: <strong>{formatPercent(fundCagr)}</strong>.</>}
+            {t('fh.navNote')}
+            {fundCagr !== null && tr('fh.cagrSince', { v: formatPercent(fundCagr) })}
           </p>
         </div>
 
         <div className="chart-container">
-          <div className="chart-header"><h3>Mức sụt giảm từ đỉnh (drawdown)</h3></div>
+          <div className="chart-header"><h3>{t('fa.ddChartTitle')}</h3></div>
           {ddSeries.length > 1 ? (
             <ResponsiveContainer width="100%" height={240}>
               <AreaChart data={ddSeries} margin={{ left: 8, right: 8, top: 8, bottom: 4 }}>
@@ -285,42 +296,45 @@ export function FundHoldingsAnalysis({ fund, source }: Props) {
                 <XAxis dataKey="period" tickFormatter={formatAxisTick} tick={{ fontSize: 10 }} minTickGap={32} />
                 <YAxis tickFormatter={(v: number) => `${Math.round(v)}%`} tick={{ fontSize: 11 }} width={54} />
                 <RechartsTooltip
-                  formatter={(value: number | string) => [`${Number(value).toFixed(1)}%`, 'Sụt giảm']}
+                  formatter={(value: number | string) => [`${Number(value).toFixed(1)}%`, t('fa.ddLabel')]}
                   labelFormatter={(p: string) => p}
                 />
                 <Area type="monotone" dataKey="value" stroke={DRAWDOWN_COLOR} strokeWidth={2} fill="rgba(220,38,38,0.25)" isAnimationActive={false} />
               </AreaChart>
             </ResponsiveContainer>
           ) : (
-            <p className="overlap-empty">Chưa đủ dữ liệu giá để tính drawdown.</p>
+            <p className="overlap-empty">{t('fh.noDrawdownData')}</p>
           )}
           <p className="fund-analysis-chart-note">
-            Khoảng cách từ đỉnh cao nhất trước đó. Đáy sâu nhất lịch sử:
-            {maxDD !== null && maxDD < 0 ? ` −${(Math.abs(maxDD) * 100).toFixed(0)}%` : ' chưa đủ số liệu'}.
+            {t('fh.ddNote', {
+              deepest: maxDD !== null && maxDD < 0
+                ? ` −${(Math.abs(maxDD) * 100).toFixed(0)}%`
+                : t('fa.ddNotEnough'),
+            })}
           </p>
         </div>
       </div>
 
       {/* ── Cấu trúc & phân bổ ── */}
       <div className="section-divider">
-        <span className="section-divider-label">Cấu trúc &amp; Phân bổ</span>
+        <span className="section-divider-label">{t('fa.sec.allocation')}</span>
       </div>
 
       {periods.length === 0 ? (
-        <p className="overlap-empty">Quỹ này chưa có dữ liệu danh mục.</p>
+        <p className="overlap-empty">{t('fh.noHoldings')}</p>
       ) : (
         <>
           <div className="chart-container">
-            <div className="chart-header"><h3>Phân bổ tài sản</h3></div>
+            <div className="chart-header"><h3>{t('fh.allocTitle')}</h3></div>
             <div className="dca-param-row">
-              <label className="dca-label">Kỳ báo cáo</label>
+              <label className="dca-label">{t('fa.reportPeriod')}</label>
               <div className="overlap-select">
                 <Select<PeriodOption>
                   className="fund-search-select"
                   classNamePrefix="fund-search"
                   options={periodOptions}
                   value={period === null
-                    ? { value: null, label: 'Mới nhất' }
+                    ? { value: null, label: t('fa.latest') }
                     : { value: period, label: formatPeriodLabel(period) }}
                   onChange={opt => opt && setPeriod(opt.value)}
                   isClearable={false}
@@ -349,17 +363,19 @@ export function FundHoldingsAnalysis({ fund, source }: Props) {
                 </div>
               </>
             ) : (
-              <p className="overlap-empty">Kỳ này không có dữ liệu phân bổ.</p>
+              <p className="overlap-empty">{t('fh.noAllocData')}</p>
             )}
             <p className="fund-analysis-chart-note">
-              Tỷ trọng theo loại tài sản, kỳ {resolved ? formatPeriodLabel(resolved) : 'đang chọn'}.
-              {isTopTenOnly && ' Nguồn fmarket chỉ công bố top 10 nên tổng tỷ trọng không đủ 100%.'}
+              {t('fh.allocNote', {
+                period: resolved ? formatPeriodLabel(resolved) : t('fa.currentPeriod'),
+              })}
+              {isTopTenOnly && t('fh.topTenCaveat')}
             </p>
           </div>
 
           <div className="fund-analysis-charts-grid">
             <div className="chart-container">
-              <div className="chart-header"><h3>Phân bổ theo ngành nghề</h3></div>
+              <div className="chart-header"><h3>{t('fa.industryTitle')}</h3></div>
               {industryPie.length > 0 ? (
                 <>
                   <ResponsiveContainer width="100%" height={240}>
@@ -380,15 +396,15 @@ export function FundHoldingsAnalysis({ fund, source }: Props) {
                   </div>
                 </>
               ) : (
-                <p className="overlap-empty">Kỳ này không có dữ liệu ngành.</p>
+                <p className="overlap-empty">{t('fa.noIndustryData')}</p>
               )}
               <p className="fund-analysis-chart-note">
-                Nếu một hai ngành chiếm quá nửa, danh mục dễ bị kéo theo ngành đó.
+                {t('fa.industryNote', { period: resolved ? formatPeriodLabel(resolved) : t('fa.currentPeriod') })}
               </p>
             </div>
 
             <div className="chart-container">
-              <div className="chart-header"><h3>Top 10 cổ phiếu nắm giữ lớn nhất</h3></div>
+              <div className="chart-header"><h3>{t('fa.top10Title')}</h3></div>
               {topStocks.length > 0 ? (
                 <ResponsiveContainer width="100%" height={240}>
                   <BarChart data={topStocks} layout="vertical" margin={{ left: 8, right: 24, top: 8, bottom: 4 }}>
@@ -396,27 +412,27 @@ export function FundHoldingsAnalysis({ fund, source }: Props) {
                     <XAxis type="number" tickFormatter={(v: number) => `${v}%`} tick={{ fontSize: 11 }} />
                     <YAxis type="category" dataKey="stockCode" width={72} interval={0} tick={{ fontSize: 11 }} />
                     <RechartsTooltip
-                      formatter={(v: number | string) => [`${Number(v).toFixed(2)}%`, 'Tỷ trọng']}
-                      labelFormatter={(t: string) => {
-                        const h = topStocks.find(s => s.stockCode === t)
-                        return h?.industry ? `${t} · ${h.industry}` : t
+                      formatter={(v: number | string) => [`${Number(v).toFixed(2)}%`, t('fa.weight')]}
+                      labelFormatter={(ticker: string) => {
+                        const h = topStocks.find(s => s.stockCode === ticker)
+                        return h?.industry ? `${ticker} · ${sectorName(h.industry)}` : ticker
                       }}
                     />
                     <Bar dataKey="weightPct" fill={ASSET_COLORS.STOCK} isAnimationActive={false} />
                   </BarChart>
                 </ResponsiveContainer>
               ) : (
-                <p className="overlap-empty">Kỳ này không có cổ phiếu.</p>
+                <p className="overlap-empty">{t('fa.noStocks')}</p>
               )}
               <p className="fund-analysis-chart-note">
-                Vài mã đứng đầu quyết định phần lớn hiệu suất cả danh mục.
+                {t('fa.top10Note', { period: resolved ? formatPeriodLabel(resolved) : t('fa.currentPeriod') })}
               </p>
             </div>
           </div>
 
           {concentration.length > 1 && (
             <div className="chart-container">
-              <div className="chart-header"><h3>Mức độ tập trung danh mục (top 5)</h3></div>
+              <div className="chart-header"><h3>{t('fa.concentrationTitle')}</h3></div>
               <ResponsiveContainer width="100%" height={240}>
                 <LineChart data={concentration} margin={{ left: 8, right: 8, top: 8, bottom: 4 }}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} />
@@ -430,25 +446,24 @@ export function FundHoldingsAnalysis({ fund, source }: Props) {
                 </LineChart>
               </ResponsiveContainer>
               <p className="fund-analysis-chart-note">
-                Tổng tỷ trọng 5 cổ phiếu lớn nhất mỗi kỳ. Đường dốc lên liên tục nghĩa là quỹ
-                đang mất dần tính đa dạng hoá.
+                {t('fa.concentrationNote')}
               </p>
             </div>
           )}
 
           <div className="chart-container">
             <div className="chart-header">
-              <h3>Danh mục quỹ ({stockCount} mã)</h3>
+              <h3>{t('fh.portfolioTitle', { n: stockCount })}</h3>
             </div>
             {holdings.length > 0 ? (
               <div className="dca-stats-table-scroll fund-analysis-table-scroll">
                 <table className="dca-stats-table overlap-table">
                   <thead>
                     <tr>
-                      <th>Chứng khoán</th>
-                      <th>Loại</th>
-                      <th>Giá trị</th>
-                      <th>Tỷ trọng</th>
+                      <th>{t('fa.col.security')}</th>
+                      <th>{t('fh.col.type')}</th>
+                      <th>{t('fa.col.value')}</th>
+                      <th>{t('fa.weight')}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -456,9 +471,9 @@ export function FundHoldingsAnalysis({ fund, source }: Props) {
                       <tr key={`${h.type}-${h.stockCode}`}>
                         <td>
                           <span className="fund-analysis-symbol">{h.stockCode}</span>
-                          {h.industry && <span className="fund-analysis-industry">{h.industry}</span>}
+                          {h.industry && <span className="fund-analysis-industry">{sectorName(h.industry)}</span>}
                         </td>
-                        <td>{ASSET_LABELS[h.type]}</td>
+                        <td>{t(ASSET_LABEL_KEYS[h.type])}</td>
                         <td>{h.assetValue > 0 ? formatVND(h.assetValue) : '—'}</td>
                         <td>{h.weightPct.toFixed(2)}%</td>
                       </tr>
@@ -467,7 +482,7 @@ export function FundHoldingsAnalysis({ fund, source }: Props) {
                 </table>
               </div>
             ) : (
-              <p className="overlap-empty">Kỳ này không có khoản nắm giữ nào.</p>
+              <p className="overlap-empty">{t('fh.noHoldingsPeriod')}</p>
             )}
           </div>
         </>

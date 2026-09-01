@@ -3,44 +3,26 @@ import {
 } from 'recharts'
 import { computeVerdictAt, type RedFlagPoint, type Verdict } from '../utils/fundRedFlags'
 import { formatVND, formatVNDAxis } from '../utils/vndFormat'
+import { useT, useTRich, type TranslationKey } from '../i18n'
 
 interface Props {
   points: RedFlagPoint[] // tăng dần theo kỳ
 }
 
-const VERDICT_META: Record<Verdict, { label: string; color: string; bg: string }> = {
-  OK: { label: 'Bình thường', color: '#166534', bg: '#ecfdf5' },
-  WATCH: { label: 'Cần chú ý', color: '#92400e', bg: '#fffbeb' },
-  DANGER: { label: 'Nguy hiểm', color: '#b91c1c', bg: '#fef2f2' },
-  'N/A': { label: 'Thiếu dữ liệu', color: '#9a9890', bg: '#f5f5f4' },
+const VERDICT_META: Record<Verdict, { labelKey: TranslationKey; color: string; bg: string }> = {
+  OK: { labelKey: 'rf.status.ok', color: '#166534', bg: '#ecfdf5' },
+  WATCH: { labelKey: 'rf.status.watch', color: '#92400e', bg: '#fffbeb' },
+  DANGER: { labelKey: 'rf.status.danger', color: '#b91c1c', bg: '#fef2f2' },
+  'N/A': { labelKey: 'rf.status.na', color: '#9a9890', bg: '#f5f5f4' },
 }
 
-const FLAG = {
-  id: 'machine' as const,
-  title: 'Cỗ máy giao dịch',
-  twist: (
-    <>
-      Mỗi tháng, quỹ phải trả 2 loại phí:<br />
-      1. Phí quản lý (2225): tính theo % NAV, trừ đều mỗi ngày. Chắc chắn mất.<br />
-      2. Phí giao dịch (2231): mỗi lần mua bán cổ phiếu. Tỉ lệ với turnover.<br />
-      <br />
-      Turnover là quỹ xoay danh mục bao nhiêu lần trong 12 tháng. Xoay nhiều, phí giao dịch phình,
-      đây là loại phí bạn không thấy trên bảng giá và nó sẽ trừ dần vào NAV, phản ánh lên giá chứng
-      chỉ quỹ.<br />
-      <br />
-      DCDS 07/2026: phí giao dịch 6,06 tỷ, bằng 63% phí quản lý 9,66 tỷ. Turnover 684%, tức xoay
-      gần 7 lần danh mục trong một năm.<br />
-      <br />
-      Giao dịch nhiều chưa chắc là giao dịch giỏi. Quỹ xoay càng mạnh, công ty chứng khoán càng vui.
-      Bạn có vui không, phải nhìn lãi/lỗ thực hiện mới biết.
-    </>
-  ),
-}
-
-function formatPeriodLabel(periodEnd: string): string {
-  const [y, m] = periodEnd.split('-')
-  if (!y || !m) return periodEnd
-  return `Tháng ${Number(m)}/${y}`
+function usePeriodLabel(): (periodEnd: string) => string {
+  const t = useT()
+  return (periodEnd: string) => {
+    const [y, m] = periodEnd.split('-')
+    if (!y || !m) return periodEnd
+    return t('rf.periodLabel', { month: Number(m), year: y })
+  }
 }
 
 function formatAxisTick(periodEnd: string): string {
@@ -52,10 +34,12 @@ function formatAxisTick(periodEnd: string): string {
 const CHART_MARGIN = { left: 8, right: 8, top: 8, bottom: 4 } as const
 
 function buildChartData(points: RedFlagPoint[]): Array<Record<string, unknown>> {
-  return points.map(p => ({ period: p.period, 'Phí môi giới': p.brokerageFee, 'Phí quản lý': p.managementFee }))
+  return points.map(p => ({ period: p.period, brokerage: p.brokerageFee, mgmt: p.managementFee }))
 }
 
 function MachineChart({ data, width, height }: { data: Array<Record<string, unknown>>; width?: number; height?: number }) {
+  const t = useT()
+  const formatPeriodLabel = usePeriodLabel()
   return (
     <BarChart data={data} width={width} height={height} margin={CHART_MARGIN}>
       <CartesianGrid strokeDasharray="3 3" vertical={false} />
@@ -65,13 +49,15 @@ function MachineChart({ data, width, height }: { data: Array<Record<string, unkn
         formatter={(value: number | string, name) => [formatVND(Number(value)), name]}
         labelFormatter={(p: string) => formatPeriodLabel(p)}
       />
-      <Bar dataKey="Phí môi giới" stackId="a" fill="#f97316" isAnimationActive={false} />
-      <Bar dataKey="Phí quản lý" stackId="a" fill="#f59e0b" isAnimationActive={false} />
+      <Bar dataKey="brokerage" name={t('rf.brokerage')} stackId="a" fill="#f97316" isAnimationActive={false} />
+      <Bar dataKey="mgmt" name={t('fa.series.mgmtFee')} stackId="a" fill="#f59e0b" isAnimationActive={false} />
     </BarChart>
   )
 }
 
 export function RedFlagDetectors({ points }: Props) {
+  const t = useT()
+  const tr = useTRich()
   if (points.length === 0) return null
   const idx = points.length - 1
   const summary = computeVerdictAt('machine', points, idx)
@@ -81,25 +67,35 @@ export function RedFlagDetectors({ points }: Props) {
   return (
     <div className="chart-container fund-analysis-chart-wide">
       <div className="chart-header redflag-header">
-        <h3>{FLAG.title}</h3>
+        <h3>{t('rf.tradingMachine.title')}</h3>
         <span className="redflag-badge" style={{ background: meta.bg, color: meta.color }}>
-          {meta.label}
+          {t(meta.labelKey)}
         </span>
       </div>
       <div className="redflag-metrics">
         {summary.keyMetric !== null && (
-          <span>Turnover 12T: <strong>{Math.round(summary.keyMetric)}%</strong></span>
+          <span>{tr('rf.turnover12m', { v: Math.round(summary.keyMetric) })}</span>
         )}
-        {summary.extra !== null && <span>Phí MG/FM: <strong>{summary.extra}</strong></span>}
+        {summary.extra !== null && <span>{tr('rf.ratio', { v: summary.extra })}</span>}
       </div>
       <ResponsiveContainer width="100%" height={240}>
         <MachineChart data={data} />
       </ResponsiveContainer>
       <div className="fund-analysis-stack-legend">
-        <span className="fund-analysis-stack-legend-item"><span className="fund-analysis-stack-legend-dot" style={{ backgroundColor: '#f97316' }} />Phí môi giới (2231)</span>
-        <span className="fund-analysis-stack-legend-item"><span className="fund-analysis-stack-legend-dot" style={{ backgroundColor: '#f59e0b' }} />Phí quản lý (2225)</span>
+        <span className="fund-analysis-stack-legend-item"><span className="fund-analysis-stack-legend-dot" style={{ backgroundColor: '#f97316' }} />{t('rf.legend.brokerage')}</span>
+        <span className="fund-analysis-stack-legend-item"><span className="fund-analysis-stack-legend-dot" style={{ backgroundColor: '#f59e0b' }} />{t('rf.legend.mgmt')}</span>
       </div>
-      <p className="fund-analysis-chart-note">{FLAG.twist}</p>
+      <p className="fund-analysis-chart-note">
+        {t('rf.tm.note1')}<br />
+        {t('rf.tm.note2')}<br />
+        {t('rf.tm.note3')}<br />
+        <br />
+        {t('rf.tm.note4')}<br />
+        <br />
+        {t('rf.tm.note5')}<br />
+        <br />
+        {t('rf.tm.note6')}
+      </p>
     </div>
   )
 }

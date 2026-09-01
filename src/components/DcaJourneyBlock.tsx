@@ -8,7 +8,9 @@
  * phải kể: "đã nạp X, giờ có Y, lời ròng Z, đó bằng cái gì trong đời thực".
  */
 import { Fragment, memo } from 'react'
-import { formatVND, vndComparison } from '../utils/vndFormat'
+import { formatVND, vndComparisonKey } from '../utils/vndFormat'
+import { useT, useTRich, translateStatic } from '../i18n'
+import { useLanguage, type Language } from '../hooks/useLanguage'
 import { dcaYearlyMWRR } from '../utils/dca'
 
 export interface JourneyPortfolio {
@@ -30,36 +32,42 @@ interface Props {
 }
 
 function DcaJourneyBlockImpl({ portfolios, startDate, endDate }: Props) {
+  const t = useT()
+  const tr = useTRich()
+  const { language } = useLanguage()
   if (portfolios.length === 0) return null
 
-  const period = describePeriod(startDate, endDate)
+  const period = describePeriod(startDate, endDate, language)
 
   // Single portfolio → full narrative
   if (portfolios.length === 1) {
     const p = portfolios[0]!
     const netProfit = p.finalValue - p.totalInvested
     const profitPct = p.totalInvested > 0 ? (netProfit / p.totalInvested) * 100 : 0
-    const comparison = netProfit > 0 ? vndComparison(netProfit) : null
+    const comparisonKey = netProfit > 0 ? vndComparisonKey(netProfit) : null
+    const comparison = comparisonKey ? t(comparisonKey) : null
 
     return (
       <div className="dca-journey-block">
         <div className="dca-journey-headline">
-          Trong suốt <strong>{period}</strong>, đều đặn mỗi tháng bạn để dành một
-          khoản tiền để mua <strong style={{ color: p.color }}>{p.name}</strong>.
-          Tổng cộng đã đầu tư <strong>{formatVND(p.totalInvested)}</strong>.
+          {tr('journey.headlineSingle', {
+            period,
+            name: p.name,
+            invested: formatVND(p.totalInvested),
+          })}
         </div>
 
         <div className="dca-journey-grid">
           <div className="dca-journey-stat">
-            <div className="dca-journey-stat-label">Tổng tiền đã đầu tư</div>
+            <div className="dca-journey-stat-label">{t('journey.stat.invested')}</div>
             <div className="dca-journey-stat-value">{formatVND(p.totalInvested)}</div>
           </div>
           <div className="dca-journey-stat dca-journey-stat--highlight">
-            <div className="dca-journey-stat-label">Tổng giá trị danh mục</div>
+            <div className="dca-journey-stat-label">{t('journey.stat.value')}</div>
             <div className="dca-journey-stat-value">{formatVND(p.finalValue)}</div>
           </div>
           <div className={`dca-journey-stat dca-journey-stat--${netProfit >= 0 ? 'pos' : 'neg'}`}>
-            <div className="dca-journey-stat-label">Lợi nhuận</div>
+            <div className="dca-journey-stat-label">{t('journey.stat.profit')}</div>
             <div className="dca-journey-stat-value">
               {netProfit >= 0 ? '+' : ''}{formatVND(netProfit)}
             </div>
@@ -69,14 +77,22 @@ function DcaJourneyBlockImpl({ portfolios, startDate, endDate }: Props) {
           </div>
         </div>
 
-        {netProfit > 0 && comparison && (
+        {netProfit > 0 && (
           <div className="dca-journey-takeaway">
             <span className="dca-journey-takeaway-icon">💰</span>
             <div>
-              <strong>Sau {period}, danh mục lời {profitPct.toFixed(1)}% tương đương
-              {' '}{formatVND(netProfit)}</strong>, bằng <strong>{comparison}</strong>.
-              Đó là khoản sinh ra nhờ bạn đầu tư đều đặn qua từng tháng, không cần
-              đoán đỉnh đoán đáy thị trường.
+              {comparison
+                ? tr('journey.takeaway.gain', {
+                    period,
+                    pct: profitPct.toFixed(1),
+                    profit: formatVND(netProfit),
+                    comparison,
+                  })
+                : tr('journey.takeaway.gainNoComparison', {
+                    period,
+                    pct: profitPct.toFixed(1),
+                    profit: formatVND(netProfit),
+                  })}
             </div>
           </div>
         )}
@@ -84,12 +100,7 @@ function DcaJourneyBlockImpl({ portfolios, startDate, endDate }: Props) {
           <div className="dca-journey-takeaway dca-journey-takeaway--neg">
             <span className="dca-journey-takeaway-icon">📉</span>
             <div>
-              Sau <strong>{period}</strong>, danh mục vẫn đang lỗ
-              {' '}<strong>{profitPct.toFixed(1)}%</strong>. Thị trường chứng khoán
-              Việt Nam là thị trường cận biên, từ bull sang bear diễn ra chóng vánh.
-              {' '}Giai đoạn đầu DCA không suôn sẻ là điều bình thường. Có thể bạn
-              đang rơi vào vùng trũng tương tự 2018-2019 hoặc sau COVID 3/2020. Thử
-              chọn khoảng thời gian dài hơn để thấy bức tranh đầy đủ hơn.
+              {tr('journey.takeaway.loss', { period, pct: Math.abs(profitPct).toFixed(1) })}
             </div>
           </div>
         )}
@@ -102,13 +113,13 @@ function DcaJourneyBlockImpl({ portfolios, startDate, endDate }: Props) {
   const winner = sorted[0]!
   const loser = sorted[sorted.length - 1]!
   const gap = winner.finalValue - loser.finalValue
-  const gapComparison = gap > 0 ? vndComparison(gap) : null
+  const gapComparisonKey = gap > 0 ? vndComparisonKey(gap) : null
+  const gapComparison = gapComparisonKey ? t(gapComparisonKey) : null
 
   return (
     <div className="dca-journey-block">
       <div className="dca-journey-headline">
-        Cùng một lịch nạp tiền, cùng trải qua <strong>{period}</strong>, nhưng
-        {' '}<strong>{portfolios.length} danh mục</strong> lại cho kết quả rất khác nhau.
+        {tr('journey.headlineMulti', { period, n: portfolios.length })}
       </div>
 
       <div className="dca-journey-ranked">
@@ -124,7 +135,7 @@ function DcaJourneyBlockImpl({ portfolios, startDate, endDate }: Props) {
               </div>
               <div className="dca-journey-card-value">{formatVND(p.finalValue)}</div>
               <div className="dca-journey-card-sub">
-                Nạp {formatVND(p.totalInvested)}, lời
+                {t('journey.rankLine', { invested: formatVND(p.totalInvested) })}
                 {' '}<span className={netProfit >= 0 ? 'dca-journey-pos' : 'dca-journey-neg'}>
                   {netProfit >= 0 ? '+' : ''}{formatVND(netProfit)} ({netProfit >= 0 ? '+' : ''}{profitPct.toFixed(1)}%)
                 </span>
@@ -138,12 +149,10 @@ function DcaJourneyBlockImpl({ portfolios, startDate, endDate }: Props) {
         <div className="dca-journey-takeaway">
           <span className="dca-journey-takeaway-icon">🎯</span>
           <div>
-            Chênh lệch giữa <strong style={{ color: winner.color }}>{winner.name}</strong> và
-            {' '}<strong style={{ color: loser.color }}>{loser.name}</strong> là
-            {' '}<strong>{formatVND(gap)}</strong>
-            {gapComparison && <>, bằng <strong>{gapComparison}</strong></>}.
-            {' '}Cùng số tiền, cùng khoảng thời gian, nhưng chọn quỹ khác nhau thì
-            kết cục cũng khác nhau. Đó là lý do vì sao lựa chọn quỹ lại quan trọng đến vậy.
+            {tr('journey.gap', { winner: winner.name, loser: loser.name })}
+            <strong>{formatVND(gap)}</strong>
+            {gapComparison && tr('journey.gapComparison', { thing: gapComparison })}.
+            {t('journey.gapTail')}
           </div>
         </div>
       )}
@@ -165,6 +174,8 @@ export const DcaJourneyBlock = memo(DcaJourneyBlockImpl)
  * năm chỉ có ~12 lần nạp tiền.
  */
 function EOYReturnsTableImpl({ portfolios }: { portfolios: JourneyPortfolio[] }) {
+  const t = useT()
+  const tr = useTRich()
   const perPortfolio = portfolios.map(p => ({
     id: p.id,
     name: p.name,
@@ -184,31 +195,25 @@ function EOYReturnsTableImpl({ portfolios }: { portfolios: JourneyPortfolio[] })
 
   return (
     <div className="dca-eoy-block">
-      <h4 className="dca-eoy-title">Hiệu suất danh mục của bạn từng năm</h4>
+      <h4 className="dca-eoy-title">{t('journey.eoy.title')}</h4>
       <p className="dca-eoy-explainer">
-        Bảng này tính hiệu suất <strong>có tính đến dòng tiền bạn thực sự nạp</strong>
-        {' '}(Modified Dietz method), không phải hiệu suất "nếu đầu tư 1 lần từ đầu"
-        của bản thân quỹ. Tiền nạp càng sớm trong năm càng được tính trọng số cao
-        (có nhiều thời gian sinh lời hơn), tiền nạp cuối năm gần như chưa kịp sinh
-        lời. Nhờ vậy con số này phản ánh đúng trải nghiệm DCA thực tế của bạn, thay
-        vì chỉ đo giá quỹ tăng/giảm bao nhiêu. Cột "Giá trị" là số dư danh mục tại
-        điểm cuối năm đó (đã gồm mọi lần nạp tính đến lúc đó).
+        {tr('journey.eoy.intro')}
       </p>
       <div className="dca-eoy-table-scroll">
         <table className="dca-eoy-table">
           <thead>
             <tr>
-              <th rowSpan={2} className="dca-eoy-th-year">Năm</th>
+              <th rowSpan={2} className="dca-eoy-th-year">{t('journey.eoy.year')}</th>
               {perPortfolio.map(p => (
                 <th key={p.id} colSpan={2} className="dca-eoy-group-start" style={{ color: p.color }}>{p.name}</th>
               ))}
-              {showDiff && <th rowSpan={2} className="dca-eoy-group-start">Chênh lệch</th>}
+              {showDiff && <th rowSpan={2} className="dca-eoy-group-start">{t('journey.eoy.gap')}</th>}
             </tr>
             <tr>
               {perPortfolio.map(p => (
                 <Fragment key={p.id}>
-                  <th className="dca-eoy-subhead dca-eoy-group-start">Lợi nhuận</th>
-                  <th className="dca-eoy-subhead">Giá trị</th>
+                  <th className="dca-eoy-subhead dca-eoy-group-start">{t('journey.eoy.return')}</th>
+                  <th className="dca-eoy-subhead">{t('journey.eoy.value')}</th>
                 </Fragment>
               ))}
             </tr>
@@ -250,7 +255,7 @@ function EOYReturnsTableImpl({ portfolios }: { portfolios: JourneyPortfolio[] })
                     <td
                       className={`dca-eoy-cell dca-eoy-group-start ${diffPct === null ? 'dca-eoy-cell--empty' : diffPct >= 0 ? 'dca-eoy-cell--pos' : 'dca-eoy-cell--neg'}`}
                     >
-                      {diffPct === null ? '—' : `${diffPct >= 0 ? '+' : ''}${diffPct.toFixed(1)} điểm %`}
+                      {diffPct === null ? '—' : t('journey.eoy.points', { v: `${diffPct >= 0 ? '+' : ''}${diffPct.toFixed(1)}` })}
                     </td>
                   )}
                 </tr>
@@ -260,8 +265,8 @@ function EOYReturnsTableImpl({ portfolios }: { portfolios: JourneyPortfolio[] })
         </table>
       </div>
       <div className="dca-eoy-footnote">
-        * Năm chưa đủ dữ liệu trọn năm (năm đầu hoặc năm cuối của khoảng so sánh).
-        {showDiff && ' "Chênh lệch" = lợi nhuận danh mục thứ 2 trừ danh mục thứ 1, tính bằng điểm phần trăm.'}
+        {t('journey.eoy.footnote')}
+        {showDiff && t('journey.eoy.gapFootnote')}
       </div>
     </div>
   )
@@ -270,18 +275,18 @@ function EOYReturnsTableImpl({ portfolios }: { portfolios: JourneyPortfolio[] })
 export const EOYReturnsTable = memo(EOYReturnsTableImpl)
 
 /** Mô tả khoảng thời gian: "8 năm 3 tháng", "15 tháng", "45 ngày"... */
-function describePeriod(startDate: string, endDate: string): string {
+function describePeriod(startDate: string, endDate: string, lang: Language): string {
   const start = new Date(startDate)
   const end = new Date(endDate)
   const ms = end.getTime() - start.getTime()
   const days = Math.floor(ms / (24 * 3600 * 1000))
-  if (days < 60) return `${days} ngày`
+  if (days < 60) return translateStatic('journey.period.days', lang, { n: days })
 
   const totalMonths = Math.floor(days / 30.44)
-  if (totalMonths < 12) return `${totalMonths} tháng`
+  if (totalMonths < 12) return translateStatic('journey.period.months', lang, { n: totalMonths })
 
   const years = Math.floor(totalMonths / 12)
   const months = totalMonths - years * 12
-  if (months === 0) return `${years} năm`
-  return `${years} năm ${months} tháng`
+  if (months === 0) return translateStatic('journey.period.years', lang, { n: years })
+  return translateStatic('journey.period.yearsMonths', lang, { y: years, m: months })
 }

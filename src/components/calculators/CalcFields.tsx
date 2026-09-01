@@ -1,4 +1,5 @@
 import { MoneyInput } from '../MoneyInput'
+import { useT } from '../../i18n'
 
 /**
  * Mấy ô nhập dùng chung cho cả 3 máy tính.
@@ -39,6 +40,7 @@ interface PercentFieldProps {
 }
 
 export function PercentField({ label, value, onChange, step = 0.5, max = 100, hint }: PercentFieldProps) {
+  const t = useT()
   return (
     <div className="dca-param-row">
       <label className="dca-label">{label}</label>
@@ -55,7 +57,7 @@ export function PercentField({ label, value, onChange, step = 0.5, max = 100, hi
             onChange(pct / 100)
           }}
         />
-        <span className="calc-unit">%/năm</span>
+        <span className="calc-unit">{t('calc.unit.perYear')}</span>
       </div>
       {hint && <span className="calc-field-hint">{hint}</span>}
     </div>
@@ -70,6 +72,7 @@ interface YearsFieldProps {
 }
 
 export function YearsField({ label, value, onChange, max = 60 }: YearsFieldProps) {
+  const t = useT()
   return (
     <div className="dca-param-row">
       <label className="dca-label">{label}</label>
@@ -86,7 +89,7 @@ export function YearsField({ label, value, onChange, max = 60 }: YearsFieldProps
             onChange(years)
           }}
         />
-        <span className="calc-unit">năm</span>
+        <span className="calc-unit">{t('calc.unit.years')}</span>
       </div>
     </div>
   )

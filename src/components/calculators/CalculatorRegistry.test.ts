@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { CALCULATORS, DEFAULT_CALCULATOR_ID, findCalculator } from './CalculatorRegistry'
+import { translateStatic } from '../../i18n'
 
 /**
  * Canh chặn registry. Thêm máy tính mới rất dễ copy nhầm id hoặc slug của cái cũ,
@@ -24,10 +25,12 @@ describe('CalculatorRegistry', () => {
     }
   })
 
-  it('máy tính nào cũng có nhãn và mô tả', () => {
+  it('máy tính nào cũng có nhãn và mô tả, ở cả hai ngôn ngữ', () => {
     for (const calc of CALCULATORS) {
-      expect(calc.label.trim().length).toBeGreaterThan(0)
-      expect(calc.description.trim().length).toBeGreaterThan(0)
+      for (const lang of ['vi', 'en'] as const) {
+        expect(translateStatic(calc.labelKey, lang).trim().length).toBeGreaterThan(0)
+        expect(translateStatic(calc.descriptionKey, lang).trim().length).toBeGreaterThan(0)
+      }
     }
   })
 

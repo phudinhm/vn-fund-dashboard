@@ -1,10 +1,12 @@
 import { useState } from 'react'
+import { useT } from '../i18n'
 
 interface Props {
   getUrl: () => string
 }
 
 export function ShareButton({ getUrl }: Props) {
+  const t = useT()
   const [copied, setCopied] = useState(false)
 
   async function handleClick() {
@@ -27,7 +29,7 @@ export function ShareButton({ getUrl }: Props) {
 
   return (
     <button className={`share-btn ${copied ? 'share-btn-copied' : ''}`} onClick={handleClick}>
-      {copied ? '✓ Đã copy link!' : '🔗 Copy link chia sẻ'}
+      {t(copied ? 'share.copied' : 'share.copy')}
     </button>
   )
 }

@@ -1,6 +1,7 @@
 import { memo } from 'react'
 import type { PortfolioStats } from './PerformanceTable'
 import { formatVND } from '../utils/vndFormat'
+import { useT, useTRich } from '../i18n'
 
 interface Props {
   investAmount: number
@@ -17,6 +18,8 @@ interface Props {
  * chịu nổi về mặt tâm lý (pain threshold), không chỉ về mặt toán học.
  */
 function SleepTestBlockImpl({ investAmount, stats }: Props) {
+  const t = useT()
+  const tr = useTRich()
   if (stats.length < 2) return null
 
   const base = stats[0]!
@@ -32,24 +35,21 @@ function SleepTestBlockImpl({ investAmount, stats }: Props) {
   return (
     <div className="sleep-test-container">
       <div className="chart-header">
-        <h3>Bài kiểm tra tâm lý: nếu rơi xuống đáy, bạn còn bao nhiêu?</h3>
-        <span
-          className="chart-tooltip-icon"
-          title="Ba chỉ số rủi ro dịch ra số tiền thật. Tệ nhất 1 tuần / 1 tháng là biến động ngắn hạn trong lịch sử. Drawdown tệ nhất là mức sụt giảm sâu nhất từ đỉnh xuống đáy trong toàn bộ thời kỳ mô phỏng. Dùng để đánh giá bạn có ngủ ngon được với danh mục này không."
-        >?</span>
+        <h3>{t('sleep.title')}</h3>
+        <span className="chart-tooltip-icon" title={t('sleep.help')}>?</span>
       </div>
       <div className="sleep-test-intro">
-        Nếu danh mục bạn có <strong>{formatVND(investAmount)}</strong>, ở các điểm tệ nhất trong lịch sử mô phỏng, danh mục còn lại:
+        {tr('sleep.intro', { amount: formatVND(investAmount) })}
       </div>
 
       <div className="perf-table-wrap">
         <table className="perf-table sleep-test-table">
           <thead>
             <tr>
-              <th className="perf-th-name">Danh mục</th>
-              <th title="Tuần giảm mạnh nhất trong lịch sử. Số tiền là danh mục còn lại sau tuần đó.">Tệ nhất 1 tuần</th>
-              <th title="Khoảng 4 tuần liên tiếp giảm mạnh nhất. Số tiền là danh mục còn lại sau 4 tuần đó.">Tệ nhất 1 tháng</th>
-              <th title="Mức sụt giảm sâu nhất từ đỉnh xuống đáy. Số tiền là danh mục còn lại tại điểm đáy.">Drawdown tệ nhất</th>
+              <th className="perf-th-name">{t('sleep.colPortfolio')}</th>
+              <th title={t('sleep.colWorstWeekHelp')}>{t('sleep.colWorstWeek')}</th>
+              <th title={t('sleep.colWorstMonthHelp')}>{t('sleep.colWorstMonth')}</th>
+              <th title={t('sleep.colMaxDDHelp')}>{t('sleep.colMaxDD')}</th>
             </tr>
           </thead>
           <tbody>
@@ -61,15 +61,15 @@ function SleepTestBlockImpl({ investAmount, stats }: Props) {
                 </td>
                 <td className="perf-neg sleep-cell">
                   <div className="sleep-pct">{fmtPct(s.worstWeek)}</div>
-                  <div className="sleep-vnd">còn {formatVND(investAmount * (1 + s.worstWeek))}</div>
+                  <div className="sleep-vnd">{t('sleep.left', { amount: formatVND(investAmount * (1 + s.worstWeek)) })}</div>
                 </td>
                 <td className="perf-neg sleep-cell">
                   <div className="sleep-pct">{fmtPct(s.worstMonth)}</div>
-                  <div className="sleep-vnd">còn {formatVND(investAmount * (1 + s.worstMonth))}</div>
+                  <div className="sleep-vnd">{t('sleep.left', { amount: formatVND(investAmount * (1 + s.worstMonth)) })}</div>
                 </td>
                 <td className="perf-neg sleep-cell">
                   <div className="sleep-pct">{fmtPct(s.maxDD)}</div>
-                  <div className="sleep-vnd">còn {formatVND(investAmount * (1 + s.maxDD))}</div>
+                  <div className="sleep-vnd">{t('sleep.left', { amount: formatVND(investAmount * (1 + s.maxDD)) })}</div>
                 </td>
               </tr>
             ))}
@@ -81,8 +81,11 @@ function SleepTestBlockImpl({ investAmount, stats }: Props) {
         <div className="sleep-test-takeaway">
           <span className="mm-takeaway-emoji">😰</span>
           <span>
-            Với <strong>{worstBtc.name}</strong>, có thời điểm danh mục <strong>{formatVND(investAmount)}</strong> của bạn chỉ còn{' '}
-            <strong>{formatVND(btcFloor)}</strong>. Nhìn con số đó, bạn có ngủ được không? Nếu không, giảm tỷ trọng Bitcoin xuống mức thấp hơn.
+            {tr('sleep.takeaway', {
+              name: worstBtc.name,
+              amount: formatVND(investAmount),
+              floor: formatVND(btcFloor),
+            })}
           </span>
         </div>
       )}

@@ -1622,9 +1622,14 @@ button:not(:disabled):active {
   line-height: 1.5;
 }
 
-.money-amount-highlight {
+/* Số tiền nổi bật trong tiêu đề khối "máy in tiền". Bản dịch dựng câu bằng
+   thẻ <i> của renderRich nên khai báo cả hai selector, khỏi phải đẻ ra một
+   cơ chế đánh dấu riêng chỉ để giữ đúng một class. */
+.money-amount-highlight,
+.money-machine-header h3 em {
   color: var(--color-primary);
   font-weight: 700;
+  font-style: normal;
   padding: 0 4px;
 }
 

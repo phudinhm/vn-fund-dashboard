@@ -4,6 +4,7 @@ import {
 } from 'recharts'
 import type { CompoundInterestPoint } from '../../utils/calculators'
 import { formatVNDAxis, formatVNDFull } from '../../utils/vndFormat'
+import { useT, useTRich, useDecimal } from '../../i18n'
 
 /**
  * Biểu đồ lãi kép: hai lớp chồng lên nhau, dưới là tiền bạn đầu tư, trên là phần
@@ -22,17 +23,19 @@ interface TooltipProps {
 }
 
 function CustomTooltip({ active, payload }: TooltipProps) {
+  const t = useT()
+  const dec = useDecimal()
   const point = payload?.[0]?.payload
   if (!active || !point) return null
   const tyLeLai = point.finalValue > 0 ? (point.interestEarned / point.finalValue) * 100 : 0
   return (
     <div className="custom-tooltip">
-      <p className="ct-date">Năm thứ {point.year}</p>
-      <p style={{ color: MAU_VON }}>Tiền bạn đầu tư: {formatVNDFull(point.contributions)}</p>
-      <p style={{ color: MAU_LAI }}>Lãi kép sinh ra: {formatVNDFull(point.interestEarned)}</p>
-      <p style={{ fontWeight: 600 }}>Tổng: {formatVNDFull(point.finalValue)}</p>
+      <p className="ct-date">{t('calc.tooltip.yearN', { n: point.year })}</p>
+      <p style={{ color: MAU_VON }}>{t('calc.compound.tooltipContrib', { v: formatVNDFull(point.contributions) })}</p>
+      <p style={{ color: MAU_LAI }}>{t('calc.compound.tooltipInterest', { v: formatVNDFull(point.interestEarned) })}</p>
+      <p style={{ fontWeight: 600 }}>{t('calc.compound.tooltipTotal', { v: formatVNDFull(point.finalValue) })}</p>
       <p style={{ color: 'var(--color-text-muted)' }}>
-        Lãi chiếm {tyLeLai.toFixed(1).replace('.', ',')}% danh mục
+        {t('calc.compound.tooltipShare', { pct: dec(tyLeLai, 1) })}
       </p>
     </div>
   )
@@ -43,6 +46,8 @@ interface Props {
 }
 
 function CompoundInterestChartImpl({ series }: Props) {
+  const t = useT()
+  const tr = useTRich()
   if (series.length < 2) return null
 
   // Năm đầu tiên phần lãi vượt phần vốn. Không phải lúc nào cũng có, góp thêm
@@ -52,11 +57,8 @@ function CompoundInterestChartImpl({ series }: Props) {
   return (
     <div className="calc-chart">
       <div className="chart-header">
-        <h3>Tăng trưởng tài sản</h3>
-        <span
-          className="chart-tooltip-icon"
-          title="Mảng xám phía dưới là tiền chính bạn đầu tư, gồm vốn ban đầu và tiền góp thêm hàng tháng. Mảng cam phía trên là phần lãi kép sinh ra. Càng về sau mảng cam càng dày, đó là lúc tiền tự đẻ ra tiền nhiều hơn phần bạn nạp vào."
-        >?</span>
+        <h3>{t('calc.compound.chartTitle')}</h3>
+        <span className="chart-tooltip-icon" title={t('calc.compound.chartHelp')}>?</span>
       </div>
 
       <ResponsiveContainer width="100%" height={280}>
@@ -65,9 +67,9 @@ function CompoundInterestChartImpl({ series }: Props) {
           <XAxis
             dataKey="year"
             tick={{ fontSize: 11 }}
-            tickFormatter={y => (y === 0 ? 'Bắt đầu' : `${y}n`)}
+            tickFormatter={y => (y === 0 ? t('calc.axis.start') : t('calc.axis.year', { n: y }))}
           />
-          <YAxis tick={{ fontSize: 11 }} tickFormatter={formatVNDAxis} width={62} />
+          <YAxis tick={{ fontSize: 11 }} tickFormatter={v => formatVNDAxis(v)} width={62} />
           <Tooltip content={<CustomTooltip />} />
           <Area
             type="monotone"
@@ -93,20 +95,16 @@ function CompoundInterestChartImpl({ series }: Props) {
       <div className="calc-legend">
         <span className="calc-legend-item">
           <span className="calc-legend-swatch" style={{ background: MAU_VON, opacity: 0.55 }} />
-          Tiền bạn đầu tư
+          {t('calc.compound.legendContrib')}
         </span>
         <span className="calc-legend-item">
           <span className="calc-legend-swatch" style={{ background: MAU_LAI, opacity: 0.65 }} />
-          Lãi kép sinh ra
+          {t('calc.compound.legendInterest')}
         </span>
       </div>
 
       {namLaiVuotVon !== undefined && (
-        <p className="calc-note">
-          Từ năm thứ <strong>{namLaiVuotVon}</strong> trở đi, phần lãi dày hơn phần vốn bạn đầu tư.
-          Trước mốc đó tiền lớn chậm tới mức dễ nản. Lãi kép trả công cho người ngồi yên được lâu,
-          không trả công cho người nạp nhiều.
-        </p>
+        <p className="calc-note">{tr('calc.compound.crossover', { year: namLaiVuotVon })}</p>
       )}
     </div>
   )

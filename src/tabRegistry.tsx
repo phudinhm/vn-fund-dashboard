@@ -39,7 +39,10 @@ export type TabId =
 /** Manifest của một tab trong registry. */
 export interface TabManifest {
   id: TabId
-  label: string
+  /**
+   * Nhãn hiển thị KHÔNG nằm ở đây. App.tsx tra `tab.<id>` trong từ điển, nên
+   * một chuỗi tên tab trong registry chỉ là bản sao thứ hai chờ lệch nhau.
+   */
   /** true = giữ state khi ẩn bằng CSS; false = mount khi active */
   keepMounted: boolean
   /** Class tùy chọn gắn vào div bọc panel (vd `compare-content` để CSS style tiêu đề). */
@@ -64,7 +67,6 @@ export interface TabContext {
 export const TAB_REGISTRY: TabManifest[] = [
   {
     id: 'compare',
-    label: 'So Sánh',
     keepMounted: true,
     wrapperClass: 'compare-content',
     render: ({ metadata, state, onChangeFunds, onChangeDateFrom, onChangeDateTo, onChangeRollingPeriod }: TabContext): ReactElement => (
@@ -83,7 +85,6 @@ export const TAB_REGISTRY: TabManifest[] = [
   },
   {
     id: 'watchlist',
-    label: 'Theo Dõi',
     keepMounted: false,
     render: ({ metadata, updateState }: TabContext): ReactElement => (
       <WatchlistPanel
@@ -94,55 +95,46 @@ export const TAB_REGISTRY: TabManifest[] = [
   },
   {
     id: 'dca',
-    label: 'DCA',
     keepMounted: true,
     render: ({ metadata, state, dcaUrlParams }: TabContext): ReactElement => <DCAPanel funds={metadata} active={state.tab === 'dca'} shareUrl={dcaUrlParams} />,
   },
   {
     id: 'lsdca',
-    label: 'LS vs DCA',
     keepMounted: true,
     render: ({ metadata, state, lsDcaUrlParams }: TabContext): ReactElement => <LumpSumDCAPanel funds={metadata} active={state.tab === 'lsdca'} shareUrl={lsDcaUrlParams} />,
   },
   {
     id: 'fundanalysis',
-    label: 'Phân Tích Quỹ',
     keepMounted: true,
     render: ({ metadata }: TabContext): ReactElement => <FundAnalysisPanel funds={metadata} />,
   },
   {
     id: 'overlap',
-    label: 'Overlap',
     keepMounted: true,
     render: ({ metadata }: TabContext): ReactElement => <OverlapPanel funds={metadata} />,
   },
   {
     id: 'rebalance',
-    label: 'Tái Cân Bằng',
     keepMounted: true,
     render: ({ metadata }: TabContext): ReactElement => <RebalanceSensitivityPanel funds={metadata} />,
   },
   {
     id: 'tactical',
-    label: 'Chiến Thuật Phân Bổ',
     keepMounted: true,
     render: ({ metadata }: TabContext): ReactElement => <TacticalAllocationPanel funds={metadata} />,
   },
   {
     id: 'bitcoin',
-    label: 'Bitcoin',
     keepMounted: true,
     render: ({ metadata }: TabContext): ReactElement => <BitcoinPanel funds={metadata} />,
   },
   {
     id: 'wallofworry',
-    label: 'Wall of Worry',
     keepMounted: true,
     render: (): ReactElement => <WallOfWorryPanel />,
   },
   {
     id: 'calculator',
-    label: 'Máy Tính',
     keepMounted: false,
     render: ({ state, onSelectCalculator }: TabContext): ReactElement => (
       <CalculatorTab calcId={state.calcId} onSelect={onSelectCalculator} />
@@ -150,7 +142,6 @@ export const TAB_REGISTRY: TabManifest[] = [
   },
   {
     id: 'methodology',
-    label: 'Minh Bạch Hoá',
     keepMounted: false,
     render: (): ReactElement => <MethodologyPanel />,
   },

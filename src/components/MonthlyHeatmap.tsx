@@ -1,5 +1,6 @@
 import { useState, type CSSProperties } from 'react'
 import type { MonthlyReturn } from '../types'
+import { useT } from '../i18n'
 
 interface MonthlyHeatmapSeries {
   name: string
@@ -37,6 +38,7 @@ function textColor(value: number): string {
 }
 
 export function MonthlyHeatmap({ series }: Props) {
+  const t = useT()
   // Quỹ đang xem. Mặc định quỹ đầu tiên, bấm legend để đổi.
   const [selected, setSelected] = useState(0)
 
@@ -57,8 +59,8 @@ export function MonthlyHeatmap({ series }: Props) {
   return (
     <div className="chart-container">
       <div className="chart-header">
-        <h3>Lợi nhuận theo tháng (heatmap)</h3>
-        <span className="chart-tooltip-icon" title="Mỗi ô là lợi nhuận của một tháng dương lịch. Xanh khi lời, đỏ khi lỗ, càng đậm càng mạnh. Bấm tên quỹ để đổi quỹ đang xem.">?</span>
+        <h3>{t('heatmap.title')}</h3>
+        <span className="chart-tooltip-icon" title={t('heatmap.help')}>?</span>
       </div>
 
       {series.length > 1 && (
@@ -92,7 +94,7 @@ export function MonthlyHeatmap({ series }: Props) {
                     <div
                       key={mi}
                       className="hm-cell hm-cell--na"
-                      title="Không có dữ liệu tháng này: hoặc quỹ chưa ra đời, hoặc nằm ngoài khoảng thời gian đã chọn"
+                      title={t('heatmap.noData')}
                     >·</div>
                   )
                 }
@@ -102,7 +104,7 @@ export function MonthlyHeatmap({ series }: Props) {
                     key={mi}
                     className={`hm-cell${month.isPartial ? ' hm-cell--partial' : ''}`}
                     style={style}
-                    title={`${month.year}/${month.month} → ${(month.value * 100).toFixed(1)}%${month.isPartial ? ' (tháng chưa trọn)' : ''}`}
+                    title={`${month.year}/${month.month} → ${(month.value * 100).toFixed(1)}%${month.isPartial ? t('heatmap.partial') : ''}`}
                   >
                     <span style={{ color: textColor(month.value) }}>
                       {(month.value * 100).toFixed(1)}
@@ -116,7 +118,7 @@ export function MonthlyHeatmap({ series }: Props) {
       </div>
 
       <div className="hm-legend">
-        <span className="hm-legend-label">Lỗ</span>
+        <span className="hm-legend-label">{t('heatmap.loss')}</span>
         <span className="hm-legend-swatch hm-legend-swatch--neg3" />
         <span className="hm-legend-swatch hm-legend-swatch--neg2" />
         <span className="hm-legend-swatch hm-legend-swatch--neg1" />
@@ -124,8 +126,8 @@ export function MonthlyHeatmap({ series }: Props) {
         <span className="hm-legend-swatch hm-legend-swatch--pos1" />
         <span className="hm-legend-swatch hm-legend-swatch--pos2" />
         <span className="hm-legend-swatch hm-legend-swatch--pos3" />
-        <span className="hm-legend-label">Lời</span>
-        <span className="hm-legend-unit">(0–12%+ mỗi tháng)</span>
+        <span className="hm-legend-label">{t('heatmap.gain')}</span>
+        <span className="hm-legend-unit">{t('heatmap.scale')}</span>
       </div>
     </div>
   )

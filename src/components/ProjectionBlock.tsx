@@ -16,6 +16,7 @@ import {
 } from 'recharts'
 import { formatVND } from '../utils/vndFormat'
 import { MoneyInput } from './MoneyInput'
+import { useT, useTRich, type TranslationKey } from '../i18n'
 
 export interface ProjectionPortfolio {
   id: string
@@ -36,6 +37,7 @@ interface Props {
 const HORIZON_OPTIONS = [5, 10, 20, 30]
 
 function ProjectionBlockImpl({ portfolios }: Props) {
+  const t = useT()
   const [years, setYears] = useState<number>(10)
   const [contribOverride, setContribOverride] = useState<number | null>(null)
 
@@ -53,28 +55,26 @@ function ProjectionBlockImpl({ portfolios }: Props) {
 
   return (
     <div className="dca-projection-block">
-      <h3 className="dca-projection-title">Nếu bạn kiên trì thêm nhiều năm nữa thì sao?</h3>
+      <h3 className="dca-projection-title">{t('proj.title')}</h3>
       <p className="dca-projection-sub">
-        Giả sử bạn vẫn đều đặn nạp tiền mỗi tháng như bây giờ, và CAGR tương lai loanh
-        quanh mức lịch sử. Đây không phải là dự báo, không ai biết trước thị trường sẽ
-        đi đâu. Chỉ là để bạn cảm nhận sức nặng của lãi kép khi chơi đủ lâu.
+        {t('proj.intro')}
       </p>
 
       <div className="dca-projection-controls">
-        <span className="dca-projection-controls-label">Chiếu về:</span>
+        <span className="dca-projection-controls-label">{t('proj.horizonLabel')}</span>
         {HORIZON_OPTIONS.map(h => (
           <button
             key={h}
             className={`dca-projection-btn${h === years ? ' dca-projection-btn--active' : ''}`}
             onClick={() => setYears(h)}
           >
-            {h} năm nữa
+            {t('proj.yearsAhead', { n: h })}
           </button>
         ))}
       </div>
 
       <div className="dca-projection-controls">
-        <span className="dca-projection-controls-label">Nạp/tháng:</span>
+        <span className="dca-projection-controls-label">{t('proj.contribLabel')}</span>
         <MoneyInput
           value={effectiveContribution}
           onChange={setContribOverride}
@@ -82,14 +82,12 @@ function ProjectionBlockImpl({ portfolios }: Props) {
         />
         {contribOverride !== null && contribOverride !== defaultContribution && (
           <button className="dca-projection-btn" onClick={() => setContribOverride(null)}>
-            ↺ Về mặc định ({formatVND(defaultContribution)})
+            {t('proj.reset', { v: formatVND(defaultContribution) })}
           </button>
         )}
       </div>
       <div className="dca-projection-hint">
-        Mặc định đúng bằng số tiền đầu tư định kỳ ở phần "Thông số" phía trên. Chỉnh số ở đây
-        chỉ thay đổi giả định cho tương lai — không ảnh hưởng tới lịch sử hay giá trị danh mục
-        hiện tại.
+        {t('proj.contribNote')}
       </div>
 
       {valid.map(p => (
@@ -97,10 +95,7 @@ function ProjectionBlockImpl({ portfolios }: Props) {
       ))}
 
       <div className="dca-projection-disclaimer">
-        ⚠️ Thị trường không bao giờ đi thẳng như một đường kẻ. Có những năm sập sâu,
-        có những năm bùng mạnh. Biểu đồ trên chỉ minh họa lãi kép theo CAGR trung bình.
-        Thực tế sẽ dao động lớn hơn nhiều, và kết quả của bạn có thể lệch xa cả ba kịch
-        bản này. Hãy xem đây là "nếu thì", không phải "sẽ là".
+        {t('proj.warning')}
       </div>
     </div>
   )
@@ -117,6 +112,8 @@ function ProjectionForPortfolio({
   years: number
   monthlyContribution: number
 }) {
+  const t = useT()
+  const tr = useTRich()
   const cagr = portfolio.cagr ?? 0
   const baseRate = cagr
   const pessRate = cagr - 0.03
@@ -161,7 +158,7 @@ function ProjectionForPortfolio({
       <div className="dca-projection-card-header">
         <span style={{ color: portfolio.color, fontWeight: 700 }}>{portfolio.name}</span>
         <span className="dca-projection-card-cagr">
-          CAGR lịch sử: {(cagr * 100).toFixed(1)}%/năm
+          {t('proj.historicalCagr', { v: (cagr * 100).toFixed(1) })}
         </span>
       </div>
 
@@ -180,11 +177,11 @@ function ProjectionForPortfolio({
             width={56}
           />
           <Tooltip
-            labelFormatter={(m: number) => `Tháng ${m} (năm ${(m / 12).toFixed(1)})`}
-            formatter={(v: number, name: string) => [formatVND(Math.round(v)), renderScenario(name)]}
+            labelFormatter={(m: number) => t('proj.monthLabel', { m, y: (m / 12).toFixed(1) })}
+            formatter={(v: number, name: string) => [formatVND(Math.round(v)), t(scenarioKey(name))]}
             contentStyle={{ fontSize: 12, borderRadius: 6 }}
           />
-          <ReferenceLine x={0} stroke="#9ca3af" strokeDasharray="2 2" label={{ value: 'Hiện tại', fontSize: 10, fill: '#6b7280', position: 'top' }} />
+          <ReferenceLine x={0} stroke="#9ca3af" strokeDasharray="2 2" label={{ value: t('proj.now'), fontSize: 10, fill: '#6b7280', position: 'top' }} />
           <Line type="monotone" dataKey="opt" stroke="#10b981" strokeWidth={1.5} dot={false} strokeDasharray="4 2" isAnimationActive={false} />
           <Line type="monotone" dataKey="base" stroke={portfolio.color} strokeWidth={2.2} dot={false} isAnimationActive={false} />
           <Line type="monotone" dataKey="pess" stroke="#ef4444" strokeWidth={1.5} dot={false} strokeDasharray="4 2" isAnimationActive={false} />
@@ -194,39 +191,38 @@ function ProjectionForPortfolio({
       <div className="dca-projection-legend">
         <span className="dca-projection-legend-item">
           <span className="dca-projection-swatch" style={{ background: '#10b981' }} />
-          Tốt ({((cagr + 0.03) * 100).toFixed(1)}%/năm): {formatVND(Math.round(finalOpt))}
+          {t('proj.legendOpt', { rate: ((cagr + 0.03) * 100).toFixed(1), value: formatVND(Math.round(finalOpt)) })}
         </span>
         <span className="dca-projection-legend-item">
           <span className="dca-projection-swatch" style={{ background: portfolio.color }} />
-          Base ({(cagr * 100).toFixed(1)}%/năm): <strong>{formatVND(Math.round(finalBase))}</strong>
+          {tr('proj.legendBase', { rate: (cagr * 100).toFixed(1), value: formatVND(Math.round(finalBase)) })}
         </span>
         <span className="dca-projection-legend-item">
           <span className="dca-projection-swatch" style={{ background: '#ef4444' }} />
-          Xấu ({((cagr - 0.03) * 100).toFixed(1)}%/năm): {formatVND(Math.round(finalPess))}
+          {t('proj.legendPess', { rate: ((cagr - 0.03) * 100).toFixed(1), value: formatVND(Math.round(finalPess)) })}
         </span>
       </div>
 
       <div className="dca-projection-takeaway">
-        Danh mục <strong>{portfolio.name}</strong> hiện có giá trị{' '}
-        <strong>{formatVND(Math.round(portfolio.finalValue))}</strong> — đây là điểm xuất phát,
-        không phải bắt đầu từ 0 đồng. Nếu CAGR giữ được mức lịch sử{' '}
-        <strong>{(cagr * 100).toFixed(1)}%/năm</strong> và
-        bạn vẫn đều đặn nạp <strong>{formatVND(Math.round(monthlyContrib))}/tháng</strong>,
-        sau <strong>{years} năm nữa</strong> danh mục có thể chạm{' '}
-        <strong>{formatVND(Math.round(finalBase))}</strong>. Trong đó bạn chỉ nạp thêm{' '}
-        {formatVND(Math.round(totalContribFuture))}, phần còn lại{' '}
-        {formatVND(Math.round(growthBase))} là tiền đẻ tiền nhờ lãi kép. Đó là lý do vì
-        sao đầu tư là cuộc chơi của thời gian, không phải của canh đỉnh canh đáy.
+        {tr('proj.takeaway', {
+          name: portfolio.name,
+          current: formatVND(Math.round(portfolio.finalValue)),
+          cagr: (cagr * 100).toFixed(1),
+          monthly: formatVND(Math.round(monthlyContrib)),
+          years,
+          final: formatVND(Math.round(finalBase)),
+          contributed: formatVND(Math.round(totalContribFuture)),
+          growth: formatVND(Math.round(growthBase)),
+        })}
       </div>
     </div>
   )
 }
 
-function renderScenario(key: string): string {
-  if (key === 'base') return 'Base'
-  if (key === 'opt') return 'Tốt'
-  if (key === 'pess') return 'Xấu'
-  return key
+function scenarioKey(key: string): TranslationKey {
+  if (key === 'opt') return 'proj.scenario.opt'
+  if (key === 'pess') return 'proj.scenario.pess'
+  return 'proj.scenario.base'
 }
 
 function formatMillions(v: number): string {

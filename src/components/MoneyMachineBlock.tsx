@@ -1,6 +1,8 @@
 import { memo, useMemo } from 'react'
 import type { PortfolioStats } from './PerformanceTable'
-import { formatVND, vndComparison, signedVND } from '../utils/vndFormat'
+import { formatVND, vndComparisonKey, signedVND } from '../utils/vndFormat'
+import { useT, useTRich, translateStatic } from '../i18n'
+import { useLanguage, type Language } from '../hooks/useLanguage'
 
 interface Props {
   investAmount: number
@@ -17,6 +19,9 @@ interface Props {
  * đơn vị quen thuộc (xe máy, ô tô, nghỉ hưu) thay vì % trừu tượng.
  */
 function MoneyMachineBlockImpl({ investAmount, stats, fundId, startDate, endDate }: Props) {
+  const t = useT()
+  const tr = useTRich()
+  const { language } = useLanguage()
   const cards = useMemo(() => {
     if (stats.length < 2) return null
     const base = stats[0]!
@@ -44,20 +49,29 @@ function MoneyMachineBlockImpl({ investAmount, stats, fundId, startDate, endDate
   // Chọn card có delta dương lớn nhất để kể câu chuyện.
   const bestCard = cards.reduce((best, c) => (c.delta > best.delta ? c : best), cards[0]!)
   const bestPct = bestCard.name.match(/([\d.]+)% Bitcoin/)?.[1] ?? ''
-  const comparison = vndComparison(bestCard.delta)
-  const periodStr = startDate && endDate ? `từ ${formatPeriod(startDate)} đến ${formatPeriod(endDate)}` : ''
-  const yearsStr = startDate && endDate ? yearsBetween(startDate, endDate) : ''
+  const comparisonKey = vndComparisonKey(bestCard.delta)
+  const comparison = comparisonKey ? t(comparisonKey) : null
+  const periodStr = startDate && endDate
+    ? t('mm.period', { from: formatPeriod(startDate), to: formatPeriod(endDate) })
+    : ''
+  const yearsStr = startDate && endDate ? yearsBetween(startDate, endDate, language) : ''
 
   return (
     <div className="money-machine-block">
       <div className="money-machine-header">
-        <h3>Nếu bạn đầu tư <span className="money-amount-highlight">{formatVND(investAmount)}</span> vào {fundId} {periodStr}...</h3>
+        <h3>
+          {tr('mm.headline', {
+            amount: `<i>${formatVND(investAmount)}</i>`,
+            fund: fundId,
+            period: periodStr,
+          })}
+        </h3>
       </div>
 
       <div className="money-machine-cards">
         {/* Baseline card */}
         <div className="mm-card mm-card--base" style={{ borderTopColor: base.color }}>
-          <div className="mm-card-label">Không có Bitcoin</div>
+          <div className="mm-card-label">{t('mm.noBitcoin')}</div>
           <div className="mm-card-amount-row">
             <span className="mm-card-start">{formatVND(investAmount)}</span>
             <span className="mm-card-arrow">→</span>
@@ -82,7 +96,7 @@ function MoneyMachineBlockImpl({ investAmount, stats, fundId, startDate, endDate
             </div>
             {c.delta !== 0 && (
               <div className={`mm-card-delta ${c.delta > 0 ? 'mm-card-delta--pos' : 'mm-card-delta--neg'}`}>
-                {signedVND(c.delta)} so với không có BTC
+                {t('mm.vsNoBtc', { amount: signedVND(c.delta) })}
               </div>
             )}
           </div>
@@ -93,9 +107,12 @@ function MoneyMachineBlockImpl({ investAmount, stats, fundId, startDate, endDate
         <div className="money-machine-takeaway">
           <span className="mm-takeaway-emoji">💡</span>
           <span>
-            Nếu bạn thêm <strong>{bestPct}% Bitcoin</strong>
-            {yearsStr ? ` ${yearsStr} trước` : ''}, hôm nay bạn có thêm{' '}
-            <strong>{formatVND(bestCard.delta)}</strong>. Đó gần bằng <strong>{comparison}</strong>.
+            {tr('mm.takeaway', {
+              pct: bestPct,
+              ago: yearsStr ? t('mm.ago', { years: yearsStr }) : '',
+              delta: formatVND(bestCard.delta),
+              comparison,
+            })}
           </span>
         </div>
       )}
@@ -115,11 +132,11 @@ function formatPeriod(dateStr: string): string {
   return `${m}/${y}`
 }
 
-function yearsBetween(from: string, to: string): string {
+function yearsBetween(from: string, to: string, lang: Language): string {
   const f = new Date(from).getTime()
   const t = new Date(to).getTime()
   const years = (t - f) / (1000 * 60 * 60 * 24 * 365.25)
   if (years < 1) return ''
-  if (years < 1.5) return '1 năm'
-  return `${years.toFixed(0)} năm`
+  if (years < 1.5) return translateStatic('mm.years1', lang)
+  return translateStatic('mm.yearsN', lang, { n: years.toFixed(0) })
 }
