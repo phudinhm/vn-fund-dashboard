@@ -23,6 +23,8 @@ import {
 import { formatVND } from '../utils/vndFormat'
 import { MoneyInput } from './MoneyInput'
 import type { ReturnPoint } from '../types'
+import { useT, useTRich, type TranslationKey } from '../i18n'
+import { useLanguage } from '../hooks/useLanguage'
 
 export interface MonteCarloPortfolio {
   id: string
@@ -43,13 +45,22 @@ const YEAR_OPTIONS = [5, 10, 15, 20, 25, 30]
 const ITERATIONS = 1000
 const BLOCK_SIZE = 12
 
-const PRESET_TARGETS = [
-  { label: '1 tỷ', value: 1_000_000_000 },
-  { label: '2 tỷ', value: 2_000_000_000 },
-  { label: '3 tỷ', value: 3_000_000_000 },
+/** Số kịch bản, nhóm chữ số theo ngôn ngữ ("1.000" / "1,000"). */
+function useIterationsText(): string {
+  const { language } = useLanguage()
+  return ITERATIONS.toLocaleString(language === 'vi' ? 'vi-VN' : 'en-US')
+}
+
+const PRESET_TARGETS: { labelKey: TranslationKey; value: number }[] = [
+  { labelKey: 'mc.preset1b', value: 1_000_000_000 },
+  { labelKey: 'mc.preset2b', value: 2_000_000_000 },
+  { labelKey: 'mc.preset3b', value: 3_000_000_000 },
 ]
 
 function MonteCarloBlockImpl({ portfolios }: Props) {
+  const t = useT()
+  const tr = useTRich()
+  const iterationsText = useIterationsText()
   const [target, setTarget] = useState<number>(1_000_000_000)
   const [years, setYears] = useState<number>(10)
   const [customInput, setCustomInput] = useState<string>('')
@@ -67,7 +78,7 @@ function MonteCarloBlockImpl({ portfolios }: Props) {
     }
     const n = parseCustomTarget(customInput)
     if (n === null) {
-      setCustomError('Không đọc được số. Thử: 500tr, 1.5 tỷ, 2 tỉ, 1500000000')
+      setCustomError(t('mc.parseError'))
       return
     }
     setTarget(n)
@@ -84,38 +95,33 @@ function MonteCarloBlockImpl({ portfolios }: Props) {
 
   return (
     <div className="dca-mc-block">
-      <h3 className="dca-mc-title">Dựa trên {ITERATIONS.toLocaleString('vi-VN')} kịch bản trong quá khứ, khả năng bạn đạt mục tiêu là:</h3>
+      <h3 className="dca-mc-title">{t('mc.title', { n: iterationsText })}</h3>
       <p className="dca-mc-sub">
-        Thay vì 3 kịch bản Xấu/Base/Tốt cố định ở trên, cách này lấy nguyên các đoạn 12 tháng
-        đã từng xảy ra thật trong lịch sử quỹ — ví dụ đúng 12 tháng của một năm khủng hoảng,
-        hay 12 tháng của một năm tăng đều — rồi ghép ngẫu nhiên nhiều đoạn như vậy theo thứ tự
-        khác nhau, tạo ra <strong>{ITERATIONS.toLocaleString('vi-VN')}</strong> kịch bản tương
-        lai khác nhau. Diễn biến thật bên trong mỗi đoạn 12 tháng không đổi, chỉ có thứ tự các
-        đoạn ghép lại là xáo trộn ngẫu nhiên.
+        {tr('mc.intro', { n: iterationsText })}
       </p>
 
       <div className="dca-mc-current">
-        Danh mục <strong style={{ color: detailPortfolio.color }}>{detailPortfolio.name}</strong> hiện có giá trị{' '}
+        {tr('mc.currentValue', { name: detailPortfolio.name })}
         <strong>{formatVND(Math.round(detailPortfolio.finalValue))}</strong>.
       </div>
 
       <div className="dca-mc-controls">
         <div className="dca-mc-control-row">
-          <span className="dca-mc-control-label">Mục tiêu:</span>
+          <span className="dca-mc-control-label">{t('mc.targetLabel')}</span>
           {PRESET_TARGETS.map(p => (
             <button
               key={p.value}
               className={`dca-mc-btn${target === p.value ? ' dca-mc-btn--active' : ''}`}
               onClick={() => { setTarget(p.value); setCustomInput(''); setCustomError(null) }}
             >
-              {p.label}
+              {t(p.labelKey)}
             </button>
           ))}
           <div className="dca-mc-custom">
             <input
               type="text"
               className="dca-mc-custom-input"
-              placeholder="hoặc nhập (vd: 500tr, 1.5 tỷ)"
+              placeholder={t('mc.customPlaceholder')}
               value={customInput}
               onChange={(e) => setCustomInput(formatCustomInput(e.target.value))}
               onBlur={applyCustom}
@@ -135,13 +141,13 @@ function MonteCarloBlockImpl({ portfolios }: Props) {
               className={`dca-mc-btn${years === y ? ' dca-mc-btn--active' : ''}`}
               onClick={() => setYears(y)}
             >
-              {y} năm
+              {t('mc.years', { n: y })}
             </button>
           ))}
         </div>
 
         <div className="dca-mc-control-row">
-          <span className="dca-mc-control-label">Đầu tư/tháng:</span>
+          <span className="dca-mc-control-label">{t('mc.contribLabel')}</span>
           <MoneyInput
             value={effectiveContribution}
             onChange={setContribOverride}
@@ -149,25 +155,26 @@ function MonteCarloBlockImpl({ portfolios }: Props) {
           />
           {contribOverride !== null && contribOverride !== defaultContribution && (
             <button className="dca-mc-btn" onClick={() => setContribOverride(null)}>
-              ↺ Về mặc định ({formatVND(defaultContribution)})
+              {t('mc.reset', { v: formatVND(defaultContribution) })}
             </button>
           )}
         </div>
         <div className="dca-mc-hint">
-          Mặc định đúng bằng số tiền đầu tư định kỳ ở phần "Thông số" phía trên. Chỉnh số ở đây
-          chỉ thay đổi giả định cho tương lai — không ảnh hưởng tới lịch sử hay giá trị danh mục
-          hiện tại.
+          {t('mc.contribNote')}
         </div>
 
         <div className="dca-mc-current">
-          Mục tiêu đang chọn: <strong>{formatVND(target)}</strong>
-          {activePreset ? '' : ' (tùy chọn)'} sau <strong>{years} năm</strong>
+          {tr('mc.targetSummary', {
+            target: formatVND(target),
+            custom: activePreset ? '' : t('mc.customSuffix'),
+            years,
+          })}
         </div>
 
         <div className="dca-mc-detail-control">
           {portfolios.length > 1 && (
             <label>
-              Xem chi tiết:
+              {t('mc.detailLabel')}
               <select
                 value={detailPortfolio.id}
                 onChange={e => setDetailPortfolioId(e.target.value)}
@@ -177,7 +184,7 @@ function MonteCarloBlockImpl({ portfolios }: Props) {
             </label>
           )}
           <button className="dca-mc-btn" onClick={() => setResampleVersion(v => v + 1)}>
-            ↻ Lấy mẫu lại
+            {t('mc.resample')}
           </button>
         </div>
       </div>
@@ -191,12 +198,7 @@ function MonteCarloBlockImpl({ portfolios }: Props) {
       />
 
       <div className="dca-mc-disclaimer">
-        ⚠️ Đây KHÔNG phải dự báo. Thị trường không bao giờ đi thẳng như một đường kẻ — có những
-        năm sập sâu, có những năm bùng mạnh. Mỗi kịch bản chỉ là một cách sắp xếp lại các giai
-        đoạn 12 tháng đã từng xảy ra trong lịch sử quỹ — tương lai thật có thể tệ hơn mọi kịch
-        bản đã thấy (khủng hoảng chưa từng có), hoặc tốt hơn. Quỹ có lịch sử càng ngắn, phân
-        phối này càng kém tin cậy vì cùng vài giai đoạn bị lặp lại nhiều lần trong 1.000 kịch
-        bản. Hãy xem đây là "nếu thì", không phải "sẽ là".
+        {t('mc.warning')}
       </div>
     </div>
   )
@@ -217,6 +219,9 @@ function MonteCarloForPortfolio({
   monthlyContribution: number
   resampleVersion: number
 }) {
+  const t = useT()
+  const tr = useTRich()
+  const iterationsText = useIterationsText()
   const monthlyPool = useMemo(
     () => dcaMonthlyReturns(portfolio.cumulative).map(r => r.value),
     [portfolio.cumulative],
@@ -243,8 +248,7 @@ function MonteCarloForPortfolio({
           <span style={{ color: portfolio.color, fontWeight: 700 }}>{portfolio.name}</span>
         </div>
         <div className="dca-mc-insufficient">
-          Không đủ lịch sử để mô phỏng Monte Carlo (cần ít nhất {BLOCK_SIZE} tháng dữ liệu,
-          hiện có {monthlyPool.length} tháng). Chọn khoảng thời gian dài hơn ở phần "Thông số" phía trên.
+          {t('mc.notEnoughHistory', { need: BLOCK_SIZE, have: monthlyPool.length })}
         </div>
       </div>
     )
@@ -282,8 +286,8 @@ function MonteCarloForPortfolio({
       <div className="dca-mc-card-header">
         <span style={{ color: portfolio.color, fontWeight: 700 }}>{portfolio.name}</span>
         <span className="dca-mc-card-sub">
-          {portfolio.cagr !== null && <>CAGR lịch sử: {(portfolio.cagr * 100).toFixed(1)}%/năm · </>}
-          {ITERATIONS.toLocaleString('vi-VN')} kịch bản · dựa trên {monthlyPool.length} tháng lịch sử
+          {portfolio.cagr !== null && t('mc.cagrPrefix', { v: (portfolio.cagr * 100).toFixed(1) })}
+          {t('mc.subhead', { n: iterationsText, months: monthlyPool.length })}
         </span>
       </div>
 
@@ -308,7 +312,7 @@ function MonteCarloForPortfolio({
             y={target}
             stroke="#6b7280"
             strokeDasharray="4 2"
-            label={{ value: `Mục tiêu ${formatMillions(target)}`, fontSize: 10, fill: '#6b7280', position: 'insideTopRight' }}
+            label={{ value: t('mc.targetLine', { v: formatMillions(target) }), fontSize: 10, fill: '#6b7280', position: 'insideTopRight' }}
           />
           <Area dataKey="base" stackId="mc" stroke="none" fill="transparent" isAnimationActive={false} />
           <Area dataKey="toP25" stackId="mc" stroke="none" fill={portfolio.color} fillOpacity={0.12} isAnimationActive={false} />
@@ -319,20 +323,22 @@ function MonteCarloForPortfolio({
       </ResponsiveContainer>
 
       <div className="dca-mc-stats">
-        <StatBox label="Xấu" sublabel="P10" value={formatVND(Math.round(p10))} />
-        <StatBox label="Hơi xấu" sublabel="P25" value={formatVND(Math.round(p25))} />
-        <StatBox label="Trung vị" sublabel="P50" value={formatVND(Math.round(p50))} highlight />
-        <StatBox label="Hơi tốt" sublabel="P75" value={formatVND(Math.round(p75))} />
-        <StatBox label="Tốt" sublabel="P90" value={formatVND(Math.round(p90))} />
+        <StatBox label={t('mc.stat.bad')} sublabel="P10" value={formatVND(Math.round(p10))} />
+        <StatBox label={t('mc.stat.slightlyBad')} sublabel="P25" value={formatVND(Math.round(p25))} />
+        <StatBox label={t('mc.stat.median')} sublabel="P50" value={formatVND(Math.round(p50))} highlight />
+        <StatBox label={t('mc.stat.slightlyGood')} sublabel="P75" value={formatVND(Math.round(p75))} />
+        <StatBox label={t('mc.stat.good')} sublabel="P90" value={formatVND(Math.round(p90))} />
       </div>
 
       <div className="dca-mc-takeaway">
-        Giả sử bạn vẫn đều đặn đầu tư{' '}
-        <strong>{formatVND(Math.round(monthlyContribution))}/tháng</strong> như hiện tại,
-        sau <strong>{years} năm</strong> nữa: trong {ITERATIONS.toLocaleString('vi-VN')} kịch bản,
-        bạn có tỷ lệ <strong>{prob.toFixed(0)}%</strong> đạt được mục tiêu{' '}
-        <strong>{formatVND(target)}</strong>. Kịch bản tệ nhất (đáy 10%) chỉ còn{' '}
-        <strong>{formatVND(Math.round(p10))}</strong>, kịch bản tốt nhất (đỉnh 90%) lên tới{' '}
+        {tr('mc.takeaway', {
+          monthly: formatVND(Math.round(monthlyContribution)),
+          years,
+          n: iterationsText,
+          prob: prob.toFixed(0),
+          target: formatVND(target),
+          p10: formatVND(Math.round(p10)),
+        })}
         <strong>{formatVND(Math.round(p90))}</strong>.
       </div>
 
@@ -352,6 +358,8 @@ function MonteCarloDetails({
   result: MonteCarloResult
   years: number
 }) {
+  const t = useT()
+  const iterationsText = useIterationsText()
   const terminalWealthData = OUTCOME_PERCENTILES.map(percentile => ({
     percentile,
     value: percentileValue(result.finalValues, percentile / 100),
@@ -360,10 +368,9 @@ function MonteCarloDetails({
   return (
     <div className="dca-mc-details">
       <div className="dca-mc-detail-heading">
-        <h4>Bốn tương lai mẫu</h4>
+        <h4>{t('mc.samplePathsTitle')}</h4>
         <p>
-          Mỗi ô là một path thật trong {ITERATIONS.toLocaleString('vi-VN')} kịch bản. P10, P25,
-          P50 và P75 lấy theo giá trị tài khoản ở cuối kỳ, không ghép percentile của các tháng khác nhau.
+          {t('mc.samplePathsNote', { n: iterationsText })}
         </p>
       </div>
 
@@ -379,17 +386,16 @@ function MonteCarloDetails({
       </div>
 
       <div className="dca-mc-detail-heading dca-mc-detail-heading--results">
-        <h4>Phân phối kết quả</h4>
+        <h4>{t('mc.distTitle')}</h4>
         <p>
-          Ba chart này nhìn toàn bộ {ITERATIONS.toLocaleString('vi-VN')} path. Bốn path ở trên chỉ để xem
-          diễn biến cụ thể, không đại diện cho toàn bộ phân phối.
+          {t('mc.distNote', { n: iterationsText })}
         </p>
       </div>
 
       <div className="dca-mc-distribution-grid">
         <div className="dca-mc-distribution-card dca-mc-distribution-card--wide">
-          <h5>Giá trị tài khoản cuối kỳ theo percentile</h5>
-          <p>Số dư sau {years} năm, đã tính khoản nạp đều mỗi tháng.</p>
+          <h5>{t('mc.endValueTitle')}</h5>
+          <p>{t('mc.endValueNote', { years })}</p>
           <ResponsiveContainer width="100%" height={220}>
             <LineChart data={terminalWealthData} margin={{ top: 8, right: 12, bottom: 4, left: 4 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" vertical={false} />
@@ -406,16 +412,16 @@ function MonteCarloDetails({
         </div>
 
         <DistributionChart
-          title="Phân phối CAGR"
-          description="CAGR đo trên path lợi nhuận. Tiền góp hằng tháng không đi vào công thức này."
+          title={t('mc.cagrTitle')}
+          description={t('mc.cagrDesc')}
           values={result.cagrs}
           color={portfolio.color}
           valueFormatter={formatPercent}
         />
 
         <DistributionChart
-          title="Phân phối mức sụt giảm lớn nhất"
-          description="Đo trên path lợi nhuận của danh mục, không phải trên số dư tài khoản."
+          title={t('mc.ddTitle')}
+          description={t('mc.ddDesc')}
           values={result.maxDrawdowns}
           color={portfolio.color}
           valueFormatter={formatPercent}
@@ -434,18 +440,19 @@ function RepresentativePathChart({
   color: string
   years: number
 }) {
+  const t = useT()
   const chartData = path.values.map((value, month) => ({ year: month / 12, value }))
-  const labels: Record<number, string> = {
-    0.1: 'Xấu',
-    0.25: 'Hơi xấu',
-    0.5: 'Trung vị',
-    0.75: 'Hơi tốt',
+  const labelKeys: Record<number, TranslationKey> = {
+    0.1: 'mc.stat.bad',
+    0.25: 'mc.stat.slightlyBad',
+    0.5: 'mc.stat.median',
+    0.75: 'mc.stat.slightlyGood',
   }
 
   return (
     <div className="dca-mc-path-card">
       <div className="dca-mc-path-header">
-        <strong>{labels[path.percentile]} · P{Math.round(path.percentile * 100)}</strong>
+        <strong>{t(labelKeys[path.percentile] ?? 'mc.stat.median')} · P{Math.round(path.percentile * 100)}</strong>
         <span>{formatVND(Math.round(path.finalValue))}</span>
       </div>
       <ResponsiveContainer width="100%" height={180}>
@@ -485,6 +492,7 @@ function DistributionChart({
   color: string
   valueFormatter: (value: number) => string
 }) {
+  const t = useT()
   const range = Math.max(...values) - Math.min(...values)
   const bucketSize = Math.max(0.02, range / 30)
   const data = histogramBuckets(values, bucketSize).map(bucket => ({
@@ -507,7 +515,7 @@ function DistributionChart({
             x={median}
             stroke={color}
             strokeDasharray="4 2"
-            label={{ value: `Trung vị ${valueFormatter(median)}`, fontSize: 10, fill: color, position: 'insideTopRight' }}
+            label={{ value: t('mc.medianLine', { v: valueFormatter(median) }), fontSize: 10, fill: color, position: 'insideTopRight' }}
           />
           <Area type="step" dataKey="share" stroke={color} fill={color} fillOpacity={0.18} strokeWidth={2} isAnimationActive={false} />
         </ComposedChart>
@@ -582,16 +590,17 @@ function MonteCarloTooltip({ active, payload, label }: {
   payload?: { payload: McChartRow }[]
   label?: number
 }) {
+  const t = useT()
   if (!active || !payload || payload.length === 0) return null
   const d = payload[0]!.payload
   return (
     <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: 6, padding: '8px 10px', fontSize: 12 }}>
-      <div style={{ fontWeight: 700, marginBottom: 4 }}>Năm {label?.toFixed(1)}</div>
-      <div>Đáy 10%: {formatVND(Math.round(d.p10))}</div>
+      <div style={{ fontWeight: 700, marginBottom: 4 }}>{t('mc.yearLabel', { v: label?.toFixed(1) ?? '' })}</div>
+      <div>{t('mc.bottom10', { v: formatVND(Math.round(d.p10)) })}</div>
       <div>25%: {formatVND(Math.round(d.p25))}</div>
-      <div style={{ fontWeight: 700 }}>Trung vị: {formatVND(Math.round(d.p50))}</div>
+      <div style={{ fontWeight: 700 }}>{t('mc.medianValue', { v: formatVND(Math.round(d.p50)) })}</div>
       <div>75%: {formatVND(Math.round(d.p75))}</div>
-      <div>Đỉnh 90%: {formatVND(Math.round(d.p90))}</div>
+      <div>{t('mc.top90', { v: formatVND(Math.round(d.p90)) })}</div>
     </div>
   )
 }
@@ -614,11 +623,12 @@ function RepresentativePathTooltip({ active, payload }: {
   active?: boolean
   payload?: { payload: { year: number; value: number } }[]
 }) {
+  const t = useT()
   if (!active || !payload || payload.length === 0) return null
   const data = payload[0]!.payload
   return (
     <div className="dca-mc-tooltip">
-      <strong>Năm {data.year.toFixed(1)}</strong>
+      <strong>{t('mc.yearLabel', { v: data.year.toFixed(1) })}</strong>
       <span>{formatVND(Math.round(data.value))}</span>
     </div>
   )
@@ -633,12 +643,13 @@ function DistributionTooltip({
   payload?: { payload: { value: number; share: number } }[]
   valueFormatter: (value: number) => string
 }) {
+  const t = useT()
   if (!active || !payload || payload.length === 0) return null
   const data = payload[0]!.payload
   return (
     <div className="dca-mc-tooltip">
       <strong>{valueFormatter(data.value)}</strong>
-      <span>{formatShare(data.share)} số path</span>
+      <span>{t('mc.pathShare', { v: formatShare(data.share) })}</span>
     </div>
   )
 }

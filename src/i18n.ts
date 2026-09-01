@@ -2050,6 +2050,88 @@ const DICT = {
     en: 'This also requires having cash on hand exactly when the market is at its most frightening, which is hard both psychologically and financially. And the past guarantees nothing: if the fund keeps falling right after you add, that extra capital waits for the recovery like everything else.',
   },
 
+  // ── Monte Carlo block ──
+  'mc.preset1b': { vi: '1 tỷ', en: '1 bn' },
+  'mc.preset2b': { vi: '2 tỷ', en: '2 bn' },
+  'mc.preset3b': { vi: '3 tỷ', en: '3 bn' },
+  'mc.parseError': {
+    vi: 'Không đọc được số. Thử: 500tr, 1.5 tỷ, 2 tỉ, 1500000000',
+    en: 'Could not read that number. Try: 500tr, 1.5 tỷ, 1500000000',
+  },
+  'mc.title': {
+    vi: 'Dựa trên {n} kịch bản trong quá khứ, khả năng bạn đạt mục tiêu là:',
+    en: 'Across {n} scenarios drawn from the past, your chance of hitting the target is:',
+  },
+  'mc.intro': {
+    vi: 'Thay vì 3 kịch bản Xấu/Base/Tốt cố định ở trên, cách này lấy nguyên các đoạn 12 tháng đã từng xảy ra thật trong lịch sử quỹ — ví dụ đúng 12 tháng của một năm khủng hoảng, hay 12 tháng của một năm tăng đều — rồi ghép ngẫu nhiên nhiều đoạn như vậy theo thứ tự khác nhau, tạo ra <b>{n}</b> kịch bản tương lai khác nhau. Diễn biến thật bên trong mỗi đoạn 12 tháng không đổi, chỉ có thứ tự các đoạn ghép lại là xáo trộn ngẫu nhiên.',
+    en: 'Instead of the three fixed pessimistic/base/optimistic paths above, this takes whole 12-month stretches that actually happened in the fund’s history — the twelve months of a crisis year, say, or of a steadily rising one — and stitches them together in random orders to build <b>{n}</b> different futures. What happened inside each 12-month block is untouched; only the order of the blocks is shuffled.',
+  },
+  'mc.currentValue': { vi: 'Danh mục <b>{name}</b> hiện có giá trị ', en: '<b>{name}</b> is currently worth ' },
+  'mc.targetLabel': { vi: 'Mục tiêu:', en: 'Target:' },
+  'mc.customPlaceholder': { vi: 'hoặc nhập (vd: 500tr, 1.5 tỷ)', en: 'or type one (e.g. 500tr, 1.5 tỷ)' },
+  'mc.years': { vi: '{n} năm', en: '{n} years' },
+  'mc.contribLabel': { vi: 'Đầu tư/tháng:', en: 'Per month:' },
+  'mc.reset': { vi: '↺ Về mặc định ({v})', en: '↺ Reset to default ({v})' },
+  'mc.contribNote': {
+    vi: 'Mặc định đúng bằng số tiền đầu tư định kỳ ở phần "Thông số" phía trên. Chỉnh số ở đây chỉ thay đổi giả định cho tương lai — không ảnh hưởng tới lịch sử hay giá trị danh mục hiện tại.',
+    en: 'The default matches the recurring amount in Parameters above. Changing it here only alters the assumption about the future — it does not affect the history or the portfolio’s current value.',
+  },
+  'mc.targetSummary': { vi: 'Mục tiêu đang chọn: <b>{target}</b>{custom} sau <b>{years} năm</b>', en: 'Target: <b>{target}</b>{custom} in <b>{years} years</b>' },
+  'mc.customSuffix': { vi: ' (tùy chọn)', en: ' (custom)' },
+  'mc.detailLabel': { vi: 'Xem chi tiết:', en: 'Detail for:' },
+  'mc.resample': { vi: '↻ Lấy mẫu lại', en: '↻ Resample' },
+  'mc.warning': {
+    vi: '⚠️ Đây KHÔNG phải dự báo. Thị trường không bao giờ đi thẳng như một đường kẻ — có những năm sập sâu, có những năm bùng mạnh. Mỗi kịch bản chỉ là một cách sắp xếp lại các giai đoạn 12 tháng đã từng xảy ra trong lịch sử quỹ — tương lai thật có thể tệ hơn mọi kịch bản đã thấy (khủng hoảng chưa từng có), hoặc tốt hơn. Quỹ có lịch sử càng ngắn, phân phối này càng kém tin cậy vì cùng vài giai đoạn bị lặp lại nhiều lần trong 1.000 kịch bản. Hãy xem đây là "nếu thì", không phải "sẽ là".',
+    en: '⚠️ This is NOT a forecast. The market never moves in a straight line — some years crash, some surge. Each scenario is only a reshuffling of 12-month stretches the fund has already lived through; the real future could be worse than anything here (an unprecedented crisis) or better. The shorter the fund’s history, the less reliable this distribution, because the same few stretches get reused many times across the 1,000 runs. Read it as "what if", not "what will be".',
+  },
+  'mc.notEnoughHistory': {
+    vi: 'Không đủ lịch sử để mô phỏng Monte Carlo (cần ít nhất {need} tháng dữ liệu, hiện có {have} tháng). Chọn khoảng thời gian dài hơn ở phần "Thông số" phía trên.',
+    en: 'Not enough history for a Monte Carlo simulation — it needs at least {need} months of data and there are {have}. Choose a longer range in Parameters above.',
+  },
+  'mc.subhead': {
+    vi: '{n} kịch bản · dựa trên {months} tháng lịch sử',
+    en: '{n} scenarios · drawn from {months} months of history',
+  },
+  'mc.cagrPrefix': { vi: 'CAGR lịch sử: {v}%/năm · ', en: 'Historical CAGR: {v}%/yr · ' },
+  'mc.targetLine': { vi: 'Mục tiêu {v}', en: 'Target {v}' },
+  'mc.stat.bad': { vi: 'Xấu', en: 'Bad' },
+  'mc.stat.slightlyBad': { vi: 'Hơi xấu', en: 'Poor' },
+  'mc.stat.median': { vi: 'Trung vị', en: 'Median' },
+  'mc.stat.slightlyGood': { vi: 'Hơi tốt', en: 'Good' },
+  'mc.stat.good': { vi: 'Tốt', en: 'Great' },
+  'mc.takeaway': {
+    vi: 'Giả sử bạn vẫn đều đặn đầu tư <b>{monthly}/tháng</b> như hiện tại, sau <b>{years} năm</b> nữa: trong {n} kịch bản, bạn có tỷ lệ <b>{prob}%</b> đạt được mục tiêu <b>{target}</b>. Kịch bản tệ nhất (đáy 10%) chỉ còn <b>{p10}</b>, kịch bản tốt nhất (đỉnh 90%) lên tới ',
+    en: 'Assuming you keep contributing <b>{monthly} a month</b> as you do now, then in <b>{years} years</b>, across {n} scenarios you have a <b>{prob}%</b> chance of reaching your <b>{target}</b> target. The worst case (bottom 10%) leaves you with <b>{p10}</b>; the best (top 90%) reaches ',
+  },
+  'mc.samplePathsTitle': { vi: 'Bốn tương lai mẫu', en: 'Four sample futures' },
+  'mc.samplePathsNote': {
+    vi: 'Mỗi ô là một path thật trong {n} kịch bản. P10, P25, P50 và P75 lấy theo giá trị tài khoản ở cuối kỳ, không ghép percentile của các tháng khác nhau.',
+    en: 'Each panel is one real path out of the {n} scenarios. P10, P25, P50 and P75 are picked by the ending account value, not stitched together from different months’ percentiles.',
+  },
+  'mc.distTitle': { vi: 'Phân phối kết quả', en: 'Distribution of outcomes' },
+  'mc.distNote': {
+    vi: 'Ba chart này nhìn toàn bộ {n} path. Bốn path ở trên chỉ để xem diễn biến cụ thể, không đại diện cho toàn bộ phân phối.',
+    en: 'These three charts look at all {n} paths. The four above are there to show what a specific path looks like; they do not represent the whole distribution.',
+  },
+  'mc.endValueTitle': { vi: 'Giá trị tài khoản cuối kỳ theo percentile', en: 'Ending account value by percentile' },
+  'mc.endValueNote': { vi: 'Số dư sau {years} năm, đã tính khoản nạp đều mỗi tháng.', en: 'Balance after {years} years, including the monthly contributions.' },
+  'mc.cagrTitle': { vi: 'Phân phối CAGR', en: 'CAGR distribution' },
+  'mc.cagrDesc': {
+    vi: 'CAGR đo trên path lợi nhuận. Tiền góp hằng tháng không đi vào công thức này.',
+    en: 'CAGR measured on the return path. The monthly contributions do not enter this formula.',
+  },
+  'mc.ddTitle': { vi: 'Phân phối mức sụt giảm lớn nhất', en: 'Maximum drawdown distribution' },
+  'mc.ddDesc': {
+    vi: 'Đo trên path lợi nhuận của danh mục, không phải trên số dư tài khoản.',
+    en: 'Measured on the portfolio’s return path, not on the account balance.',
+  },
+  'mc.medianLine': { vi: 'Trung vị {v}', en: 'Median {v}' },
+  'mc.yearLabel': { vi: 'Năm {v}', en: 'Year {v}' },
+  'mc.bottom10': { vi: 'Đáy 10%: {v}', en: 'Bottom 10%: {v}' },
+  'mc.medianValue': { vi: 'Trung vị: {v}', en: 'Median: {v}' },
+  'mc.top90': { vi: 'Đỉnh 90%: {v}', en: 'Top 90%: {v}' },
+  'mc.pathShare': { vi: '{v} số path', en: '{v} of paths' },
+
   // ── Methodology tab (khung; nội dung ở src/components/methodology/) ──
   'method.tocLabel': { vi: 'Mục lục', en: 'Table of contents' },
   'method.onThisPage': { vi: 'Trong trang này', en: 'On this page' },
