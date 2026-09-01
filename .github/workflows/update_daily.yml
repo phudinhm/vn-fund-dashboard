@@ -31,39 +31,69 @@ jobs:
         # vnstock 4.0.6 has an UnboundLocalError in the VCI execution path.
         run: pip install vnstock==4.0.5
 
+      # Không gọi register_user khi chưa có secret: với api_key rỗng, vnstock rơi
+      # vào luồng đăng ký TƯƠNG TÁC, gọi input() và chết EOFError trên runner —
+      # làm hỏng cả job ngay trước mọi bước cập nhật dữ liệu. Không có key thì
+      # vnstock vẫn chạy ở mức Khách (20 request/phút), đủ dùng.
       - name: Register vnstock API key
-        run: python -X utf8 -c "from vnstock import register_user; register_user(api_key='${{ secrets.VNSTOCK_API_KEY }}')"
+        continue-on-error: true
+        env:
+          # Qua env chứ không nội suy thẳng vào lệnh: secret không lọt vào chuỗi
+          # lệnh (và vào log khi bật debug). `secrets` cũng không dùng được
+          # trong `if:` của step, nên kiểm tra bằng bash ở đây.
+          VNSTOCK_API_KEY: ${{ secrets.VNSTOCK_API_KEY }}
+        run: |
+          if [ -z "$VNSTOCK_API_KEY" ]; then
+            echo "No VNSTOCK_API_KEY set — vnstock runs at guest limits (20 req/min)."
+            exit 0
+          fi
+          python -X utf8 -c "import os; from vnstock import register_user; register_user(api_key=os.environ['VNSTOCK_API_KEY'])"
 
+      # Mỗi nguồn dữ liệu chạy độc lập: một nguồn hỏng (API đổi, site đổi cấu
+      # trúc, hết hạn mức) không được kéo theo các nguồn còn lại. Kết quả tổng
+      # hợp ở bước "Report source failures" phía dưới.
       - name: Update NAV data
+        id: nav
+        continue-on-error: true
         run: node scripts/update_nav.mjs
         env:
           VNSTOCK_API_KEY: ${{ secrets.VNSTOCK_API_KEY }}
 
-      - name: Update ETF and BTC data
+      - name: Update ETF, index and BTC data
+        id: vnstock
+        continue-on-error: true
         run: python -X utf8 scripts/update_vnstock.py
         env:
           VNSTOCK_API_KEY: ${{ secrets.VNSTOCK_API_KEY }}
 
       - name: Update fund holdings (Overlap tab)
+        id: holdings
+        continue-on-error: true
         run: python -X utf8 scripts/fund_report/update_holdings.py
         env:
           VNSTOCK_API_KEY: ${{ secrets.VNSTOCK_API_KEY }}
 
       - name: Update digiinvest funds (TCBF, TCEF)
+        id: digiinvest
+        continue-on-error: true
         run: node scripts/update_TCEF_TCBF_digiinvest.mjs
 
       - name: Update gold price data
+        id: gold
+        continue-on-error: true
         run: node scripts/update_gold.mjs
 
       - name: Check for changes
         id: changes
         run: |
-          if git diff --quiet; then
+          if git diff --quiet -- public/data; then
             echo "changed=false" >> $GITHUB_OUTPUT
           else
             echo "changed=true" >> $GITHUB_OUTPUT
           fi
 
+      # Commit trước khi đánh giá thất bại: dữ liệu của các nguồn CHẠY ĐƯỢC phải
+      # được lưu lại, không vứt đi chỉ vì một nguồn khác hỏng.
       - name: Commit and push
         if: steps.changes.outputs.changed == 'true'
         run: |
@@ -72,3 +102,18 @@ jobs:
           git add public/data/
           git commit -m "Update fund NAV data $(date -u +%Y-%m-%d)"
           git push
+
+      # Job đỏ khi có nguồn hỏng, để lỗi không trôi qua im lặng hàng tháng trời.
+      - name: Report source failures
+        run: |
+          failed=""
+          [ "${{ steps.nav.outcome }}"        = "failure" ] && failed="$failed NAV(fmarket)"
+          [ "${{ steps.vnstock.outcome }}"    = "failure" ] && failed="$failed ETF/Index/BTC"
+          [ "${{ steps.holdings.outcome }}"   = "failure" ] && failed="$failed holdings"
+          [ "${{ steps.digiinvest.outcome }}" = "failure" ] && failed="$failed digiinvest"
+          [ "${{ steps.gold.outcome }}"       = "failure" ] && failed="$failed gold"
+          if [ -n "$failed" ]; then
+            echo "::error::Data sources failed:$failed"
+            exit 1
+          fi
+          echo "All data sources completed."

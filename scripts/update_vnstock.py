@@ -255,15 +255,21 @@ def update_btc_vnd():
 def main():
     print(f'\n🚀 vnstock Updater — {datetime.now().strftime("%Y-%m-%d %H:%M")}\n')
 
-    # Register API key (from environment variable)
-    from vnstock import register_user
-    api_key = os.environ.get('VNSTOCK_API_KEY')
-    if not api_key:
-        print('❌ VNSTOCK_API_KEY environment variable not set!')
-        print('   Set it with: export VNSTOCK_API_KEY=your_key_here')
-        return
-    print('🔑 Registering vnstock API key...')
-    register_user(api_key=api_key)
+    # API key chỉ để NÂNG hạn mức request, không bắt buộc: vnstock vẫn chạy ở
+    # mức Khách (20 request/phút) khi không đăng ký — đủ cho vài chục mã chạy
+    # tuần tự ở đây. Trước kia thiếu key là return sớm, tức cả ETF, chỉ số và
+    # BTC đứng im vô thời hạn mà log chỉ ghi một dòng.
+    api_key = os.environ.get('VNSTOCK_API_KEY', '').strip()
+    if api_key:
+        try:
+            from vnstock import register_user
+            print('🔑 Registering vnstock API key...')
+            register_user(api_key=api_key)
+        except Exception as e:
+            # Key sai/hết hạn thì vẫn chạy tiếp ở mức Khách, không làm hỏng cả job.
+            print(f'⚠️  register_user failed, falling back to guest limits: {e}')
+    else:
+        print('ℹ️  No VNSTOCK_API_KEY set — running at guest rate limits (20 req/min).')
     print()
 
     # ── 1. ETFs ──
