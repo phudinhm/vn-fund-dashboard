@@ -2,6 +2,7 @@ import type { PricePoint } from '../types'
 import type { DCASlot } from './dca'
 import { daysBetween } from './dateMath'
 import { monthsAheadIndex, countIndependentWindows } from './dateWindow'
+import type { TranslationKey } from '../i18n'
 
 // Giữ export cũ cho các caller của LS vs DCA. Helper dùng chung nằm ở dateWindow.
 export { countIndependentWindows } from './dateWindow'
@@ -766,7 +767,7 @@ export interface DrawdownBand {
   from: number
   /** Mức nông hơn của dải, ví dụ -0.4. Dải đầu để 0. */
   to: number
-  label: string
+  labelKey: TranslationKey
 }
 
 /**
@@ -775,17 +776,17 @@ export interface DrawdownBand {
  * lên nhau và không so với nhau được.
  */
 export const DRAWDOWN_BANDS: DrawdownBand[] = [
-  { from: -0.10, to: 0.00, label: 'Sát đỉnh (0 tới −10%)' },
-  { from: -0.20, to: -0.10, label: '−10 tới −20%' },
-  { from: -0.30, to: -0.20, label: '−20 tới −30%' },
-  { from: -0.40, to: -0.30, label: '−30 tới −40%' },
-  { from: -0.50, to: -0.40, label: '−40 tới −50%' },
-  { from: -0.60, to: -0.50, label: '−50 tới −60%' },
-  { from: -1.00, to: -0.60, label: 'Dưới −60%' },
+  { from: -0.10, to: 0.00, labelKey: 'ddb.band.nearPeak' },
+  { from: -0.20, to: -0.10, labelKey: 'ddb.band.10to20' },
+  { from: -0.30, to: -0.20, labelKey: 'ddb.band.20to30' },
+  { from: -0.40, to: -0.30, labelKey: 'ddb.band.30to40' },
+  { from: -0.50, to: -0.40, labelKey: 'ddb.band.40to50' },
+  { from: -0.60, to: -0.50, labelKey: 'ddb.band.50to60' },
+  { from: -1.00, to: -0.60, labelKey: 'ddb.band.below60' },
 ]
 
 export interface DrawdownBucketRow {
-  label: string
+  labelKey: TranslationKey
   from: number
   to: number
   /** Số kịch bản có ngày bắt đầu rơi vào dải này. */
@@ -874,7 +875,7 @@ export function computeDrawdownBuckets(
   holdingMonths: number,
 ): DrawdownBucketRow[] {
   const empty = DRAWDOWN_BANDS.map(b => ({
-    label: b.label, from: b.from, to: b.to,
+    labelKey: b.labelKey, from: b.from, to: b.to,
     scenarios: 0, episodes: 0, episodeStarts: [] as string[], lsWinRate: null, lsLossRate: null,
     medianCost: null, medianCostOfCapital: null,
     medianLsGrowth: null, medianDcaGrowth: null,
@@ -903,7 +904,7 @@ export function computeDrawdownBuckets(
   return DRAWDOWN_BANDS.map((b, bi) => {
     const list = grouped[bi]!
     if (list.length === 0) return empty[bi]!
-    return { label: b.label, from: b.from, to: b.to, ...summarizeGroup(list, holdingMonths) }
+    return { labelKey: b.labelKey, from: b.from, to: b.to, ...summarizeGroup(list, holdingMonths) }
   })
 }
 
@@ -972,19 +973,19 @@ export interface SincePeakBand {
   from: number
   /** Số tháng tối đa, 999 nghĩa là không giới hạn. */
   to: number
-  label: string
+  labelKey: TranslationKey
 }
 
 export const SINCE_PEAK_BANDS: SincePeakBand[] = [
-  { from: 0, to: 3, label: 'Dưới 3 tháng' },
-  { from: 3, to: 6, label: '3 tới 6 tháng' },
-  { from: 6, to: 12, label: '6 tới 12 tháng' },
-  { from: 12, to: 18, label: '12 tới 18 tháng' },
-  { from: 18, to: 999, label: 'Trên 18 tháng' },
+  { from: 0, to: 3, labelKey: 'spk.band.under3' },
+  { from: 3, to: 6, labelKey: 'spk.band.3to6' },
+  { from: 6, to: 12, labelKey: 'spk.band.6to12' },
+  { from: 12, to: 18, labelKey: 'spk.band.12to18' },
+  { from: 18, to: 999, labelKey: 'spk.band.over18' },
 ]
 
 export interface SincePeakRow {
-  label: string
+  labelKey: TranslationKey
   from: number
   to: number
   scenarios: number
@@ -1029,7 +1030,7 @@ export function computeSincePeakBuckets(
   holdingMonths: number,
 ): SincePeakRow[] {
   const empty: SincePeakRow[] = SINCE_PEAK_BANDS.map(b => ({
-    label: b.label, from: b.from, to: b.to,
+    labelKey: b.labelKey, from: b.from, to: b.to,
     scenarios: 0, episodes: 0, episodeStarts: [], lsWinRate: null, lsLossRate: null,
     medianCost: null, medianCostOfCapital: null,
     medianLsGrowth: null, medianDcaGrowth: null,
@@ -1059,6 +1060,6 @@ export function computeSincePeakBuckets(
   return SINCE_PEAK_BANDS.map((b, bi) => {
     const list = grouped[bi]!
     if (list.length === 0) return empty[bi]!
-    return { label: b.label, from: b.from, to: b.to, ...summarizeGroup(list, holdingMonths) }
+    return { labelKey: b.labelKey, from: b.from, to: b.to, ...summarizeGroup(list, holdingMonths) }
   })
 }

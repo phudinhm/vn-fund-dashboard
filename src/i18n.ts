@@ -2132,6 +2132,157 @@ const DICT = {
   'mc.top90': { vi: 'Đỉnh 90%: {v}', en: 'Top 90%: {v}' },
   'mc.pathShare': { vi: '{v} số path', en: '{v} of paths' },
 
+  // ── Drawdown bucket / since-peak analysis (dùng chung khung) ──
+  'ddb.band.nearPeak': { vi: 'Sát đỉnh (0 tới −10%)', en: 'Near the peak (0 to −10%)' },
+  'ddb.band.10to20': { vi: '−10 tới −20%', en: '−10 to −20%' },
+  'ddb.band.20to30': { vi: '−20 tới −30%', en: '−20 to −30%' },
+  'ddb.band.30to40': { vi: '−30 tới −40%', en: '−30 to −40%' },
+  'ddb.band.40to50': { vi: '−40 tới −50%', en: '−40 to −50%' },
+  'ddb.band.50to60': { vi: '−50 tới −60%', en: '−50 to −60%' },
+  'ddb.band.below60': { vi: 'Dưới −60%', en: 'Below −60%' },
+  'spk.band.under3': { vi: 'Dưới 3 tháng', en: 'Under 3 months' },
+  'spk.band.3to6': { vi: '3 tới 6 tháng', en: '3 to 6 months' },
+  'spk.band.6to12': { vi: '6 tới 12 tháng', en: '6 to 12 months' },
+  'spk.band.12to18': { vi: '12 tới 18 tháng', en: '12 to 18 months' },
+  'spk.band.over18': { vi: 'Trên 18 tháng', en: 'Over 18 months' },
+  'ddb.sellNow': { vi: 'Bán ngay khi rải xong', en: 'Sell as soon as the DCA finishes' },
+  'ddb.holdYears': { vi: 'Giữ thêm {n} năm rồi bán', en: 'Hold {n} more years, then sell' },
+  'ddb.holdOneYear': { vi: 'Giữ thêm 1 năm rồi bán', en: 'Hold 1 more year, then sell' },
+  'ddb.title': { vi: 'Vào lệnh lúc thị trường đã giảm sâu thì sao?', en: 'What if you entered after a deep fall?' },
+  'ddb.help': {
+    vi: 'Mức giảm đo so với đỉnh cao nhất tính tới đúng ngày bắt đầu, không phải đỉnh của cả chuỗi. Ngày 1/2015 không thể biết đỉnh 2021 nằm ở đâu.',
+    en: 'The fall is measured against the highest price up to the entry date, not the peak of the whole series. January 2015 could not know where the 2021 peak would be.',
+  },
+  'ddb.intro': {
+    vi: 'Mấy khối trên gộp chung mọi thời điểm bắt đầu, lúc thị trường đang đỉnh cũng như lúc đang sập. Khối này tách riêng ra: nếu bạn vào lệnh đúng lúc giá đã rơi khỏi đỉnh một quãng, thì đầu tư một lần và DCA khác nhau thế nào. Vẫn rải đều <b>{months} tháng</b> như các khối khác.',
+    en: 'The blocks above lump every start date together, at the top of the market and in the middle of a crash alike. This one separates them out: if you enter after the price has already fallen some way from its peak, how do lump sum and DCA differ? Still spread over <b>{months} months</b>, same as the others.',
+  },
+  'ddb.sellWhen': { vi: 'Bán khi nào', en: 'When to sell' },
+  'ddb.modeSellNow': { vi: 'Rải xong {months} tháng là bán luôn', en: 'Sell as soon as the {months} months are done' },
+  'ddb.modeHold': { vi: 'Rải xong {months} tháng rồi giữ thêm {years} năm nữa mới bán', en: 'Finish the {months} months, then hold {years} more years before selling' },
+  'ddb.noteHold': {
+    vi: 'Rải đều {months} tháng, giữ tiếp thêm {years} năm nữa rồi mới bán, tổng cộng {total} tháng kể từ ngày vào lệnh. Giữ lâu hơn thì cần nhiều dữ liệu tương lai hơn, nên số kịch bản ở mỗi dải ít đi so với chế độ bán ngay.',
+    en: 'Spread over {months} months, then held a further {years} years before selling — {total} months in total from the entry date. Holding longer needs more future data, so each band has fewer scenarios than in sell-immediately mode.',
+  },
+  'ddb.noteSellNow': {
+    vi: 'Rải đều {months} tháng rồi bán luôn, không giữ thêm ngày nào. Đây là cách tính dùng chung với khối tóm tắt và histogram bên trên.',
+    en: 'Spread over {months} months and sold immediately, held not a day longer. This is the same basis as the summary block and histogram above.',
+  },
+  'ddb.baselineLabel': { vi: 'Mốc so sánh, tính trên cả {n} kịch bản', en: 'Baseline across all {n} scenarios' },
+  'ddb.lsWins': { vi: 'Đầu tư một lần thắng <b>{pct}%</b>', en: 'Lump sum wins <b>{pct}%</b>' },
+  'ddb.medianGap': { vi: 'chênh trung vị ', en: 'median gap ' },
+  'ddb.neverFell': { vi: 'Quỹ này chưa từng giảm tới mức đó', en: 'This fund has never fallen that far' },
+  'ddb.rowTooltip': {
+    vi: '{label}: đầu tư một lần về đích {ls}, DCA về đích {dca}.',
+    en: '{label}: lump sum finishes at {ls}, DCA finishes at {dca}.',
+  },
+  'ddb.naNeverFell': { vi: 'chưa từng giảm tới mức này', en: 'never fell this far' },
+  'ddb.lsWinRate': { vi: '{pct}% LS thắng', en: '{pct}% LS wins' },
+  'ddb.scenarios': { vi: '{n} kịch bản', en: '{n} scenarios' },
+  'ddb.episodes': { vi: '{n} giai đoạn', en: '{n} episodes' },
+  'ddb.axisNote': {
+    vi: 'Trái vạch giữa: DCA về đích ít tiền hơn. Phải: DCA về đích nhiều hơn.',
+    en: 'Left of the centre line: DCA finishes with less. Right: DCA finishes with more.',
+  },
+  'ddb.episodeNote1': {
+    vi: 'Để minh bạch số liệu, dưới mỗi dải giảm giá đều ghi rõ các tháng bắt đầu của từng giai đoạn để bạn dễ dàng kiểm chứng.',
+    en: 'For transparency, each band lists the starting months of its episodes so you can check them yourself.',
+  },
+  'ddb.episodeNote2': {
+    vi: 'Cách tính rất đơn giản: Chọn tháng sớm nhất làm mốc, sau đó bỏ qua toàn bộ các tháng nằm trong chu kỳ nắm giữ {months} tháng tiếp theo. Tháng đầu tiên xuất hiện sau chu kỳ đó sẽ được chọn làm mốc mới, và cứ thế tiếp tục.',
+    en: 'The method is simple: take the earliest month as an anchor, then skip every month inside the following {months}-month holding period. The first month after that becomes the next anchor, and so on.',
+  },
+  'ddb.episodeNote3': {
+    vi: 'Bằng cách này, các giai đoạn sẽ hoàn toàn tách biệt về mặt thời gian. Điều này giải thích vì sao số lượng giai đoạn luôn nhỏ hơn rất nhiều so với tổng số kịch bản.',
+    en: 'That way the episodes share no time with each other at all, which is why the episode count is always far smaller than the scenario count.',
+  },
+  'ddb.episodeExample': {
+    vi: ' Chẳng hạn, ở mức <b>{label}</b>, dù có đến {scenarios} kịch bản nhưng thực tế chúng chỉ nằm trong <b>{episodes} giai đoạn</b> độc lập.',
+    en: ' At <b>{label}</b>, for instance, {scenarios} scenarios turn out to sit inside just <b>{episodes} independent episodes</b>.',
+  },
+  'ddb.episodeNote4': {
+    vi: ' Hàng trăm kịch bản kia đơn giản là do cùng một khoảng thời gian được đếm đi đếm lại.',
+    en: ' The hundreds of scenarios are simply the same stretches of time counted over and over.',
+  },
+  'ddb.allThin': {
+    vi: '<b>Không dòng nào đủ để kết luận.</b> Mọi dòng đều dựa trên dưới {min} giai đoạn. Xem cho biết thị trường đã từng ra sao, đừng xem như quy luật.',
+    en: '<b>No row here is enough to conclude anything.</b> Every one rests on fewer than {min} episodes. Read it as what the market once did, not as a rule.',
+  },
+  'ddb.someSolid': {
+    vi: 'Chỉ <b>{solid} trên {total} dòng có số liệu</b> đạt từ {min} giai đoạn trở lên. Các dòng còn lại bị làm mờ kèm dấu ⚠.',
+    en: 'Only <b>{solid} of the {total} populated rows</b> reach {min} episodes or more. The rest are dimmed and marked ⚠.',
+  },
+  'ddb.evenSolidThin': {
+    vi: ' Và ngay cả dòng đạt ngưỡng cũng chỉ là vài giai đoạn, không phải vài trăm.',
+    en: ' And even the rows that clear the bar rest on a handful of episodes, not hundreds.',
+  },
+  'ddb.sharedCrash': {
+    vi: '<b>Hai giai đoạn vẫn có thể cùng một đợt sập.</b> Chúng không dùng chung ngày nào, nhưng nếu cùng nằm trong một bear market thì cùng phụ thuộc một lần hồi phục về sau.',
+    en: '<b>Two episodes can still belong to the same crash.</b> They share no dates, but if both sit inside one bear market they depend on the same later recovery.',
+  },
+  'ddb.depthNote': {
+    vi: 'Hãy hình dung hai thời điểm giá cùng giảm 50 - 60%. Nếu bạn mua vào, một năm sau có thể bạn sẽ lỗ nặng, nhưng cũng có thể lãi gấp vài lần. Điều gì quyết định chuyện này? Đó là khoảng thời gian kể từ khi giá tạo đỉnh, chứ không thuần túy là độ sâu của nhịp giảm. Bạn có thể thấy rõ quy luật này ở khối dữ liệu bên dưới.',
+    en: 'Picture two moments when the price is down 50–60%. Buy into either and a year later you might be deeply underwater — or up several times over. What decides it is how long ago the peak was, not the depth of the fall alone. The block below makes that pattern visible.',
+  },
+  'ddb.closing': {
+    vi: '<b>Bảng này không nói lần sau sẽ ra sao.</b> Nó chỉ kể lại mấy lần đã rồi. Thị trường giảm 50% rồi vẫn giảm tiếp 50% nữa được.',
+    en: '<b>This table says nothing about next time.</b> It only recounts the times already past. A market down 50% can fall another 50%.',
+  },
+
+  // ── Khối chia theo thời gian kể từ đỉnh (SincePeakChart) ──
+  'spk.title': { vi: 'Thời gian sau khi tạo đỉnh có tác động thế nào?', en: 'How much does time since the peak matter?' },
+  'spk.help': {
+    vi: 'Chỉ tính những lần vào lệnh khi giá đã rời đỉnh ít nhất 20%. Đỉnh là mức cao nhất tính tới đúng ngày đó, không phải đỉnh của cả chuỗi.',
+    en: 'Only entries made once the price was at least 20% below its peak. The peak is the highest price up to that date, not the peak of the whole series.',
+  },
+  'spk.intro': {
+    vi: 'Biểu đồ bên trên diễn giải giá đã giảm tới mức độ nào. Còn biểu đồ này diễn giải thời gian sau khi tạo đỉnh có tác động đến hiệu suất của danh mục trong tương lai không. Vẫn cùng bộ kịch bản, vẫn rải đều {months} tháng, chỉ đổi cách xếp nhóm.',
+    en: 'The chart above asks how far the price had fallen. This one asks whether the time elapsed since the peak changes what the portfolio does next. Same set of scenarios, same {months}-month spread — only the grouping changes.',
+  },
+  'spk.filterNote': {
+    vi: 'Chỉ tính những lần vào lệnh khi giá đã rời đỉnh ít nhất {pct}%, tức thị trường đang thật sự đi xuống chứ không phải rung lắc quanh đỉnh. Mỗi dòng ghi kèm tháng bắt đầu của từng giai đoạn, đếm theo đúng quy tắc của khối trên: hai giai đoạn không dùng chung ngày nào.',
+    en: 'Only entries made once the price was at least {pct}% off its peak — a market genuinely heading down, not one wobbling around the top. Each row lists the starting month of every episode, counted by the same rule as the block above: no two episodes share a single date.',
+  },
+  'spk.neverHappened': { vi: 'Chưa từng có lần nào rơi vào nhóm này', en: 'No entry has ever landed in this group' },
+  'spk.rowTooltip': {
+    vi: '{label} sau đỉnh: đầu tư một lần về đích {ls}, DCA về đích {dca}.',
+    en: '{label} after the peak: lump sum finishes at {ls}, DCA finishes at {dca}.',
+  },
+  'spk.naNever': { vi: 'chưa từng xảy ra', en: 'never happened' },
+  'spk.market': {
+    vi: 'Thị trường: về đích {growth}, {loss}% số lần vẫn đang lỗ',
+    en: 'Market: finishes at {growth}, still down in {loss}% of cases',
+  },
+  'spk.depthVsTime': {
+    vi: 'Ban đầu, chúng ta dễ lầm tưởng "giá giảm sâu thế nào" là yếu tố quyết định. Tuy nhiên, dữ liệu cho thấy cùng một mức giảm 50-60% của Bitcoin, kết quả sau một năm có thể chênh lệch cực lớn: có lần lỗ 61%, nhưng có lần lại lãi tới 430%. Điều tạo ra sự khác biệt này chính là khoảng thời gian tính từ đỉnh gần nhất.',
+    en: 'It is easy to assume that how far the price fell is what decides the outcome. The data says otherwise: from the same 50–60% fall in Bitcoin, one year later you might be down 61% or up 430%. What separates those two is how long ago the last peak was.',
+  },
+  'spk.bearLength': {
+    vi: 'Lịch sử cho thấy một thị trường gấu (bear market) của Bitcoin thường kéo dài 12-13 tháng. Nếu giá giảm 50% chỉ 2 tháng sau đỉnh, đà suy giảm có thể vẫn còn kéo dài. Ngược lại, nếu giá giảm 50% khi đỉnh đã qua 15 tháng, phần lớn nhịp điều chỉnh có thể đã kết thúc.',
+    en: 'Historically a Bitcoin bear market has run about 12–13 months. A 50% fall just 2 months after the peak may have much further to go. The same 50% fall 15 months after the peak is probably most of the way through.',
+  },
+  'spk.howToRead': { vi: 'Cách đọc hiểu bảng dữ liệu', en: 'How to read the table' },
+  'spk.riskItem': {
+    vi: '<b>Xác suất rủi ro:</b> Nếu vào lệnh khi đỉnh vừa đi qua {early}, tỷ lệ lỗ sau 1 năm lên tới <b>{earlyLoss}%</b>. Nếu chờ đỉnh qua {late}, xác suất rủi ro này giảm về mức <b>{lateLoss}%</b>.',
+    en: '<b>Odds of being down:</b> enter when the peak is only {early} behind you and the chance of still being down a year later runs to <b>{earlyLoss}%</b>. Wait until the peak is {late} behind and that falls to <b>{lateLoss}%</b>.',
+  },
+  'spk.dcaStrategy': {
+    vi: '<b>Chiến lược rải vốn (DCA):</b> Hiệu quả rải vốn phụ thuộc vào vị trí của bạn trong chu kỳ.',
+    en: '<b>Spreading the money (DCA):</b> how well it works depends on where in the cycle you are.',
+  },
+  'spk.nearPeakItem': {
+    vi: '<b>Mua sát đỉnh:</b> Rải vốn giúp tối ưu giá vì thị trường còn giảm tiếp, giúp bạn "đỡ đau" hơn.',
+    en: '<b>Buying near the peak:</b> spreading it out gets you a better average price, because the market still has further to fall. It hurts less.',
+  },
+  'spk.longAfterItem': {
+    vi: '<b>Mua khi đỉnh đã qua lâu:</b> Rải vốn lúc này lại làm giảm hiệu suất. Thị trường thường đã bước vào pha phục hồi, việc để tiền mặt nằm chờ sẽ khiến bạn lỡ mất đợt sóng tăng trưởng (thể hiện rõ qua cột "LS thắng" tăng dần).',
+    en: '<b>Buying long after the peak:</b> spreading it out now costs you. The market has usually turned, and money sitting in cash misses the recovery — you can see it in the rising "LS wins" column.',
+  },
+  'spk.closing': {
+    vi: '<b>Bảng này không nói khi nào nên vào lệnh.</b> Bạn không biết đỉnh ở đâu cho tới khi nó qua lâu rồi, và không biết bear lần này dài bằng mấy lần trước hay không. Bảng chỉ kể lại mấy chu kỳ đã đi qua.',
+    en: '<b>This table does not tell you when to buy.</b> You cannot see a peak until long after it has passed, and you cannot know whether this bear runs as long as the last ones. It only recounts the cycles already behind us.',
+  },
+
   // ── DCA glossary (nội dung ở src/components/glossary/) ──
   'glossary.toggle': { vi: 'Giải Thích Khái Niệm {arrow}', en: 'Key concepts {arrow}' },
 

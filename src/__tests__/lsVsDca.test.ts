@@ -945,7 +945,7 @@ describe('computeDrawdownBuckets', () => {
 
   it('trả về đúng một dòng cho mỗi dải', () => {
     const rows = computeDrawdownBuckets(singleFundMap('A', cyclical), singleSlot('A'), scen, 12)
-    expect(rows.map(r => r.label)).toEqual(DRAWDOWN_BANDS.map(b => b.label))
+    expect(rows.map(r => r.labelKey)).toEqual(DRAWDOWN_BANDS.map(b => b.labelKey))
   })
 
   // Các dải rời nhau nên tổng phải khớp, không được đếm trùng hay bỏ sót.
@@ -1124,7 +1124,7 @@ describe('computeSincePeakBuckets', () => {
 
   it('trả về đúng một dòng cho mỗi nhóm thời gian', () => {
     const rows = computeSincePeakBuckets(singleFundMap('A', cycle), singleSlot('A'), scen, 12)
-    expect(rows.map(r => r.label)).toEqual(SINCE_PEAK_BANDS.map(b => b.label))
+    expect(rows.map(r => r.labelKey)).toEqual(SINCE_PEAK_BANDS.map(b => b.labelKey))
   })
 
   it('chỉ tính những lần đã rời đỉnh đủ sâu, không tính lúc quanh đỉnh', () => {
