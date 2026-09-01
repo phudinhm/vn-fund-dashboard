@@ -385,6 +385,62 @@ const DICT = {
     en: ' <b>Never rebalancing</b> on its own returned {cagr}%/yr, {gap} points below the median — the weights still drift toward whichever fund ran hardest, so concentration risk rises either way.',
   },
 
+  // ── Wall of Worry tab ──
+  'wow.title': { vi: 'Wall of Worry', en: 'Wall of Worry' },
+  'wow.loading': { vi: 'Đang tải dữ liệu {fund}...', en: 'Loading {fund} data...' },
+  'wow.loadFailed': { vi: 'Không tải được dữ liệu {fund}.', en: 'Could not load {fund} data.' },
+  'wow.curatedNote': {
+    vi: '<b>Danh sách tuyển chọn thủ công.</b> {n} sự kiện được chọn lọc và gắn nguồn bằng tay, không tự động cập nhật theo tin tức. Sự kiện mới nhất trong danh sách: <b>{date}</b>. Biến động sau mốc đó chưa được đánh dấu.',
+    en: '<b>Hand-curated list.</b> {n} events, each picked and sourced by hand — this does not update itself from the news. The most recent event on the list is <b>{date}</b>; anything after that is not marked yet.',
+  },
+  'wow.headline': {
+    vi: 'Trong suốt hơn {years} năm, không năm nào thiếu tin xấu: chiến tranh, đại dịch, khủng hoảng trái phiếu, chủ tịch tập đoàn bị bắt... Vậy mà từ ngày niêm yết tháng 10/{firstYear}, giá <b>{fund}</b> đã tăng khoảng <b>{times} lần</b>, leo qua {events} bức tường lo âu được đánh dấu dưới đây.',
+    en: 'Across more than {years} years, not one of them was short of bad news: wars, a pandemic, a bond-market crisis, chairmen arrested. And yet since listing in October {firstYear}, <b>{fund}</b> is up roughly <b>{times}×</b>, climbing the {events} walls of worry marked below.',
+  },
+  'wow.chartTitle': { vi: 'Giá {fund} và những bức tường lo âu', en: '{fund} price and its walls of worry' },
+  'wow.shownCount': { vi: '{shown}/{total} sự kiện', en: '{shown}/{total} events' },
+  'wow.logHelp': {
+    vi: 'Chuyển sang trục logarithmic. Cùng một mức tăng phần trăm sẽ có cùng độ dốc, giúp so sánh biến động ở giai đoạn đầu và giai đoạn sau công bằng hơn.',
+    en: 'Switch to a logarithmic axis. Equal percentage moves then have equal slope, which makes the early years and the later years comparable.',
+  },
+  'wow.chartHelp': {
+    vi: 'Giá chứng chỉ quỹ E1VFVN30 (ETF mô phỏng chỉ số VN30) từ ngày niêm yết. Mỗi chấm là một sự kiện khiến nhà đầu tư lo ngại thị trường sẽ giảm, xem chi tiết ở danh sách bên dưới. Rê chuột lên biểu đồ để xem giá từng ngày.',
+    en: 'The price of E1VFVN30 (an ETF tracking the VN30 index) since it listed. Each dot is an event that had investors expecting the market to fall; the list below has the details. Hover the chart for daily prices.',
+  },
+  'wow.category.world': { vi: 'Thế giới', en: 'World' },
+  'wow.category.vn': { vi: 'Vĩ mô Việt Nam', en: 'Vietnam macro' },
+  'wow.category.corp': { vi: 'Doanh nghiệp Việt Nam', en: 'Vietnamese corporates' },
+  'wow.events': { vi: 'Sự kiện', en: 'Events' },
+  'wow.showAll': { vi: 'Hiện tất cả', en: 'Show all' },
+  'wow.hideAll': { vi: 'Ẩn tất cả', en: 'Hide all' },
+  'wow.toggleEvent': { vi: 'Hiện/ẩn sự kiện này trên biểu đồ', en: 'Show or hide this event on the chart' },
+  'wow.source': { vi: 'Nguồn ↗', en: 'Source ↗' },
+  'wow.hiddenNote': {
+    vi: '* Còn {n} sự kiện trước ngày {fund} niêm yết (10/2014) chưa hiển thị vì nằm ngoài vùng dữ liệu giá: {list}.',
+    en: '* {n} events predate {fund}’s listing (October 2014) and fall outside the price data, so they are not shown: {list}.',
+  },
+  'wow.aboutTitle': { vi: 'Về Wall of Worry', en: 'About Wall of Worry' },
+  'wow.about1': {
+    vi: '"Climbing the wall of worry", leo lên bức tường lo âu, là một câu nói kinh điển trong giới đầu tư: giá cổ phiếu thường vẫn đi lên trong khi mặt báo toàn tin xấu. Năm nào cũng có ít nhất một lý do nghe rất hợp lý để đứng ngoài thị trường: chiến tranh, đại dịch, lạm phát, khủng hoảng ngân hàng... Nhưng nhìn lại lịch sử, thị trường đã leo qua tất cả những bức tường đó.',
+    en: '"Climbing the wall of worry" is an old market saying: share prices tend to keep rising while the front pages are full of bad news. Every single year offers at least one perfectly sensible reason to stay out — war, a pandemic, inflation, a banking crisis. Looking back, the market climbed every one of those walls.',
+  },
+  'wow.about2': {
+    vi: 'Biểu đồ trên vẽ giá chứng chỉ quỹ {fund}, ETF lâu đời nhất mô phỏng chỉ số VN30, từ ngày niêm yết tháng 10/2014 đến nay. Mỗi chấm là một sự kiện mà tại thời điểm xảy ra, nhiều nhà đầu tư tin rằng thị trường sẽ sụp đổ. Có sự kiện đến từ bên kia bán cầu, có sự kiện xảy ra ngay tại Việt Nam, từ vĩ mô đến những vụ án doanh nghiệp lớn.',
+    en: 'The chart above plots {fund}, the oldest ETF tracking the VN30 index, from its October 2014 listing to today. Each dot marks a moment when plenty of investors believed the market was about to collapse. Some came from the other side of the world, some from Vietnam itself — macro shocks and corporate scandals alike.',
+  },
+  'wow.about3': {
+    vi: 'Nói đi cũng phải nói lại: leo qua được không có nghĩa là leo nhanh. Bear market 2018-2019 kéo dài gần 2 năm. Cú sập 2022 cần hơn 3 năm để giá quay về đỉnh cũ. Thị trường Việt Nam là thị trường cận biên, từ bull sang bear diễn ra chóng vánh, và không ai đảm bảo lần tới sẽ giống những lần trước. Đã gọi là đầu tư thì sẽ luôn có rủi ro.',
+    en: 'The other side of it: climbing over does not mean climbing quickly. The 2018–2019 bear market lasted almost two years. The 2022 crash took more than three years to get back to the old high. Vietnam is a frontier market — the turn from bull to bear is abrupt, and nobody guarantees the next one looks like the last. Investing carries risk, always.',
+  },
+  'wow.about4': {
+    vi: 'Điều biểu đồ này muốn nói không phải là "cứ mua là thắng", mà là: tin xấu luôn tồn tại. Nếu chờ đến lúc không còn tin xấu nào mới đầu tư, có thể bạn sẽ chờ mãi mãi. Đó là lý do vì sao đầu tư đều đặn qua từng tháng, không cần đoán đỉnh đoán đáy thị trường, lại là cách tiếp cận phù hợp với phần lớn chúng ta.',
+    en: 'The point of this chart is not "buy and you win". It is that bad news is always there. If you wait for a month with no bad news in it, you may wait forever. That is why investing steadily month after month, without trying to call tops and bottoms, suits most of us better.',
+  },
+  'wow.about5': {
+    vi: 'Dữ liệu chỉ mang tính minh họa và giáo dục, không phải lời khuyên đầu tư.',
+    en: 'This is illustrative and educational only, not investment advice.',
+  },
+
   // ── Calculator tab ──
   'calc.title': { vi: 'Máy tính nhanh', en: 'Quick calculators' },
   'calc.navLabel': { vi: 'Chọn máy tính', en: 'Choose a calculator' },

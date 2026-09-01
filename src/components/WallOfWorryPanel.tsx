@@ -13,7 +13,9 @@
  */
 import { memo, useMemo, useState } from 'react'
 import { useFundSeries } from '../hooks/useFundData'
-import { WOW_EVENTS, WOW_CATEGORY_META } from '../utils/wallOfWorryEvents'
+import { WOW_EVENTS, WOW_CATEGORY_META, pickLang } from '../utils/wallOfWorryEvents'
+import { useT, useTRich } from '../i18n'
+import { useLanguage } from '../hooks/useLanguage'
 
 const FUND_ID = 'E1VFVN30'
 
@@ -49,6 +51,9 @@ interface PlacedLabel {
 }
 
 function WallOfWorryPanelImpl() {
+  const t = useT()
+  const tr = useTRich()
+  const { language } = useLanguage()
   const { prices, loading, error } = useFundSeries(FUND_ID)
   const [logScale, setLogScale] = useState(false)
   const [hoverIdx, setHoverIdx] = useState<number | null>(null)
@@ -133,7 +138,7 @@ function WallOfWorryPanelImpl() {
       const i = nearestIdx(pts, ev.ts)
       const x = xOf(pts[i]!.ts)
       const dotY = yOf(pts[i]!.price)
-      const lines = wrapText(ev.shortLabel ?? ev.label, 18)
+      const lines = wrapText(pickLang(ev.shortLabel ?? ev.label, language), 18)
       const boxW = Math.max(...lines.map(l => l.length)) * CHAR_W + 6
       const boxH = lines.length * LINE_H + 2
       // Điểm giá nằm nửa dưới biểu đồ thì đặt label lên trên (chỗ trống) và ngược lại
@@ -176,9 +181,9 @@ function WallOfWorryPanelImpl() {
     return { pts, t0, t1, xOf, yOf, linePath, areaPath, yearTicks, labels, inRangeEvents }
   }, [prices, logScale, hiddenDates])
 
-  if (loading) return <div className="simulation-panel"><p>Đang tải dữ liệu {FUND_ID}...</p></div>
+  if (loading) return <div className="simulation-panel"><p>{t('wow.loading', { fund: FUND_ID })}</p></div>
   if (error || !chart) {
-    return <div className="simulation-panel"><p>Không tải được dữ liệu {FUND_ID}.</p></div>
+    return <div className="simulation-panel"><p>{t('wow.loadFailed', { fund: FUND_ID })}</p></div>
   }
 
   const { pts, t0, t1, xOf, yOf, linePath, areaPath, yearTicks, labels, inRangeEvents } = chart
@@ -237,46 +242,42 @@ function WallOfWorryPanelImpl() {
   return (
     <div className="simulation-panel wow-panel">
       <div className="panel-header">
-        <h2>Wall of Worry</h2>
+        <h2>{t('wow.title')}</h2>
       </div>
 
       {/* Danh sách sự kiện là mảng tĩnh trong mã nguồn (wallOfWorryEvents.ts),
           KHÔNG tự cập nhật theo tin tức. Nói rõ ra cùng ngày sự kiện mới nhất,
           để không ai tưởng thị trường thật sự yên ắng từ đó tới nay. */}
       <div className="fa-scope-note">
-        <strong>Danh sách tuyển chọn thủ công.</strong> {WOW_EVENTS.length} sự kiện được
-        chọn lọc và gắn nguồn bằng tay, không tự động cập nhật theo tin tức. Sự kiện mới
-        nhất trong danh sách: <strong>{formatDateVN(lastCuratedDate)}</strong>. Biến động
-        sau mốc đó chưa được đánh dấu.
+        {tr('wow.curatedNote', { n: WOW_EVENTS.length, date: formatDateVN(lastCuratedDate) })}
       </div>
 
       <div className="dca-journey-block">
         <div className="dca-journey-headline">
-          Trong suốt hơn {numYears} năm, không năm nào thiếu tin xấu: chiến tranh, đại dịch,
-          khủng hoảng trái phiếu, chủ tịch tập đoàn bị bắt... Vậy mà từ ngày niêm yết
-          tháng 10/{firstYear}, giá <strong>{FUND_ID}</strong> đã tăng khoảng{' '}
-          <strong>{times.toLocaleString('vi-VN', { maximumFractionDigits: 1 })} lần</strong>,
-          leo qua {inRangeEvents.length} bức tường lo âu được đánh dấu dưới đây.
+          {tr('wow.headline', {
+            years: numYears,
+            firstYear,
+            fund: FUND_ID,
+            times: times.toLocaleString(language === 'vi' ? 'vi-VN' : 'en-US', { maximumFractionDigits: 1 }),
+            events: inRangeEvents.length,
+          })}
         </div>
 
         <div className="chart-container">
           <div className="chart-header">
-            <h3>Giá {FUND_ID} và những bức tường lo âu</h3>
+            <h3>{t('wow.chartTitle', { fund: FUND_ID })}</h3>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <span className="wow-shown-count">
-                {shownOnChartCount}/{inRangeEvents.length} sự kiện
+                {t('wow.shownCount', { shown: shownOnChartCount, total: inRangeEvents.length })}
               </span>
               <button
                 className={`log-scale-btn${logScale ? ' log-scale-btn-active' : ''}`}
                 onClick={() => setLogScale(v => !v)}
-                title="Chuyển sang trục logarithmic. Cùng một mức tăng phần trăm sẽ có cùng độ dốc, giúp so sánh biến động ở giai đoạn đầu và giai đoạn sau công bằng hơn."
+                title={t('wow.logHelp')}
               >
                 Log
               </button>
-              <span
-                className="chart-tooltip-icon"
-                title="Giá chứng chỉ quỹ E1VFVN30 (ETF mô phỏng chỉ số VN30) từ ngày niêm yết. Mỗi chấm là một sự kiện khiến nhà đầu tư lo ngại thị trường sẽ giảm, xem chi tiết ở danh sách bên dưới. Rê chuột lên biểu đồ để xem giá từng ngày."
-              >?</span>
+              <span className="chart-tooltip-icon" title={t('wow.chartHelp')}>?</span>
             </div>
           </div>
 
@@ -358,7 +359,7 @@ function WallOfWorryPanelImpl() {
                     {formatDateVN(hover.date)}
                   </text>
                   <text x={tipW / 2} y={34} textAnchor="middle" fontSize={12.5} fontWeight={700} fill="#fff">
-                    {Math.round(hover.price).toLocaleString('vi-VN')} đ
+                    {Math.round(hover.price).toLocaleString(language === 'vi' ? 'vi-VN' : 'en-US')} đ
                   </text>
                 </g>
               </g>
@@ -371,7 +372,7 @@ function WallOfWorryPanelImpl() {
           {(Object.keys(WOW_CATEGORY_META) as Array<keyof typeof WOW_CATEGORY_META>).map(cat => (
             <span key={cat} className="wow-legend-item">
               <span className="wow-legend-dot" style={{ background: WOW_CATEGORY_META[cat].color }} />
-              {WOW_CATEGORY_META[cat].name}
+              {t(WOW_CATEGORY_META[cat].nameKey)}
             </span>
           ))}
         </div>
@@ -381,9 +382,9 @@ function WallOfWorryPanelImpl() {
             wallofworry.co (date + dot + title + checkbox trên 1 hàng). */}
         <div className="wow-events-panel">
           <div className="wow-events-header">
-            <span className="wow-events-header-label">Sự kiện</span>
+            <span className="wow-events-header-label">{t('wow.events')}</span>
             <button className="wow-hide-all-btn" onClick={toggleHideAll}>
-              {allHidden ? 'Hiện tất cả' : 'Ẩn tất cả'}
+              {t(allHidden ? 'wow.showAll' : 'wow.hideAll')}
             </button>
           </div>
           <ul className="wow-events-list">
@@ -404,9 +405,9 @@ function WallOfWorryPanelImpl() {
                       aria-expanded={isExpanded}
                       onClick={() => toggleExpanded(ev.date)}
                     >
-                      {ev.label}
+                      {pickLang(ev.label, language)}
                     </button>
-                    <label className="wow-event-checkbox" title="Hiện/ẩn sự kiện này trên biểu đồ">
+                    <label className="wow-event-checkbox" title={t('wow.toggleEvent')}>
                       <input
                         type="checkbox"
                         checked={!isHidden}
@@ -417,7 +418,7 @@ function WallOfWorryPanelImpl() {
                   </div>
                   {isExpanded && (
                     <div className="wow-event-desc">
-                      {ev.description}
+                      {pickLang(ev.description, language)}
                       {' '}
                       <a
                         className="wow-event-source"
@@ -425,7 +426,7 @@ function WallOfWorryPanelImpl() {
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        Nguồn ↗
+                        {t('wow.source')}
                       </a>
                       {ev.extraSources?.map(src => (
                         <a
@@ -447,50 +448,27 @@ function WallOfWorryPanelImpl() {
         </div>
         {hiddenCount > 0 && (
           <p className="wow-hidden-note">
-            * Còn {hiddenCount} sự kiện trước ngày {FUND_ID} niêm yết (10/2014) chưa hiển thị
-            vì nằm ngoài vùng dữ liệu giá:{' '}
-            {WOW_EVENTS
-              .filter(e => !inRangeEvents.some(v => v.date === e.date))
-              .map(e => `${e.shortLabel ?? e.label} (${e.date.slice(0, 4)})`)
-              .join(', ')}.
+            {t('wow.hiddenNote', {
+              n: hiddenCount,
+              fund: FUND_ID,
+              list: WOW_EVENTS
+                .filter(e => !inRangeEvents.some(v => v.date === e.date))
+                .map(e => `${pickLang(e.shortLabel ?? e.label, language)} (${e.date.slice(0, 4)})`)
+                .join(', '),
+            })}
           </p>
         )}
 
         {/* About */}
         <div className="section-divider">
-          <span className="section-divider-label">Về Wall of Worry</span>
+          <span className="section-divider-label">{t('wow.aboutTitle')}</span>
         </div>
         <div className="wow-about">
-          <p>
-            "Climbing the wall of worry", leo lên bức tường lo âu, là một câu nói kinh điển
-            trong giới đầu tư: giá cổ phiếu thường vẫn đi lên trong khi mặt báo toàn tin xấu.
-            Năm nào cũng có ít nhất một lý do nghe rất hợp lý để đứng ngoài thị trường:
-            chiến tranh, đại dịch, lạm phát, khủng hoảng ngân hàng... Nhưng nhìn lại lịch sử,
-            thị trường đã leo qua tất cả những bức tường đó.
-          </p>
-          <p>
-            Biểu đồ trên vẽ giá chứng chỉ quỹ {FUND_ID}, ETF lâu đời nhất mô phỏng chỉ số
-            VN30, từ ngày niêm yết tháng 10/2014 đến nay. Mỗi chấm là một sự kiện mà
-            tại thời điểm xảy ra, nhiều nhà đầu tư tin rằng thị trường sẽ sụp đổ. Có sự kiện
-            đến từ bên kia bán cầu, có sự kiện xảy ra ngay tại Việt Nam, từ vĩ mô đến
-            những vụ án doanh nghiệp lớn.
-          </p>
-          <p>
-            Nói đi cũng phải nói lại: leo qua được không có nghĩa là leo nhanh. Bear market
-            2018-2019 kéo dài gần 2 năm. Cú sập 2022 cần hơn 3 năm để giá quay về đỉnh cũ.
-            Thị trường Việt Nam là thị trường cận biên, từ bull sang bear diễn ra chóng vánh,
-            và không ai đảm bảo lần tới sẽ giống những lần trước. Đã gọi là đầu tư thì sẽ
-            luôn có rủi ro.
-          </p>
-          <p>
-            Điều biểu đồ này muốn nói không phải là "cứ mua là thắng", mà là: tin xấu luôn
-            tồn tại. Nếu chờ đến lúc không còn tin xấu nào mới đầu tư, có thể bạn sẽ chờ mãi
-            mãi. Đó là lý do vì sao đầu tư đều đặn qua từng tháng, không cần đoán đỉnh đoán
-            đáy thị trường, lại là cách tiếp cận phù hợp với phần lớn chúng ta.
-          </p>
-          <p className="wow-disclaimer">
-            Dữ liệu chỉ mang tính minh họa và giáo dục, không phải lời khuyên đầu tư.
-          </p>
+          <p>{t('wow.about1')}</p>
+          <p>{t('wow.about2', { fund: FUND_ID })}</p>
+          <p>{t('wow.about3')}</p>
+          <p>{t('wow.about4')}</p>
+          <p className="wow-disclaimer">{t('wow.about5')}</p>
         </div>
       </div>
     </div>

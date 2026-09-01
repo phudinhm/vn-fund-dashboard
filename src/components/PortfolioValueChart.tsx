@@ -3,12 +3,13 @@ import {
   Line, XAxis, YAxis, CartesianGrid,
   Tooltip, ResponsiveContainer, Legend, ComposedChart, ReferenceLine,
 } from 'recharts'
-import { WOW_EVENTS, WOW_CATEGORY_META } from '../utils/wallOfWorryEvents'
+import { WOW_EVENTS, WOW_CATEGORY_META, pickLang } from '../utils/wallOfWorryEvents'
 import {
   getYearTicks, formatYear, formatTooltipDate, DIMMED_COLOR,
 } from '../utils/chartPlumbing'
 import { formatVNDFull } from '../utils/vndFormat'
 import { useDimLegend } from '../hooks/useDimLegend'
+import { useLanguage } from '../hooks/useLanguage'
 
 interface ValuePoint {
   date: string
@@ -29,6 +30,7 @@ interface Props {
 const INVESTED_LINE_NAME = 'Đã đầu tư'
 
 function PortfolioValueChartImpl({ portfolios }: Props) {
+  const { language } = useLanguage()
   const [logScale, setLogScale] = useState(false)
   const [showEvents, setShowEvents] = useState(false)
 
@@ -50,7 +52,7 @@ function PortfolioValueChartImpl({ portfolios }: Props) {
           num: i + 1,
           ts: new Date(ev.date).getTime(),
           date: ev.date,
-          label: ev.shortLabel ?? ev.label,
+          label: pickLang(ev.shortLabel ?? ev.label, language),
           color: WOW_CATEGORY_META[ev.category].color,
         }))
     : []
