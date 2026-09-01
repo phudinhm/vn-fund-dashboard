@@ -2132,6 +2132,9 @@ const DICT = {
   'mc.top90': { vi: 'Đỉnh 90%: {v}', en: 'Top 90%: {v}' },
   'mc.pathShare': { vi: '{v} số path', en: '{v} of paths' },
 
+  // ── DCA glossary (nội dung ở src/components/glossary/) ──
+  'glossary.toggle': { vi: 'Giải Thích Khái Niệm {arrow}', en: 'Key concepts {arrow}' },
+
   // ── Methodology tab (khung; nội dung ở src/components/methodology/) ──
   'method.tocLabel': { vi: 'Mục lục', en: 'Table of contents' },
   'method.onThisPage': { vi: 'Trong trang này', en: 'On this page' },
