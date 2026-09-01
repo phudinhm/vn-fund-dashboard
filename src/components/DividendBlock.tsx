@@ -13,6 +13,7 @@
 import { memo } from 'react'
 import type { DividendEvent, DividendNarrativeStats } from '../utils/dividendAdjust'
 import { formatVNDFull } from '../utils/vndFormat'
+import { useT, useTRich } from '../i18n'
 
 export interface PortfolioDividendNarrative {
   portfolioId: string
@@ -37,6 +38,8 @@ interface Props {
 }
 
 function DividendBlockImpl({ fundIds, dividendsByFund, startDate, endDate, narrativeByPortfolio }: Props) {
+  const t = useT()
+  const tr = useTRich()
   // Group events theo fundId, chỉ lấy những đợt ex-date rơi vào kỳ DCA
   const byFund = new Map<string, DividendEvent[]>()
   for (const fundId of fundIds) {
@@ -56,14 +59,11 @@ function DividendBlockImpl({ fundIds, dividendsByFund, startDate, endDate, narra
   return (
     <>
       <div className="section-divider">
-        <span className="section-divider-label">Cổ tức &amp; tái đầu tư</span>
+        <span className="section-divider-label">{t('div.divider')}</span>
       </div>
       <div className="dca-journey-block">
         <div className="dca-journey-headline">
-          Trong kỳ DCA này, quỹ <strong>{Array.from(byFund.keys()).join(', ')}</strong>{' '}
-          đã chi trả cổ tức. Dashboard đã điều chỉnh giá để phản ánh giả định tái đầu
-          tư sau thuế TNCN, nên hiệu suất bạn thấy ở mọi biểu đồ đã bao gồm phần
-          lợi nhuận từ cổ tức.
+          {tr('div.intro', { funds: Array.from(byFund.keys()).join(', ') })}
         </div>
 
         {Array.from(byFund.entries()).map(([fundId, evs]) => {
@@ -79,8 +79,8 @@ function DividendBlockImpl({ fundIds, dividendsByFund, startDate, endDate, narra
           return (
             <div key={fundId} className="dca-dividend-group">
               <div className="dca-dividend-fund-head">
-                Quỹ <strong>{fundId}</strong> — {evs.length} đợt chi trả trong kỳ
-                {' '}<span className="dca-dividend-muted">(đã trừ thuế TNCN)</span>
+                {tr('div.fundHeading', { fund: fundId, n: evs.length })}
+                {' '}<span className="dca-dividend-muted">{t('div.afterTax')}</span>
               </div>
 
               {portfolioStats.length === 0 && (
@@ -88,10 +88,10 @@ function DividendBlockImpl({ fundIds, dividendsByFund, startDate, endDate, narra
                 <table className="dca-dividend-table">
                   <thead>
                     <tr>
-                      <th>Ngày chốt quyền</th>
-                      <th>Ngày nhận tiền</th>
-                      <th className="num">Cổ tức/ccq (gross)</th>
-                      <th className="num">Cổ tức/ccq (net)</th>
+                      <th>{t('div.col.exDate')}</th>
+                      <th>{t('div.col.payDate')}</th>
+                      <th className="num">{t('div.col.grossPerUnit')}</th>
+                      <th className="num">{t('div.col.netPerUnit')}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -110,19 +110,19 @@ function DividendBlockImpl({ fundIds, dividendsByFund, startDate, endDate, narra
               {portfolioStats.map(({ p, s }) => (
                 <div key={p.portfolioId} className="dca-dividend-portfolio">
                   {multiplePortfolios && (
-                    <div className="dca-dividend-portfolio-name">Danh mục: {p.portfolioName}</div>
+                    <div className="dca-dividend-portfolio-name">{t('div.portfolioName', { name: p.portfolioName })}</div>
                   )}
                   <table className="dca-dividend-table">
                     <thead>
                       <tr>
-                        <th>Ngày chốt</th>
-                        <th>Ngày nhận</th>
-                        <th className="num">Cổ tức/ccq</th>
-                        <th className="num">CCQ đang nắm</th>
-                        <th className="num">Tiền mặt trước thuế</th>
-                        <th className="num">Thuế TNCN</th>
-                        <th className="num">Tiền mặt thực nhận</th>
-                        <th className="num">Mua thêm</th>
+                        <th>{t('div.col.exShort')}</th>
+                        <th>{t('div.col.payShort')}</th>
+                        <th className="num">{t('div.col.perUnit')}</th>
+                        <th className="num">{t('div.col.unitsHeld')}</th>
+                        <th className="num">{t('div.col.grossCash')}</th>
+                        <th className="num">{t('div.col.tax')}</th>
+                        <th className="num">{t('div.col.netCash')}</th>
+                        <th className="num">{t('div.col.reinvested')}</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -141,7 +141,7 @@ function DividendBlockImpl({ fundIds, dividendsByFund, startDate, endDate, narra
                     </tbody>
                     <tfoot>
                       <tr>
-                        <td colSpan={4}>Tổng</td>
+                        <td colSpan={4}>{t('div.total')}</td>
                         <td className="num">{formatVNDFull(s.totalGross)}</td>
                         <td className="num"></td>
                         <td className="num">{formatVNDFull(s.totalNet)}</td>
@@ -158,15 +158,7 @@ function DividendBlockImpl({ fundIds, dividendsByFund, startDate, endDate, narra
         <div className="dca-journey-takeaway">
           <span className="dca-journey-takeaway-icon">💵</span>
           <div>
-            <strong>Giải thích giá NAV.</strong> Giá NAV trên fmarket giảm đúng bằng giá
-            trị cổ tức vào ngày chốt quyền. Đây là raw NAV (giá thô), không phải chuỗi
-            giá đã được điều chỉnh cho cổ tức. Một số nền tảng tự tính lại lịch sử giá
-            để xóa cú giảm điểm do cổ tức, cho ra chuỗi "tổng hiệu suất" đã bao gồm giả
-            định tái đầu tư cổ tức. Nhưng trên Fmarket (hay website của quỹ) thì không
-            làm việc này mà họ chỉ cung cấp raw NAV.
-            {' '}Dữ liệu giá trên dashboard đã được điều chỉnh dựa trên các đợt chia cổ
-            tức để đảm bảo tính nhất quán. Hệ số điều chỉnh được tính toán dựa trên giá
-            trước ngày chốt quyền và giá trị cổ tức thực nhận (sau thuế TNCN).
+            {tr('div.navNote')}
           </div>
         </div>
       </div>

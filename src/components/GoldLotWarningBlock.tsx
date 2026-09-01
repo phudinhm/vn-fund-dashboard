@@ -25,6 +25,7 @@
 import { useMemo, useState } from 'react'
 import type { FundMeta, PortfolioCardState, PricePoint } from '../types'
 import { formatVND } from '../utils/vndFormat'
+import { useT, useTRich } from '../i18n'
 
 /** Đơn vị bán lẻ nhỏ nhất SJC thực tế cho cả vàng miếng và vàng nhẫn. */
 const SMALLEST_LOT_CHI = 0.5
@@ -99,6 +100,8 @@ function evaluateContribution(arr: PricePoint[], contribution: number) {
 export function GoldLotWarningBlock({
   portfolios, initialAmount, cashflowAmount, funds, purchasePriceData, dateFrom, dateTo,
 }: Props) {
+  const t = useT()
+  const tr = useTRich()
   const [expanded, setExpanded] = useState(false)
 
   const goldFunds = useMemo(
@@ -166,43 +169,30 @@ export function GoldLotWarningBlock({
         <span className="dq-header-main">
           {hasWarnings ? (
             <>
-              <strong>Có kỳ không đủ tiền mua vàng ngay</strong>
-              <span className="dq-header-sub">
-                {issues.length} trường hợp có số tiền một kỳ/ban đầu thấp hơn giá 1 lô vàng nhỏ nhất (0,5 chỉ), tính ở cuối giai đoạn mô phỏng.
-              </span>
+              <strong>{t('gold.warnTitle')}</strong>
+              <span className="dq-header-sub">{t('gold.warnSub', { n: issues.length })}</span>
             </>
           ) : (
             <>
-              <strong>Mỗi kỳ đều đủ tiền mua vàng ngay</strong>
-              <span className="dq-header-sub">
-                Số tiền nạp mỗi kỳ (và ban đầu, nếu có) vào phần vàng đều đủ mua ít nhất 1 lô 0,5 chỉ ngay trong kỳ đó.
-              </span>
+              <strong>{t('gold.okTitle')}</strong>
+              <span className="dq-header-sub">{t('gold.okSub')}</span>
             </>
           )}
         </span>
-        <span className="dq-toggle">{expanded ? 'Thu gọn' : 'Xem chi tiết'}</span>
+        <span className="dq-toggle">{t(expanded ? 'dq.collapse' : 'dq.expand')}</span>
       </button>
 
       {expanded && (
         <div className="dq-body">
           <p className="dq-intro">
-            Vàng miếng/nhẫn SJC không chia nhỏ vô hạn như quỹ mở hay cổ phiếu — ngoài đời bạn chỉ
-            mua được theo lô cố định, nhỏ nhất là <strong>0,5 chỉ</strong> (1 lượng = 10 chỉ).{' '}
-            <span className="dq-highlight">
-              Mô phỏng trong dashboard giả định mỗi kỳ đều mua được đúng lượng vàng tương ứng với
-              số tiền đầu tư, kể cả khi số đó chưa đủ 1 lô.
-            </span>{' '}
-            Ngoài đời, nếu tiền của một kỳ chưa đủ mua 1 lô, kỳ đó bạn chưa mua được vàng ngay —
-            phải gộp thêm vài kỳ mới đủ tiền mua 1 lần. Cả hành trình bạn vẫn tích lũy được vàng,
-            chỉ là mua thưa hơn (vài kỳ mới mua 1 lần) thay vì đều đặn mỗi kỳ như mô phỏng đang giả
-            định. Giá vàng tăng theo thời gian nên đây thường là vấn đề của{' '}
-            <strong>hiện tại/gần đây</strong>, không nhất thiết đúng cho toàn bộ giai đoạn mô
-            phỏng.
+            {tr('gold.intro1')}
+            <span className="dq-highlight">{t('gold.intro2')}</span>{' '}
+            {tr('gold.intro3')}
           </p>
 
           {hasWarnings && (
             <div className="dq-issues">
-              <h4 className="dq-issues-title">Chi tiết cảnh báo</h4>
+              <h4 className="dq-issues-title">{t('gold.issuesTitle')}</h4>
               {issues.map((iss, i) => (
                 <div className="dq-issue-card" key={i}>
                   <div className="dq-issue-head">
@@ -210,30 +200,20 @@ export function GoldLotWarningBlock({
                   </div>
                   <ul className="dq-issue-list">
                     <li>
-                      {iss.kind === 'periodic' ? (
-                        <>Mỗi kỳ nạp vào phần vàng của danh mục này là <strong>{formatVND(iss.contribution)}</strong>, thấp
-                        hơn giá 1 lô 0,5 chỉ tại {fmtDate(iss.rangeEnd)} (khoảng{' '}
-                        <strong>{formatVND(iss.lotPrice)}</strong>) — nghĩa là kỳ đó bạn chưa mua được vàng ngay.</>
-                      ) : (
-                        <>Số tiền đầu tư ban đầu vào phần vàng của danh mục này là <strong>{formatVND(iss.contribution)}</strong>, thấp
-                        hơn giá 1 lô 0,5 chỉ tại {fmtDate(iss.rangeEnd)} (khoảng{' '}
-                        <strong>{formatVND(iss.lotPrice)}</strong>) — nghĩa là bạn chưa mua được vàng ngay từ đầu.</>
-                      )}{' '}
-                      {iss.sinceDate ? (
-                        <>
-                          Số tiền này từng đủ mua ngay trong kỳ ở giai đoạn đầu mô phỏng, chỉ mới
-                          không đủ nữa kể từ khoảng <strong>{fmtDate(iss.sinceDate)}</strong> do giá
-                          vàng tăng.
-                        </>
-                      ) : (
-                        <>
-                          Trong suốt giai đoạn mô phỏng ({fmtDate(iss.rangeStart)} →{' '}
-                          {fmtDate(iss.rangeEnd)}), số tiền này chưa từng đủ mua ngay trong kỳ.
-                        </>
-                      )}{' '}
-                      Ngoài đời bạn cần gộp ít nhất{' '}
-                      <strong>{iss.periodsNeeded}{iss.kind === 'periodic' ? ' kỳ' : ' lần'}</strong>{' '}
-                      mới đủ tiền mua 1 lần, ở giá hiện tại.
+                      {tr(iss.kind === 'periodic' ? 'gold.issuePeriodic' : 'gold.issueInitial', {
+                        amount: formatVND(iss.contribution),
+                        date: fmtDate(iss.rangeEnd),
+                        lotPrice: formatVND(iss.lotPrice),
+                      })}{' '}
+                      {iss.sinceDate
+                        ? tr('gold.wasEnough', { since: fmtDate(iss.sinceDate) })
+                        : tr('gold.neverEnough', {
+                            from: fmtDate(iss.rangeStart),
+                            to: fmtDate(iss.rangeEnd),
+                          })}{' '}
+                      {tr(iss.kind === 'periodic' ? 'gold.periodsNeeded' : 'gold.timesNeeded', {
+                        n: iss.periodsNeeded,
+                      })}
                     </li>
                   </ul>
                 </div>

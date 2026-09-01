@@ -1689,6 +1689,106 @@ const DICT = {
     en: '<b>Which should you look at?</b> If you want to know how your money actually grew, <b>MWRR is the main measure for a DCA strategy</b>. But if you are used to comparing against other options — bank savings, bonds — CAGR is still useful. It answers the simpler question: <i>by what percentage per year did everything I invested grow?</i>',
   },
 
+  // ── Dividend block ──
+  'div.divider': { vi: 'Cổ tức & tái đầu tư', en: 'Dividends & reinvestment' },
+  'div.intro': {
+    vi: 'Trong kỳ DCA này, quỹ <b>{funds}</b> đã chi trả cổ tức. Dashboard đã điều chỉnh giá để phản ánh giả định tái đầu tư sau thuế TNCN, nên hiệu suất bạn thấy ở mọi biểu đồ đã bao gồm phần lợi nhuận từ cổ tức.',
+    en: '<b>{funds}</b> paid dividends during this DCA period. Prices are adjusted to assume reinvestment after personal income tax, so the performance on every chart already includes the dividend return.',
+  },
+  'div.fundHeading': { vi: 'Quỹ <b>{fund}</b> — {n} đợt chi trả trong kỳ', en: '<b>{fund}</b> — {n} payouts in the period' },
+  'div.afterTax': { vi: '(đã trừ thuế TNCN)', en: '(after personal income tax)' },
+  'div.col.exDate': { vi: 'Ngày chốt quyền', en: 'Ex-date' },
+  'div.col.payDate': { vi: 'Ngày nhận tiền', en: 'Pay date' },
+  'div.col.grossPerUnit': { vi: 'Cổ tức/ccq (gross)', en: 'Dividend/unit (gross)' },
+  'div.col.netPerUnit': { vi: 'Cổ tức/ccq (net)', en: 'Dividend/unit (net)' },
+  'div.portfolioName': { vi: 'Danh mục: {name}', en: 'Portfolio: {name}' },
+  'div.col.exShort': { vi: 'Ngày chốt', en: 'Ex-date' },
+  'div.col.payShort': { vi: 'Ngày nhận', en: 'Paid' },
+  'div.col.perUnit': { vi: 'Cổ tức/ccq', en: 'Dividend/unit' },
+  'div.col.unitsHeld': { vi: 'CCQ đang nắm', en: 'Units held' },
+  'div.col.grossCash': { vi: 'Tiền mặt trước thuế', en: 'Cash before tax' },
+  'div.col.tax': { vi: 'Thuế TNCN', en: 'Income tax' },
+  'div.col.netCash': { vi: 'Tiền mặt thực nhận', en: 'Cash received' },
+  'div.col.reinvested': { vi: 'Mua thêm', en: 'Reinvested' },
+  'div.total': { vi: 'Tổng', en: 'Total' },
+  'div.navNote': {
+    vi: '<b>Giải thích giá NAV.</b> Giá NAV trên fmarket giảm đúng bằng giá trị cổ tức vào ngày chốt quyền. Đây là raw NAV (giá thô), không phải chuỗi giá đã được điều chỉnh cho cổ tức. Một số nền tảng tự tính lại lịch sử giá để xóa cú giảm điểm do cổ tức, cho ra chuỗi "tổng hiệu suất" đã bao gồm giả định tái đầu tư cổ tức. Nhưng trên Fmarket (hay website của quỹ) thì không làm việc này mà họ chỉ cung cấp raw NAV. Dữ liệu giá trên dashboard đã được điều chỉnh dựa trên các đợt chia cổ tức để đảm bảo tính nhất quán. Hệ số điều chỉnh được tính toán dựa trên giá trước ngày chốt quyền và giá trị cổ tức thực nhận (sau thuế TNCN).',
+    en: '<b>About the NAV price.</b> The NAV shown on fmarket drops by exactly the dividend amount on the ex-date. That is the raw NAV, not a dividend-adjusted series. Some platforms rewrite price history to remove that drop, producing a total-return series that assumes dividends were reinvested; fmarket and the fund websites do not — they publish raw NAV only. The prices in this dashboard are adjusted for each payout so the series stays consistent, with the adjustment factor computed from the price before the ex-date and the dividend actually received after tax.',
+  },
+
+  // ── Gold lot warning ──
+  'gold.warnTitle': { vi: 'Có kỳ không đủ tiền mua vàng ngay', en: 'Some periods cannot buy gold immediately' },
+  'gold.warnSub': {
+    vi: '{n} trường hợp có số tiền một kỳ/ban đầu thấp hơn giá 1 lô vàng nhỏ nhất (0,5 chỉ), tính ở cuối giai đoạn mô phỏng.',
+    en: '{n} cases where the per-period or initial amount is below the price of the smallest gold lot (0.5 chỉ), measured at the end of the simulation.',
+  },
+  'gold.okTitle': { vi: 'Mỗi kỳ đều đủ tiền mua vàng ngay', en: 'Every period can buy gold immediately' },
+  'gold.okSub': {
+    vi: 'Số tiền nạp mỗi kỳ (và ban đầu, nếu có) vào phần vàng đều đủ mua ít nhất 1 lô 0,5 chỉ ngay trong kỳ đó.',
+    en: 'Every contribution to the gold sleeve — and the initial amount, if any — buys at least one 0.5 chỉ lot within that period.',
+  },
+  'gold.intro1': {
+    vi: 'Vàng miếng/nhẫn SJC không chia nhỏ vô hạn như quỹ mở hay cổ phiếu — ngoài đời bạn chỉ mua được theo lô cố định, nhỏ nhất là <b>0,5 chỉ</b> (1 lượng = 10 chỉ). ',
+    en: 'SJC gold bars and rings are not infinitely divisible the way fund units or shares are — in practice you buy fixed lots, the smallest being <b>0.5 chỉ</b> (1 lượng = 10 chỉ). ',
+  },
+  'gold.intro2': {
+    vi: 'Mô phỏng trong dashboard giả định mỗi kỳ đều mua được đúng lượng vàng tương ứng với số tiền đầu tư, kể cả khi số đó chưa đủ 1 lô.',
+    en: 'The simulation assumes each period buys exactly the quantity of gold the money is worth, even when that is less than one lot.',
+  },
+  'gold.intro3': {
+    vi: 'Ngoài đời, nếu tiền của một kỳ chưa đủ mua 1 lô, kỳ đó bạn chưa mua được vàng ngay — phải gộp thêm vài kỳ mới đủ tiền mua 1 lần. Cả hành trình bạn vẫn tích lũy được vàng, chỉ là mua thưa hơn (vài kỳ mới mua 1 lần) thay vì đều đặn mỗi kỳ như mô phỏng đang giả định. Giá vàng tăng theo thời gian nên đây thường là vấn đề của <b>hiện tại/gần đây</b>, không nhất thiết đúng cho toàn bộ giai đoạn mô phỏng.',
+    en: 'In reality, if a period’s money does not cover a lot, you cannot buy gold that period — you save up across a few periods and buy once. You still accumulate gold over the whole journey, just in less frequent purchases than the simulation assumes. Gold prices rise over time, so this is usually a <b>recent</b> problem rather than one that held across the whole simulated period.',
+  },
+  'gold.issuesTitle': { vi: 'Chi tiết cảnh báo', en: 'Warning details' },
+  'gold.issuePeriodic': {
+    vi: 'Mỗi kỳ nạp vào phần vàng của danh mục này là <b>{amount}</b>, thấp hơn giá 1 lô 0,5 chỉ tại {date} (khoảng <b>{lotPrice}</b>) — nghĩa là kỳ đó bạn chưa mua được vàng ngay.',
+    en: 'Each contribution to this portfolio’s gold sleeve is <b>{amount}</b>, below the price of a 0.5 chỉ lot on {date} (about <b>{lotPrice}</b>) — so you could not buy gold in that period.',
+  },
+  'gold.issueInitial': {
+    vi: 'Số tiền đầu tư ban đầu vào phần vàng của danh mục này là <b>{amount}</b>, thấp hơn giá 1 lô 0,5 chỉ tại {date} (khoảng <b>{lotPrice}</b>) — nghĩa là bạn chưa mua được vàng ngay từ đầu.',
+    en: 'The initial amount into this portfolio’s gold sleeve is <b>{amount}</b>, below the price of a 0.5 chỉ lot on {date} (about <b>{lotPrice}</b>) — so you could not buy gold at the start.',
+  },
+  'gold.wasEnough': {
+    vi: 'Số tiền này từng đủ mua ngay trong kỳ ở giai đoạn đầu mô phỏng, chỉ mới không đủ nữa kể từ khoảng <b>{since}</b> do giá vàng tăng.',
+    en: 'This amount was enough to buy within the period earlier in the simulation; it only stopped being enough around <b>{since}</b>, as gold prices rose.',
+  },
+  'gold.neverEnough': {
+    vi: 'Trong suốt giai đoạn mô phỏng ({from} → {to}), số tiền này chưa từng đủ mua ngay trong kỳ.',
+    en: 'Across the whole simulated period ({from} → {to}), this amount was never enough to buy within the period.',
+  },
+  'gold.periodsNeeded': {
+    vi: 'Ngoài đời bạn cần gộp ít nhất <b>{n} kỳ</b> mới đủ tiền mua 1 lần, ở giá hiện tại.',
+    en: 'In practice you would need to save up at least <b>{n} periods</b> to buy once, at today’s price.',
+  },
+  'gold.timesNeeded': {
+    vi: 'Ngoài đời bạn cần gộp ít nhất <b>{n} lần</b> mới đủ tiền mua 1 lần, ở giá hiện tại.',
+    en: 'In practice you would need at least <b>{n} contributions</b> to buy once, at today’s price.',
+  },
+
+  // ── Bank comparison block ──
+  'bank.title': { vi: 'So với gửi tiết kiệm ngân hàng thì sao?', en: 'How does it compare to a bank deposit?' },
+  'bank.rateLabel': { vi: 'Lãi suất giả định:', en: 'Assumed rate:' },
+  'bank.rateHelp': { vi: 'Lãi suất tiết kiệm có kỳ hạn giả định, compound hàng năm', en: 'Assumed term-deposit rate, compounded annually' },
+  'bank.intro': {
+    vi: 'Giả sử cùng lịch nạp tiền đó, nhưng thay vì mua quỹ, bạn đem gửi tiết kiệm ngân hàng với lãi suất <b>{rate}%/năm</b> ghép lãi hàng năm. Kết quả sẽ như thế nào?',
+    en: 'Suppose you kept the same contribution schedule but put the money into a bank deposit at <b>{rate}% a year</b>, compounded annually. How would it turn out?',
+  },
+  'bank.deposit': { vi: '🏦 Gửi ngân hàng', en: '🏦 Bank deposit' },
+  'bank.dcaAhead': { vi: 'DCA hơn', en: 'DCA ahead' },
+  'bank.bankAhead': { vi: 'Ngân hàng hơn', en: 'Bank ahead' },
+  'bank.allWin': {
+    vi: 'Tất cả <b>{n}</b> danh mục đều cho kết quả tốt hơn gửi tiết kiệm. Dẫn đầu là <b>{best}</b>, hơn ngân hàng <b>+{diff}</b>. Trong giai đoạn này, việc chấp nhận rủi ro của quỹ đã được đền đáp xứng đáng.',
+    en: 'All <b>{n}</b> portfolios beat the bank deposit. <b>{best}</b> leads, ahead by <b>+{diff}</b>. Over this period, taking the fund’s risk paid off.',
+  },
+  'bank.allLose': {
+    vi: 'Tất cả <b>{n}</b> danh mục đều thua gửi tiết kiệm trong giai đoạn này. Thị trường Việt Nam là thị trường cận biên, từ bull sang bear diễn ra chóng vánh, rất dễ rơi vào giai đoạn không thuận lợi như 2018-2019 hoặc sau COVID 3/2020. Gửi tiết kiệm đảm bảo lợi nhuận như mong đợi, còn quỹ thì không. Thử chọn khoảng thời gian dài hơn để xem bức tranh đầy đủ hơn.',
+    en: 'All <b>{n}</b> portfolios lost to the bank deposit over this period. Vietnam is a frontier market where the turn from bull to bear is abrupt, and it is easy to land on an unkind stretch like 2018–2019 or the months after COVID in March 2020. A deposit delivers what it promises; a fund does not. Try a longer time range for the fuller picture.',
+  },
+  'bank.mixed': {
+    vi: '<b>{winners}/{total}</b> danh mục có kết quả tốt hơn gửi tiết kiệm. <b>{best}</b> dẫn đầu với <b>+{diff}</b>. Những danh mục còn lại chưa đủ bù đắp rủi ro mà bạn đã chấp nhận. Không phải quỹ nào cũng phù hợp, đó là lý do vì sao phải chọn kỹ.',
+    en: '<b>{winners}</b> of <b>{total}</b> portfolios beat the bank deposit. <b>{best}</b> leads with <b>+{diff}</b>. The rest did not compensate for the risk you took. Not every fund is a fit, which is exactly why the choice matters.',
+  },
+
   // ── Methodology tab (khung; nội dung ở src/components/methodology/) ──
   'method.tocLabel': { vi: 'Mục lục', en: 'Table of contents' },
   'method.onThisPage': { vi: 'Trong trang này', en: 'On this page' },
