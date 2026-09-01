@@ -1,6 +1,7 @@
 import { memo, useMemo } from 'react'
 import type { ReturnPoint } from '../types'
 import { rollingCumulativeReturnsMap, winRateAgainstRolledB } from '../utils/calculations'
+import { useT, useTRich, type TranslationKey } from '../i18n'
 
 interface Props {
   portfolioReturns: ReturnPoint[][]    // [baseline, btc1, btc2, btc3]
@@ -8,11 +9,11 @@ interface Props {
   stats: { name: string; color: string }[]    // portfolioStats cho color mapping
 }
 
-const HORIZONS = [
-  { months: 12, label: '1 năm' },
-  { months: 24, label: '2 năm' },
-  { months: 36, label: '3 năm' },
-  { months: 60, label: '5 năm' },
+const HORIZONS: { months: number; labelKey: TranslationKey }[] = [
+  { months: 12, labelKey: 'wr.h12' },
+  { months: 24, labelKey: 'wr.h24' },
+  { months: 36, labelKey: 'wr.h36' },
+  { months: 60, labelKey: 'wr.h60' },
 ]
 
 /**
@@ -26,6 +27,7 @@ const HORIZONS = [
  * 87 khoảng.
  */
 function WinRateBlockImpl({ portfolioReturns, btcPercents, stats }: Props) {
+  const t = useT()
   const baseReturns = portfolioReturns[0]
   if (!baseReturns) return null
 
@@ -44,7 +46,7 @@ function WinRateBlockImpl({ portfolioReturns, btcPercents, stats }: Props) {
       return HORIZONS.map(h => {
         const rolledBMap = baseRolledByHorizon.get(h.months)!
         const { wins, total } = winRateAgainstRolledB(btcReturns, h.months, rolledBMap)
-        return { months: h.months, label: h.label, wins, total }
+        return { months: h.months, labelKey: h.labelKey, wins, total }
       })
     })
   }, [portfolioReturns, btcPercents, baseReturns])
@@ -52,14 +54,14 @@ function WinRateBlockImpl({ portfolioReturns, btcPercents, stats }: Props) {
   if (grid.length === 0 || !grid.some(row => row && row.some(c => c.total > 0))) return null
 
   // Best cell để làm takeaway: cao nhất win rate tuyệt đối
-  let best: { btcPct: number; label: string; wins: number; total: number; rate: number } | null = null
+  let best: Best | null = null
   grid.forEach((row, i) => {
     if (!row) return
     row.forEach(c => {
       if (c.total === 0) return
       const rate = c.wins / c.total
       if (!best || rate > best.rate) {
-        best = { btcPct: btcPercents[i]!, label: c.label, wins: c.wins, total: c.total, rate }
+        best = { btcPct: btcPercents[i]!, labelKey: c.labelKey, wins: c.wins, total: c.total, rate }
       }
     })
   })
@@ -67,23 +69,18 @@ function WinRateBlockImpl({ portfolioReturns, btcPercents, stats }: Props) {
   return (
     <div className="winrate-container">
       <div className="chart-header">
-        <h3>Xác suất thắng: bao nhiêu lần Bitcoin kéo danh mục vượt trội?</h3>
-        <span
-          className="chart-tooltip-icon"
-          title="Với mỗi khoảng rolling N năm liên tiếp trong dữ liệu lịch sử, so sánh danh mục có BTC với danh mục không BTC. Ô hiển thị số lần danh mục có BTC thắng / tổng số khoảng. Ví dụ 87/100 nghĩa là trong 100 khoảng 3-năm, danh mục BTC thắng 87 khoảng."
-        >?</span>
+        <h3>{t('wr.title')}</h3>
+        <span className="chart-tooltip-icon" title={t('wr.help')}>?</span>
       </div>
-      <div className="winrate-intro">
-        Với mỗi tỷ trọng Bitcoin, so sánh danh mục có BTC với danh mục không BTC trên tất cả khoảng thời gian N năm liên tiếp có trong dữ liệu lịch sử.
-      </div>
+      <div className="winrate-intro">{t('wr.intro')}</div>
 
       <div className="winrate-table-wrap">
         <table className="winrate-table">
           <thead>
             <tr>
-              <th className="winrate-th-name">Tỷ trọng BTC</th>
+              <th className="winrate-th-name">{t('wr.colWeight')}</th>
               {HORIZONS.map(h => (
-                <th key={h.months}>{h.label}</th>
+                <th key={h.months}>{t(h.labelKey)}</th>
               ))}
             </tr>
           </thead>
@@ -95,7 +92,7 @@ function WinRateBlockImpl({ portfolioReturns, btcPercents, stats }: Props) {
                 <tr key={i}>
                   <td className="winrate-td-name">
                     {stat && <span className="perf-dot" style={{ background: stat.color }} />}
-                    {btcPercents[i]}% Bitcoin
+                    {t('wr.rowLabel', { pct: btcPercents[i] ?? 0 })}
                   </td>
                   {row.map(c => {
                     if (c.total === 0) {
@@ -112,7 +109,7 @@ function WinRateBlockImpl({ portfolioReturns, btcPercents, stats }: Props) {
                         <div className="winrate-bar-wrap">
                           <div className="winrate-bar" style={{ width: `${rate * 100}%` }} />
                         </div>
-                        <div className="winrate-pct">{pctStr} lần thắng</div>
+                        <div className="winrate-pct">{t('wr.winsPct', { pct: pctStr })}</div>
                       </td>
                     )
                   })}
@@ -132,20 +129,26 @@ export const WinRateBlock = memo(WinRateBlockImpl)
 
 interface Best {
   btcPct: number
-  label: string
+  labelKey: TranslationKey
   wins: number
   total: number
   rate: number
 }
 
 function WinRateTakeaway({ best }: { best: Best }) {
+  const t = useT()
+  const tr = useTRich()
   return (
     <div className="winrate-takeaway">
       <span className="mm-takeaway-emoji">🎯</span>
       <span>
-        Ở <strong>{best.btcPct}% Bitcoin</strong>, trong{' '}
-        <strong>{best.total} khoảng {best.label}</strong> liên tiếp có trong lịch sử, danh mục có BTC thắng{' '}
-        <strong>{best.wins} lần</strong> ({(best.rate * 100).toFixed(0)}%). Không phải lúc nào cũng thắng, nhưng xác suất rõ ràng nghiêng về phía có BTC.
+        {tr('wr.takeaway', {
+          pct: best.btcPct,
+          total: best.total,
+          horizon: t(best.labelKey),
+          wins: best.wins,
+          rate: (best.rate * 100).toFixed(0),
+        })}
       </span>
     </div>
   )

@@ -4,6 +4,7 @@ import {
   buildPeriods, periodStat, groupByYearInTerm,
   type CycleMode,
 } from '../utils/cycleReturns'
+import { useT, useTRich, type TranslationKey } from '../i18n'
 
 interface Props {
   btc: PricePoint[]
@@ -11,11 +12,11 @@ interface Props {
   baseName: string
 }
 
-const YEAR_LABEL: Record<1 | 2 | 3 | 4, string> = {
-  1: 'Năm 1 của nhiệm kỳ',
-  2: 'Năm 2 của nhiệm kỳ',
-  3: 'Năm 3 của nhiệm kỳ',
-  4: 'Năm 4 của nhiệm kỳ',
+const YEAR_LABEL_KEY: Record<1 | 2 | 3 | 4, TranslationKey> = {
+  1: 'cyc.year1',
+  2: 'cyc.year2',
+  3: 'cyc.year3',
+  4: 'cyc.year4',
 }
 
 /**
@@ -29,6 +30,8 @@ const YEAR_LABEL: Record<1 | 2 | 3 | 4, string> = {
  */
 function BitcoinCycleTableImpl({ btc, base, baseName }: Props) {
   const [mode, setMode] = useState<CycleMode>('term')
+  const t = useT()
+  const tr = useTRich()
 
   const rows = useMemo(() => {
     if (btc.length === 0) return []
@@ -57,52 +60,49 @@ function BitcoinCycleTableImpl({ btc, base, baseName }: Props) {
   return (
     <div className="chart-container cycle-table-card">
       <div className="chart-header">
-        <h3>Lợi nhuận theo năm nhiệm kỳ tổng thống Mỹ</h3>
+        <h3>{t('cyc.title')}</h3>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <button
             className={`log-scale-btn${mode === 'term' ? ' log-scale-btn-active' : ''}`}
             onClick={() => setMode('term')}
-            title="Cắt theo nhiệm kỳ: mỗi năm tính từ ngày nhậm chức 20/1 tới 20/1 năm sau."
+            title={t('cyc.modeTermHelp')}
           >
-            Theo nhiệm kỳ
+            {t('cyc.modeTerm')}
           </button>
           <button
             className={`log-scale-btn${mode === 'election' ? ' log-scale-btn-active' : ''}`}
             onClick={() => setMode('election')}
-            title="Cắt theo kỳ bầu cử: mỗi năm tính từ ngày bầu cử đầu tháng 11. Khung này tách đợt tăng sau bầu cử ra khỏi năm 4 của người tiền nhiệm."
+            title={t('cyc.modeElectionHelp')}
           >
-            Theo kỳ bầu cử
+            {t('cyc.modeElection')}
           </button>
           <button
             className={`log-scale-btn${mode === 'calendar' ? ' log-scale-btn-active' : ''}`}
             onClick={() => setMode('calendar')}
-            title="Cắt theo năm dương lịch: mỗi năm tính từ 1/1 tới 31/12."
+            title={t('cyc.modeCalendarHelp')}
           >
-            Năm dương lịch
+            {t('cyc.modeCalendar')}
           </button>
-          <span
-            className="chart-tooltip-icon"
-            title="Bấm qua lại ba nút để thấy cùng một chuỗi giá cho ra con số khác nhau khi cắt thời gian theo cách khác. Mốc 1/1 không có ý nghĩa gì với thị trường, nó chỉ là thói quen kế toán."
-          >?</span>
+          <span className="chart-tooltip-icon" title={t('cyc.help')}>?</span>
         </div>
       </div>
 
       <p className="cycle-table-intro">
-        {mode === 'term' && 'Mỗi năm đo từ ngày nhậm chức 20/1 tới 20/1 năm sau.'}
-        {mode === 'election' && 'Mỗi năm đo từ ngày bầu cử đầu tháng 11 tới ngày này năm sau, năm cuối khép lại đúng kỳ bầu cử kế tiếp.'}
-        {mode === 'calendar' && 'Mỗi năm đo từ 1/1 tới 31/12, không liên quan tới ngày nhậm chức.'}
-        {' '}Cột "mức giảm từ đỉnh" là phần rơi từ đỉnh cao nhất trong kỳ xuống mức cuối kỳ.
+        {mode === 'term' && t('cyc.introTerm')}
+        {mode === 'election' && t('cyc.introElection')}
+        {mode === 'calendar' && t('cyc.introCalendar')}
+        {t('cyc.introTail')}
       </p>
 
       <div className="cycle-table-wrap">
         <table className="cycle-table">
           <thead>
             <tr>
-              <th>Kỳ</th>
+              <th>{t('cyc.colPeriod')}</th>
               <th className="num">Bitcoin</th>
               <th className="num">{baseName}</th>
-              <th className="num">Mức BTC giảm từ đỉnh</th>
-              <th>Halving</th>
+              <th className="num">{t('cyc.colGiveback')}</th>
+              <th>{t('cyc.colHalving')}</th>
             </tr>
           </thead>
           <tbody>
@@ -114,11 +114,11 @@ function BitcoinCycleTableImpl({ btc, base, baseName }: Props) {
                 <Fragment key={year}>
                   <tr className="cycle-table-group">
                     <td colSpan={5}>
-                      {YEAR_LABEL[year]}
+                      {t(YEAR_LABEL_KEY[year])}
                       <span className="cycle-table-count">
-                        {done} lần quan sát trọn vẹn
-                        {running > 0 && `, ${running} kỳ đang chạy`}
-                        {short > 0 && `, ${short} kỳ thiếu dữ liệu đầu`}
+                        {t('cyc.observations', { n: done })}
+                        {running > 0 && t('cyc.running', { n: running })}
+                        {short > 0 && t('cyc.truncated', { n: short })}
                       </span>
                     </td>
                   </tr>
@@ -128,19 +128,19 @@ function BitcoinCycleTableImpl({ btc, base, baseName }: Props) {
                         <span className="cycle-table-term">{period.president}</span>
                         <span className="cycle-table-years">{period.label}</span>
                         {period.partial === 'unfinished' && (
-                          <span className="cycle-table-partial">đang chạy</span>
+                          <span className="cycle-table-partial">{t('cyc.tagRunning')}</span>
                         )}
                         {period.partial === 'truncated' && (
                           <span
                             className="cycle-table-partial"
-                            title={`Kỳ này đã kết thúc từ lâu, nhưng dữ liệu giá chỉ bắt đầu từ ${btc[0]?.date ?? ''} nên đoạn đầu kỳ bị thiếu. Con số đo từ ngày có dữ liệu đầu tiên.`}
-                          >thiếu dữ liệu đầu kỳ</span>
+                            title={t('cyc.tagTruncatedHelp', { date: btc[0]?.date ?? '' })}
+                          >{t('cyc.tagTruncated')}</span>
                         )}
                       </td>
                       <td className="num">{pct(b.close)}</td>
                       <td className="num">{pct(v.close)}</td>
                       <td className="num">{pct(b.giveback)}</td>
-                      <td>{period.hasHalving ? <span className="cycle-table-halving">có</span> : ''}</td>
+                      <td>{period.hasHalving ? <span className="cycle-table-halving">{t('cyc.yes')}</span> : ''}</td>
                     </tr>
                   ))}
                 </Fragment>
@@ -151,27 +151,9 @@ function BitcoinCycleTableImpl({ btc, base, baseName }: Props) {
       </div>
 
       <div className="cycle-table-note">
-        <p>
-          <strong>Bảng này không dự báo được gì.</strong> Mẫu chỉ có hai nhiệm kỳ trọn vẹn
-          cộng một nhiệm kỳ đang chạy. Với chừng đó quan sát thì quy luật nào cũng vẽ ra
-          được, và quy luật nào cũng có thể bị phá vỡ ở lần sau.
-        </p>
-        <p>
-          <strong>Chọn mốc cắt nào là đã chọn một câu trả lời.</strong> Ngày nhậm chức
-          20/1 do Hiến pháp Mỹ ấn định, nhưng lấy nó làm ranh giới thì cả giai đoạn từ
-          đầu tháng 11 tới 20/1, tức lúc thị trường đang phản ứng với người sắp lên,
-          lại bị tính vào năm 4 của người sắp mãn nhiệm. Bấm nút "theo kỳ bầu cử" để
-          tách đoạn đó ra và xem quy luật năm 4 co lại bao nhiêu.
-        </p>
-        <p>
-          Riêng năm 2 của nhiệm kỳ, cả Bitcoin lẫn {baseName} đều âm ở mọi lần quan sát.
-          Nhưng {baseName} thì không có lý do gì phải phản ứng với bầu cử giữa kỳ Mỹ.
-          Điều đó gợi ý nguyên nhân nằm ở chỗ khác. Có ít nhất ba thứ trùng pha nhau
-          trong khoảng dữ liệu này: bầu cử giữa kỳ, các đợt Fed siết tiền (2018 và 2022),
-          và chu kỳ halving Bitcoin. Nhìn cột halving thì thấy năm 4 của nhiệm kỳ nào
-          cũng trùng một kỳ halving. Không có cách nào tách ba thứ đó ra khỏi nhau bằng
-          dữ liệu hiện có.
-        </p>
+        <p>{tr('cyc.noteSample')}</p>
+        <p>{tr('cyc.noteCutoff')}</p>
+        <p>{t('cyc.noteConfound', { base: baseName })}</p>
       </div>
     </div>
   )

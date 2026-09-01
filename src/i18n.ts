@@ -2229,6 +2229,123 @@ const DICT = {
     en: '<b>This table says nothing about next time.</b> It only recounts the times already past. A market down 50% can fall another 50%.',
   },
 
+  // ── Đóng góp vào biến động (RiskContributionChart) ──
+  'rc.title': { vi: 'Đóng góp vào biến động danh mục', en: 'Contribution to portfolio volatility' },
+  'rc.help': {
+    vi: 'So sánh tỷ trọng vốn với phần trăm đóng góp vào biến động (rủi ro) tổng thể của danh mục. Bitcoin dù chiếm tỷ trọng nhỏ nhưng thường đóng góp phần lớn rủi ro do biến động giá cao. Tính toán dựa trên covariance matrix của lợi nhuận hàng ngày.',
+    en: 'Share of capital set against share of the portfolio\'s overall volatility. Bitcoin holds a small weight but usually contributes most of the risk, because its price swings so hard. Computed from the covariance matrix of daily returns.',
+  },
+  'rc.btcWeight': { vi: 'Tỷ trọng Bitcoin', en: 'Bitcoin weight' },
+  'rc.btcRisk': { vi: 'Đóng góp Bitcoin', en: 'Bitcoin contribution' },
+  'rc.fundWeight': { vi: 'Tỷ trọng {fund}', en: '{fund} weight' },
+  'rc.fundRisk': { vi: 'Đóng góp {fund}', en: '{fund} contribution' },
+  'rc.takeaway': {
+    vi: 'Ở danh mục <b>{name}</b>, Bitcoin chỉ chiếm <b>{weight}%</b> vốn nhưng đóng góp <b>{risk}%</b> biến động danh mục, <b>gấp {mult}×</b> tỷ trọng vốn. Đây là đánh đổi cần hiểu khi thêm Bitcoin: tỷ trọng nhỏ nhưng "gánh" phần lớn rủi ro.',
+    en: 'In the <b>{name}</b> portfolio, Bitcoin is only <b>{weight}%</b> of the capital but contributes <b>{risk}%</b> of the volatility — <b>{mult}× its weight</b>. That is the trade-off in adding Bitcoin: a small position carrying most of the risk.',
+  },
+
+  // ── Bảng chu kỳ nhiệm kỳ tổng thống Mỹ (BitcoinCycleTable) ──
+  'cyc.year1': { vi: 'Năm 1 của nhiệm kỳ', en: 'Year 1 of the term' },
+  'cyc.year2': { vi: 'Năm 2 của nhiệm kỳ', en: 'Year 2 of the term' },
+  'cyc.year3': { vi: 'Năm 3 của nhiệm kỳ', en: 'Year 3 of the term' },
+  'cyc.year4': { vi: 'Năm 4 của nhiệm kỳ', en: 'Year 4 of the term' },
+  'cyc.title': { vi: 'Lợi nhuận theo năm nhiệm kỳ tổng thống Mỹ', en: 'Returns by year of the US presidential term' },
+  'cyc.modeTerm': { vi: 'Theo nhiệm kỳ', en: 'By term' },
+  'cyc.modeTermHelp': { vi: 'Cắt theo nhiệm kỳ: mỗi năm tính từ ngày nhậm chức 20/1 tới 20/1 năm sau.', en: 'Cut by term: each year runs from inauguration day, 20 January, to 20 January the next year.' },
+  'cyc.modeElection': { vi: 'Theo kỳ bầu cử', en: 'By election' },
+  'cyc.modeElectionHelp': { vi: 'Cắt theo kỳ bầu cử: mỗi năm tính từ ngày bầu cử đầu tháng 11. Khung này tách đợt tăng sau bầu cử ra khỏi năm 4 của người tiền nhiệm.', en: 'Cut by election: each year runs from election day in early November. This framing separates the post-election rally from the predecessor\'s year 4.' },
+  'cyc.modeCalendar': { vi: 'Năm dương lịch', en: 'Calendar year' },
+  'cyc.modeCalendarHelp': { vi: 'Cắt theo năm dương lịch: mỗi năm tính từ 1/1 tới 31/12.', en: 'Cut by calendar year: each year runs from 1 January to 31 December.' },
+  'cyc.help': {
+    vi: 'Bấm qua lại ba nút để thấy cùng một chuỗi giá cho ra con số khác nhau khi cắt thời gian theo cách khác. Mốc 1/1 không có ý nghĩa gì với thị trường, nó chỉ là thói quen kế toán.',
+    en: 'Click between the three buttons to see the same price series give different numbers when time is cut a different way. 1 January means nothing to a market; it is an accounting habit.',
+  },
+  'cyc.introTerm': { vi: 'Mỗi năm đo từ ngày nhậm chức 20/1 tới 20/1 năm sau.', en: 'Each year is measured from inauguration day, 20 January, to 20 January the next year.' },
+  'cyc.introElection': { vi: 'Mỗi năm đo từ ngày bầu cử đầu tháng 11 tới ngày này năm sau, năm cuối khép lại đúng kỳ bầu cử kế tiếp.', en: 'Each year is measured from election day in early November to the same day a year later; the final year closes on the next election.' },
+  'cyc.introCalendar': { vi: 'Mỗi năm đo từ 1/1 tới 31/12, không liên quan tới ngày nhậm chức.', en: 'Each year is measured from 1 January to 31 December, with no reference to inauguration day.' },
+  'cyc.introTail': { vi: ' Cột "mức giảm từ đỉnh" là phần rơi từ đỉnh cao nhất trong kỳ xuống mức cuối kỳ.', en: ' The "fall from peak" column is the drop from the highest point within the period to where it ended.' },
+  'cyc.colPeriod': { vi: 'Kỳ', en: 'Period' },
+  'cyc.colGiveback': { vi: 'Mức BTC giảm từ đỉnh', en: 'BTC fall from peak' },
+  'cyc.colHalving': { vi: 'Halving', en: 'Halving' },
+  'cyc.observations': { vi: '{n} lần quan sát trọn vẹn', en: '{n} complete observations' },
+  'cyc.running': { vi: ', {n} kỳ đang chạy', en: ', {n} still running' },
+  'cyc.truncated': { vi: ', {n} kỳ thiếu dữ liệu đầu', en: ', {n} missing data at the start' },
+  'cyc.tagRunning': { vi: 'đang chạy', en: 'in progress' },
+  'cyc.tagTruncated': { vi: 'thiếu dữ liệu đầu kỳ', en: 'start of period missing' },
+  'cyc.tagTruncatedHelp': {
+    vi: 'Kỳ này đã kết thúc từ lâu, nhưng dữ liệu giá chỉ bắt đầu từ {date} nên đoạn đầu kỳ bị thiếu. Con số đo từ ngày có dữ liệu đầu tiên.',
+    en: 'This period ended long ago, but the price data only starts on {date}, so the beginning of the period is missing. The figure is measured from the first day with data.',
+  },
+  'cyc.yes': { vi: 'có', en: 'yes' },
+  'cyc.noteSample': {
+    vi: '<b>Bảng này không dự báo được gì.</b> Mẫu chỉ có hai nhiệm kỳ trọn vẹn cộng một nhiệm kỳ đang chạy. Với chừng đó quan sát thì quy luật nào cũng vẽ ra được, và quy luật nào cũng có thể bị phá vỡ ở lần sau.',
+    en: '<b>This table forecasts nothing.</b> The sample is two complete terms plus one still running. With that many observations you can draw any pattern you like, and any pattern can break next time.',
+  },
+  'cyc.noteCutoff': {
+    vi: '<b>Chọn mốc cắt nào là đã chọn một câu trả lời.</b> Ngày nhậm chức 20/1 do Hiến pháp Mỹ ấn định, nhưng lấy nó làm ranh giới thì cả giai đoạn từ đầu tháng 11 tới 20/1, tức lúc thị trường đang phản ứng với người sắp lên, lại bị tính vào năm 4 của người sắp mãn nhiệm. Bấm nút "theo kỳ bầu cử" để tách đoạn đó ra và xem quy luật năm 4 co lại bao nhiêu.',
+    en: '<b>Choosing where to cut is choosing an answer.</b> The US Constitution fixes inauguration day at 20 January, but use it as a boundary and the whole stretch from early November to 20 January — when the market is reacting to the incoming president — is counted in the outgoing one\'s year 4. Press "by election" to split that out and watch the year-4 pattern shrink.',
+  },
+  'cyc.noteConfound': {
+    vi: 'Riêng năm 2 của nhiệm kỳ, cả Bitcoin lẫn {base} đều âm ở mọi lần quan sát. Nhưng {base} thì không có lý do gì phải phản ứng với bầu cử giữa kỳ Mỹ. Điều đó gợi ý nguyên nhân nằm ở chỗ khác. Có ít nhất ba thứ trùng pha nhau trong khoảng dữ liệu này: bầu cử giữa kỳ, các đợt Fed siết tiền (2018 và 2022), và chu kỳ halving Bitcoin. Nhìn cột halving thì thấy năm 4 của nhiệm kỳ nào cũng trùng một kỳ halving. Không có cách nào tách ba thứ đó ra khỏi nhau bằng dữ liệu hiện có.',
+    en: 'In year 2 of the term, both Bitcoin and {base} were negative in every observation. But {base} has no reason to react to a US midterm. That points to the cause lying elsewhere. At least three things move in step across this data: the midterms, the Fed tightening cycles (2018 and 2022), and the Bitcoin halving cycle. Look at the halving column and every year 4 coincides with a halving. Nothing in the data at hand can separate the three.',
+  },
+
+  // ── Xác suất thắng (WinRateBlock) ──
+  'wr.h12': { vi: '1 năm', en: '1 year' },
+  'wr.h24': { vi: '2 năm', en: '2 years' },
+  'wr.h36': { vi: '3 năm', en: '3 years' },
+  'wr.h60': { vi: '5 năm', en: '5 years' },
+  'wr.title': { vi: 'Xác suất thắng: bao nhiêu lần Bitcoin kéo danh mục vượt trội?', en: 'Odds of winning: how often does Bitcoin pull the portfolio ahead?' },
+  'wr.help': {
+    vi: 'Với mỗi khoảng rolling N năm liên tiếp trong dữ liệu lịch sử, so sánh danh mục có BTC với danh mục không BTC. Ô hiển thị số lần danh mục có BTC thắng / tổng số khoảng. Ví dụ 87/100 nghĩa là trong 100 khoảng 3-năm, danh mục BTC thắng 87 khoảng.',
+    en: 'For every rolling N-year window in the history, the portfolio with BTC is compared against the one without. Each cell shows wins over total windows. 87/100 means that across 100 three-year windows, the BTC portfolio won 87.',
+  },
+  'wr.intro': {
+    vi: 'Với mỗi tỷ trọng Bitcoin, so sánh danh mục có BTC với danh mục không BTC trên tất cả khoảng thời gian N năm liên tiếp có trong dữ liệu lịch sử.',
+    en: 'For each Bitcoin weight, the portfolio with BTC is compared against the one without, across every rolling N-year window in the history.',
+  },
+  'wr.colWeight': { vi: 'Tỷ trọng BTC', en: 'BTC weight' },
+  'wr.rowLabel': { vi: '{pct}% Bitcoin', en: '{pct}% Bitcoin' },
+  'wr.winsPct': { vi: '{pct} lần thắng', en: '{pct} of windows won' },
+  'wr.takeaway': {
+    vi: 'Ở <b>{pct}% Bitcoin</b>, trong <b>{total} khoảng {horizon}</b> liên tiếp có trong lịch sử, danh mục có BTC thắng <b>{wins} lần</b> ({rate}%). Không phải lúc nào cũng thắng, nhưng xác suất rõ ràng nghiêng về phía có BTC.',
+    en: 'At <b>{pct}% Bitcoin</b>, across the <b>{total} rolling {horizon} windows</b> in the history, the portfolio with BTC won <b>{wins}</b> of them ({rate}%). Not every time, but the odds lean clearly towards holding some BTC.',
+  },
+
+  // ── Khối Bitcoin: máy in tiền và bài kiểm tra tâm lý ──
+  'mm.headline': { vi: 'Nếu bạn đầu tư {amount} vào {fund} {period}...', en: 'If you had invested {amount} in {fund} {period}...' },
+  'mm.period': { vi: 'từ {from} đến {to}', en: 'from {from} to {to}' },
+  'mm.noBitcoin': { vi: 'Không có Bitcoin', en: 'No Bitcoin' },
+  'mm.vsNoBtc': { vi: '{amount} so với không có BTC', en: '{amount} versus no BTC' },
+  'mm.years1': { vi: '1 năm', en: '1 year' },
+  'mm.yearsN': { vi: '{n} năm', en: '{n} years' },
+  'mm.takeaway': {
+    vi: 'Nếu bạn thêm <b>{pct}% Bitcoin</b>{ago}, hôm nay bạn có thêm <b>{delta}</b>. Đó gần bằng <b>{comparison}</b>.',
+    en: 'Add <b>{pct}% Bitcoin</b>{ago} and you would have <b>{delta}</b> more today. That is roughly <b>{comparison}</b>.',
+  },
+  'mm.ago': { vi: ' {years} trước', en: ' {years} ago' },
+  'sleep.title': { vi: 'Bài kiểm tra tâm lý: nếu rơi xuống đáy, bạn còn bao nhiêu?', en: 'The sleep test: at the bottom, how much is left?' },
+  'sleep.help': {
+    vi: 'Ba chỉ số rủi ro dịch ra số tiền thật. Tệ nhất 1 tuần / 1 tháng là biến động ngắn hạn trong lịch sử. Drawdown tệ nhất là mức sụt giảm sâu nhất từ đỉnh xuống đáy trong toàn bộ thời kỳ mô phỏng. Dùng để đánh giá bạn có ngủ ngon được với danh mục này không.',
+    en: 'Three risk figures translated into real money. Worst week and worst month are short-term swings from the history. Worst drawdown is the deepest fall from peak to trough across the whole simulated period. Use it to judge whether you could sleep holding this portfolio.',
+  },
+  'sleep.intro': {
+    vi: 'Nếu danh mục bạn có <b>{amount}</b>, ở các điểm tệ nhất trong lịch sử mô phỏng, danh mục còn lại:',
+    en: 'If your portfolio held <b>{amount}</b>, at the worst points of the simulated history you would have been left with:',
+  },
+  'sleep.colPortfolio': { vi: 'Danh mục', en: 'Portfolio' },
+  'sleep.colWorstWeek': { vi: 'Tệ nhất 1 tuần', en: 'Worst week' },
+  'sleep.colWorstWeekHelp': { vi: 'Tuần giảm mạnh nhất trong lịch sử. Số tiền là danh mục còn lại sau tuần đó.', en: 'The sharpest weekly fall in the history. The amount is what the portfolio was worth after that week.' },
+  'sleep.colWorstMonth': { vi: 'Tệ nhất 1 tháng', en: 'Worst month' },
+  'sleep.colWorstMonthHelp': { vi: 'Khoảng 4 tuần liên tiếp giảm mạnh nhất. Số tiền là danh mục còn lại sau 4 tuần đó.', en: 'The sharpest run of about four consecutive weeks. The amount is what the portfolio was worth after them.' },
+  'sleep.colMaxDD': { vi: 'Drawdown tệ nhất', en: 'Worst drawdown' },
+  'sleep.colMaxDDHelp': { vi: 'Mức sụt giảm sâu nhất từ đỉnh xuống đáy. Số tiền là danh mục còn lại tại điểm đáy.', en: 'The deepest fall from peak to trough. The amount is what the portfolio was worth at the bottom.' },
+  'sleep.left': { vi: 'còn {amount}', en: '{amount} left' },
+  'sleep.takeaway': {
+    vi: 'Với <b>{name}</b>, có thời điểm danh mục <b>{amount}</b> của bạn chỉ còn <b>{floor}</b>. Nhìn con số đó, bạn có ngủ được không? Nếu không, giảm tỷ trọng Bitcoin xuống mức thấp hơn.',
+    en: 'With <b>{name}</b>, there was a moment when your <b>{amount}</b> portfolio was worth just <b>{floor}</b>. Look at that number: could you sleep? If not, hold less Bitcoin.',
+  },
+
   // ── Một kịch bản cụ thể (ScenarioPathChart) ──
   'scn.title': { vi: 'Bắt đầu đúng vào một tháng thì khoản đầu tư sẽ ra sao?', en: 'What happens if you start in one particular month?' },
   'scn.help': {
