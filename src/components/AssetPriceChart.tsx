@@ -5,6 +5,8 @@ import {
 import type { ChartSeries, FundMeta, ReturnPoint } from '../types'
 import { formatVND, formatVNDFull } from '../utils/vndFormat'
 import { getYearTicks, formatYear, formatTooltipDate } from '../utils/chartPlumbing'
+import { useT, translateStatic } from '../i18n'
+import { useLanguage, type Language } from '../hooks/useLanguage'
 
 export interface AssetPriceSeries extends ChartSeries {
   assetId: string
@@ -31,6 +33,7 @@ const SELL_LINE_COLOR = '#d97706'
  * nằm bẹp. Muốn so sánh thì đã có chart Lợi nhuận tích lũy, nó quy về phần trăm.
  */
 function AssetPriceChartImpl({ series, metadata }: Props) {
+  const t = useT()
   const [logScale, setLogScale] = useState(false)
   const [zoomedScale, setZoomedScale] = useState(false)
   const [showSpread, setShowSpread] = useState(false)
@@ -42,7 +45,7 @@ function AssetPriceChartImpl({ series, metadata }: Props) {
   return (
     <div className="chart-container">
       <div className="chart-header">
-        <h3>{single ? 'Giá tài sản' : 'Giá từng tài sản'}</h3>
+        <h3>{t(single ? 'price.titleSingle' : 'price.titleMulti')}</h3>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           {hasDualPrice && (
             <>
@@ -51,14 +54,14 @@ function AssetPriceChartImpl({ series, metadata }: Props) {
                 onClick={() => setZoomedScale(v => !v)}
                 aria-pressed={zoomedScale}
               >
-                Giãn trục
+                {t('price.spreadAxis')}
               </button>
               <button
                 className={`log-scale-btn${showSpread ? ' log-scale-btn-active' : ''}`}
                 onClick={() => setShowSpread(v => !v)}
                 aria-pressed={showSpread}
               >
-                Chênh lệch
+                {t('price.spread')}
               </button>
             </>
           )}
@@ -72,7 +75,7 @@ function AssetPriceChartImpl({ series, metadata }: Props) {
           </button>
           <span
             className="chart-tooltip-icon"
-            title="Giá thực tế của một đơn vị tài sản (chứng chỉ quỹ, lượng vàng, 1 BTC). Mỗi tài sản một trục riêng vì mệnh giá ban đầu và đơn vị của chúng khác nhau, đặt chung một trục sẽ gây hiểu nhầm. Muốn so sánh hiệu suất thì xem chart Lợi nhuận tích lũy bên dưới."
+            title={t('price.help')}
           >?</span>
         </div>
       </div>
@@ -117,6 +120,8 @@ function PricePanel({
   zoomedScale: boolean
   showSpread: boolean
 }) {
+  const t = useT()
+  const { language } = useLanguage()
   const meta = metadata.find(m => m.id === series.assetId)
   const hasSecondary = series.secondaryData !== undefined && series.secondaryData.length > 0
   const secondaryByDate = new Map(series.secondaryData?.map(p => [p.date, p.value]) ?? [])
@@ -141,7 +146,7 @@ function PricePanel({
           {series.name}
         </span>
         <span className="price-chart-panel-unit">
-          {lastValue !== undefined && formatAssetValue(lastValue, meta)}
+          {lastValue !== undefined && formatAssetValue(lastValue, meta, language)}
         </span>
       </div>
       <ResponsiveContainer width="100%" height={height}>
@@ -164,7 +169,7 @@ function PricePanel({
           />
           <Tooltip
             formatter={(value: number, name: string) => [
-              formatAssetValue(value, meta),
+              formatAssetValue(value, meta, language),
               name,
             ]}
             labelFormatter={formatTooltipDate}
@@ -174,7 +179,7 @@ function PricePanel({
             <Line
               type="monotone"
               dataKey="value"
-              name={hasSecondary ? 'Giá mua vào' : series.name}
+              name={hasSecondary ? t('price.buyPrice') : series.name}
               stroke={series.color}
               strokeWidth={2}
               dot={false}
@@ -186,7 +191,7 @@ function PricePanel({
             <Line
               type="monotone"
               dataKey="secondaryValue"
-              name="Giá bán ra"
+              name={t('price.sellPrice')}
               stroke={SELL_LINE_COLOR}
               strokeWidth={2}
               strokeDasharray="6 3"
@@ -199,7 +204,7 @@ function PricePanel({
             <Line
               type="monotone"
               dataKey="spreadValue"
-              name="Chênh lệch (bán - mua)"
+              name={t('price.spreadSeries')}
               stroke={series.color}
               strokeWidth={2}
               dot={false}
@@ -231,15 +236,19 @@ function zoomedYDomain(
 }
 
 /** Đơn vị của một đơn vị tài sản, để người xem biết con số đang đếm cái gì. */
-function unitOf(meta: FundMeta | undefined): string {
-  if (meta?.type === 'gold') return 'lượng'
+function unitOf(meta: FundMeta | undefined, lang: Language): string {
+  if (meta?.type === 'gold') return translateStatic('price.unit.gold', lang)
   if (meta?.type === 'crypto') return 'coin'
   return 'CCQ'
 }
 
 /** Format giá trị hiển thị theo loại tài sản. Chỉ số thị trường (VNINDEX,
  *  VN30...) tính bằng điểm, không phải tiền — không gắn đơn vị "đ". */
-function formatAssetValue(value: number, meta: FundMeta | undefined): string {
-  if (meta?.type === 'index') return `${Math.round(value).toLocaleString('vi-VN')} điểm`
-  return `${formatVNDFull(value)} / ${unitOf(meta)}`
+function formatAssetValue(value: number, meta: FundMeta | undefined, lang: Language): string {
+  if (meta?.type === 'index') {
+    return translateStatic('price.indexPoints', lang, {
+      v: Math.round(value).toLocaleString(lang === 'vi' ? 'vi-VN' : 'en-US'),
+    })
+  }
+  return `${formatVNDFull(value)} / ${unitOf(meta, lang)}`
 }

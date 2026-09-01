@@ -15,6 +15,7 @@ import {
 } from 'recharts'
 import { rollingCAGR, histogramBuckets, trailingWindowCagr } from '../utils/dca'
 import type { ReturnPoint } from '../types'
+import { useT, useTRich, type TranslationKey } from '../i18n'
 
 export interface RollingPortfolio {
   id: string
@@ -30,30 +31,26 @@ interface Props {
 const WINDOW_OPTIONS = [3, 5, 7, 10]
 
 function RollingReturnBlockImpl({ portfolios }: Props) {
+  const t = useT()
+  const tr = useTRich()
   const [windowYears, setWindowYears] = useState<number>(5)
 
   if (portfolios.length === 0) return null
 
   return (
     <div className="dca-rolling-block">
-      <h3 className="dca-rolling-title">Nếu bạn bắt đầu ở thời điểm khác thì sao?</h3>
-      <p className="dca-rolling-sub">
-        Giả sử có rất nhiều người cùng đầu tư vào quỹ này nhưng mỗi người bắt đầu ở một
-        tháng khác nhau và giữ đúng <strong>{windowYears} năm</strong>. Kết quả của mỗi
-        người sẽ khác nhau rất nhiều, có người trúng đỉnh, có người trúng đáy. Biểu đồ
-        dưới đây cho thấy phân phối CAGR của tất cả các chu kỳ {windowYears} năm trong
-        lịch sử, và vị trí của bạn nằm ở đâu trong đó.
-      </p>
+      <h3 className="dca-rolling-title">{t('rollBlock.title')}</h3>
+      <p className="dca-rolling-sub">{tr('rollBlock.intro', { years: windowYears })}</p>
 
       <div className="dca-rolling-controls">
-        <span className="dca-rolling-controls-label">Chu kỳ:</span>
+        <span className="dca-rolling-controls-label">{t('rollBlock.windowLabel')}</span>
         {WINDOW_OPTIONS.map(w => (
           <button
             key={w}
             className={`dca-rolling-btn${w === windowYears ? ' dca-rolling-btn--active' : ''}`}
             onClick={() => setWindowYears(w)}
           >
-            {w} năm
+            {t('roll.years', { n: w })}
           </button>
         ))}
       </div>
@@ -74,6 +71,8 @@ function RollingForPortfolio({
   portfolio: RollingPortfolio
   windowYears: number
 }) {
+  const t = useT()
+  const tr = useTRich()
   const { rolls, buckets, stats, userCagr } = useMemo(() => {
     const rolls = rollingCAGR(portfolio.cumulative, windowYears)
     const values = rolls.map(r => r.cagr)
@@ -95,16 +94,15 @@ function RollingForPortfolio({
     const end = portfolio.cumulative[portfolio.cumulative.length - 1]?.date
     const span =
       start && end
-        ? `Khoảng thời gian đang chọn chỉ từ ${formatDate(start)} tới ${formatDate(end)}`
-        : 'Khoảng thời gian đang chọn quá ngắn'
+        ? t('rollBlock.rangeSelected', { from: formatDate(start), to: formatDate(end) })
+        : t('rollBlock.rangeShort')
     return (
       <div className="dca-rolling-card">
         <div className="dca-rolling-card-header">
           <span style={{ color: portfolio.color, fontWeight: 700 }}>{portfolio.name}</span>
         </div>
         <div className="dca-rolling-insufficient">
-          {span}, chưa đủ để tính chu kỳ {windowYears} năm (cần ít nhất {windowYears + 1} năm).
-          Không phải quỹ thiếu dữ liệu, mà là khoảng xem ngắn. Kéo rộng khoảng thời gian ở phần Thông số rồi thử lại.
+          {t('rollBlock.tooShort', { span, years: windowYears, need: windowYears + 1 })}
         </div>
       </div>
     )
@@ -117,7 +115,7 @@ function RollingForPortfolio({
     center: b.center * 100,
     centerLabel: `${(b.center * 100).toFixed(0)}%`,
     count: b.count,
-    range: `${(b.min * 100).toFixed(1)}% đến ${(b.max * 100).toFixed(1)}%`,
+    range: t('rollBlock.binRange', { min: (b.min * 100).toFixed(1), max: (b.max * 100).toFixed(1) }),
     // Highlight bucket chứa user CAGR
     highlight: userCagr !== null && userCagr >= b.min && userCagr < b.max,
   }))
@@ -127,7 +125,7 @@ function RollingForPortfolio({
       <div className="dca-rolling-card-header">
         <span style={{ color: portfolio.color, fontWeight: 700 }}>{portfolio.name}</span>
         <span className="dca-rolling-card-count">
-          {rolls.length} chu kỳ {windowYears} năm
+          {t('rollBlock.windowCount', { n: rolls.length, years: windowYears })}
         </span>
       </div>
 
@@ -145,7 +143,7 @@ function RollingForPortfolio({
             allowDecimals={false}
           />
           <Tooltip
-            formatter={(v: number) => [`${v} chu kỳ`, 'Số lượng']}
+            formatter={(v: number) => [t('rollBlock.tooltipCount', { n: v }), t('rollBlock.tooltipLabel')]}
             labelFormatter={(_, payload) => {
               const p = payload?.[0]?.payload as { range: string } | undefined
               return p ? `CAGR ${p.range}` : ''
@@ -167,22 +165,20 @@ function RollingForPortfolio({
       </ResponsiveContainer>
 
       <div className="dca-rolling-stats">
-        <StatBox label="Thấp nhất" value={fmtPct(stats.min)} />
+        <StatBox label={t('rollBlock.stat.min')} value={fmtPct(stats.min)} />
         <StatBox label="P10" value={fmtPct(stats.p10)} />
         <StatBox label="Median" value={fmtPct(stats.median)} highlight />
         <StatBox label="P90" value={fmtPct(stats.p90)} />
-        <StatBox label="Cao nhất" value={fmtPct(stats.max)} />
+        <StatBox label={t('rollBlock.stat.max')} value={fmtPct(stats.max)} />
       </div>
 
       {userCagr !== null && percentile !== null && (
         <div className="dca-rolling-takeaway">
-          CAGR thực tế của bạn trong kỳ này là <strong>{fmtPct(userCagr)}</strong>.
-          {' '}{buildPercentileText(percentile)}
-          {stats.negCount > 0 && (
-            <> Nhưng phải nói thẳng: trong {rolls.length} chu kỳ {windowYears} năm lịch sử,
-            có <strong>{stats.negCount}</strong> chu kỳ cho CAGR âm. Thị trường không hứa
-            hẹn có lãi kể cả khi bạn giữ dài hạn. Đó là rủi ro thật, không được quên.</>
-          )}
+          {tr('rollBlock.yourCagr', { cagr: fmtPct(userCagr) })}
+          {t(percentileKey(percentile), { pct: percentile.toFixed(0) })}
+          {stats.negCount > 0 && tr('rollBlock.negWarning', {
+            n: rolls.length, years: windowYears, neg: stats.negCount,
+          })}
         </div>
       )}
     </div>
@@ -198,16 +194,12 @@ function StatBox({ label, value, highlight }: { label: string; value: string; hi
   )
 }
 
-function buildPercentileText(pct: number): string {
-  if (pct >= 90)
-    return `Bạn đang ở top 10%, tốt hơn ${pct.toFixed(0)}% các chu kỳ lịch sử. Bạn đã rất may mắn về thời điểm vào, đừng nhầm may mắn với kỹ năng.`
-  if (pct >= 75)
-    return `Bạn tốt hơn ${pct.toFixed(0)}% các chu kỳ lịch sử, thời điểm vào của bạn khá thuận lợi.`
-  if (pct >= 50)
-    return `Bạn đang nằm trên median, tốt hơn ${pct.toFixed(0)}% các chu kỳ lịch sử. Một kết quả tử tế, không quá lung lay.`
-  if (pct >= 25)
-    return `Bạn đang nằm dưới median, chỉ hơn ${pct.toFixed(0)}% các chu kỳ lịch sử. Đừng vội phản bội chính mình bán ra. Giữ tiếp, trung bình sẽ kéo bạn về gần median.`
-  return `Bạn đang ở đáy của phân phối (percentile ${pct.toFixed(0)}). Thời điểm vào của bạn không thuận, nhưng đó không phải lỗi, không ai biết trước được. Điều quan trọng là tiếp tục nạp tiền đều đặn qua từng tháng, lịch sử cho thấy trung bình có xu hướng kéo về median khi giữ đủ lâu.`
+function percentileKey(pct: number): TranslationKey {
+  if (pct >= 90) return 'rollBlock.pct.top10'
+  if (pct >= 75) return 'rollBlock.pct.good'
+  if (pct >= 50) return 'rollBlock.pct.aboveMedian'
+  if (pct >= 25) return 'rollBlock.pct.belowMedian'
+  return 'rollBlock.pct.bottom'
 }
 
 interface Stats {

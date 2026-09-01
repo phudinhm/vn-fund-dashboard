@@ -681,6 +681,202 @@ const DICT = {
     en: 'The past guarantees nothing. A strategy that beat buy-and-hold for the last ten years may not beat it over the next ten.',
   },
 
+  // ── Compare tab: charts & blocks ──
+  'share.copy': { vi: '🔗 Copy link chia sẻ', en: '🔗 Copy share link' },
+  'share.copied': { vi: '✓ Đã copy link!', en: '✓ Link copied' },
+
+  'price.titleSingle': { vi: 'Giá tài sản', en: 'Asset price' },
+  'price.titleMulti': { vi: 'Giá từng tài sản', en: 'Price of each asset' },
+  'price.spreadAxis': { vi: 'Giãn trục', en: 'Zoom axis' },
+  'price.spread': { vi: 'Chênh lệch', en: 'Spread' },
+  'price.help': {
+    vi: 'Giá thực tế của một đơn vị tài sản (chứng chỉ quỹ, lượng vàng, 1 BTC). Mỗi tài sản một trục riêng vì mệnh giá ban đầu và đơn vị của chúng khác nhau, đặt chung một trục sẽ gây hiểu nhầm. Muốn so sánh hiệu suất thì xem chart Lợi nhuận tích lũy bên dưới.',
+    en: 'The actual price of one unit — a fund certificate, a tael of gold, one BTC. Each asset gets its own axis because their starting prices and units differ, and sharing one axis would mislead. To compare performance, use the cumulative return chart below.',
+  },
+  'price.buyPrice': { vi: 'Giá mua vào', en: 'Buy price' },
+  'price.sellPrice': { vi: 'Giá bán ra', en: 'Sell price' },
+  'price.spreadSeries': { vi: 'Chênh lệch (bán - mua)', en: 'Spread (sell − buy)' },
+  'price.unit.gold': { vi: 'lượng', en: 'tael' },
+  'price.indexPoints': { vi: '{v} điểm', en: '{v} pts' },
+
+  'drawdown.title': { vi: 'Tỷ lệ sụt giảm so với đỉnh', en: 'Drawdown from peak' },
+  'drawdown.help': {
+    vi: 'Drawdown cho thấy mức giảm giá trị so với đỉnh cao nhất trước đó. Ví dụ: -20% nghĩa là quỹ đã giảm 20% từ đỉnh. Bấm vào legend để làm mờ/hiện đường.',
+    en: 'Drawdown shows how far the value has fallen from its previous high. −20% means the fund is 20% below its peak. Click a legend entry to dim or restore a line.',
+  },
+
+  'yearly.title': { vi: 'Hiệu suất theo từng năm', en: 'Performance by calendar year' },
+  'yearly.help': {
+    vi: 'So sánh lợi nhuận các quỹ trong mỗi năm. Năm có dấu * là năm chưa đầy đủ dữ liệu. Bấm vào legend để làm mờ/hiện cột.',
+    en: 'Each fund’s return within each calendar year. A year marked * is not a full year of data. Click a legend entry to dim or restore a bar.',
+  },
+
+  'heatmap.title': { vi: 'Lợi nhuận theo tháng (heatmap)', en: 'Monthly returns (heatmap)' },
+  'heatmap.help': {
+    vi: 'Mỗi ô là lợi nhuận của một tháng dương lịch. Xanh khi lời, đỏ khi lỗ, càng đậm càng mạnh. Bấm tên quỹ để đổi quỹ đang xem.',
+    en: 'Each cell is one calendar month’s return. Green for a gain, red for a loss, darker for larger. Click a fund name to switch which fund you are looking at.',
+  },
+  'heatmap.noData': {
+    vi: 'Không có dữ liệu tháng này: hoặc quỹ chưa ra đời, hoặc nằm ngoài khoảng thời gian đã chọn',
+    en: 'No data for this month — either the fund did not exist yet, or it falls outside the range you picked',
+  },
+  'heatmap.partial': { vi: ' (tháng chưa trọn)', en: ' (partial month)' },
+  'heatmap.loss': { vi: 'Lỗ', en: 'Loss' },
+  'heatmap.gain': { vi: 'Lời', en: 'Gain' },
+  'heatmap.scale': { vi: '(0–12%+ mỗi tháng)', en: '(0–12%+ per month)' },
+
+  'corr.title': { vi: 'Tương quan lợi nhuận', en: 'Return correlation' },
+  'corr.help': {
+    vi: 'Hệ số tương quan Pearson trên chuỗi lợi nhuận đã căn cùng mốc ngày. 1 = đi hoàn toàn cùng nhịp, 0 = không liên quan, -1 = ngược nhịp hoàn toàn.',
+    en: 'Pearson correlation over return series aligned to the same dates. 1 means they move exactly together, 0 means unrelated, −1 means exactly opposite.',
+  },
+  'corr.avgCol': { vi: 'TB', en: 'Avg' },
+  'corr.summary': { vi: 'Tương quan trung bình giữa các cặp: <b>{avg}</b>. ', en: 'Average pairwise correlation: <b>{avg}</b>. ' },
+  'corr.colNote': {
+    vi: ' Cột <b>TB</b> là mức tương quan trung bình của từng tài sản với phần còn lại — số càng cao thì tài sản đó càng ít đóng góp vào đa dạng hoá.',
+    en: ' The <b>Avg</b> column is each asset’s average correlation with all the others — the higher it is, the less that asset contributes to diversification.',
+  },
+  'corr.verdict.noData': { vi: 'Chưa đủ dữ liệu để đánh giá mức đa dạng hoá.', en: 'Not enough data to judge diversification yet.' },
+  'corr.verdict.veryHigh': {
+    vi: 'Các tài sản này gần như đi chung một nhịp. Ghép chúng lại hầu như không giảm được rủi ro — lúc thị trường sập thì sập cùng nhau.',
+    en: 'These assets move almost in lockstep. Combining them barely reduces risk — when the market falls, they fall together.',
+  },
+  'corr.verdict.high': {
+    vi: 'Tương quan cao. Có giảm rủi ro đôi chút, nhưng đừng kỳ vọng danh mục đứng vững khi thị trường chung đi xuống.',
+    en: 'Correlation is high. There is a little risk reduction, but do not expect the portfolio to hold up when the broad market falls.',
+  },
+  'corr.verdict.moderate': {
+    vi: 'Tương quan vừa phải. Ghép lại có tác dụng đa dạng hoá thật, dù vẫn cùng chịu ảnh hưởng của thị trường chung.',
+    en: 'Correlation is moderate. Combining them genuinely diversifies, though they still share exposure to the broad market.',
+  },
+  'corr.verdict.low': {
+    vi: 'Tương quan thấp. Đây là nhóm tài sản bổ trợ nhau tốt — khi cái này giảm, cái kia không nhất thiết giảm theo.',
+    en: 'Correlation is low. These assets complement each other well — when one falls, the other need not follow.',
+  },
+  'corr.caveat': {
+    vi: '<b>Lưu ý cách đo:</b> quỹ mở định giá NAV cuối ngày, còn ETF khớp lệnh liên tục trên sàn. Hai mốc định giá không trùng nhau nên tương quan đo được giữa quỹ mở và ETF thường <i>thấp hơn</i> mức đi cùng nhịp thật. Hãy đọc bảng này theo hướng so sánh tương đối giữa các cặp, đừng coi con số tuyệt đối là chính xác.',
+    en: '<b>A caveat on measurement:</b> open-ended funds price NAV once at the close, while ETFs trade continuously. Because the two are priced at different moments, the measured correlation between a fund and an ETF is usually <i>lower</i> than how much they truly move together. Read this table as a relative comparison between pairs rather than treating the absolute numbers as exact.',
+  },
+
+  // ── Data quality block (dùng chung) ──
+  'dq.warning': { vi: 'Chất lượng dữ liệu: có cảnh báo', en: 'Data quality: warnings' },
+  'dq.ok': { vi: 'Dữ liệu đầy đủ', en: 'Data is complete' },
+  'dq.updatedTo': { vi: 'Cập nhật tới {date}', en: 'Updated through {date}' },
+  'dq.daysAgo': { vi: ' ({n} ngày trước)', en: ' ({n} days ago)' },
+  'dq.gapsFound': { vi: '. Phát hiện khoảng thiếu giá.', en: '. Gaps in the price history were found.' },
+  'dq.coverageIssue': { vi: ' Có quỹ không phủ hết khoảng bạn chọn.', en: ' Some funds do not cover the whole range you picked.' },
+  'dq.noGaps': { vi: '. Không phát hiện lỗ hổng trong kỳ đang so sánh.', en: '. No gaps found over the period being compared.' },
+  'dq.collapse': { vi: 'Thu gọn', en: 'Collapse' },
+  'dq.expand': { vi: 'Xem chi tiết', en: 'See details' },
+  'dq.intro': {
+    vi: 'Mỗi quỹ có lịch sử dữ liệu khác nhau. Một số quỹ mới lập chỉ có vài năm, một số quỹ cũ có thể bị thiếu giá trong các đợt đặc biệt như COVID. Dashboard này công khai những giới hạn đó để bạn cẩn thận hơn khi đọc các con số bên dưới.',
+    en: 'Every fund has a different data history. Newer funds only have a few years; older ones can be missing prices around unusual periods such as COVID. This dashboard states those limits openly so you read the numbers below with the right amount of caution.',
+  },
+  'dq.alignedRange': {
+    vi: 'Khoảng so sánh thực tế đã được căn chỉnh theo giao điểm của tất cả các quỹ: <b>{from}</b> tới <b>{to}</b>. Mọi con số trong các block bên dưới đều tính trên khoảng này.',
+    en: 'The actual comparison window is aligned to the overlap of every fund: <b>{from}</b> to <b>{to}</b>. Every number in the blocks below is computed over that window.',
+  },
+  'dq.issuesTitle': { vi: 'Chi tiết cảnh báo', en: 'Warning details' },
+  'dq.gapTooltip': { vi: 'Thiếu ~{weeks} tuần: {from} → {to}', en: 'About {weeks} weeks missing: {from} → {to}' },
+  'dq.pickedFrom': { vi: 'Bạn chọn từ {date}', en: 'You picked from {date}' },
+  'dq.pickedTo': { vi: 'Bạn chọn tới {date}', en: 'You picked up to {date}' },
+  'dq.startsLate': {
+    vi: 'Quỹ bắt đầu từ <b>{start}</b>, muộn hơn ngày bạn chọn ({requested}). Khoảng trước đó không tính vào phép so sánh.',
+    en: 'This fund starts on <b>{start}</b>, later than the date you picked ({requested}). Everything before that is excluded from the comparison.',
+  },
+  'dq.endsEarly': {
+    vi: 'Dữ liệu chỉ tới <b>{end}</b>, sớm hơn ngày bạn chọn ({requested}). Khoảng sau đó không có giá.',
+    en: 'Data only runs to <b>{end}</b>, earlier than the date you picked ({requested}). There are no prices after that.',
+  },
+  'dq.gap': {
+    vi: 'Thiếu khoảng <b>{weeks} tuần</b> từ {from} tới {to}. Có thể do tạm ngưng giao dịch hoặc dữ liệu API thiếu.',
+    en: 'About <b>{weeks} weeks</b> missing between {from} and {to}. Trading may have been suspended, or the API data is incomplete.',
+  },
+
+  // ── Rolling returns ──
+  'roll.months6': { vi: '6 tháng', en: '6 months' },
+  'roll.years': { vi: '{n} năm', en: '{n} years' },
+  'roll.monthsN': { vi: '{n} tháng', en: '{n} months' },
+  'roll.noDataFor': { vi: 'Chưa đủ dữ liệu để tính chu kỳ {period}', en: 'Not enough data for a {period} window' },
+  'roll.noDataMsg': {
+    vi: 'Chưa đủ dữ liệu cho chu kỳ {period}. Hãy chọn chu kỳ ngắn hơn hoặc khoảng thời gian rộng hơn.',
+    en: 'Not enough data for a {period} window. Pick a shorter window, or widen the date range.',
+  },
+  'roll.explain1': {
+    vi: 'Lợi nhuận cuốn chiếu ra đời để làm nổi bật một chuyện: tần suất và biên độ của những chu kỳ sinh lời tốt nhất lẫn tệ nhất của một khoản đầu tư. Cách đo này mang lại cái nhìn toàn diện về lịch sử hiệu suất của quỹ, không bị các kết quả ngắn hạn gần nhất kéo lệch, như thời điểm chốt sổ cuối tháng hay cuối quý.',
+    en: 'Rolling returns exist to expose one thing: how often, and how far, an investment’s best and worst stretches ran. It gives a complete picture of a fund’s history rather than one skewed by whatever happened most recently, or by where a month or quarter happened to end.',
+  },
+  'roll.explain2': {
+    vi: 'Ví dụ, lợi nhuận cuốn chiếu 5 năm của năm 2015 là kết quả đo từ ngày 1/1/2011 đến ngày 31/12/2015. Tương tự, lợi nhuận cuốn chiếu 5 năm của năm 2016 là mức sinh lời bình quân hàng năm từ 2012 đến hết năm 2016.',
+    en: 'For example, the 5-year rolling return for 2015 measures 1 January 2011 through 31 December 2015. The 5-year rolling return for 2016 is the average yearly return from 2012 through the end of 2016.',
+  },
+  'roll.explain3': {
+    vi: 'Nhờ vậy, bạn hiểu rõ hơn hiệu quả thật của quỹ tại từng thời điểm. Một khoản đầu tư báo tỷ suất sinh lời 9%/năm suốt 10 năm chỉ có nghĩa: nếu bạn mua vào ngày 1/1 năm đầu và bán vào ngày 31/12 năm thứ 10, bạn nhận được mức lãi tương đương 9% mỗi năm. Nhưng bức tranh bên trong 10 năm đó có thể rất dữ dội.',
+    en: 'That tells you far more about how a fund actually performed at each point in time. An investment reporting 9% a year over ten years only means this: had you bought on 1 January of year one and sold on 31 December of year ten, you would have earned the equivalent of 9% a year. What happened inside those ten years can be violent.',
+  },
+  'roll.explain4': {
+    vi: 'Khoản đầu tư ấy có thể tăng vọt 35% vào năm thứ 4, rồi sụt 17% vào năm thứ 8. Trung bình vẫn là 9% mỗi năm, nhưng con số bình quân ấy che đậy đi rủi ro và sự trồi sụt thực tế của tài sản.',
+    en: 'That same investment might have jumped 35% in year four and fallen 17% in year eight. The average is still 9% a year, but the average hides the real risk and the real swings.',
+  },
+  'roll.explain5': {
+    vi: 'Thay vì đo máy móc từ ngày 1/1 đến 31/12, lợi nhuận cuốn chiếu trượt khung thời gian liên tục: từ 1/2 năm nay đến 31/1 năm sau, rồi từ 1/3 năm nay đến 28/2 năm sau, và cứ thế. Bằng cách trượt liên tục, lợi nhuận cuốn chiếu 10 năm phơi bày trọn vẹn những khoảng thời gian tỏa sáng rực rỡ nhất lẫn tồi tệ nhất của khoản đầu tư.',
+    en: 'Instead of mechanically measuring 1 January to 31 December, rolling returns slide the window continuously: 1 February to 31 January, then 1 March to 28 February, and so on. Sliding like that, a 10-year rolling return lays bare both the investment’s brightest stretches and its worst.',
+  },
+  'roll.col.fund': { vi: 'Quỹ', en: 'Fund' },
+  'roll.group.stats': { vi: 'Thống Kê Tỷ Suất Sinh Lợi (%)', en: 'Return statistics (%)' },
+  'roll.group.distribution': { vi: 'Phân bổ lợi nhuận (% số lần xuất hiện)', en: 'Return distribution (% of windows)' },
+  'roll.col.min': { vi: 'Thấp nhất', en: 'Lowest' },
+  'roll.col.median': { vi: 'Trung vị', en: 'Median' },
+  'roll.col.max': { vi: 'Cao nhất', en: 'Highest' },
+  'roll.col.negative': { vi: 'Âm', en: 'Negative' },
+  'roll.windows': { vi: '{n} cửa sổ · {ind} cửa sổ độc lập', en: '{n} windows · {ind} independent' },
+  'roll.notEnough': { vi: 'Chưa đủ dữ liệu', en: 'Not enough data' },
+
+  // Rolling return block (tab DCA)
+  'rollBlock.title': { vi: 'Nếu bạn bắt đầu ở thời điểm khác thì sao?', en: 'What if you had started at a different time?' },
+  'rollBlock.intro': {
+    vi: 'Giả sử có rất nhiều người cùng đầu tư vào quỹ này nhưng mỗi người bắt đầu ở một tháng khác nhau và giữ đúng <b>{years} năm</b>. Kết quả của mỗi người sẽ khác nhau rất nhiều, có người trúng đỉnh, có người trúng đáy. Biểu đồ dưới đây cho thấy phân phối CAGR của tất cả các chu kỳ {years} năm trong lịch sử, và vị trí của bạn nằm ở đâu trong đó.',
+    en: 'Imagine a crowd of people all investing in this fund, each starting in a different month and each holding for exactly <b>{years} years</b>. Their results would differ enormously — some bought the top, some the bottom. The chart below shows the CAGR distribution across every {years}-year window in the history, and where you land within it.',
+  },
+  'rollBlock.windowLabel': { vi: 'Chu kỳ:', en: 'Window:' },
+  'rollBlock.rangeSelected': { vi: 'Khoảng thời gian đang chọn chỉ từ {from} tới {to}', en: 'The selected range only covers {from} to {to}' },
+  'rollBlock.rangeShort': { vi: 'Khoảng thời gian đang chọn quá ngắn', en: 'The selected range is too short' },
+  'rollBlock.tooShort': {
+    vi: '{span}, chưa đủ để tính chu kỳ {years} năm (cần ít nhất {need} năm). Không phải quỹ thiếu dữ liệu, mà là khoảng xem ngắn. Kéo rộng khoảng thời gian ở phần Thông số rồi thử lại.',
+    en: '{span}, which is not enough for a {years}-year window (you need at least {need} years). The fund is not missing data — the view is just narrow. Widen the date range in Parameters and try again.',
+  },
+  'rollBlock.binRange': { vi: '{min}% đến {max}%', en: '{min}% to {max}%' },
+  'rollBlock.windowCount': { vi: '{n} chu kỳ {years} năm', en: '{n} windows of {years} years' },
+  'rollBlock.tooltipCount': { vi: '{n} chu kỳ', en: '{n} windows' },
+  'rollBlock.tooltipLabel': { vi: 'Số lượng', en: 'Count' },
+  'rollBlock.stat.min': { vi: 'Thấp nhất', en: 'Lowest' },
+  'rollBlock.stat.max': { vi: 'Cao nhất', en: 'Highest' },
+  'rollBlock.yourCagr': { vi: 'CAGR thực tế của bạn trong kỳ này là <b>{cagr}</b>. ', en: 'Your actual CAGR over this period is <b>{cagr}</b>. ' },
+  'rollBlock.negWarning': {
+    vi: ' Nhưng phải nói thẳng: trong {n} chu kỳ {years} năm lịch sử, có <b>{neg}</b> chu kỳ cho CAGR âm. Thị trường không hứa hẹn có lãi kể cả khi bạn giữ dài hạn. Đó là rủi ro thật, không được quên.',
+    en: ' But to put it plainly: of the {n} historical {years}-year windows, <b>{neg}</b> ended with a negative CAGR. The market promises no profit even over long holds. That is a real risk, and worth remembering.',
+  },
+  'rollBlock.pct.top10': {
+    vi: 'Bạn đang ở top 10%, tốt hơn {pct}% các chu kỳ lịch sử. Bạn đã rất may mắn về thời điểm vào, đừng nhầm may mắn với kỹ năng.',
+    en: 'You are in the top 10%, ahead of {pct}% of historical windows. Your entry timing was very lucky — do not mistake luck for skill.',
+  },
+  'rollBlock.pct.good': {
+    vi: 'Bạn tốt hơn {pct}% các chu kỳ lịch sử, thời điểm vào của bạn khá thuận lợi.',
+    en: 'You are ahead of {pct}% of historical windows; your entry timing was favourable.',
+  },
+  'rollBlock.pct.aboveMedian': {
+    vi: 'Bạn đang nằm trên median, tốt hơn {pct}% các chu kỳ lịch sử. Một kết quả tử tế, không quá lung lay.',
+    en: 'You are above the median, ahead of {pct}% of historical windows. A decent result, and not a precarious one.',
+  },
+  'rollBlock.pct.belowMedian': {
+    vi: 'Bạn đang nằm dưới median, chỉ hơn {pct}% các chu kỳ lịch sử. Đừng vội phản bội chính mình bán ra. Giữ tiếp, trung bình sẽ kéo bạn về gần median.',
+    en: 'You are below the median, ahead of only {pct}% of historical windows. Do not talk yourself into selling. Hold on, and the averages tend to pull you back toward the middle.',
+  },
+  'rollBlock.pct.bottom': {
+    vi: 'Bạn đang ở đáy của phân phối (percentile {pct}). Thời điểm vào của bạn không thuận, nhưng đó không phải lỗi, không ai biết trước được. Điều quan trọng là tiếp tục nạp tiền đều đặn qua từng tháng, lịch sử cho thấy trung bình có xu hướng kéo về median khi giữ đủ lâu.',
+    en: 'You are at the bottom of the distribution (percentile {pct}). Your entry timing was unlucky, but that is not a mistake — nobody knows in advance. What matters is continuing to contribute month after month; historically the averages pull back toward the median given enough time.',
+  },
+
   // ── Calculator tab ──
   'calc.title': { vi: 'Máy tính nhanh', en: 'Quick calculators' },
   'calc.navLabel': { vi: 'Chọn máy tính', en: 'Choose a calculator' },
@@ -829,17 +1025,17 @@ function translate(key: TranslationKey, lang: Language, vars?: Record<string, st
  * sang tiếng Anh là sai ngữ pháp. Giữ nguyên cả câu trong từ điển và để người
  * dịch tự đặt <b> ở đâu tuỳ ngôn ngữ thì thoát được chuyện đó.
  *
- * Cố ý chỉ nhận đúng một thẻ <b>, không phải HTML thật: nội dung đến từ từ điển
- * tĩnh trong repo nên không có chuyện chèn markup từ bên ngoài.
+ * Cố ý chỉ nhận đúng hai thẻ <b> và <i>, không phải HTML thật: nội dung đến từ
+ * từ điển tĩnh trong repo nên không có chuyện chèn markup từ bên ngoài.
  */
 export function renderRich(text: string): ReactNode {
   const parts: ReactNode[] = []
-  const re = /<b>([\s\S]*?)<\/b>/g
+  const re = /<(b|i)>([\s\S]*?)<\/\1>/g
   let last = 0
   let m: RegExpExecArray | null
   while ((m = re.exec(text)) !== null) {
     if (m.index > last) parts.push(text.slice(last, m.index))
-    parts.push(createElement('strong', { key: parts.length }, m[1]))
+    parts.push(createElement(m[1] === 'i' ? 'em' : 'strong', { key: parts.length }, m[2]))
     last = m.index + m[0].length
   }
   if (last < text.length) parts.push(text.slice(last))

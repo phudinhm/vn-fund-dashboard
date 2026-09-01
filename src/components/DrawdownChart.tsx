@@ -8,12 +8,14 @@ import {
   formatPercent, formatPercentFull, BASELINE_COLOR, DIMMED_COLOR,
 } from '../utils/chartPlumbing'
 import { useDimLegend } from '../hooks/useDimLegend'
+import { useT } from '../i18n'
 
 interface Props {
   series: ChartSeries[]
 }
 
 export function DrawdownChart({ series }: Props) {
+  const t = useT()
   const seriesKey = series.map(s => s.name).join(',')
   const { handleLegendClick, isDimmed } = useDimLegend(seriesKey)
 
@@ -22,8 +24,8 @@ export function DrawdownChart({ series }: Props) {
   return (
     <div className="chart-container">
       <div className="chart-header">
-        <h3>Tỷ lệ sụt giảm so với đỉnh</h3>
-        <span className="chart-tooltip-icon" title="Drawdown cho thấy mức giảm giá trị so với đỉnh cao nhất trước đó. Ví dụ: -20% nghĩa là quỹ đã giảm 20% từ đỉnh. Bấm vào legend để làm mờ/hiện đường.">?</span>
+        <h3>{t('drawdown.title')}</h3>
+        <span className="chart-tooltip-icon" title={t('drawdown.help')}>?</span>
       </div>
       <ResponsiveContainer width="100%" height={350}>
         <AreaChart data={data} margin={{ top: 5, right: 20, left: 10, bottom: 5 }}>
