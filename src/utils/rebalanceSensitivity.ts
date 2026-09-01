@@ -19,42 +19,45 @@
 import type { PricePoint } from '../types'
 import type { DCASlot } from './dca'
 import { ZERO_VOLATILITY_EPSILON } from './calculations'
+import type { TranslationKey } from '../i18n'
 
 export type ScheduleId =
   | 'daily' | 'weekly' | 'monthly' | 'bimonthly'
   | 'quarterly' | 'every4months' | 'semiannual' | 'yearly'
 
-export const SCHEDULES: { id: ScheduleId; label: string; maxOffset: number }[] = [
-  { id: 'daily', label: 'Hàng ngày', maxOffset: 0 },
-  { id: 'weekly', label: 'Hàng tuần', maxOffset: 4 },
-  { id: 'monthly', label: 'Hàng tháng', maxOffset: 20 },
-  { id: 'bimonthly', label: 'Mỗi 2 tháng', maxOffset: 41 },
-  { id: 'quarterly', label: 'Hàng quý', maxOffset: 62 },
-  { id: 'every4months', label: 'Mỗi 4 tháng', maxOffset: 83 },
-  { id: 'semiannual', label: 'Nửa năm', maxOffset: 125 },
-  { id: 'yearly', label: 'Hàng năm', maxOffset: 251 },
+export const SCHEDULES: { id: ScheduleId; labelKey: TranslationKey; maxOffset: number }[] = [
+  { id: 'daily', labelKey: 'rebal.sched.daily', maxOffset: 0 },
+  { id: 'weekly', labelKey: 'rebal.sched.weekly', maxOffset: 4 },
+  { id: 'monthly', labelKey: 'rebal.sched.monthly', maxOffset: 20 },
+  { id: 'bimonthly', labelKey: 'rebal.sched.bimonthly', maxOffset: 41 },
+  { id: 'quarterly', labelKey: 'rebal.sched.quarterly', maxOffset: 62 },
+  { id: 'every4months', labelKey: 'rebal.sched.every4months', maxOffset: 83 },
+  { id: 'semiannual', labelKey: 'rebal.sched.semiannual', maxOffset: 125 },
+  { id: 'yearly', labelKey: 'rebal.sched.yearly', maxOffset: 251 },
 ]
 
 export type VariantGroup = ScheduleId | 'band-abs' | 'band-rel' | 'none'
 
-export const GROUP_LABELS: Record<VariantGroup, string> = {
-  daily: 'Hàng ngày',
-  weekly: 'Hàng tuần',
-  monthly: 'Hàng tháng',
-  bimonthly: 'Mỗi 2 tháng',
-  quarterly: 'Hàng quý',
-  every4months: 'Mỗi 4 tháng',
-  semiannual: 'Nửa năm',
-  yearly: 'Hàng năm',
-  'band-abs': 'Ngưỡng lệch tuyệt đối',
-  'band-rel': 'Ngưỡng lệch tương đối',
-  none: 'Không tái cân bằng',
+export const GROUP_LABEL_KEYS: Record<VariantGroup, TranslationKey> = {
+  daily: 'rebal.sched.daily',
+  weekly: 'rebal.sched.weekly',
+  monthly: 'rebal.sched.monthly',
+  bimonthly: 'rebal.sched.bimonthly',
+  quarterly: 'rebal.sched.quarterly',
+  every4months: 'rebal.sched.every4months',
+  semiannual: 'rebal.sched.semiannual',
+  yearly: 'rebal.sched.yearly',
+  'band-abs': 'rebal.group.bandAbs',
+  'band-rel': 'rebal.group.bandRel',
+  none: 'rebal.group.none',
 }
 
 export interface VariantResult {
   group: VariantGroup
-  /** "Hàng tháng · offset 3" / "Lệch tuyệt đối 5%" / "Không tái cân bằng" */
-  label: string
+  /**
+   * Nhãn hiển thị dựng ở chỗ render, không dựng sẵn ở đây: app có hai ngôn ngữ
+   * nên chuỗi phải dịch được. group + offset + threshold đã đủ thông tin.
+   */
   offset?: number
   /** Ngưỡng band, đơn vị % (5 = 5%) */
   threshold?: number
@@ -163,9 +166,6 @@ export function runRebalanceSensitivity(input: SensitivityInput): SensitivityRes
       const sim = simulateCalendar(returns, targetW, n, rebalDays, feeRate)
       variants.push({
         group: sched.id,
-        label: sched.maxOffset === 0
-          ? sched.label
-          : `${sched.label} (${offset === 0 ? 'ngày cuối kỳ' : `cách cuối kỳ ${offset} ngày`})`,
         offset,
         ...computeMetrics(sim.totals, years),
         rebalCount: sim.rebalCount,
@@ -179,7 +179,6 @@ export function runRebalanceSensitivity(input: SensitivityInput): SensitivityRes
       const sim = simulateBand(returns, targetW, n, thr / 100, false, feeRate)
       variants.push({
         group: 'band-abs',
-        label: `Lệch tuyệt đối ${formatThreshold(thr)}%`,
         threshold: thr,
         ...computeMetrics(sim.totals, years),
         rebalCount: sim.rebalCount,
@@ -191,7 +190,6 @@ export function runRebalanceSensitivity(input: SensitivityInput): SensitivityRes
       const sim = simulateBand(returns, targetW, n, thr / 100, true, feeRate)
       variants.push({
         group: 'band-rel',
-        label: `Lệch tương đối ${formatThreshold(thr)}%`,
         threshold: thr,
         ...computeMetrics(sim.totals, years),
         rebalCount: sim.rebalCount,
@@ -204,7 +202,6 @@ export function runRebalanceSensitivity(input: SensitivityInput): SensitivityRes
     const sim = simulateCalendar(returns, targetW, n, new Set(), feeRate)
     variants.push({
       group: 'none',
-      label: 'Không tái cân bằng',
       ...computeMetrics(sim.totals, years),
       rebalCount: 0,
     })
@@ -226,9 +223,6 @@ function buildThresholds(sweep: BandSweep): number[] {
 }
 
 /** 5 → "5", 7.5 → "7,5" */
-function formatThreshold(thr: number): string {
-  return String(thr).replace('.', ',')
-}
 
 /** Gom index các ngày giao dịch theo kỳ của một tần suất. */
 function buildPeriods(dates: string[], sched: ScheduleId): number[][] {
