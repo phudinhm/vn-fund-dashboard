@@ -10,6 +10,7 @@
  */
 import { useEffect, useRef, useState } from 'react'
 import { parseSavingsRate } from '../utils/savingsAsset'
+import { useT } from '../i18n'
 
 interface Props {
   /** Id tài sản tiết kiệm hiện tại, dạng "SAVINGS:<rate>". */
@@ -20,6 +21,7 @@ interface Props {
 }
 
 export function SavingsRateInput({ fundId, onCommit, className = 'portfolio-rate-input' }: Props) {
+  const t = useT()
   const [text, setText] = useState(() => String(parseSavingsRate(fundId)))
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
@@ -46,7 +48,7 @@ export function SavingsRateInput({ fundId, onCommit, className = 'portfolio-rate
   }
 
   return (
-    <div className={className} title="Lãi suất tiết kiệm giả định, %/năm">
+    <div className={className} title={t('savings.tooltip')}>
       <input
         type="number"
         min={0}
@@ -59,7 +61,7 @@ export function SavingsRateInput({ fundId, onCommit, className = 'portfolio-rate
         }}
         onBlur={e => flushCommit(e.target.value)}
       />
-      <span>%/năm</span>
+      <span>{t('savings.perYear')}</span>
     </div>
   )
 }

@@ -3,6 +3,7 @@ import type { FundMeta, PortfolioCardState, RebalanceFrequency } from '../types'
 import type { DCASlot } from '../utils/dca'
 import { isSavingsAssetId, savingsAssetId, SAVINGS_OPTION_LABEL } from '../utils/savingsAsset'
 import { SavingsRateInput } from './SavingsRateInput'
+import { useT, type TranslationKey } from '../i18n'
 
 export const PORTFOLIO_COLORS = [
   '#059669', // green
@@ -19,10 +20,10 @@ export const PORTFOLIO_COLORS = [
 export const MAX_PORTFOLIOS = 10
 export const MAX_FUNDS_PER_PORTFOLIO = 10
 
-export const REBAL_OPTIONS: { value: RebalanceFrequency; label: string }[] = [
-  { value: 'monthly', label: 'Hàng tháng' },
-  { value: 'quarterly', label: 'Hàng quý' },
-  { value: 'yearly', label: 'Hàng năm' },
+export const REBAL_OPTIONS: { value: RebalanceFrequency; labelKey: TranslationKey }[] = [
+  { value: 'monthly', labelKey: 'portfolio.rebal.monthly' },
+  { value: 'quarterly', labelKey: 'portfolio.rebal.quarterly' },
+  { value: 'yearly', labelKey: 'portfolio.rebal.yearly' },
 ]
 
 interface Props {
@@ -53,6 +54,7 @@ export function PortfolioCard({
   showRebal = true,
   showRemove = true,
 }: Props) {
+  const t = useT()
   const totalWeight = portfolio.slots.reduce((s, f) => s + f.weight, 0)
   const isOverUnder = Math.abs(totalWeight - 100) > 0.01
   const color = PORTFOLIO_COLORS[pIdx % PORTFOLIO_COLORS.length]!
@@ -64,7 +66,7 @@ export function PortfolioCard({
           <button
             className="portfolio-delete-btn-corner"
             onClick={onRemove}
-            title="Xoá danh mục"
+            title={t('portfolio.removePortfolio')}
           >
             ✕
           </button>
@@ -86,7 +88,7 @@ export function PortfolioCard({
               onChange={e => onUpdate({ rebalFreq: e.target.value as RebalanceFrequency })}
             >
               {REBAL_OPTIONS.map(opt => (
-                <option key={opt.value} value={opt.value}>{opt.label}</option>
+                <option key={opt.value} value={opt.value}>{t(opt.labelKey)}</option>
               ))}
             </select>
           </div>
@@ -98,14 +100,14 @@ export function PortfolioCard({
           className="portfolio-add-btn"
           onClick={onAddSlot}
           disabled={portfolio.slots.length >= MAX_FUNDS_PER_PORTFOLIO}
-          title="Thêm quỹ"
+          title={t('portfolio.addFund')}
         >
           +
         </button>
         <button
           className="portfolio-set-btn"
           onClick={onSetEqualWeights}
-          title="Chia đều tỷ trọng"
+          title={t('portfolio.equalWeights')}
         >
           SET
         </button>
@@ -125,8 +127,8 @@ export function PortfolioCard({
               options={fundOptions}
               value={selectedOption}
               onChange={opt => onUpdateSlot(idx, { fundId: opt?.value || '' })}
-              placeholder="Tìm quỹ..."
-              noOptionsMessage={() => 'Không tìm thấy'}
+              placeholder={t('portfolio.searchFund')}
+              noOptionsMessage={() => t('fundSelector.noOptions')}
               isSearchable
               styles={portfolioSelectStyles}
             />
@@ -153,7 +155,7 @@ export function PortfolioCard({
               className="portfolio-remove-slot-btn"
               onClick={() => onRemoveSlot(idx)}
               disabled={portfolio.slots.length <= 1}
-              title="Xoá"
+              title={t('portfolio.removeFund')}
             >
               −
             </button>

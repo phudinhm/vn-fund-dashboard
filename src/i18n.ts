@@ -98,6 +98,70 @@ const DICT = {
   'compare.title': { vi: 'So Sánh Các Quỹ', en: 'Compare Funds' },
   'compare.loadingFunds': { vi: 'Đang tải dữ liệu quỹ...', en: 'Loading fund data...' },
 
+  // ── DCA tab ──
+  'dca.title': { vi: 'Tích Lũy Định Kỳ (DCA)', en: 'Dollar-Cost Averaging (DCA)' },
+  'dca.params': { vi: 'Thông số', en: 'Parameters' },
+  'dca.timeRange': { vi: 'Khoảng thời gian', en: 'Time range' },
+  'dca.modeAll': { vi: 'Tất cả', en: 'All' },
+  'dca.modeYears': { vi: 'X năm qua', en: 'Last X years' },
+  'dca.numYears': { vi: 'Số năm', en: 'Number of years' },
+  'dca.dateRange': { vi: 'Từ ngày đến ngày', en: 'From / to date' },
+  'dca.initialAmount': { vi: 'Số tiền đầu tiên', en: 'Initial amount' },
+  'dca.cashflowTitle': { vi: 'Dòng Tiền DCA', en: 'DCA cash flow' },
+  'dca.cashflowHint': {
+    vi: 'Để 0 nếu chỉ muốn mô phỏng đầu tư 1 lần. Nhập số tiền nếu muốn lên kế hoạch DCA định kỳ.',
+    en: 'Leave at 0 to simulate a one-off investment. Enter an amount to plan recurring DCA.',
+  },
+  'dca.recurringAmount': { vi: 'Số tiền đầu tư định kỳ', en: 'Recurring amount' },
+  'dca.frequency': { vi: 'Tần suất đầu tư', en: 'Investment frequency' },
+  'dca.priceDateNote': {
+    vi: '* Thời gian đầu, các quỹ cập nhật thông tin giá vào các ngày khác nhau. Trong trường hợp này, hệ thống sẽ tự chọn giá vào ngày giao dịch cuối cùng trong tuần.',
+    en: '* In the early years funds published prices on different days. Where that happens, the last trading day of the week is used.',
+  },
+  'dca.portfolios': { vi: 'Danh mục', en: 'Portfolios' },
+  'dca.addPortfolio': { vi: '+ Thêm Danh Mục', en: '+ Add portfolio' },
+  'dca.run': { vi: 'Chạy DCA', en: 'Run DCA' },
+  'dca.rerun': { vi: 'Chạy lại DCA', en: 'Re-run DCA' },
+  'dca.staleParams': {
+    vi: 'Thông số đã thay đổi, bấm "Chạy lại DCA" để cập nhật biểu đồ.',
+    en: 'Parameters changed — press "Re-run DCA" to update the charts.',
+  },
+  'dca.loading': { vi: 'Đang tải dữ liệu...', en: 'Loading data...' },
+  'dca.insufficientData': {
+    vi: 'Không đủ dữ liệu để tính toán. Hãy chọn khoảng thời gian dài hơn hoặc chọn "Tất cả".',
+    en: 'Not enough data to compute. Choose a longer time range, or select "All".',
+  },
+  'dca.emptyState': {
+    vi: 'Bấm "Thêm Danh Mục" để bắt đầu mô phỏng DCA.',
+    en: 'Press "Add portfolio" to start a DCA simulation.',
+  },
+  'dca.section.all': { vi: 'Tất cả', en: 'All' },
+  'dca.section.perf': { vi: 'Hiệu suất đầu tư', en: 'Performance' },
+  'dca.section.journey': { vi: 'Hành trình của bạn', en: 'Your journey' },
+  'dca.section.risk': { vi: 'Rủi ro & biến động', en: 'Risk & volatility' },
+  'dca.section.endgame': { vi: 'Endgame', en: 'Endgame' },
+  'dca.freq.daily': { vi: 'Hàng ngày', en: 'Daily' },
+  'dca.freq.weekly': { vi: '1 tuần', en: 'Weekly' },
+  'dca.freq.biweekly': { vi: '2 tuần', en: 'Every 2 weeks' },
+  'dca.freq.monthly': { vi: '1 tháng', en: 'Monthly' },
+  'dca.freq.quarterly': { vi: '1 quý', en: 'Quarterly' },
+  'dca.freq.semiannual': { vi: '6 tháng', en: 'Every 6 months' },
+  'dca.freq.yearly': { vi: '1 năm', en: 'Yearly' },
+
+  // ── Portfolio card (dùng chung: DCA, Tái Cân Bằng, Chiến Thuật) ──
+  'portfolio.removePortfolio': { vi: 'Xoá danh mục', en: 'Remove portfolio' },
+  'portfolio.addFund': { vi: 'Thêm quỹ', en: 'Add fund' },
+  'portfolio.equalWeights': { vi: 'Chia đều tỷ trọng', en: 'Split weights evenly' },
+  'portfolio.searchFund': { vi: 'Tìm quỹ...', en: 'Search funds...' },
+  'portfolio.removeFund': { vi: 'Xoá', en: 'Remove' },
+  'portfolio.rebal.monthly': { vi: 'Hàng tháng', en: 'Monthly' },
+  'portfolio.rebal.quarterly': { vi: 'Hàng quý', en: 'Quarterly' },
+  'portfolio.rebal.yearly': { vi: 'Hàng năm', en: 'Yearly' },
+
+  // ── Savings rate input ──
+  'savings.perYear': { vi: '%/năm', en: '%/yr' },
+  'savings.tooltip': { vi: 'Lãi suất tiết kiệm giả định, %/năm', en: 'Assumed savings interest rate, % per year' },
+
   // ── Watchlist tab ──
   'watchlist.title': { vi: 'Theo Dõi', en: 'Watchlist' },
   'watchlist.addSectionTitle': { vi: 'Thêm quỹ vào danh sách theo dõi', en: 'Add a fund to your watchlist' },
