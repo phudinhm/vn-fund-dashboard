@@ -6,6 +6,8 @@ import {
 import type { PathPoint, LSvsDCAScenario } from '../utils/lsVsDca'
 
 import { formatVND, formatVNDFull } from '../utils/vndFormat'
+import { useT, useTRich, type TranslationKey } from '../i18n'
+import { useLanguage } from '../hooks/useLanguage'
 
 interface Props {
   path: PathPoint[]
@@ -39,6 +41,9 @@ function ScenarioPathChartImpl({
   path, scenarios, worstStart, medianStart, bestStart,
   selectedStart, onSelectStart, totalCapital, dcaMonths,
 }: Props) {
+  const t = useT()
+  const tr = useTRich()
+  const { language } = useLanguage()
   if (path.length === 0) return null
 
   const last = path[path.length - 1]!
@@ -54,46 +59,44 @@ function ScenarioPathChartImpl({
 
   const selectedIdx = scenarios.findIndex(s => s.startDate === selectedStart)
 
-  const presets: [string, string, string][] = [
-    ['Tệ nhất cho đầu tư một lần', worstStart, 'Tháng khởi đầu mà đầu tư một lần thua DCA đậm nhất'],
-    ['Thường gặp', medianStart, 'Tháng khởi đầu nằm giữa, không may cũng không rủi'],
-    ['Tốt nhất cho đầu tư một lần', bestStart, 'Tháng khởi đầu mà đầu tư một lần thắng DCA đậm nhất'],
+  const presets: [TranslationKey, string, TranslationKey][] = [
+    ['scn.presetWorst', worstStart, 'scn.presetWorstHint'],
+    ['scn.presetMedian', medianStart, 'scn.presetMedianHint'],
+    ['scn.presetBest', bestStart, 'scn.presetBestHint'],
   ]
 
   return (
     <div className="perf-table-container">
       <div className="chart-header">
-        <h3>Bắt đầu đúng vào một tháng thì khoản đầu tư sẽ ra sao?</h3>
-        <span
-          className="chart-tooltip-icon"
-          title="Cùng số vốn, cùng ngày bắt đầu, cùng ngày kết thúc. Đường DCA cộng cả phần tiền chưa giải ngân, nên hai đường xuất phát từ cùng một điểm."
-        >?</span>
+        <h3>{t('scn.title')}</h3>
+        <span className="chart-tooltip-icon" title={t('scn.help')}>?</span>
       </div>
 
       <p className="holdcost-intro">
-        Những biểu đồ trên là kết quả của việc gộp hàng nghìn lần thử. Còn biểu đồ bên dưới
-        cho bạn biết 1 trường hợp duy nhất mà bạn muốn xem kết quả.
-        Bạn đầu tư <strong>{formatVND(totalCapital)}</strong> vào
-        tháng <strong>{fmtMonth(selectedStart)}</strong>, một bên đầu tư hết ngay, bên kia chia
-        đều {dcaMonths} tháng, cả hai cùng bán vào tháng <strong>{fmtMonth(last.date)}</strong>.
+        {tr('scn.intro', {
+          capital: formatVND(totalCapital),
+          start: fmtMonth(selectedStart),
+          months: dcaMonths,
+          end: fmtMonth(last.date),
+        })}
       </p>
 
       <div className="scnpath-presets">
-        {presets.map(([label, date, hint]) => (
+        {presets.map(([labelKey, date, hintKey]) => (
           <button
-            key={label}
+            key={labelKey}
             className={`lsdca-horizon-btn ${selectedStart === date ? 'lsdca-horizon-btn-active' : ''}`}
             onClick={() => onSelectStart(date)}
-            title={hint}
+            title={t(hintKey)}
           >
-            {label}
+            {t(labelKey)}
             <span className="scnpath-preset-date">{fmtMonth(date)}</span>
           </button>
         ))}
       </div>
 
       <div className="scnpath-slider-row">
-        <span className="scnpath-slider-label">Kéo để đổi tháng bắt đầu</span>
+        <span className="scnpath-slider-label">{t('scn.sliderLabel')}</span>
         <input
           type="range"
           className="scnpath-slider"
@@ -122,7 +125,9 @@ function ScenarioPathChartImpl({
           />
           <Tooltip
             formatter={(value: number, name: string) => [formatVNDFull(value), name]}
-            labelFormatter={(d: string) => `Ngày ${d.split('-').reverse().join('/')}`}
+            labelFormatter={(d: string) => t('scn.tooltipDate', {
+              date: language === 'vi' ? d.split('-').reverse().join('/') : d,
+            })}
           />
           <Legend
             wrapperStyle={{ fontSize: 12 }}
@@ -132,12 +137,12 @@ function ScenarioPathChartImpl({
             y={totalCapital}
             stroke="#9CA3AF"
             strokeDasharray="4 4"
-            label={{ value: 'Vốn ban đầu', position: 'insideTopLeft', fontSize: 10, fill: '#6B7280' }}
+            label={{ value: t('scn.initialCapital'), position: 'insideTopLeft', fontSize: 10, fill: '#6B7280' }}
           />
           <Line
             type="monotone"
             dataKey="lsValue"
-            name="Đầu tư một lần"
+            name={t('scn.lumpSum')}
             stroke="#059669"
             strokeWidth={2}
             dot={false}
@@ -146,7 +151,7 @@ function ScenarioPathChartImpl({
           <Line
             type="monotone"
             dataKey="dcaValue"
-            name="DCA, gồm cả tiền chưa giải ngân"
+            name={t('scn.dcaLine')}
             stroke="#DC2626"
             strokeWidth={2}
             dot={false}
@@ -157,15 +162,15 @@ function ScenarioPathChartImpl({
 
       <div className="scnpath-endstats">
         <div className="scnpath-endstat">
-          <span className="scnpath-endstat-label">Đầu tư một lần về đích</span>
+          <span className="scnpath-endstat-label">{t('scn.lsEnding')}</span>
           <span className="scnpath-endstat-value lsdca-ls-color">{formatVND(last.lsValue)}</span>
         </div>
         <div className="scnpath-endstat">
-          <span className="scnpath-endstat-label">DCA về đích</span>
+          <span className="scnpath-endstat-label">{t('scn.dcaEnding')}</span>
           <span className="scnpath-endstat-value lsdca-dca-color">{formatVND(last.dcaValue)}</span>
         </div>
         <div className="scnpath-endstat">
-          <span className="scnpath-endstat-label">Chênh nhau</span>
+          <span className="scnpath-endstat-label">{t('scn.gap')}</span>
           <span className={`scnpath-endstat-value ${dcaWon ? 'cycle-pos' : 'cycle-neg'}`}>
             {dcaWon ? '+' : '−'}{formatVND(Math.abs(diffMoney))}
           </span>
@@ -173,29 +178,24 @@ function ScenarioPathChartImpl({
       </div>
 
       <div className="holdcost-note">
+        <p>{tr('scn.sameStart')}</p>
         <p>
-          <strong>Hai đường xuất phát từ cùng một chỗ.</strong> Đường DCA cộng cả phần tiền
-          chưa giải ngân, vì tiền chưa mua quỹ thì vẫn còn nguyên trong túi bạn.
-        </p>
-        <p>
-          Bắt đầu tháng {fmtMonth(selectedStart)}, sau{' '}
-          {dcaMonths} tháng góp thì bên DCA mới đầu tư hết vốn vào thị trường. Tới ngày bán,
-          bên đầu tư một lần cầm <strong>{formatVND(last.lsValue)}</strong>, bên DCA
-          cầm <strong>{formatVND(last.dcaValue)}</strong>.{' '}
+          {tr('scn.walkthrough', {
+            start: fmtMonth(selectedStart),
+            months: dcaMonths,
+            ls: formatVND(last.lsValue),
+            dca: formatVND(last.dcaValue),
+          })}
           {dcaWon
-            ? <>DCA hơn <strong>{formatVND(Math.abs(diffMoney))}</strong>. Rải tiền có lợi ở
-              đoạn này, vì thị trường xuống sau ngày bắt đầu nên phần vốn góp sau mua được
-              giá rẻ hơn.</>
-            : <>Đầu tư một lần hơn <strong>{formatVND(Math.abs(diffMoney))}</strong>. Phần
-              tiền ngồi chờ của bên DCA lỡ mất đoạn tăng.</>}
+            ? tr('scn.dcaWon', { diff: formatVND(Math.abs(diffMoney)) })
+            : tr('scn.lsWon', { diff: formatVND(Math.abs(diffMoney)) })}
         </p>
         {Math.abs(widestGap.gap) > Math.abs(diffMoney) * 1.2 && (
           <p>
-            <strong>Đoạn giữa còn khó chịu hơn lúc về đích.</strong> Vào tháng{' '}
-            {fmtMonth(widestGap.date)}, hai bên cách nhau{' '}
-            <strong>{formatVND(Math.abs(widestGap.gap))}</strong>, rộng hơn khoảng cách lúc
-            bán. Đó là con số bạn phải nhìn hàng ngày trên tài khoản, và cũng là chỗ nhiều
-            người bỏ cuộc giữa chừng.
+            {tr('scn.widestGap', {
+              month: fmtMonth(widestGap.date),
+              gap: formatVND(Math.abs(widestGap.gap)),
+            })}
           </p>
         )}
       </div>

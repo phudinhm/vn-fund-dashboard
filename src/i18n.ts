@@ -2229,6 +2229,116 @@ const DICT = {
     en: '<b>This table says nothing about next time.</b> It only recounts the times already past. A market down 50% can fall another 50%.',
   },
 
+  // ── Một kịch bản cụ thể (ScenarioPathChart) ──
+  'scn.title': { vi: 'Bắt đầu đúng vào một tháng thì khoản đầu tư sẽ ra sao?', en: 'What happens if you start in one particular month?' },
+  'scn.help': {
+    vi: 'Cùng số vốn, cùng ngày bắt đầu, cùng ngày kết thúc. Đường DCA cộng cả phần tiền chưa giải ngân, nên hai đường xuất phát từ cùng một điểm.',
+    en: 'Same capital, same start date, same end date. The DCA line includes the money not yet invested, so both lines start from the same point.',
+  },
+  'scn.intro': {
+    vi: 'Những biểu đồ trên là kết quả của việc gộp hàng nghìn lần thử. Còn biểu đồ bên dưới cho bạn biết 1 trường hợp duy nhất mà bạn muốn xem kết quả. Bạn đầu tư <b>{capital}</b> vào tháng <b>{start}</b>, một bên đầu tư hết ngay, bên kia chia đều {months} tháng, cả hai cùng bán vào tháng <b>{end}</b>.',
+    en: 'The charts above pool thousands of runs. This one shows a single case, the one you pick. You invest <b>{capital}</b> in <b>{start}</b>: one side puts it all in at once, the other spreads it over {months} months, and both sell in <b>{end}</b>.',
+  },
+  'scn.presetWorst': { vi: 'Tệ nhất cho đầu tư một lần', en: 'Worst for lump sum' },
+  'scn.presetWorstHint': { vi: 'Tháng khởi đầu mà đầu tư một lần thua DCA đậm nhất', en: 'The starting month where lump sum loses to DCA by the most' },
+  'scn.presetMedian': { vi: 'Thường gặp', en: 'Typical' },
+  'scn.presetMedianHint': { vi: 'Tháng khởi đầu nằm giữa, không may cũng không rủi', en: 'The middle starting month, neither lucky nor unlucky' },
+  'scn.presetBest': { vi: 'Tốt nhất cho đầu tư một lần', en: 'Best for lump sum' },
+  'scn.presetBestHint': { vi: 'Tháng khởi đầu mà đầu tư một lần thắng DCA đậm nhất', en: 'The starting month where lump sum beats DCA by the most' },
+  'scn.sliderLabel': { vi: 'Kéo để đổi tháng bắt đầu', en: 'Drag to change the starting month' },
+  'scn.tooltipDate': { vi: 'Ngày {date}', en: '{date}' },
+  'scn.initialCapital': { vi: 'Vốn ban đầu', en: 'Starting capital' },
+  'scn.lumpSum': { vi: 'Đầu tư một lần', en: 'Lump sum' },
+  'scn.dcaLine': { vi: 'DCA, gồm cả tiền chưa giải ngân', en: 'DCA, including money not yet invested' },
+  'scn.lsEnding': { vi: 'Đầu tư một lần về đích', en: 'Lump sum finishes at' },
+  'scn.dcaEnding': { vi: 'DCA về đích', en: 'DCA finishes at' },
+  'scn.gap': { vi: 'Chênh nhau', en: 'Gap' },
+  'scn.sameStart': {
+    vi: '<b>Hai đường xuất phát từ cùng một chỗ.</b> Đường DCA cộng cả phần tiền chưa giải ngân, vì tiền chưa mua quỹ thì vẫn còn nguyên trong túi bạn.',
+    en: '<b>Both lines start from the same place.</b> The DCA line includes the money not yet invested, because cash that has not bought fund units is still in your pocket.',
+  },
+  'scn.walkthrough': {
+    vi: 'Bắt đầu tháng {start}, sau {months} tháng góp thì bên DCA mới đầu tư hết vốn vào thị trường. Tới ngày bán, bên đầu tư một lần cầm <b>{ls}</b>, bên DCA cầm <b>{dca}</b>. ',
+    en: 'Starting in {start}, the DCA side only has all its money in the market after {months} months of contributions. On the selling day the lump sum side holds <b>{ls}</b> and the DCA side <b>{dca}</b>. ',
+  },
+  'scn.dcaWon': {
+    vi: 'DCA hơn <b>{diff}</b>. Rải tiền có lợi ở đoạn này, vì thị trường xuống sau ngày bắt đầu nên phần vốn góp sau mua được giá rẻ hơn.',
+    en: 'DCA is <b>{diff}</b> ahead. Spreading paid off here: the market fell after the start date, so the later contributions bought cheaper.',
+  },
+  'scn.lsWon': {
+    vi: 'Đầu tư một lần hơn <b>{diff}</b>. Phần tiền ngồi chờ của bên DCA lỡ mất đoạn tăng.',
+    en: 'The lump sum is <b>{diff}</b> ahead. The DCA side\'s waiting cash missed the climb.',
+  },
+  'scn.widestGap': {
+    vi: '<b>Đoạn giữa còn khó chịu hơn lúc về đích.</b> Vào tháng {month}, hai bên cách nhau <b>{gap}</b>, rộng hơn khoảng cách lúc bán. Đó là con số bạn phải nhìn hàng ngày trên tài khoản, và cũng là chỗ nhiều người bỏ cuộc giữa chừng.',
+    en: '<b>The middle is harder than the finish.</b> In {month} the two sides were <b>{gap}</b> apart, wider than the gap at the end. That is the number you look at in your account every day, and it is where many people give up.',
+  },
+
+  // ── Chi phí nắm giữ của DCA (HoldingCostChart) ──
+  'hc.yearsN': { vi: '{n} năm', en: '{n} years' },
+  'hc.year1': { vi: '1 năm', en: '1 year' },
+  'hc.monthsN': { vi: '{n} tháng', en: '{n} months' },
+  'hc.month1': { vi: '1 tháng', en: '1 month' },
+  'hc.yearsMonths': { vi: '{y} năm {m} tháng', en: '{y} years {m} months' },
+  'hc.title': { vi: 'DCA lời/lỗ bao nhiêu so với đầu tư một lần?', en: 'How much does DCA gain or lose against lump sum?' },
+  'hc.help': {
+    vi: 'Với mỗi mốc nắm giữ, dashboard chạy lại toàn bộ các thời điểm bắt đầu trong lịch sử, rồi lấy con số nằm giữa. Số âm nghĩa là DCA về đích với ít tiền hơn.',
+    en: 'For each holding period the dashboard replays every start date in the history and takes the middle figure. A negative number means DCA finishes with less.',
+  },
+  'hc.intro': {
+    vi: 'Bạn có <b>{capital}</b>. Một bên đầu tư hết ngay hôm nay. Bên kia chia đều ra <b>{months} tháng</b> rồi mới giữ tiếp. Bảng dưới cho biết sau mỗi khoảng thời gian, bên DCA về đích ít hơn hay nhiều hơn bao nhiêu tiền.',
+    en: 'You have <b>{capital}</b>. One side invests all of it today. The other spreads it evenly over <b>{months} months</b> and then holds. The table below shows, at each horizon, how much more or less the DCA side finishes with.',
+  },
+  'hc.modeNote': {
+    vi: 'Mốc là <b>tổng thời gian</b> tính từ ngày bạn xuống tiền lần đầu, gồm luôn cả quãng đang rải. Mỗi dòng ghi sẵn cách tách ra ngay bên dưới con số năm, khỏi phải nhẩm. Mốc nào ngắn hơn {months} tháng thì để trống, vì lúc đó còn chưa rải hết tiền.',
+    en: 'Each horizon is the <b>total time</b> from the day you first put money in, the spreading period included. Every row spells out the split under the year figure so you need not work it out. Horizons shorter than {months} months are left blank, because the money is not yet fully invested.',
+  },
+  'hc.breakdownSellNow': { vi: 'rải {months} tháng, bán ngay', en: 'spread {months} months, sell immediately' },
+  'hc.breakdownHold': { vi: 'rải {months} tháng + giữ {extra}', en: 'spread {months} months + hold {extra}' },
+  'hc.example': {
+    vi: 'Ví dụ dòng <b>{years}</b>, tức {breakdown}: bên đầu tư một lần thường về đích <b>{ls}</b>, bên DCA về đích <b>{dca}</b>. Chênh nhau ',
+    en: 'Take the <b>{years}</b> row, that is {breakdown}: the lump sum side usually finishes at <b>{ls}</b>, the DCA side at <b>{dca}</b>. A gap of ',
+  },
+  'hc.exampleTail': {
+    vi: '. Cả hai đều lớn hơn vốn ban đầu, con số chênh lệch là khoảng cách lúc về đích chứ không phải tiền bị mất.',
+    en: '. Both end up above the starting capital; the gap is the distance between the two finishes, not money lost.',
+  },
+  'hc.rowTooltip': {
+    vi: 'Tổng {years} ({breakdown}): đầu tư một lần về đích {ls}, DCA về đích {dca}.',
+    en: 'Total {years} ({breakdown}): lump sum finishes at {ls}, DCA finishes at {dca}.',
+  },
+  'hc.naTooShort': { vi: 'chưa DCA xong (cần hơn {months} tháng)', en: 'DCA not finished yet (needs more than {months} months)' },
+  'hc.naNoHistory': { vi: 'quỹ chưa đủ lịch sử', en: 'not enough fund history' },
+  'hc.windows': { vi: '{n} giai đoạn tách rời', en: '{n} independent episodes' },
+  'hc.axisCaption': {
+    vi: 'Tổng thời gian nắm giữ, tính từ ngày xuống tiền lần đầu',
+    en: 'Total holding period, counted from the first day money went in',
+  },
+  'hc.whyLess': {
+    vi: '<b>Vì sao DCA thường về đích ít tiền hơn.</b> Tiền chưa đầu tư thì chưa sinh lời. Thị trường đi lên nhiều hơn đi xuống, nên phần tiền ngồi chờ thường lỡ mất đoạn tăng. Đổi lại, DCA giúp bạn tránh được kịch bản tệ nhất là đầu tư hết đúng đỉnh.',
+    en: '<b>Why DCA usually finishes with less.</b> Money not yet invested earns nothing. Markets rise more often than they fall, so the cash waiting on the sidelines tends to miss the climb. In exchange, DCA spares you the worst case: putting everything in at the top.',
+  },
+  'hc.whatIsWindow': {
+    vi: '<b>"Giai đoạn tách rời" nghĩa là gì.</b> Dashboard thử lại mọi thời điểm bắt đầu có trong lịch sử. Nghe thì nhiều, nhưng các lần thử đó phần lớn là cùng một quãng thời gian được đếm đi đếm lại.',
+    en: '<b>What "independent episodes" means.</b> The dashboard replays every start date in the history. That sounds like a lot, but most of those runs are the same stretch of time counted over and over.',
+  },
+  'hc.overlapExample': {
+    vi: 'Lấy dòng <b>{years}</b> làm ví dụ, tức mỗi lần thử kéo dài {months} tháng. Một lần thử bắt đầu tháng 1, lần kế tiếp bắt đầu tháng 2. Cả hai cùng chạy {months} tháng, nên chúng đi qua <b>{overlap} trên {months} tháng giống hệt nhau</b>. Thị trường sập năm nào thì cả hai cùng dính năm đó, cùng sai một kiểu. Đếm chúng thành hai lần kiểm chứng là tự lừa mình.',
+    en: 'Take the <b>{years}</b> row: each run lasts {months} months. One starts in January, the next in February. Both run {months} months, so they pass through <b>{overlap} of the same {months} months</b>. Whatever year the market crashed, both are caught by it, and both are wrong in the same way. Counting them as two independent checks is fooling yourself.',
+  },
+  'hc.windowCount': {
+    vi: 'Với chuỗi giá của quỹ đang chọn, chỉ nhét vừa <b>{n} quãng {months} tháng không đè lên nhau</b>. Đó chính là con số ghi ở cuối mỗi dòng. Nó nhỏ hơn hẳn số kịch bản, và nó mới là thứ quyết định con số bên cạnh đáng tin tới đâu.',
+    en: 'The selected fund\'s price history fits only <b>{n} non-overlapping {months}-month stretches</b>. That is the figure at the end of each row. It is far smaller than the scenario count, and it is what decides how much the number beside it is worth.',
+  },
+  'hc.allThin': {
+    vi: '<b>Không mốc nào đủ để kết luận.</b> Mọi con số trên đây đều dựa trên dưới {min} giai đoạn tách rời, đọc cho biết thôi.',
+    en: '<b>No horizon here is enough to conclude anything.</b> Every figure above rests on fewer than {min} independent episodes. Read it for interest only.',
+  },
+  'hc.someSolid': {
+    vi: 'Chỉ <b>{solid} trên {total} mốc</b> có từ {min} giai đoạn tách rời trở lên. Các mốc còn lại bị làm mờ vì quỹ chưa đủ lịch sử, không phải vì kết quả yếu. Muốn mốc dài có ý nghĩa thì cần quỹ ra đời sớm hơn.',
+    en: 'Only <b>{solid} of the {total} horizons</b> reach {min} independent episodes or more. The rest are dimmed because the fund lacks history, not because the result is weak. A meaningful long horizon needs a fund that started earlier.',
+  },
+
   // ── Khối chia theo thời gian kể từ đỉnh (SincePeakChart) ──
   'spk.title': { vi: 'Thời gian sau khi tạo đỉnh có tác động thế nào?', en: 'How much does time since the peak matter?' },
   'spk.help': {
