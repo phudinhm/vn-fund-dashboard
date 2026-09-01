@@ -122,6 +122,32 @@ describe('vndComparisonKey', () => {
   })
 })
 
+describe('formatVND in English', () => {
+  // Đơn vị rút gọn phải dịch, nếu không câu tiếng Anh sẽ lẫn "408 triệu" vào giữa.
+  it('uses m and bn instead of triệu and tỷ', () => {
+    expect(formatVND(250_000_000, 'en')).toBe('250 m')
+    expect(formatVND(2_500_000_000, 'en')).toBe('2.5 bn')
+  })
+
+  it('leaves the k scale and the raw scale alone', () => {
+    expect(formatVND(5_000, 'en')).toBe('5k')
+    expect(formatVND(750, 'en')).toBe('750')
+  })
+
+  it('groups digits for an English reader', () => {
+    expect(formatVNDFull(2_500_000_000, 'en')).toBe('2,500,000,000 đ')
+  })
+
+  it('uses a dot, not a comma, as the axis decimal separator', () => {
+    expect(formatVNDAxis(2_500_000_000, 'en')).toBe('2.5 bn')
+    expect(formatVNDAxis(250_000_000, 'en')).toBe('250m')
+  })
+
+  it('carries the language through signedVND', () => {
+    expect(signedVND(250_000_000, 'en')).toBe('+250 m')
+  })
+})
+
 describe('signedVND', () => {
   it('adds a plus sign to a gain', () => {
     expect(signedVND(250_000_000)).toBe('+250 triệu')

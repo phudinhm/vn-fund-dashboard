@@ -25,6 +25,18 @@ function getSnapshot(): Language {
   return language
 }
 
+/**
+ * Ngôn ngữ hiện tại, đọc ngoài React.
+ *
+ * Dành cho mấy hàm format thuần (vndFormat) bị gọi từ hàng chục chỗ: truyền
+ * lang xuống từng call site thì phải sửa gần 50 file mà chẳng thêm thông tin
+ * gì. Component nào hiển thị số tiền thì hầu hết đã gọi useT()/useLanguage()
+ * nên vẫn render lại khi đổi ngôn ngữ.
+ */
+export function getLanguage(): Language {
+  return language
+}
+
 export interface UseLanguageResult {
   language: Language
   setLanguage: (lang: Language) => void

@@ -724,7 +724,7 @@ function TacticalResultsImpl({
           <ComposedChart data={valueData} margin={{ top: 8, right: 16, bottom: 4, left: 4 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" vertical={false} />
             <XAxis dataKey="date" tick={{ fontSize: 11, fill: '#6b7280' }} minTickGap={40} />
-            <YAxis tickFormatter={formatVNDAxis} tick={{ fontSize: 11, fill: '#6b7280' }} width={62} />
+            <YAxis tickFormatter={v => formatVNDAxis(v)} tick={{ fontSize: 11, fill: '#6b7280' }} width={62} />
             <Tooltip
               formatter={(v: number) => formatVND(Math.round(v))}
               contentStyle={{ fontSize: 12, borderRadius: 6 }}

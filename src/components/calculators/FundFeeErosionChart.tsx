@@ -69,7 +69,7 @@ function FundFeeErosionChartImpl({ series }: Props) {
             tick={{ fontSize: 11 }}
             tickFormatter={y => (y === 0 ? t('calc.axis.start') : t('calc.axis.year', { n: y }))}
           />
-          <YAxis tick={{ fontSize: 11 }} tickFormatter={formatVNDAxis} width={62} />
+          <YAxis tick={{ fontSize: 11 }} tickFormatter={v => formatVNDAxis(v)} width={62} />
           <Tooltip content={<CustomTooltip />} />
 
           {/* Lớp nền trong suốt, đẩy dải đỏ lên đúng vị trí đường thực nhận */}

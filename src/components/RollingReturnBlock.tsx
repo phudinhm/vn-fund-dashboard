@@ -50,7 +50,7 @@ function RollingReturnBlockImpl({ portfolios }: Props) {
             className={`dca-rolling-btn${w === windowYears ? ' dca-rolling-btn--active' : ''}`}
             onClick={() => setWindowYears(w)}
           >
-            {t('roll.years', { n: w })}
+            {w === 1 ? t('roll.year1') : t('roll.years', { n: w })}
           </button>
         ))}
       </div>

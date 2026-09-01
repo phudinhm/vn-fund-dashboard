@@ -97,7 +97,7 @@ function PortfolioValueChartImpl({ portfolios }: Props) {
             scale={logScale ? 'log' : 'auto'}
             domain={logScale ? ['auto', 'auto'] : ['auto', 'auto']}
             allowDataOverflow={false}
-            tickFormatter={formatVND}
+            tickFormatter={v => formatVND(v)}
             tick={{ fontSize: 12 }}
             width={80}
           />

@@ -795,6 +795,7 @@ const DICT = {
 
   // ── Rolling returns ──
   'roll.months6': { vi: '6 tháng', en: '6 months' },
+  'roll.year1': { vi: '1 năm', en: '1 year' },
   'roll.years': { vi: '{n} năm', en: '{n} years' },
   'roll.monthsN': { vi: '{n} tháng', en: '{n} months' },
   'roll.noDataFor': { vi: 'Chưa đủ dữ liệu để tính chu kỳ {period}', en: 'Not enough data for a {period} window' },
@@ -876,6 +877,118 @@ const DICT = {
     vi: 'Bạn đang ở đáy của phân phối (percentile {pct}). Thời điểm vào của bạn không thuận, nhưng đó không phải lỗi, không ai biết trước được. Điều quan trọng là tiếp tục nạp tiền đều đặn qua từng tháng, lịch sử cho thấy trung bình có xu hướng kéo về median khi giữ đủ lâu.',
     en: 'You are at the bottom of the distribution (percentile {pct}). Your entry timing was unlucky, but that is not a mistake — nobody knows in advance. What matters is continuing to contribute month after month; historically the averages pull back toward the median given enough time.',
   },
+
+  // ── Compare story block ──
+  'story.divider': { vi: 'Kể chuyện so sánh', en: 'Reading the comparison' },
+  'story.title': { vi: 'Bây giờ, bảng số nói gì?', en: 'So what do the numbers say?' },
+  'story.intro': {
+    vi: 'Biểu đồ ở trên cho bạn cái nhìn tổng thể. Phần dưới đây trả lời 5 câu hỏi mà nhà đầu tư thực sự cần biết trước khi gửi tiền vào một quỹ. Khoảng thời gian đang so sánh: {from} tới {to}, tức là {years} năm.',
+    en: 'The charts above give you the overview. What follows answers the five questions an investor actually needs settled before putting money into a fund. The period being compared: {from} to {to}, or {years} years.',
+  },
+  'story.q1': { vi: '1. Ai đang dẫn đầu?', en: '1. Who is ahead?' },
+  'story.q1.intro': {
+    vi: 'Nếu bạn đầu tư vào mỗi quỹ 100 triệu đồng ngay đầu kỳ và không đụng tới, hôm nay bạn sẽ có bao nhiêu?',
+    en: 'If you had put 100 million dong into each fund at the start of the period and never touched it, what would you have today?',
+  },
+  'story.q1.tooltipLabel': { vi: 'Lợi nhuận cộng dồn', en: 'Cumulative return' },
+  'story.q1.becomes': { vi: ' (thành {v})', en: ' (becomes {v})' },
+  'story.q1.leader': {
+    vi: 'Dẫn đầu là <b>{id}</b>. 100 triệu ban đầu giờ thành <b>{final}</b>, tức là lãi <b>{pct}</b>.',
+    en: '<b>{id}</b> leads. The initial 100 million is now <b>{final}</b>, a gain of <b>{pct}</b>.',
+  },
+  'story.q1.laggard': {
+    vi: ' Xếp cuối là <b>{id}</b> với <b>{final}</b>. Chênh lệch <b>{gap}</b> trên mỗi 100 triệu, tương đương {pts} điểm phần trăm.',
+    en: ' <b>{id}</b> trails at <b>{final}</b> — a gap of <b>{gap}</b> per 100 million, or {pts} percentage points.',
+  },
+  'story.q1.caveat': {
+    vi: ' Con số ấn tượng, nhưng "dẫn đầu" trong quá khứ chưa kể hết câu chuyện. Đọc tiếp 4 phần dưới để thấy bức tranh đầy đủ hơn.',
+    en: ' An impressive number, but leading in the past does not tell the whole story. The four sections below fill it in.',
+  },
+  'story.q2': { vi: '2. Được bao nhiêu lãi cho mỗi đơn vị rủi ro?', en: '2. How much return per unit of risk?' },
+  'story.q2.intro': {
+    vi: 'Cùng một mức lãi hàng năm, quỹ nào có đường đi ít gập ghềnh hơn thì "chất lượng" hơn. Tỉ số CAGR chia cho volatility (biến động quy năm) cho bạn một con số gọn để so sánh: số càng lớn nghĩa là mỗi 1% rủi ro bạn gánh đang được đền đáp bằng càng nhiều lợi nhuận.',
+    en: 'At the same annual return, the fund with the smoother path is the better one. CAGR divided by volatility gives you one compact number to compare: the higher it is, the more return you are being paid for each 1% of risk you carry.',
+  },
+  'story.col.fund': { vi: 'Quỹ', en: 'Fund' },
+  'story.col.volatility': { vi: 'Biến động (σ)', en: 'Volatility (σ)' },
+  'story.col.ratio': { vi: 'Tỉ số', en: 'Ratio' },
+  'story.q2.best': {
+    vi: '<b>{id}</b> đạt tỉ số <b>{ratio}</b>, tức là mỗi 1% biến động "đổi lấy" được {ratio}% lợi nhuận mỗi năm.',
+    en: '<b>{id}</b> scores <b>{ratio}</b>, meaning each 1% of volatility buys {ratio}% of return a year.',
+  },
+  'story.q2.worst': { vi: ' Xếp cuối là <b>{id}</b> với <b>{ratio}</b>.', en: ' <b>{id}</b> comes last at <b>{ratio}</b>.' },
+  'story.q2.caveat': {
+    vi: ' Tỉ số này không phải tiêu chí duy nhất. Nhưng nếu hai quỹ lãi xấp xỉ nhau, quỹ có tỉ số cao hơn sẽ giúp bạn ngủ ngon hơn trên đường đi.',
+    en: ' This ratio is not the only criterion. But between two funds returning much the same, the one with the higher ratio lets you sleep better along the way.',
+  },
+  'story.q3': { vi: '3. Nếu bạn giữ 12 tháng, xác suất có lãi là bao nhiêu?', en: '3. Hold for 12 months — what are the odds of a gain?' },
+  'story.q3.intro': {
+    vi: 'Giả sử bạn xét tất cả các khoảng 12 tháng liên tiếp trong lịch sử quỹ: trong bao nhiêu phần trăm số đó, bạn kết thúc với lợi nhuận dương? Đây là thước đo "mức độ tin cậy" dễ cảm nhận nhất cho nhà đầu tư giữ dài hạn.',
+    en: 'Take every consecutive 12-month stretch in the fund’s history: in what share of them did you finish up? For a long-term holder this is the most intuitive measure of reliability there is.',
+  },
+  'story.q3.tooltipLabel': { vi: 'Rolling 12m dương', en: 'Positive 12m windows' },
+  'story.q3.best': {
+    vi: '<b>{id}</b> đạt {pct}% khoảng 12 tháng có lãi. Nói cách khác, cứ 10 lần bạn mua và giữ tròn năm, khoảng {n} lần kết thúc với tiền nhiều hơn lúc vào.',
+    en: '<b>{id}</b> was up in {pct}% of its 12-month windows. Put another way: out of every 10 times you bought and held a full year, about {n} ended with more money than you started.',
+  },
+  'story.q3.worst': { vi: ' Thấp nhất là <b>{id}</b> với {pct}%.', en: ' <b>{id}</b> is lowest at {pct}%.' },
+  'story.q3.caveat': {
+    vi: ' Con số cao không đảm bảo tương lai sẽ giống, nhưng nó cho bạn biết trong quá khứ quỹ có thường xuyên đi lên trong vòng 1 năm hay không. Nếu bạn là nhà đầu tư mới, con số này quan trọng hơn CAGR.',
+    en: ' A high figure guarantees nothing about the future, but it tells you how often this fund was up over a year in the past. If you are a new investor, that matters more than CAGR.',
+  },
+  'story.q4': { vi: '4. Khi bão đến, mất bao lâu để hồi phục?', en: '4. When the storm hits, how long is the recovery?' },
+  'story.q4.intro': {
+    vi: 'Đáy sâu nhất trong lịch sử là một con số. Nhưng đáng sợ hơn nhiều là câu hỏi: sau khi rơi xuống đó, bao lâu quỹ mới về lại đỉnh cũ? Đây là khoảng thời gian bạn phải sống với tài khoản âm.',
+    en: 'The deepest drawdown is one number. The far more frightening question is what came after: how long until the fund got back to its old high? That is how long you have to live with an account in the red.',
+  },
+  'story.col.deepest': { vi: 'Đáy sâu nhất', en: 'Deepest drawdown' },
+  'story.col.recovery': { vi: 'Thời gian hồi phục', en: 'Recovery time' },
+  'story.notRecovered': { vi: 'Chưa hồi phục, đã {time}', en: 'Not recovered — {time} so far' },
+  'story.q4.worst': { vi: '<b>{id}</b> từng rơi sâu nhất ở mức <b>{dd}</b>', en: '<b>{id}</b> fell furthest, to <b>{dd}</b>' },
+  'story.q4.recovered': { vi: ' và cần <b>{time}</b> để về lại đỉnh cũ.', en: ', taking <b>{time}</b> to get back to its old high.' },
+  'story.q4.stillUnder': {
+    vi: ' và tới nay <b>vẫn chưa</b> về lại đỉnh cũ. Nghĩa là nếu bạn mua đúng đỉnh cũ đó, tới hôm nay tài khoản vẫn đang âm.',
+    en: ' and <b>still has not</b> got back to it. Meaning that if you had bought at that old high, your account would still be down today.',
+  },
+  'story.q4.best': { vi: ' Đỡ nhất là <b>{id}</b> ({dd}{recovery}).', en: ' <b>{id}</b> held up best ({dd}{recovery}).' },
+  'story.q4.bestRecovery': { vi: ', hồi trong {time}', en: ', recovered in {time}' },
+  'story.q4.caveat': {
+    vi: ' Trước khi quyết định, hãy tự hỏi: liệu bạn có chịu nổi mức lỗ tạm thời như vậy mà không bán tháo?',
+    en: ' Before you decide, ask yourself honestly: could you sit through a paper loss that size without selling?',
+  },
+  'story.q5': { vi: '5. Tóm lại, quỹ nào hợp với bạn?', en: '5. So which fund suits you?' },
+  'story.q5.intro': {
+    vi: 'Không có quỹ "tốt nhất" cho mọi người. Chỉ có quỹ hợp với tính cách đầu tư và khung thời gian của bạn. Dựa trên CAGR và biến động trong kỳ đang so sánh, mỗi quỹ được gán một đặc tính.',
+    en: 'There is no best fund for everyone — only the one that fits your temperament and time horizon. Based on CAGR and volatility over the period compared, each fund gets a character below.',
+  },
+  'story.card.efficient': { vi: 'Hiệu quả', en: 'Efficient' },
+  'story.card.efficientTag': {
+    vi: 'Lãi cao hơn trung bình mà biến động thấp hơn trung bình. Kiểu quỹ ai cũng muốn có trong danh mục.',
+    en: 'Above-average return with below-average volatility. The kind of fund everyone wants in the portfolio.',
+  },
+  'story.card.aggressive': { vi: 'Tăng trưởng cao, đổi lại dao động mạnh', en: 'High growth, rougher ride' },
+  'story.card.aggressiveTag': {
+    vi: 'Lãi khá hơn nhóm nhưng đường đi gập ghềnh. Hợp với người trẻ, thu nhập ổn, có thể gồng 3-5 năm.',
+    en: 'Better return than the group, but a bumpier path. Suits someone young with steady income who can hold for 3–5 years.',
+  },
+  'story.card.steady': { vi: 'Ổn định, ít rung lắc', en: 'Steady, low turbulence' },
+  'story.card.steadyTag': {
+    vi: 'Lãi chưa bằng nhóm dẫn đầu nhưng bù lại ít biến động. Hợp với người đã có gia đình, gần hưu, hoặc mới bước vào đầu tư.',
+    en: 'Returns behind the leaders, but far less volatility in exchange. Suits people with families, near retirement, or just starting out.',
+  },
+  'story.card.review': { vi: 'Cần xem lại', en: 'Worth reviewing' },
+  'story.card.reviewTag': {
+    vi: 'Lãi dưới trung bình mà biến động lại cao hơn. Nếu không có lý do chiến lược rõ ràng để giữ, có thể cân nhắc thay thế.',
+    en: 'Below-average return with above-average volatility. Without a clear strategic reason to hold it, a replacement is worth considering.',
+  },
+  'story.card.drawdown': { vi: 'Đáy', en: 'Drawdown' },
+  'story.q5.closing': {
+    vi: 'Một cách đọc nhanh. Nếu bạn còn trẻ, ngân sách đầu tư chỉ là một phần thu nhập, và bạn có thể nhắm mắt đi qua một đợt giảm 30%, quỹ "Tăng trưởng cao" thường đem lại kết quả tốt nhất trong dài hạn. Nếu bạn đang tiết kiệm cho một mục tiêu 3-5 năm (mua nhà, cho con đi học), quỹ "Ổn định" hoặc "Hiệu quả" phù hợp hơn. Cuối cùng, đừng chỉ nhìn một quỹ, hãy sang tab DCA để xem nếu bạn đều đặn nạp tiền mỗi tháng, kết quả thay đổi ra sao.',
+    en: 'A quick way to read it. If you are young, investing only part of your income, and you can shut your eyes through a 30% fall, the "high growth" funds usually do best over the long run. If you are saving toward a 3–5 year goal — a house, school fees — "steady" or "efficient" fits better. And do not stop at one fund: go to the DCA tab to see how the picture changes when you contribute every month.',
+  },
+  'story.weeks': { vi: '{n} tuần', en: '{n} weeks' },
+  'story.months': { vi: '{n} tháng', en: '{n} months' },
+  'story.years': { vi: '{n} năm', en: '{n} years' },
 
   // ── Calculator tab ──
   'calc.title': { vi: 'Máy tính nhanh', en: 'Quick calculators' },

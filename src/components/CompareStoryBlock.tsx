@@ -25,6 +25,8 @@ import {
   positiveRollingRate,
   rollingReturns,
 } from '../utils/calculations'
+import { useT, useTRich, translateStatic, type TranslationKey } from '../i18n'
+import { useLanguage, type Language } from '../hooks/useLanguage'
 
 interface Props {
   funds: FundComparisonData[]
@@ -47,6 +49,7 @@ interface FundStats {
 }
 
 export function CompareStoryBlock({ funds, colors, startDate, endDate }: Props) {
+  const t = useT()
   const stats = useMemo<FundStats[]>(() => {
     return funds.map((f, i) => {
       const cagr = f.kpi.cagr ?? 0
@@ -78,16 +81,17 @@ export function CompareStoryBlock({ funds, colors, startDate, endDate }: Props) 
   return (
     <>
     <div className="section-divider">
-      <span className="section-divider-label">Kể chuyện so sánh</span>
+      <span className="section-divider-label">{t('story.divider')}</span>
     </div>
     <div className="cmp-story">
       <header className="cmp-story-header">
-        <h2 className="cmp-story-title">Bây giờ, bảng số nói gì?</h2>
+        <h2 className="cmp-story-title">{t('story.title')}</h2>
         <p className="cmp-story-sub">
-          Biểu đồ ở trên cho bạn cái nhìn tổng thể. Phần dưới đây trả lời 5 câu hỏi
-          mà nhà đầu tư thực sự cần biết trước khi gửi tiền vào một quỹ. Khoảng thời
-          gian đang so sánh: {formatDate(startDate)} tới {formatDate(endDate)},
-          tức là {years.toFixed(1)} năm.
+          {t('story.intro', {
+            from: formatDate(startDate),
+            to: formatDate(endDate),
+            years: years.toFixed(1),
+          })}
         </p>
       </header>
 
@@ -104,6 +108,8 @@ export function CompareStoryBlock({ funds, colors, startDate, endDate }: Props) 
 // ─── 1. Ai đang dẫn đầu? ───────────────────────────────────
 
 function WinnerSection({ stats }: { stats: FundStats[] }) {
+  const t = useT()
+  const tr = useTRich()
   const sorted = [...stats].sort((a, b) => b.totalReturn - a.totalReturn)
   const winner = sorted[0]!
   const loser = sorted[sorted.length - 1]!
@@ -124,11 +130,8 @@ function WinnerSection({ stats }: { stats: FundStats[] }) {
 
   return (
     <section className="cmp-sec">
-      <h3 className="cmp-sec-title">1. Ai đang dẫn đầu?</h3>
-      <p className="cmp-sec-lead">
-        Nếu bạn đầu tư vào mỗi quỹ 100 triệu đồng ngay đầu kỳ và không đụng tới, hôm
-        nay bạn sẽ có bao nhiêu?
-      </p>
+      <h3 className="cmp-sec-title">{t('story.q1')}</h3>
+      <p className="cmp-sec-lead">{t('story.q1.intro')}</p>
 
       <div className="cmp-chart">
         <ResponsiveContainer width="100%" height={Math.max(180, sorted.length * 44)}>
@@ -143,8 +146,10 @@ function WinnerSection({ stats }: { stats: FundStats[] }) {
             <Tooltip
               formatter={(v: number, _n, item) => {
                 const p = item?.payload as { final?: number } | undefined
-                const finalStr = p?.final !== undefined ? ` (thành ${formatVND(p.final)})` : ''
-                return [`${v.toFixed(1)}%${finalStr}`, 'Lợi nhuận cộng dồn']
+                const finalStr = p?.final !== undefined
+                  ? t('story.q1.becomes', { v: formatVND(p.final) })
+                  : ''
+                return [`${v.toFixed(1)}%${finalStr}`, t('story.q1.tooltipLabel')]
               }}
             />
             <Bar dataKey="value" radius={[0, 6, 6, 0]} isAnimationActive={false}>
@@ -155,19 +160,18 @@ function WinnerSection({ stats }: { stats: FundStats[] }) {
       </div>
 
       <p className="cmp-takeaway">
-        Dẫn đầu là <strong>{winner.id}</strong>. 100 triệu ban đầu giờ thành{' '}
-        <strong>{formatVND(winnerFinalAtBase)}</strong>, tức là lãi{' '}
-        <strong>{(winner.totalReturn * 100).toFixed(1)}%</strong>.{' '}
-        {sorted.length > 1 ? (
-          <>
-            Xếp cuối là <strong>{loser.id}</strong> với{' '}
-            <strong>{formatVND(loserFinalAtBase)}</strong>. Chênh lệch{' '}
-            <strong>{formatVND(gapVND)}</strong> trên mỗi 100 triệu,
-            tương đương {(gap * 100).toFixed(1)} điểm phần trăm.{' '}
-          </>
-        ) : null}
-        Con số ấn tượng, nhưng "dẫn đầu" trong quá khứ chưa kể hết câu chuyện.
-        Đọc tiếp 4 phần dưới để thấy bức tranh đầy đủ hơn.
+        {tr('story.q1.leader', {
+          id: winner.id,
+          final: formatVND(winnerFinalAtBase),
+          pct: `${(winner.totalReturn * 100).toFixed(1)}%`,
+        })}
+        {sorted.length > 1 && tr('story.q1.laggard', {
+          id: loser.id,
+          final: formatVND(loserFinalAtBase),
+          gap: formatVND(gapVND),
+          pts: (gap * 100).toFixed(1),
+        })}
+        {t('story.q1.caveat')}
       </p>
     </section>
   )
@@ -176,26 +180,23 @@ function WinnerSection({ stats }: { stats: FundStats[] }) {
 // ─── 2. Được bao nhiêu cho mỗi đơn vị rủi ro? ───────────────
 
 function EfficiencySection({ stats }: { stats: FundStats[] }) {
+  const t = useT()
+  const tr = useTRich()
   const sorted = [...stats].sort((a, b) => b.efficiency - a.efficiency)
   const best = sorted[0]!
   const worst = sorted[sorted.length - 1]!
 
   return (
     <section className="cmp-sec">
-      <h3 className="cmp-sec-title">2. Được bao nhiêu lãi cho mỗi đơn vị rủi ro?</h3>
-      <p className="cmp-sec-lead">
-        Cùng một mức lãi hàng năm, quỹ nào có đường đi ít gập ghềnh hơn thì
-        "chất lượng" hơn. Tỉ số CAGR chia cho volatility (biến động quy năm)
-        cho bạn một con số gọn để so sánh: số càng lớn nghĩa là mỗi 1% rủi ro
-        bạn gánh đang được đền đáp bằng càng nhiều lợi nhuận.
-      </p>
+      <h3 className="cmp-sec-title">{t('story.q2')}</h3>
+      <p className="cmp-sec-lead">{t('story.q2.intro')}</p>
 
       <div className="cmp-table">
         <div className="cmp-table-row cmp-table-head">
-          <span>Quỹ</span>
+          <span>{t('story.col.fund')}</span>
           <span>CAGR</span>
-          <span>Biến động (σ)</span>
-          <span>Tỉ số</span>
+          <span>{t('story.col.volatility')}</span>
+          <span>{t('story.col.ratio')}</span>
         </div>
         {sorted.map(s => (
           <div key={s.id} className="cmp-table-row">
@@ -211,16 +212,9 @@ function EfficiencySection({ stats }: { stats: FundStats[] }) {
       </div>
 
       <p className="cmp-takeaway">
-        <strong>{best.id}</strong> đạt tỉ số <strong>{best.efficiency.toFixed(2)}</strong>,
-        tức là mỗi 1% biến động "đổi lấy" được {best.efficiency.toFixed(2)}%
-        lợi nhuận mỗi năm. {sorted.length > 1 ? (
-          <>
-            Xếp cuối là <strong>{worst.id}</strong> với{' '}
-            <strong>{worst.efficiency.toFixed(2)}</strong>.{' '}
-          </>
-        ) : null}
-        Tỉ số này không phải tiêu chí duy nhất. Nhưng nếu hai quỹ lãi xấp xỉ nhau,
-        quỹ có tỉ số cao hơn sẽ giúp bạn ngủ ngon hơn trên đường đi.
+        {tr('story.q2.best', { id: best.id, ratio: best.efficiency.toFixed(2) })}
+        {sorted.length > 1 && tr('story.q2.worst', { id: worst.id, ratio: worst.efficiency.toFixed(2) })}
+        {t('story.q2.caveat')}
       </p>
     </section>
   )
@@ -229,6 +223,8 @@ function EfficiencySection({ stats }: { stats: FundStats[] }) {
 // ─── 3. Đáng tin tới đâu? ─────────────────────────────────
 
 function ConsistencySection({ stats }: { stats: FundStats[] }) {
+  const t = useT()
+  const tr = useTRich()
   const sorted = [...stats].sort((a, b) => b.posRate - a.posRate)
   const best = sorted[0]!
   const worst = sorted[sorted.length - 1]!
@@ -241,12 +237,8 @@ function ConsistencySection({ stats }: { stats: FundStats[] }) {
 
   return (
     <section className="cmp-sec">
-      <h3 className="cmp-sec-title">3. Nếu bạn giữ 12 tháng, xác suất có lãi là bao nhiêu?</h3>
-      <p className="cmp-sec-lead">
-        Giả sử bạn xét tất cả các khoảng 12 tháng liên tiếp trong lịch sử quỹ:
-        trong bao nhiêu phần trăm số đó, bạn kết thúc với lợi nhuận dương? Đây
-        là thước đo "mức độ tin cậy" dễ cảm nhận nhất cho nhà đầu tư giữ dài hạn.
-      </p>
+      <h3 className="cmp-sec-title">{t('story.q3')}</h3>
+      <p className="cmp-sec-lead">{t('story.q3.intro')}</p>
 
       <div className="cmp-chart">
         <ResponsiveContainer width="100%" height={Math.max(180, sorted.length * 44)}>
@@ -259,7 +251,7 @@ function ConsistencySection({ stats }: { stats: FundStats[] }) {
               tickFormatter={v => `${v.toFixed(0)}%`}
             />
             <YAxis type="category" dataKey="id" tick={{ fontSize: 12 }} width={axisWidthFor(sorted.map(s => s.id))} />
-            <Tooltip formatter={(v: number) => [`${v.toFixed(1)}%`, 'Rolling 12m dương']} />
+            <Tooltip formatter={(v: number) => [`${v.toFixed(1)}%`, t('story.q3.tooltipLabel')]} />
             <Bar dataKey="value" radius={[0, 6, 6, 0]} isAnimationActive={false}>
               {barData.map((d, i) => <Cell key={i} fill={d.color} />)}
             </Bar>
@@ -268,19 +260,16 @@ function ConsistencySection({ stats }: { stats: FundStats[] }) {
       </div>
 
       <p className="cmp-takeaway">
-        <strong>{best.id}</strong> đạt {(best.posRate * 100).toFixed(0)}% khoảng
-        12 tháng có lãi. Nói cách khác, cứ 10 lần bạn mua và giữ tròn năm,
-        khoảng {Math.round(best.posRate * 10)} lần kết thúc với tiền nhiều hơn
-        lúc vào.
-        {sorted.length > 1 ? (
-          <>
-            {' '}Thấp nhất là <strong>{worst.id}</strong> với{' '}
-            {(worst.posRate * 100).toFixed(0)}%.{' '}
-          </>
-        ) : null}
-        Con số cao không đảm bảo tương lai sẽ giống, nhưng nó cho bạn biết
-        trong quá khứ quỹ có thường xuyên đi lên trong vòng 1 năm hay không.
-        Nếu bạn là nhà đầu tư mới, con số này quan trọng hơn CAGR.
+        {tr('story.q3.best', {
+          id: best.id,
+          pct: (best.posRate * 100).toFixed(0),
+          n: Math.round(best.posRate * 10),
+        })}
+        {sorted.length > 1 && tr('story.q3.worst', {
+          id: worst.id,
+          pct: (worst.posRate * 100).toFixed(0),
+        })}
+        {t('story.q3.caveat')}
       </p>
     </section>
   )
@@ -289,24 +278,23 @@ function ConsistencySection({ stats }: { stats: FundStats[] }) {
 // ─── 4. Khi bão đến, mất bao lâu để hồi? ───────────────────
 
 function DrawdownSection({ stats }: { stats: FundStats[] }) {
+  const t = useT()
+  const tr = useTRich()
+  const { language } = useLanguage()
   const sorted = [...stats].sort((a, b) => a.maxDD - b.maxDD) // sâu nhất ở đầu
   const worst = sorted[0]!
   const best = sorted[sorted.length - 1]!
 
   return (
     <section className="cmp-sec">
-      <h3 className="cmp-sec-title">4. Khi bão đến, mất bao lâu để hồi phục?</h3>
-      <p className="cmp-sec-lead">
-        Đáy sâu nhất trong lịch sử là một con số. Nhưng đáng sợ hơn nhiều là
-        câu hỏi: sau khi rơi xuống đó, bao lâu quỹ mới về lại đỉnh cũ? Đây là
-        khoảng thời gian bạn phải sống với tài khoản âm.
-      </p>
+      <h3 className="cmp-sec-title">{t('story.q4')}</h3>
+      <p className="cmp-sec-lead">{t('story.q4.intro')}</p>
 
       <div className="cmp-table">
         <div className="cmp-table-row cmp-table-head cmp-table-head--dd">
-          <span>Quỹ</span>
-          <span>Đáy sâu nhất</span>
-          <span>Thời gian hồi phục</span>
+          <span>{t('story.col.fund')}</span>
+          <span>{t('story.col.deepest')}</span>
+          <span>{t('story.col.recovery')}</span>
         </div>
         {sorted.map(s => (
           <div key={s.id} className="cmp-table-row cmp-table-row--dd">
@@ -317,9 +305,9 @@ function DrawdownSection({ stats }: { stats: FundStats[] }) {
             <span className="cmp-num-neg">{(s.maxDD * 100).toFixed(1)}%</span>
             <span>
               {s.recoveryWeeks !== null
-                ? formatRecovery(s.recoveryWeeks)
+                ? formatRecovery(s.recoveryWeeks, language)
                 : s.underwaterWeeks !== null
-                  ? <span className="cmp-underwater">Chưa hồi phục, đã {formatRecovery(s.underwaterWeeks)}</span>
+                  ? <span className="cmp-underwater">{t('story.notRecovered', { time: formatRecovery(s.underwaterWeeks, language) })}</span>
                   : '—'}
             </span>
           </div>
@@ -327,24 +315,18 @@ function DrawdownSection({ stats }: { stats: FundStats[] }) {
       </div>
 
       <p className="cmp-takeaway">
-        <strong>{worst.id}</strong> từng rơi sâu nhất ở mức{' '}
-        <strong>{(worst.maxDD * 100).toFixed(1)}%</strong>
-        {worst.recoveryWeeks !== null ? (
-          <>
-            {' '}và cần <strong>{formatRecovery(worst.recoveryWeeks)}</strong> để
-            về lại đỉnh cũ.
-          </>
-        ) : (
-          <>
-            {' '}và tới nay <strong>vẫn chưa</strong> về lại đỉnh cũ. Nghĩa là
-            nếu bạn mua đúng đỉnh cũ đó, tới hôm nay tài khoản vẫn đang âm.
-          </>
-        )}
-        {' '}Đỡ nhất là <strong>{best.id}</strong>{' '}
-        ({(best.maxDD * 100).toFixed(1)}%
-        {best.recoveryWeeks !== null ? `, hồi trong ${formatRecovery(best.recoveryWeeks)}` : ''}).
-        {' '}Trước khi quyết định, hãy tự hỏi: liệu bạn có chịu nổi mức lỗ tạm
-        thời như vậy mà không bán tháo?
+        {tr('story.q4.worst', { id: worst.id, dd: `${(worst.maxDD * 100).toFixed(1)}%` })}
+        {worst.recoveryWeeks !== null
+          ? tr('story.q4.recovered', { time: formatRecovery(worst.recoveryWeeks, language) })
+          : tr('story.q4.stillUnder')}
+        {tr('story.q4.best', {
+          id: best.id,
+          dd: `${(best.maxDD * 100).toFixed(1)}%`,
+          recovery: best.recoveryWeeks !== null
+            ? t('story.q4.bestRecovery', { time: formatRecovery(best.recoveryWeeks, language) })
+            : '',
+        })}
+        {t('story.q4.caveat')}
       </p>
     </section>
   )
@@ -360,7 +342,7 @@ interface Classified extends FundStats {
   tagline: string
 }
 
-function classify(s: FundStats, allStats: FundStats[]): Classified {
+function classify(s: FundStats, allStats: FundStats[], lang: Language): Classified {
   const avgCagr = allStats.reduce((a, x) => a + x.cagr, 0) / allStats.length
   const avgVol = allStats.reduce((a, x) => a + x.vol, 0) / allStats.length
 
@@ -368,41 +350,42 @@ function classify(s: FundStats, allStats: FundStats[]): Classified {
   const highVol = s.vol > avgVol
 
   let character: Character
-  let label: string
-  let tagline: string
+  let labelKey: TranslationKey
+  let taglineKey: TranslationKey
 
   if (highReturn && !highVol) {
     character = 'balanced'
-    label = 'Hiệu quả'
-    tagline = 'Lãi cao hơn trung bình mà biến động thấp hơn trung bình. Kiểu quỹ ai cũng muốn có trong danh mục.'
+    labelKey = 'story.card.efficient'
+    taglineKey = 'story.card.efficientTag'
   } else if (highReturn && highVol) {
     character = 'aggressive'
-    label = 'Tăng trưởng cao, đổi lại dao động mạnh'
-    tagline = 'Lãi khá hơn nhóm nhưng đường đi gập ghềnh. Hợp với người trẻ, thu nhập ổn, có thể gồng 3-5 năm.'
+    labelKey = 'story.card.aggressive'
+    taglineKey = 'story.card.aggressiveTag'
   } else if (!highReturn && !highVol) {
     character = 'stable'
-    label = 'Ổn định, ít rung lắc'
-    tagline = 'Lãi chưa bằng nhóm dẫn đầu nhưng bù lại ít biến động. Hợp với người đã có gia đình, gần hưu, hoặc mới bước vào đầu tư.'
+    labelKey = 'story.card.steady'
+    taglineKey = 'story.card.steadyTag'
   } else {
     character = 'weak'
-    label = 'Cần xem lại'
-    tagline = 'Lãi dưới trung bình mà biến động lại cao hơn. Nếu không có lý do chiến lược rõ ràng để giữ, có thể cân nhắc thay thế.'
+    labelKey = 'story.card.review'
+    taglineKey = 'story.card.reviewTag'
   }
+
+  const label = translateStatic(labelKey, lang)
+  const tagline = translateStatic(taglineKey, lang)
 
   return { ...s, character, label, tagline }
 }
 
 function CharacterSection({ stats }: { stats: FundStats[] }) {
-  const classified = stats.map(s => classify(s, stats))
+  const t = useT()
+  const { language } = useLanguage()
+  const classified = stats.map(s => classify(s, stats, language))
 
   return (
     <section className="cmp-sec cmp-sec--verdict">
-      <h3 className="cmp-sec-title">5. Tóm lại, quỹ nào hợp với bạn?</h3>
-      <p className="cmp-sec-lead">
-        Không có quỹ "tốt nhất" cho mọi người. Chỉ có quỹ hợp với tính cách đầu
-        tư và khung thời gian của bạn. Dựa trên CAGR và biến động trong kỳ đang
-        so sánh, mỗi quỹ được gán một đặc tính.
-      </p>
+      <h3 className="cmp-sec-title">{t('story.q5')}</h3>
+      <p className="cmp-sec-lead">{t('story.q5.intro')}</p>
 
       <div className="cmp-verdict-grid">
         {classified.map(c => (
@@ -417,7 +400,7 @@ function CharacterSection({ stats }: { stats: FundStats[] }) {
             <div className="cmp-verdict-kpis">
               <span>CAGR <strong>{(c.cagr * 100).toFixed(1)}%</strong></span>
               <span>σ <strong>{(c.vol * 100).toFixed(1)}%</strong></span>
-              <span>Đáy <strong className="cmp-num-neg">{(c.maxDD * 100).toFixed(0)}%</strong></span>
+              <span>{t('story.card.drawdown')} <strong className="cmp-num-neg">{(c.maxDD * 100).toFixed(0)}%</strong></span>
             </div>
             <p className="cmp-verdict-tagline">{c.tagline}</p>
           </div>
@@ -425,13 +408,7 @@ function CharacterSection({ stats }: { stats: FundStats[] }) {
       </div>
 
       <p className="cmp-takeaway">
-        Một cách đọc nhanh. Nếu bạn còn trẻ, ngân sách đầu tư chỉ là một phần
-        thu nhập, và bạn có thể nhắm mắt đi qua một đợt giảm 30%, quỹ "Tăng
-        trưởng cao" thường đem lại kết quả tốt nhất trong dài hạn. Nếu bạn đang
-        tiết kiệm cho một mục tiêu 3-5 năm (mua nhà, cho con đi học), quỹ "Ổn
-        định" hoặc "Hiệu quả" phù hợp hơn. Cuối cùng, đừng chỉ nhìn một quỹ,
-        hãy sang tab DCA để xem nếu bạn đều đặn nạp tiền mỗi tháng, kết quả
-        thay đổi ra sao.
+        {t('story.q5.closing')}
       </p>
     </section>
   )
@@ -457,10 +434,10 @@ function formatDate(d: string): string {
   return `${parts[2]}/${parts[1]}/${parts[0]}`
 }
 
-function formatRecovery(weeks: number): string {
-  if (weeks < 4) return `${weeks} tuần`
+function formatRecovery(weeks: number, lang: Language): string {
+  if (weeks < 4) return translateStatic('story.weeks', lang, { n: weeks })
   const months = weeks / 4.345
-  if (months < 12) return `${months.toFixed(months < 3 ? 1 : 0)} tháng`
+  if (months < 12) return translateStatic('story.months', lang, { n: months.toFixed(months < 3 ? 1 : 0) })
   const years = months / 12
-  return `${years.toFixed(1)} năm`
+  return translateStatic('story.years', lang, { n: years.toFixed(1) })
 }

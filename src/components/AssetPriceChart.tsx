@@ -163,7 +163,7 @@ function PricePanel({
           <YAxis
             scale={logScale ? 'log' : 'auto'}
             domain={yDomain}
-            tickFormatter={formatVND}
+            tickFormatter={v => formatVND(v)}
             tick={{ fontSize: 12 }}
             width={58}
           />

@@ -49,7 +49,9 @@ function usePeriodLabel(): (months: number) => string {
   return (months: number) => {
     const p = PERIODS.find(x => x.value === months)
     if (!p) return t('roll.monthsN', { n: months })
-    return p.years === 0 ? t(p.labelKey) : t(p.labelKey, { n: p.years })
+    if (p.years === 0) return t(p.labelKey)
+    // Tiếng Anh phân biệt số ít/số nhiều: "1 year" chứ không phải "1 years".
+    return p.years === 1 ? t('roll.year1') : t(p.labelKey, { n: p.years })
   }
 }
 

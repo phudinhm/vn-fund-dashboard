@@ -1,24 +1,40 @@
+import { getLanguage, type Language } from '../hooks/useLanguage'
+
+/**
+ * Đơn vị rút gọn của tiền VND, theo ngôn ngữ đang chọn.
+ *
+ * Số vẫn là đồng ở cả hai ngôn ngữ — chỉ có tên bậc là dịch, để câu tiếng Anh
+ * không lẫn "408 triệu" vào giữa.
+ */
+const SCALE_WORDS = {
+  vi: { billion: 'tỷ', million: 'triệu' },
+  en: { billion: 'bn', million: 'm' },
+} as const
+
 /**
  * Định dạng số tiền VND thành chuỗi ngắn, dễ đọc cho retail VN.
- *   1_500_000       → "1.5 triệu"
- *   250_000_000     → "250 triệu"
- *   2_500_000_000   → "2.5 tỷ"
- *   12_300_000_000  → "12.3 tỷ"
+ *   1_500_000       → "1.5 triệu" / "1.5m"
+ *   250_000_000     → "250 triệu" / "250m"
+ *   2_500_000_000   → "2.5 tỷ"    / "2.5bn"
+ *
+ * `lang` mặc định lấy ngôn ngữ đang chọn của app; truyền tay khi cần kết quả
+ * tất định (vd trong test).
  */
-export function formatVND(value: number): string {
+export function formatVND(value: number, lang: Language = getLanguage()): string {
   const v = Math.abs(value)
   const sign = value < 0 ? '-' : ''
+  const words = SCALE_WORDS[lang]
 
   if (v >= 1_000_000_000) {
     const ty = v / 1_000_000_000
     // 1.5 tỷ, nhưng 10 tỷ không cần decimal
     const fmt = ty >= 10 ? ty.toFixed(1).replace(/\.0$/, '') : ty.toFixed(2).replace(/\.?0+$/, '')
-    return `${sign}${fmt} tỷ`
+    return `${sign}${fmt} ${words.billion}`
   }
   if (v >= 1_000_000) {
     const tr = v / 1_000_000
     const fmt = tr >= 10 ? tr.toFixed(0) : tr.toFixed(1).replace(/\.0$/, '')
-    return `${sign}${fmt} triệu`
+    return `${sign}${fmt} ${words.million}`
   }
   if (v >= 1_000) {
     return `${sign}${(v / 1_000).toFixed(0)}k`
@@ -27,8 +43,8 @@ export function formatVND(value: number): string {
 }
 
 /** Full VND, ví dụ 2.500.000.000 đ, dùng cho tooltip chi tiết */
-export function formatVNDFull(value: number): string {
-  return Math.round(value).toLocaleString('vi-VN') + ' đ'
+export function formatVNDFull(value: number, lang: Language = getLanguage()): string {
+  return Math.round(value).toLocaleString(lang === 'vi' ? 'vi-VN' : 'en-US') + ' đ'
 }
 
 /**
@@ -100,17 +116,18 @@ export function vndComparisonKey(value: number): VndComparisonKey | null {
  * chuỗi "250 triệu" bị Recharts ngắt làm hai dòng, còn "250tr" thì vừa.
  * Mốc tỷ vẫn giữ khoảng trắng vì "2,5tỷ" đọc dính chữ, mà chuỗi cũng đã ngắn.
  */
-export function formatVNDAxis(value: number): string {
+export function formatVNDAxis(value: number, lang: Language = getLanguage()): string {
   const v = Math.abs(value)
   const sign = value < 0 ? '-' : ''
 
   if (v >= 1_000_000_000) {
     const ty = v / 1_000_000_000
     const fmt = ty >= 10 ? ty.toFixed(0) : ty.toFixed(1).replace(/\.0$/, '')
-    return `${sign}${fmt.replace('.', ',')} tỷ`
+    const decimal = lang === 'vi' ? fmt.replace('.', ',') : fmt
+    return `${sign}${decimal} ${lang === 'vi' ? 'tỷ' : 'bn'}`
   }
   if (v >= 1_000_000) {
-    return `${sign}${Math.round(v / 1_000_000)}tr`
+    return `${sign}${Math.round(v / 1_000_000)}${lang === 'vi' ? 'tr' : 'm'}`
   }
   if (v >= 1_000) {
     return `${sign}${Math.round(v / 1_000)}k`
@@ -119,8 +136,8 @@ export function formatVNDAxis(value: number): string {
 }
 
 /** Xác định dấu cho delta, ví dụ +250 triệu / -30 triệu */
-export function signedVND(value: number): string {
-  if (value > 0) return '+' + formatVND(value)
-  if (value < 0) return formatVND(value) // formatVND đã xử lý dấu âm
-  return formatVND(0)
+export function signedVND(value: number, lang: Language = getLanguage()): string {
+  if (value > 0) return '+' + formatVND(value, lang)
+  if (value < 0) return formatVND(value, lang) // formatVND đã xử lý dấu âm
+  return formatVND(0, lang)
 }
