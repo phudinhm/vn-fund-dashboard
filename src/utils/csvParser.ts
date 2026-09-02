@@ -21,6 +21,29 @@ export interface ParsedPricePoints {
 }
 
 /**
+ * Mốc sớm nhất mà dashboard nhận dữ liệu giá. Mọi dòng có ngày trước mốc này
+ * đều bị bỏ, ở MỌI quỹ, không riêng quỹ nào.
+ *
+ * Lý do: giai đoạn đầu của các quỹ lâu đời nhất chỉ có giá cuối tháng. DCDS mở
+ * từ 5/2004 nhưng tới 11/2004 mới có giá hàng tuần, nên nửa năm đầu là một
+ * chuỗi cách nhau ba tuần. Chuỗi đó vừa làm khối Chất Lượng Dữ Liệu báo thiếu
+ * giá liên miên, vừa bóp méo mọi phép đo tính trên nhịp tuần: biến động, tương
+ * quan, drawdown, cửa sổ rolling.
+ *
+ * Bỏ hẳn sạch hơn là nội suy. Nội suy đẻ ra giá chưa từng tồn tại rồi đưa
+ * thẳng vào công thức, còn cắt bỏ thì chỉ mất một quãng ngắn ở quỹ già nhất.
+ *
+ * Đây là mốc HIỂN THỊ, không phải ngày quỹ ra đời: fund_metadata.json vẫn giữ
+ * start_date thật của từng quỹ.
+ */
+export const EARLIEST_PRICE_DATE = '2005-01-01'
+
+/** So sánh chuỗi được vì ngày đã chuẩn ISO, xem isIsoDate. */
+function isBeforeEarliest(date: string): boolean {
+  return date < EARLIEST_PRICE_DATE
+}
+
+/**
  * Parse a CSV string with columns: date,price
  * Returns sorted ascending by date. Skips invalid rows.
  *
@@ -55,6 +78,8 @@ export function parseCSV(csvText: string): ParsedPricePoints {
       warnings.push({ row: rowNumber, code: 'invalid-date' })
       continue
     }
+    // Bỏ im lặng, không đếm là cảnh báo: dòng quá cũ không phải dữ liệu hỏng.
+    if (isBeforeEarliest(date)) continue
     if (price === null) {
       warnings.push({ row: rowNumber, code: 'invalid-price' })
       continue
@@ -122,6 +147,7 @@ export function parseGoldCSV(csvText: string): {
       warnings.push({ row: rowNumber, code: 'invalid-date' })
       continue
     }
+    if (isBeforeEarliest(date)) continue
 
     const buyPrice = parsePrice(row.buy)
     const sellPrice = parsePrice(row.sell)

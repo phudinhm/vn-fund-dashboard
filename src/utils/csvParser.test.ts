@@ -1,5 +1,7 @@
 import { describe, it, expect } from 'vitest'
-import { formatCsvPriceWarning, parseCSV, parseFundMetadata, parseGoldCSV } from './csvParser'
+import {
+  EARLIEST_PRICE_DATE, formatCsvPriceWarning, parseCSV, parseFundMetadata, parseGoldCSV,
+} from './csvParser'
 
 function parsedPoints(csv: string) {
   return parseCSV(csv).points
@@ -221,5 +223,43 @@ describe('parseGoldCSV', () => {
     expect(parsed.buy).toEqual([{ date: '2024-01-05', price: 100 }])
     expect(parsed.sell).toEqual([{ date: '2024-01-05', price: 110 }])
     expect(parsed.warnings).toEqual([{ row: 3, code: 'malformed-csv' }])
+  })
+})
+
+describe('mốc dữ liệu sớm nhất', () => {
+  it('bỏ dòng trước mốc và giữ nguyên dòng đúng mốc', () => {
+    const parsed = parseCSV(
+      'date,price\n2004-05-20,7687.99\n2004-12-31,7832.54\n2005-01-01,100\n2005-01-07,7781.01',
+    )
+
+    expect(parsed.points).toEqual([
+      { date: '2005-01-01', price: 100 },
+      { date: '2005-01-07', price: 7781.01 },
+    ])
+  })
+
+  it('không coi dòng quá cũ là dữ liệu hỏng', () => {
+    const parsed = parseCSV('date,price\n2004-05-20,7687.99\n2005-01-07,7781.01')
+
+    expect(parsed.warnings).toEqual([])
+  })
+
+  it('áp dụng cho cả CSV hai giá', () => {
+    const parsed = parseGoldCSV('date,buy,sell\n2004-06-30,100,110\n2005-01-07,200,220')
+
+    expect(parsed.buy).toEqual([{ date: '2005-01-07', price: 200 }])
+    expect(parsed.sell).toEqual([{ date: '2005-01-07', price: 220 }])
+    expect(parsed.warnings).toEqual([])
+  })
+
+  it('vẫn bắt lỗi ngày sai, không nhầm với dòng quá cũ', () => {
+    const parsed = parseCSV('date,price\nkhong-phai-ngay,100\n2004-06-30,110\n2005-01-07,120')
+
+    expect(parsed.points).toEqual([{ date: '2005-01-07', price: 120 }])
+    expect(parsed.warnings).toEqual([{ row: 2, code: 'invalid-date' }])
+  })
+
+  it('mốc là đầu năm 2005', () => {
+    expect(EARLIEST_PRICE_DATE).toBe('2005-01-01')
   })
 })
