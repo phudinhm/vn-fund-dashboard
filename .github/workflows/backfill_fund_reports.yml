@@ -23,6 +23,10 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+        with:
+          # Cùng lý do như update_daily.yml: ghi rõ nhánh đích, đừng để nhánh
+          # mặc định quyết định dữ liệu rơi vào đâu.
+          ref: main
 
       - name: Setup Python
         uses: actions/setup-python@v5

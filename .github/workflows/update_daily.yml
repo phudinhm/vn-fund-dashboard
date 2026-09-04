@@ -14,8 +14,15 @@ jobs:
       contents: write
 
     steps:
+      # Bám thẳng vào main, không lấy nhánh mặc định. Nhánh mặc định của repo
+      # này từng bị trỏ sang một nhánh tính năng, và khi đó toàn bộ dữ liệu
+      # hàng ngày đổ vào nhánh đó chứ không vào main: web bản production đứng
+      # yên nhiều ngày trong khi Actions vẫn báo xanh. Ghi rõ nhánh đích ở đây
+      # thì lỗi đó không tái diễn dù nhánh mặc định là gì.
       - name: Checkout repo
         uses: actions/checkout@v4
+        with:
+          ref: main
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
