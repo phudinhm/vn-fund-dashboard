@@ -14,12 +14,14 @@
  * làm sai mọi phép so sánh theo nhóm.
  */
 export const FMARKET_TYPE_MAP = {
+  // Mã loại của fmarket, đối chiếu từ vnstock/explorer/fmarket (_FUND_TYPE_MAPPING).
+  STOCK: 'mutual_fund',
+  BOND: 'bond',
+  BALANCED: 'balanced',
+  // Tên hiển thị tiếng Việt, phòng khi API trả name thay vì code.
   'Quỹ cổ phiếu': 'mutual_fund',
   'Quỹ trái phiếu': 'bond',
   'Quỹ cân bằng': 'balanced',
-  'CO_PHIEU': 'mutual_fund',
-  'TRAI_PHIEU': 'bond',
-  'CAN_BANG': 'balanced',
 }
 
 /** Mã quỹ chuẩn hoá: fmarket lúc trả shortName, lúc trả code, hoa/thường lẫn lộn. */
@@ -30,8 +32,10 @@ export function normalizeCode(row) {
 
 /** Loại tài sản fmarket của một dòng, ở bất kỳ chỗ nào fmarket giấu nó. */
 export function fmarketAssetType(row) {
-  return row.dataFundAssetType?.name
-    || row.dataFundAssetType?.code
+  // Ưu tiên `code` (STOCK/BOND/BALANCED) hơn `name`: mã máy ổn định, còn tên
+  // hiển thị có thể đổi chữ bất cứ lúc nào mà không báo trước.
+  return row.dataFundAssetType?.code
+    || row.dataFundAssetType?.name
     || row.fundAssetTypeName
     || row.fundType
     || ''

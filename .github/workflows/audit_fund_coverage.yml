@@ -1,4 +1,4 @@
-name: Audit Fund Coverage
+name: Audit Fund Coverage and Profiles
 
 # Chạy tay khi cần soát danh mục, thêm hàng tháng để quỹ mới không bị bỏ quên
 # nhiều tháng liền. Không chạy hàng ngày: danh mục quỹ mở thay đổi rất chậm.
@@ -42,22 +42,27 @@ jobs:
           fi
           node scripts/audit_fund_coverage.mjs --write
 
+      # Hồ sơ quỹ (phí, công ty quản lý, ngày thành lập) đổi rất chậm nên đi
+      # cùng nhịp soát danh mục, không cần chạy hàng ngày.
+      - name: Refresh fund and fund-house profiles
+        run: node scripts/fetch_fund_profiles.mjs
+
       - name: Open a PR when funds were added
         run: |
-          if git diff --quiet -- public/data/fund_metadata.json; then
-            echo "Không có quỹ nào để thêm."
+          if git diff --quiet -- public/data; then
+            echo "Không có thay đổi nào về danh mục hay hồ sơ."
             exit 0
           fi
           branch="fund-coverage/$(date -u +%Y-%m-%d)"
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git checkout -b "$branch"
-          git add public/data/fund_metadata.json
-          git commit -m "Thêm các quỹ mở còn thiếu so với danh mục fmarket"
+          git add public/data/fund_metadata.json public/data/fund_profiles.json public/data/fund_houses.json
+          git commit -m "Cập nhật danh mục quỹ và hồ sơ quỹ theo fmarket"
           git push -u origin "$branch"
           # Body lấy từ chính báo cáo, để người duyệt thấy quỹ nào được thêm và vì sao.
           gh pr create --base main --head "$branch" \
-            --title "Thêm các quỹ mở còn thiếu so với fmarket" \
+            --title "Cập nhật danh mục và hồ sơ quỹ theo fmarket" \
             --body "$(printf 'Kết quả soát danh mục:\n\n```\n%s\n```\n\nLần chạy update_daily kế tiếp sẽ kéo toàn bộ lịch sử NAV cho các quỹ mới.\n' "$(cat /tmp/audit.txt)")"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
