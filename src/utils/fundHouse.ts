@@ -27,7 +27,7 @@ const FUND_HOUSE_BY_ID: Record<string, string> = {
   VCBFAIF: 'VCBF',
 
   // SSI / SSIAM
-  SSISCA: 'SSI', SSIBF: 'SSI', SSIEF: 'SSI',
+  SSISCA: 'SSI', SSIBF: 'SSI', SSIEF: 'SSI', SSIPDF: 'SSI',
   FUESSVFL: 'SSIAM', FUESSV50: 'SSIAM', VLGF: 'SSIAM',
 
   // Bảo Việt
@@ -85,9 +85,17 @@ const FUND_HOUSE_BY_ID: Record<string, string> = {
   VNINDEX: 'HOSE', VN30: 'HOSE', VN100: 'HOSE',
 }
 
-/** Công ty quản lý của một mã quỹ, hoặc null nếu không thuộc bên nào (vàng, crypto). */
+/**
+ * Công ty quản lý của một mã quỹ, hoặc null nếu không thuộc bên nào (vàng, crypto).
+ *
+ * Bỏ gạch nối trước khi tra: fmarket gọi cùng một quỹ là "VCBF-FIF" còn map
+ * này (và fund_metadata.json) ghi "VCBFFIF". Không chuẩn hoá thì cả năm quỹ
+ * VCBF trả về null và màn hồ sơ hiện tên pháp nhân dài thay cho tên ngắn.
+ * update_nav.mjs cũng tra theo cả hai dạng vì đúng lý do này.
+ */
 export function fundHouse(fundId: string): string | null {
-  return FUND_HOUSE_BY_ID[fundId] ?? null
+  const key = fundId.toUpperCase().replace(/[\s\-._]/g, '')
+  return FUND_HOUSE_BY_ID[key] ?? null
 }
 
 /** Nhãn nhóm khi không có công ty quản lý — gom theo loại tài sản. */
