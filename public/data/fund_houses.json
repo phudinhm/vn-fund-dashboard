@@ -1,0 +1,278 @@
+[
+ {
+  "name": "CÔNG TY CỔ PHẦN QUẢN LÝ QUỸ VINACAPITAL",
+  "fundCount": 7,
+  "funds": [
+   "VDEF",
+   "VEOF",
+   "VESAF",
+   "VFF",
+   "VIBF",
+   "VLBF",
+   "VMEEF"
+  ],
+  "earliestInception": "2013-03-31",
+  "medianManagementFee": 1.75
+ },
+ {
+  "name": "CÔNG TY TNHH QUẢN LÝ QUỸ ĐẦU TƯ CHỨNG KHOÁN VIETCOMBANK",
+  "fundCount": 5,
+  "funds": [
+   "VCBF-AIF",
+   "VCBF-BCF",
+   "VCBF-FIF",
+   "VCBF-MGF",
+   "VCBF-TBF"
+  ],
+  "earliestInception": "2013-12-23",
+  "medianManagementFee": 1.9
+ },
+ {
+  "name": "CÔNG TY TNHH QUẢN LÝ QUỸ SSI",
+  "fundCount": 5,
+  "funds": [
+   "SSI-EF",
+   "SSI-PDF",
+   "SSIBF",
+   "SSISCA",
+   "VLGF"
+  ],
+  "earliestInception": "2014-09-25",
+  "medianManagementFee": 1.75
+ },
+ {
+  "name": "CÔNG TY CỔ PHẦN QUẢN LÝ QUỸ ĐẦU TƯ MB",
+  "fundCount": 4,
+  "funds": [
+   "BMFF",
+   "MBAM",
+   "MBBOND",
+   "MBVF"
+  ],
+  "earliestInception": "2014-04-24",
+  "medianManagementFee": 1.5
+ },
+ {
+  "name": "CÔNG TY CỔ PHẦN QUẢN LÝ QUỸ DRAGON CAPITAL VIỆT NAM",
+  "fundCount": 4,
+  "funds": [
+   "DCBF",
+   "DCDE",
+   "DCDS",
+   "DCIP"
+  ],
+  "earliestInception": "2004-05-19",
+  "medianManagementFee": 1.565
+ },
+ {
+  "name": "CÔNG TY CỔ PHẦN QUẢN LÝ QUỸ UOB ASSET MANAGEMENT (VIỆT NAM)",
+  "fundCount": 4,
+  "funds": [
+   "UMMF",
+   "USIF",
+   "UVDIF",
+   "UVEEF"
+  ],
+  "earliestInception": "2022-09-29",
+  "medianManagementFee": 1.05
+ },
+ {
+  "name": "CÔNG TY CỔ PHẦN QUẢN LÝ QUỸ ĐẦU TƯ CHỨNG KHOÁN BẢN VIỆT",
+  "fundCount": 3,
+  "funds": [
+   "VCAMBF",
+   "VCAMDF",
+   "VCAMFI"
+  ],
+  "earliestInception": "2014-04-10",
+  "medianManagementFee": 1.2
+ },
+ {
+  "name": "CÔNG TY CỔ PHẦN QUẢN LÝ QUỸ ĐẦU TƯ LIGHTHOUSE",
+  "fundCount": 3,
+  "funds": [
+   "LHBF",
+   "LHCDF",
+   "LHFCF"
+  ],
+  "earliestInception": "2022-12-28",
+  "medianManagementFee": 1
+ },
+ {
+  "name": "CÔNG TY TNHH QUẢN LÝ QUỸ BẢO VIỆT",
+  "fundCount": 3,
+  "funds": [
+   "BVBF",
+   "BVFED",
+   "BVPF"
+  ],
+  "earliestInception": "2014-01-07",
+  "medianManagementFee": 1
+ },
+ {
+  "name": "CÔNG TY TNHH QUẢN LÝ QUỸ ĐẦU TƯ IPA PARTNER",
+  "fundCount": 3,
+  "funds": [
+   "VNDAF",
+   "VNDBF",
+   "VNDCF"
+  ],
+  "earliestInception": "2018-01-11",
+  "medianManagementFee": 1.1
+ },
+ {
+  "name": "CÔNG TY TNHH QUẢN LÝ QUỸ MANULIFE INVESTMENT (VIỆT NAM)",
+  "fundCount": 3,
+  "funds": [
+   "MAFBAL",
+   "MAFEQI",
+   "MDI"
+  ],
+  "earliestInception": "2014-09-30",
+  "medianManagementFee": 1.75
+ },
+ {
+  "name": "CÔNG TY CỔ PHẦN QUẢN LÝ QUỸ AMBER",
+  "fundCount": 2,
+  "funds": [
+   "AEIF",
+   "ASBF"
+  ],
+  "earliestInception": "2021-05-24",
+  "medianManagementFee": 1.1
+ },
+ {
+  "name": "CÔNG TY CỔ PHẦN QUẢN LÝ QUỸ ĐẦU TƯ CHỨNG KHOÁN AN BÌNH",
+  "fundCount": 2,
+  "funds": [
+   "ABBF",
+   "ABEF"
+  ],
+  "earliestInception": "2020-11-02",
+  "medianManagementFee": 1.375
+ },
+ {
+  "name": "CÔNG TY CỔ PHẦN QUẢN LÝ QUỸ HD",
+  "fundCount": 2,
+  "funds": [
+   "GDEGF",
+   "HDBOND"
+  ],
+  "earliestInception": "2022-12-29",
+  "medianManagementFee": 1.075
+ },
+ {
+  "name": "CÔNG TY CỔ PHẦN QUẢN LÝ QUỸ LPB",
+  "fundCount": 2,
+  "funds": [
+   "LPBF",
+   "LPLF"
+  ],
+  "earliestInception": null,
+  "medianManagementFee": 1.475
+ },
+ {
+  "name": "CÔNG TY CỔ PHẦN QUẢN LÝ QUỸ NGÂN HÀNG TMCP ĐẠI CHÚNG VIỆT NAM",
+  "fundCount": 2,
+  "funds": [
+   "PBIF",
+   "PVBF"
+  ],
+  "earliestInception": "2020-02-06",
+  "medianManagementFee": 0.9
+ },
+ {
+  "name": "CÔNG TY TNHH MTV QUẢN LÝ QUỸ DAI-ICHI LIFE VIỆT NAM",
+  "fundCount": 2,
+  "funds": [
+   "DCAF",
+   "DFIX"
+  ],
+  "earliestInception": "2019-01-02",
+  "medianManagementFee": 1.2
+ },
+ {
+  "name": "CÔNG TY TNHH QUẢN LÝ QUỸ EASTSPRING INVESTMENTS",
+  "fundCount": 2,
+  "funds": [
+   "ENF",
+   "EVESG"
+  ],
+  "earliestInception": "2014-03-03",
+  "medianManagementFee": 1.4
+ },
+ {
+  "name": "CÔNG TY TNHH QUẢN LÝ QUỸ KIM VIỆT NAM",
+  "fundCount": 2,
+  "funds": [
+   "KDEF",
+   "KSIF"
+  ],
+  "earliestInception": null,
+  "medianManagementFee": 1.45
+ },
+ {
+  "name": "CÔNG TY TNHH QUẢN LÝ QUỸ MIREA ASSET VIỆT NAM",
+  "fundCount": 2,
+  "funds": [
+   "MAFF",
+   "MAGEF"
+  ],
+  "earliestInception": "2019-07-22",
+  "medianManagementFee": 1.275
+ },
+ {
+  "name": "CÔNG TY CỔ PHẦN QUẢN LÝ QUỸ ĐẦU TƯ SGI",
+  "fundCount": 1,
+  "funds": [
+   "TBLF"
+  ],
+  "earliestInception": "2021-09-29",
+  "medianManagementFee": 1.3
+ },
+ {
+  "name": "CÔNG TY CỔ PHẦN QUẢN LÝ QUỸ NTP",
+  "fundCount": 1,
+  "funds": [
+   "NTPPF"
+  ],
+  "earliestInception": "2022-06-11",
+  "medianManagementFee": 1.75
+ },
+ {
+  "name": "CÔNG TY CỔ PHẦN QUẢN LÝ QUỸ PHÚ HƯNG",
+  "fundCount": 1,
+  "funds": [
+   "PHVSF"
+  ],
+  "earliestInception": "2022-11-20",
+  "medianManagementFee": 1.5
+ },
+ {
+  "name": "CÔNG TY CỔ PHẦN QUẢN LÝ QUỸ RỒNG VIỆT",
+  "fundCount": 1,
+  "funds": [
+   "RVPIF"
+  ],
+  "earliestInception": null,
+  "medianManagementFee": 1.5
+ },
+ {
+  "name": "CÔNG TY TNHH MTV QUẢN LÝ QUỸ NGÂN HÀNG THƯƠNG MẠI CỔ PHẦN CÔNG THƯƠNG VIỆT NAM",
+  "fundCount": 1,
+  "funds": [
+   "VBIF"
+  ],
+  "earliestInception": null,
+  "medianManagementFee": 1.5
+ },
+ {
+  "name": "CÔNG TY TNHH QUẢN LÝ QUỸ THÀNH CÔNG",
+  "fundCount": 1,
+  "funds": [
+   "TCGF"
+  ],
+  "earliestInception": null,
+  "medianManagementFee": 1.5
+ }
+]
