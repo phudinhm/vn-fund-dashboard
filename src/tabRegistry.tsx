@@ -12,6 +12,7 @@ import { TacticalAllocationPanel } from './components/TacticalAllocationPanel'
 import { BitcoinPanel } from './components/BitcoinPanel'
 import { WallOfWorryPanel } from './components/WallOfWorryPanel'
 import { CalculatorTab } from './components/calculators/CalculatorTab'
+import { FundProfilePanel } from './components/FundProfilePanel'
 import { MethodologyPanel } from './components/MethodologyPanel'
 
 /**
@@ -34,7 +35,7 @@ import { MethodologyPanel } from './components/MethodologyPanel'
 export type TabId =
   | 'compare' | 'watchlist' | 'dca' | 'lsdca' | 'fundanalysis' | 'overlap'
   | 'rebalance' | 'tactical' | 'bitcoin' | 'wallofworry'
-  | 'calculator' | 'methodology'
+  | 'calculator' | 'methodology' | 'profiles'
 
 /** Manifest của một tab trong registry. */
 export interface TabManifest {
@@ -139,6 +140,11 @@ export const TAB_REGISTRY: TabManifest[] = [
     render: ({ state, onSelectCalculator }: TabContext): ReactElement => (
       <CalculatorTab calcId={state.calcId} onSelect={onSelectCalculator} />
     ),
+  },
+  {
+    id: 'profiles',
+    keepMounted: false,
+    render: ({ metadata }: TabContext): ReactElement => <FundProfilePanel funds={metadata} />,
   },
   {
     id: 'methodology',

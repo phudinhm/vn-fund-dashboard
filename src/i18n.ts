@@ -23,6 +23,7 @@ const DICT = {
   'tab.wallofworry': { vi: 'Wall of Worry', en: 'Wall of Worry' },
   'tab.calculator': { vi: 'Máy Tính', en: 'Calculator' },
   'tab.methodology': { vi: 'Minh Bạch Hoá', en: 'Methodology' },
+  'tab.profiles': { vi: 'Hồ Sơ Quỹ', en: 'Fund Profiles' },
 
   // ── Tab headings (h1) ──
   'heading.compare': { vi: 'So Sánh Quỹ Mở và ETF Việt Nam', en: 'Compare Vietnamese Funds and ETFs' },
@@ -36,6 +37,7 @@ const DICT = {
   'heading.bitcoin': { vi: 'Bitcoin và Quỹ Đầu Tư', en: 'Bitcoin and Investment Funds' },
   'heading.wallofworry': { vi: 'Wall of Worry: Những Nỗi Lo Thị Trường', en: 'Wall of Worry' },
   'heading.calculator': { vi: 'Máy Tính Đầu Tư và Lãi Kép', en: 'Investment & Compound Interest Calculator' },
+  'heading.profiles': { vi: 'Hồ Sơ Quỹ và Công Ty Quản Lý', en: 'Fund and Fund Manager Profiles' },
   'heading.methodology': { vi: 'Phương Pháp và Dữ Liệu', en: 'Methodology & Data' },
 
   // ── App shell ──
@@ -2250,6 +2252,32 @@ const DICT = {
   'rollDist.10to20': { vi: '10–20%', en: '10–20%' },
   'rollDist.over20': { vi: '>20%', en: '>20%' },
 
+  // ── Hồ sơ quỹ và công ty quản lý (FundProfilePanel) ──
+  'profile.title': { vi: 'Hồ sơ quỹ và công ty quản lý', en: 'Fund and fund-house profiles' },
+  'profile.help': {
+    vi: 'Số liệu lấy từ danh mục fmarket, không nhập tay. Phí quản lý tính theo %/năm. Lợi nhuận là con số fmarket công bố, tính trên NAV của quỹ, không phải kết quả dashboard tự tính từ chuỗi giá.',
+    en: 'Figures come from the fmarket catalogue, not typed in by hand. The management fee is per year. Returns are as published by fmarket on the fund\'s own NAV, not computed by this dashboard from the price series.',
+  },
+  'profile.intro': {
+    vi: 'Hồ sơ của {funds} quỹ mở, xếp theo {houses} công ty quản lý. Bấm vào một công ty để xem các quỹ của họ.',
+    en: 'Profiles for {funds} open-end funds across {houses} fund managers. Select a manager to see their funds.',
+  },
+  'profile.loading': { vi: 'Đang tải hồ sơ quỹ…', en: 'Loading fund profiles…' },
+  'profile.notPublished': {
+    vi: 'Chưa có dữ liệu hồ sơ. Chạy workflow "Audit Fund Coverage and Profiles" để sinh ra file hồ sơ.',
+    en: 'No profile data yet. Run the "Audit Fund Coverage and Profiles" workflow to generate it.',
+  },
+  'profile.fundCount': { vi: '{n} quỹ', en: '{n} funds' },
+  'profile.medianFee': { vi: 'phí trung vị {fee}', en: 'median fee {fee}' },
+  'profile.since': { vi: 'quỹ sớm nhất {date}', en: 'earliest fund {date}' },
+  'profile.col.fund': { vi: 'Quỹ', en: 'Fund' },
+  'profile.col.type': { vi: 'Loại', en: 'Type' },
+  'profile.col.fee': { vi: 'Phí quản lý', en: 'Management fee' },
+  'profile.col.inception': { vi: 'Thành lập', en: 'Inception' },
+  'profile.col.nav': { vi: 'NAV/CCQ', en: 'NAV/unit' },
+  'profile.col.r12m': { vi: '12 tháng', en: '12 months' },
+  'profile.col.r36m': { vi: '36 tháng', en: '36 months' },
+
   // ── Thẻ meta cho SEO, một bộ cho mỗi tab ──
   'seo.compare.title': { vi: 'So sánh quỹ mở và ETF Việt Nam | Fund Dashboard', en: 'Compare Vietnamese mutual funds and ETFs | Fund Dashboard' },
   'seo.compare.description': { vi: 'So sánh hiệu suất quỹ mở, ETF và các tài sản tại Việt Nam bằng dữ liệu lịch sử NAV, CAGR, drawdown và rolling return.', en: 'Compare the performance of Vietnamese mutual funds, ETFs and other assets using historical NAV, CAGR, drawdown and rolling returns.' },
@@ -2273,6 +2301,8 @@ const DICT = {
   'seo.wallofworry.description': { vi: 'Xem các nỗi lo thị trường từng xuất hiện và cách chúng kết thúc qua thời gian.', en: 'See the fears the market has lived through and how each one ended.' },
   'seo.calculator.title': { vi: 'Máy tính đầu tư và lãi kép | Fund Dashboard', en: 'Investment and compounding calculators | Fund Dashboard' },
   'seo.calculator.description': { vi: 'Tính lãi kép, CAGR và mức phí quỹ ăn mòn giá trị đầu tư theo thời gian.', en: 'Work out compound interest, CAGR and how much fund fees eat into an investment over time.' },
+  'seo.profiles.title': { vi: 'Hồ sơ quỹ và công ty quản lý quỹ | Fund Dashboard', en: 'Fund and fund manager profiles | Fund Dashboard' },
+  'seo.profiles.description': { vi: 'Phí quản lý, ngày thành lập, NAV và công ty quản lý của các quỹ mở tại Việt Nam.', en: 'Management fees, inception dates, NAV and managers of Vietnamese open-end funds.' },
   'seo.methodology.title': { vi: 'Phương pháp và dữ liệu | Fund Dashboard', en: 'Method and data | Fund Dashboard' },
   'seo.methodology.description': { vi: 'Tìm hiểu nguồn dữ liệu, công thức và các giới hạn của những chỉ số trong Fund Dashboard.', en: 'Where the data comes from, the formulas behind each figure, and what they cannot tell you.' },
 

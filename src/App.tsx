@@ -21,6 +21,7 @@ const TAB_ICONS: Record<TabId, string> = {
   bitcoin: '₿',
   wallofworry: '🌩️',
   calculator: '🧮',
+  profiles: '🏛️',
   methodology: '📐',
 }
 

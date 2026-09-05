@@ -29,6 +29,7 @@ export const SEO_BY_TAB: Record<TabId, SeoMeta> = {
   bitcoin:      { titleKey: 'seo.bitcoin.title',      descriptionKey: 'seo.bitcoin.description',      indexable: true },
   wallofworry:  { titleKey: 'seo.wallofworry.title',  descriptionKey: 'seo.wallofworry.description',  indexable: true },
   calculator:   { titleKey: 'seo.calculator.title',   descriptionKey: 'seo.calculator.description',   indexable: true },
+  profiles:     { titleKey: 'seo.profiles.title',     descriptionKey: 'seo.profiles.description',     indexable: true },
   methodology:  { titleKey: 'seo.methodology.title',  descriptionKey: 'seo.methodology.description',  indexable: true },
 }
 

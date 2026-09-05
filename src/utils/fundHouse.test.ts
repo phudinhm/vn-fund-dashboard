@@ -76,3 +76,24 @@ describe('groupFundsByHouse', () => {
     expect([...sizes].sort((a, b) => b - a)).toEqual(sizes)
   })
 })
+
+describe('fundHouse: mã có gạch nối', () => {
+  it('tra được mã fmarket viết kiểu VCBF-FIF', () => {
+    expect(fundHouse('VCBF-FIF')).toBe(fundHouse('VCBFFIF'))
+    expect(fundHouse('VCBF-FIF')).not.toBeNull()
+  })
+
+  it('tra được cả năm quỹ VCBF theo cách fmarket viết', () => {
+    for (const code of ['VCBF-AIF', 'VCBF-BCF', 'VCBF-FIF', 'VCBF-MGF', 'VCBF-TBF']) {
+      expect(fundHouse(code)).not.toBeNull()
+    }
+  })
+
+  it('không phân biệt hoa thường', () => {
+    expect(fundHouse('vcbf-fif')).toBe(fundHouse('VCBFFIF'))
+  })
+
+  it('mã lạ vẫn trả null', () => {
+    expect(fundHouse('KHONG-TON-TAI')).toBeNull()
+  })
+})
