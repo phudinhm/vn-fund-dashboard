@@ -26,3 +26,4 @@ scripts/backtest_sma_savings.mjs
 scripts/fund_report/backfill_holdings_digiinvest.py
 public/data/*/raw/
 src/utils/vietVoice.test.ts
+fmarket_sample.json
