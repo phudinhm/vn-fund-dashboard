@@ -17,7 +17,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      pull-requests: write
 
     steps:
       # Cùng lý do như update_daily.yml: ghi rõ nhánh đích thay vì để nhánh
@@ -47,22 +46,29 @@ jobs:
       - name: Refresh fund and fund-house profiles
         run: node scripts/fetch_fund_profiles.mjs
 
-      - name: Open a PR when funds were added
+      # Đẩy nhánh rồi in link tạo PR, KHÔNG gọi `gh pr create`: repo này tắt
+      # quyền "Allow GitHub Actions to create and approve pull requests", nên
+      # lần chạy đầu tiên đã đỏ ở đúng bước đó dù dữ liệu đã lấy xong. Đẩy nhánh
+      # là phần việc thật; mở PR chỉ là một cú bấm.
+      - name: Push a branch when the catalogue or profiles changed
         run: |
           if git diff --quiet -- public/data; then
             echo "Không có thay đổi nào về danh mục hay hồ sơ."
             exit 0
           fi
-          branch="fund-coverage/$(date -u +%Y-%m-%d)"
+          branch="fund-coverage/$(date -u +%Y-%m-%d-%H%M)"
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git checkout -b "$branch"
           git add public/data/fund_metadata.json public/data/fund_profiles.json public/data/fund_houses.json
           git commit -m "Cập nhật danh mục quỹ và hồ sơ quỹ theo fmarket"
           git push -u origin "$branch"
-          # Body lấy từ chính báo cáo, để người duyệt thấy quỹ nào được thêm và vì sao.
-          gh pr create --base main --head "$branch" \
-            --title "Cập nhật danh mục và hồ sơ quỹ theo fmarket" \
-            --body "$(printf 'Kết quả soát danh mục:\n\n```\n%s\n```\n\nLần chạy update_daily kế tiếp sẽ kéo toàn bộ lịch sử NAV cho các quỹ mới.\n' "$(cat /tmp/audit.txt)")"
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          {
+            echo "### Đã đẩy nhánh \`$branch\`"
+            echo ""
+            echo "[Mở pull request](https://github.com/${GITHUB_REPOSITORY}/compare/main...$branch?expand=1)"
+            echo ""
+            echo '```'
+            cat /tmp/audit.txt
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"

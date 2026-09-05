@@ -24,10 +24,24 @@ export const FMARKET_TYPE_MAP = {
   'Quỹ cân bằng': 'balanced',
 }
 
-/** Mã quỹ chuẩn hoá: fmarket lúc trả shortName, lúc trả code, hoa/thường lẫn lộn. */
+/**
+ * Mã quỹ đưa về một dạng duy nhất để so sánh.
+ *
+ * fmarket viết cùng một quỹ theo hai kiểu: "VCBF-FIF" trong danh mục, còn
+ * metadata của dashboard (và chính fmarket ở chỗ khác) là "VCBFFIF". Nếu chỉ
+ * cắt khoảng trắng thì sáu quỹ VCBF/SSI bị coi là "còn thiếu" và bị thêm lần
+ * hai — đúng một lỗi như vậy đã lọt ra ở lần chạy đầu tiên.
+ *
+ * update_nav.mjs cũng dựng khoá tra cứu cả hai dạng, nên lưu dạng đã bỏ gạch
+ * nối vẫn tìm được sản phẩm trên fmarket.
+ */
+export function canonicalCode(value) {
+  return String(value ?? '').toUpperCase().replace(/[\s\-._]/g, '').trim()
+}
+
+/** Mã quỹ của một dòng fmarket, đã chuẩn hoá. */
 export function normalizeCode(row) {
-  const raw = row.shortName || row.code || row.productShortName || ''
-  return String(raw).toUpperCase().replace(/\s+/g, '').trim()
+  return canonicalCode(row.shortName || row.code || row.productShortName || '')
 }
 
 /** Loại tài sản fmarket của một dòng, ở bất kỳ chỗ nào fmarket giấu nó. */
@@ -51,7 +65,7 @@ export function fmarketAssetType(row) {
  *              fmarket. Liệt kê ra để phát hiện quỹ bị đóng hoặc đổi mã.
  */
 export function diffCoverage(fmarketRows, metadata) {
-  const have = new Set(metadata.map(m => String(m.id).toUpperCase()))
+  const have = new Set(metadata.map(m => canonicalCode(m.id)))
   const seen = new Set()
   const missing = []
   const unknown = []
@@ -75,7 +89,7 @@ export function diffCoverage(fmarketRows, metadata) {
   }
 
   const extra = metadata
-    .filter(m => !seen.has(String(m.id).toUpperCase()))
+    .filter(m => !seen.has(canonicalCode(m.id)))
     .map(m => ({ code: m.id, type: m.type, name: m.name_vi }))
 
   return { missing, unknown, extra }

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 // @ts-expect-error — script thuần JS, không có khai báo kiểu
-import { diffCoverage, toMetadataEntry, serializeMetadata, normalizeCode } from '../../scripts/fundCoverage.mjs'
+import { diffCoverage, toMetadataEntry, serializeMetadata, normalizeCode, canonicalCode } from '../../scripts/fundCoverage.mjs'
 
 const meta = [
   { id: 'DCDS', name_vi: 'DCDS - ...', type: 'mutual_fund', start_date: '2004-05-20', csv_file: 'DCDS.csv' },
@@ -46,10 +46,41 @@ describe('diffCoverage', () => {
     expect(missing).toEqual([])
   })
 
+  // Lỗi thật đã lọt ra ở lần chạy CI đầu tiên: fmarket trả "VCBF-FIF" còn
+  // metadata ghi "VCBFFIF", nên sáu quỹ VCBF/SSI bị thêm trùng.
+  it('coi mã có gạch nối và mã liền là một quỹ', () => {
+    const meta2 = [{ id: 'VCBFFIF', name_vi: '', type: 'bond', start_date: '', csv_file: 'VCBFFIF.csv' }]
+    const { missing } = diffCoverage([row('VCBF-FIF', 'Quỹ trái phiếu')], meta2)
+
+    expect(missing).toEqual([])
+  })
+
+  it('không báo nhầm quỹ có gạch nối là mã dashboard không dùng', () => {
+    const meta2 = [{ id: 'SSIEF', name_vi: '', type: 'balanced', start_date: '', csv_file: 'SSIEF.csv' }]
+    const { extra } = diffCoverage([row('SSI-EF', 'Quỹ cân bằng')], meta2)
+
+    expect(extra).toEqual([])
+  })
+
+  it('quỹ mới có gạch nối được lưu theo dạng liền như các mã sẵn có', () => {
+    const { missing } = diffCoverage([row('SSI-PDF', 'Quỹ cổ phiếu')], [])
+
+    expect(missing[0].code).toBe('SSIPDF')
+  })
+
   it('bỏ qua dòng không có mã', () => {
     const { missing } = diffCoverage([{ name: 'không mã', dataFundAssetType: { name: 'Quỹ cổ phiếu' } }], [])
 
     expect(missing).toEqual([])
+  })
+})
+
+describe('canonicalCode', () => {
+  it('bỏ gạch nối, chấm, gạch dưới và khoảng trắng', () => {
+    expect(canonicalCode('VCBF-FIF')).toBe('VCBFFIF')
+    expect(canonicalCode('ssi.pdf')).toBe('SSIPDF')
+    expect(canonicalCode('E1VFVN_30')).toBe('E1VFVN30')
+    expect(canonicalCode(null)).toBe('')
   })
 })
 
