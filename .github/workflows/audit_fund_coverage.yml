@@ -1,0 +1,63 @@
+name: Audit Fund Coverage
+
+# Chạy tay khi cần soát danh mục, thêm hàng tháng để quỹ mới không bị bỏ quên
+# nhiều tháng liền. Không chạy hàng ngày: danh mục quỹ mở thay đổi rất chậm.
+on:
+  workflow_dispatch:
+    inputs:
+      write:
+        description: 'Ghi quỹ thiếu vào metadata và mở PR'
+        type: boolean
+        default: true
+  schedule:
+    - cron: '0 12 1 * *' # 12:00 UTC ngày 1 hàng tháng
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      # Cùng lý do như update_daily.yml: ghi rõ nhánh đích thay vì để nhánh
+      # mặc định của repo quyết định.
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Audit coverage
+        id: audit
+        run: |
+          node scripts/audit_fund_coverage.mjs | tee /tmp/audit.txt
+          if [ "${{ inputs.write }}" = "false" ]; then
+            echo "Chỉ báo cáo, không ghi."
+            exit 0
+          fi
+          node scripts/audit_fund_coverage.mjs --write
+
+      - name: Open a PR when funds were added
+        run: |
+          if git diff --quiet -- public/data/fund_metadata.json; then
+            echo "Không có quỹ nào để thêm."
+            exit 0
+          fi
+          branch="fund-coverage/$(date -u +%Y-%m-%d)"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$branch"
+          git add public/data/fund_metadata.json
+          git commit -m "Thêm các quỹ mở còn thiếu so với danh mục fmarket"
+          git push -u origin "$branch"
+          # Body lấy từ chính báo cáo, để người duyệt thấy quỹ nào được thêm và vì sao.
+          gh pr create --base main --head "$branch" \
+            --title "Thêm các quỹ mở còn thiếu so với fmarket" \
+            --body "$(printf 'Kết quả soát danh mục:\n\n```\n%s\n```\n\nLần chạy update_daily kế tiếp sẽ kéo toàn bộ lịch sử NAV cho các quỹ mới.\n' "$(cat /tmp/audit.txt)")"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
