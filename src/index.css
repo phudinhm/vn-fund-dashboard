@@ -240,9 +240,9 @@ button:not(:disabled):active {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Manrope', sans-serif;
-  font-weight: 800;
-  font-size: 1rem;
+  /* currentColor trong SVG lấy màu này, nên nét logo luôn tương phản với nền
+     gradient ở cả theme sáng lẫn tối. */
+  padding: 7px;
   box-shadow: 0 4px 12px rgba(79,70,229,0.28);
 }
 

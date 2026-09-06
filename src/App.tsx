@@ -6,6 +6,7 @@ import { useTheme } from './hooks/useTheme'
 import { useLanguage } from './hooks/useLanguage'
 import { useT } from './i18n'
 import { TAB_REGISTRY, type TabContext, type TabId } from './tabRegistry'
+import { BrandMark } from './components/BrandMark'
 import { useScrollDim } from './hooks/useScrollDim'
 import { SeoMetadata } from './components/SeoMetadata'
 
@@ -75,7 +76,7 @@ export function App() {
       <SeoMetadata tab={state.tab} />
       <header className={`app-header${headerDim ? ' app-header--dim' : ''}`}>
         <div className="app-header-brand">
-          <span className="app-header-mark" aria-hidden="true">MP</span>
+          <BrandMark />
           <h1>{t(`heading.${state.tab}`)}</h1>
         </div>
         <div className="app-header-actions">
