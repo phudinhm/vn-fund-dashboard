@@ -46,6 +46,20 @@ jobs:
       - name: Refresh fund and fund-house profiles
         run: node scripts/fetch_fund_profiles.mjs
 
+      # Wall of Worry là danh sách biên tập tay, không tự thêm được. Bước này
+      # chỉ chỉ ra nhịp sụt giảm nào chưa có sự kiện giải thích, để danh sách
+      # không lặng lẽ cũ đi. Không làm đỏ job: thiếu một sự kiện là việc cần
+      # người viết, không phải lỗi build.
+      - name: Report uncovered Wall of Worry drawdowns
+        continue-on-error: true
+        run: |
+          {
+            echo "### Wall of Worry"
+            echo '```'
+            node scripts/audit_wall_of_worry.mjs
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
       # Đẩy nhánh rồi in link tạo PR, KHÔNG gọi `gh pr create`: repo này tắt
       # quyền "Allow GitHub Actions to create and approve pull requests", nên
       # lần chạy đầu tiên đã đỏ ở đúng bước đó dù dữ liệu đã lấy xong. Đẩy nhánh
