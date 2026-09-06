@@ -182,14 +182,45 @@ button:not(:disabled):active {
   }
 }
 
+/*
+ * Header dính đỉnh màn hình, hơi trong suốt, và tự mờ đi khi cuộn xuống.
+ *
+ * Margin âm kéo header ra sát mép .app rồi padding bù lại: nếu không, nền mờ
+ * chỉ phủ phần giữa và nội dung vẫn trôi lộ ra hai bên khi cuộn qua.
+ *
+ * Chỉ làm mờ chứ không đẩy khuất hẳn: nút đổi tab/ngôn ngữ vẫn bấm được nếu
+ * người dùng với tới, và trang không nhảy khi header biến mất rồi hiện lại.
+ */
 .app-header {
+  position: sticky;
+  top: 0;
+  z-index: 30;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  margin-bottom: 20px;
-  padding: 4px 0 16px;
+  margin: -16px -20px 20px;
+  padding: 10px 20px;
   border-bottom: 1px solid var(--color-border-subtle);
+  background: color-mix(in srgb, var(--color-bg) 78%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: opacity 260ms ease;
+}
+
+/* Trình duyệt không có color-mix: nền đục hoàn toàn còn hơn chữ chồng chữ. */
+@supports not (background: color-mix(in srgb, red 50%, transparent)) {
+  .app-header { background: var(--color-bg); }
+}
+
+.app-header--dim { opacity: 0.4; }
+
+/* Rê chuột hoặc tab bàn phím vào header là nó rõ lại ngay, không cần cuộn. */
+.app-header--dim:hover,
+.app-header--dim:focus-within { opacity: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  .app-header { transition: none; }
 }
 
 .app-header-brand {
@@ -619,7 +650,8 @@ button:not(:disabled):active {
     /* Dính theo khi cuộn: các tab dài (Phân Tích Quỹ, DCA) cuộn hàng nghìn px,
        nav trôi mất thì phải cuộn ngược lên đầu mới đổi tab được. */
     position: sticky;
-    top: 16px;
+    /* Chừa chỗ cho header dính bên trên, nếu không tab trên cùng bị che. */
+    top: 72px;
     margin-bottom: 0;
   }
 
