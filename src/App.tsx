@@ -6,6 +6,7 @@ import { useTheme } from './hooks/useTheme'
 import { useLanguage } from './hooks/useLanguage'
 import { useT } from './i18n'
 import { TAB_REGISTRY, type TabContext, type TabId } from './tabRegistry'
+import { useScrollDim } from './hooks/useScrollDim'
 import { SeoMetadata } from './components/SeoMetadata'
 
 /** Icon gợi ý cho từng tab — thuần trang trí, chỉ để quét nhanh bằng mắt. */
@@ -27,6 +28,7 @@ const TAB_ICONS: Record<TabId, string> = {
 
 export function App() {
   const { metadata, metadataError, loading: metaLoading } = useFundMetadata()
+  const headerDim = useScrollDim()
   const { state, updateState, dcaUrlParams, lsDcaUrlParams } = useUrlState()
   const { theme, toggle: toggleTheme } = useTheme()
   const { language, toggle: toggleLanguage } = useLanguage()
@@ -71,7 +73,7 @@ export function App() {
   return (
     <div className="app">
       <SeoMetadata tab={state.tab} />
-      <header className="app-header">
+      <header className={`app-header${headerDim ? ' app-header--dim' : ''}`}>
         <div className="app-header-brand">
           <span className="app-header-mark" aria-hidden="true">MP</span>
           <h1>{t(`heading.${state.tab}`)}</h1>
