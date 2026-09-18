@@ -37,6 +37,11 @@
   --shadow: 0 1px 2px rgba(15,23,42,0.04), 0 8px 24px rgba(15,23,42,0.06);
   --shadow-hover: 0 2px 6px rgba(15,23,42,0.06), 0 16px 32px rgba(79,70,229,0.10);
   --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  /* Motion tokens (transitions.dev): dùng cho pill trượt của tab nav, xem
+     .tabs-pill. Đặt tên theo đúng thang của skill để tái dùng được cho các
+     transition khác sau này thay vì phát minh số riêng mỗi chỗ. */
+  --duration-fast: 250ms;
+  --ease-smooth-out: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 /* Dark mode: theo hệ thống (không ép data-theme) hoặc ép tay qua toggle. */
@@ -571,18 +576,25 @@ button:not(:disabled):active {
 }
 
 /* ─── Tabs ────────────────────────────────────── */
-/* Segmented pill nav trên nền "track" bo tròn, thay cho underline-tab kiểu cũ.
- * Vẫn cuộn ngang cho 13 tab: giữ mỗi pill đủ rộng để đọc được, scroll-snap để
- * việc vuốt dừng gọn ở đầu mỗi pill thay vì lửng lơ giữa chừng. */
+/*
+ * Nền kính mờ (glassmorphism): cùng công thức với .app-header — color-mix
+ * để pha trong suốt lên --color-surface, backdrop-filter làm mờ nội dung
+ * phía sau, viền nhuốm màu chủ đạo thay vì xám phẳng. Vẫn cuộn ngang cho
+ * đủ tab: giữ mỗi pill đủ rộng để đọc được, scroll-snap để việc vuốt dừng
+ * gọn ở đầu mỗi pill thay vì lửng lơ giữa chừng.
+ */
 .tabs {
+  position: relative; /* mốc định vị cho .tabs-pill trượt bên dưới */
   display: flex;
   gap: 4px;
   margin-bottom: 20px;
   padding: 5px;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border-subtle);
+  background: color-mix(in srgb, var(--color-surface) 72%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 14%, var(--color-border-subtle));
   border-radius: calc(var(--radius) + 4px);
   box-shadow: var(--shadow);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   overflow-x: auto;
   overflow-y: hidden;
   scroll-snap-type: x proximity;
@@ -590,7 +602,35 @@ button:not(:disabled):active {
   scrollbar-width: thin;
 }
 
+@supports not (background: color-mix(in srgb, red 50%, transparent)) {
+  .tabs { background: var(--color-surface); }
+}
+
+/*
+ * Pill nền trượt theo tab đang chọn (transitions.dev "tabs sliding") — JS đo
+ * offsetLeft/offsetTop/offsetWidth/offsetHeight của nút đang active rồi ghi
+ * vào transform, CSS chỉ lo tween. Nằm dưới nhãn (z-index thấp hơn .tab) nên
+ * chữ luôn đọc được đè lên trên. Xem src/hooks/useTabsPill.ts.
+ */
+.tabs-pill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--color-primary) 35%, transparent);
+  transform: translate(0, 0);
+  transition: transform var(--duration-fast) var(--ease-smooth-out), width var(--duration-fast) var(--ease-smooth-out), height var(--duration-fast) var(--ease-smooth-out);
+  will-change: transform, width, height;
+  z-index: 0;
+  pointer-events: none;
+}
+
 .tab {
+  position: relative;
+  z-index: 1; /* trên .tabs-pill */
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -602,7 +642,10 @@ button:not(:disabled):active {
   font-weight: 600;
   color: var(--color-text-muted);
   cursor: pointer;
-  transition: color 0.15s var(--ease), background-color 0.15s var(--ease), box-shadow 0.15s var(--ease), transform 0.1s var(--ease);
+  /* Auto-dim: tab không được chọn mờ đi, chỉ tab active + hover/focus mới rõ
+     hẳn — mắt bị kéo thẳng vào tab đang xem thay vì dàn đều 12-13 nhãn. */
+  opacity: 0.6;
+  transition: opacity var(--duration-fast) var(--ease-smooth-out), color 0.15s var(--ease), transform 0.1s var(--ease);
   white-space: nowrap;
   flex-shrink: 0;
   scroll-snap-align: start;
@@ -614,8 +657,8 @@ button:not(:disabled):active {
 }
 
 .tab:hover {
+  opacity: 1;
   color: var(--color-text);
-  background: var(--color-primary-light);
 }
 
 .tab:active {
@@ -624,9 +667,10 @@ button:not(:disabled):active {
 
 .tab-active,
 .tab-active:hover {
+  /* Nền/gradient thật sự do .tabs-pill trượt tới đảm nhiệm; ở đây chỉ đổi
+     màu chữ cho tương phản với gradient đó, và bỏ auto-dim. */
+  opacity: 1;
   color: var(--color-primary-fg);
-  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
-  box-shadow: 0 4px 12px rgba(79,70,229,0.28);
 }
 
 .tab:disabled {
@@ -639,7 +683,14 @@ button:not(:disabled):active {
   outline-offset: 2px;
 }
 
-/* ── Sidebar dọc từ 1000px: thấy hết 12 tab cùng lúc, không phải cuộn ── */
+@media (prefers-reduced-motion: reduce) {
+  .tabs-pill,
+  .tab {
+    transition: none;
+  }
+}
+
+/* ── Sidebar dọc từ 1000px: thấy hết mọi tab cùng lúc, không phải cuộn ── */
 @media (min-width: 1000px) {
   .tabs {
     flex-direction: column;
@@ -670,15 +721,6 @@ button:not(:disabled):active {
     width: 18px;
     flex-shrink: 0;
     text-align: center;
-  }
-
-  .tab-active,
-  .tab-active:hover {
-    /* Sidebar nằm sát nội dung: gradient đậm nguyên khối trông nặng nề, dùng
-       nền nhạt + thanh chỉ dấu bên trái cho nhẹ mắt hơn. */
-    background: var(--color-primary-light);
-    color: var(--color-primary);
-    box-shadow: inset 3px 0 0 var(--color-primary);
   }
 }
 

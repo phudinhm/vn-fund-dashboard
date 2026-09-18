@@ -48,6 +48,12 @@ export interface TabManifest {
   keepMounted: boolean
   /** Class tùy chọn gắn vào div bọc panel (vd `compare-content` để CSS style tiêu đề). */
   wrapperClass?: string
+  /**
+   * true = không hiện nút trong thanh nav, nhưng route và nội dung vẫn còn
+   * nguyên (link cũ trỏ ?tab= vào đây vẫn chạy được). Dùng để tạm giấu một
+   * tab mà không phải xoá code — khác với xoá hẳn.
+   */
+  hidden?: boolean
   render: (ctx: TabContext) => ReactElement
 }
 
@@ -132,6 +138,7 @@ export const TAB_REGISTRY: TabManifest[] = [
   {
     id: 'wallofworry',
     keepMounted: true,
+    hidden: true,
     render: (): ReactElement => <WallOfWorryPanel />,
   },
   {

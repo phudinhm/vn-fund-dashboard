@@ -8,7 +8,11 @@ import { useT } from './i18n'
 import { TAB_REGISTRY, type TabContext, type TabId } from './tabRegistry'
 import { BrandMark } from './components/BrandMark'
 import { useScrollDim } from './hooks/useScrollDim'
+import { useTabsPill } from './hooks/useTabsPill'
 import { SeoMetadata } from './components/SeoMetadata'
+
+/** Nút bấm được trong nav — đăng ký (ẩn) không tính. */
+const VISIBLE_TABS = TAB_REGISTRY.filter(tab => !tab.hidden)
 
 /** Icon gợi ý cho từng tab — thuần trang trí, chỉ để quét nhanh bằng mắt. */
 const TAB_ICONS: Record<TabId, string> = {
@@ -34,6 +38,7 @@ export function App() {
   const { theme, toggle: toggleTheme } = useTheme()
   const { language, toggle: toggleLanguage } = useLanguage()
   const t = useT()
+  const { navRef, pillRef, registerTab } = useTabsPill(state.tab)
 
   // Stable callback references (qua useCallback, dep chỉ là `updateState` vốn
   // đã ổn định) để CompareTab (React.memo) không bị coi là "props đổi" mỗi
@@ -102,11 +107,13 @@ export function App() {
       {/* Sidebar dọc trên màn rộng, thanh cuộn ngang trên mobile — xem .app-body
           trong index.css. 12 tab xếp ngang bị cắt mất một nửa ở màn thường. */}
       <div className="app-body">
-        {/* Tabs — duyệt registry, không hardcode */}
-        <nav className="tabs" aria-label={t('app.nav.label')}>
-          {TAB_REGISTRY.map(tab => (
+        {/* Tabs — duyệt registry (đã lọc tab ẩn), không hardcode */}
+        <nav className="tabs" aria-label={t('app.nav.label')} ref={navRef}>
+          <span className="tabs-pill" ref={pillRef} aria-hidden="true" />
+          {VISIBLE_TABS.map(tab => (
             <button
               key={tab.id}
+              ref={registerTab(tab.id)}
               className={`tab ${state.tab === tab.id ? 'tab-active' : ''}`}
               onClick={() => updateState({ tab: tab.id })}
               aria-current={state.tab === tab.id ? 'page' : undefined}
