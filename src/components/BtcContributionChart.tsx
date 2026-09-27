@@ -6,6 +6,7 @@ import {
 import type { ReturnPoint } from '../types'
 import { rollingCumulativeReturns } from '../utils/calculations'
 import { useT, useTRich, type TranslationKey } from '../i18n'
+import { IconScale, IconTarget, IconWarning } from './icons'
 
 interface Props {
   portfolioReturns: ReturnPoint[][]    // [base, btc1, btc2, btc3]
@@ -136,7 +137,7 @@ function BtcContributionChartImpl({ portfolioReturns, btcPercents, fundId }: Pro
   const avgDiff = totalDiff / chartData.length
   const takeawayVariant: 'green' | 'red' | 'orange' =
     avgDiff > 1 ? 'green' : avgDiff < -1 ? 'red' : 'orange'
-  const takeawayIcon = takeawayVariant === 'green' ? '🎯' : takeawayVariant === 'red' ? '⚠️' : '⚖️'
+  const takeawayIcon = takeawayVariant === 'green' ? <IconTarget /> : takeawayVariant === 'red' ? <IconWarning /> : <IconScale />
 
   // X-axis: sample ~8 ticks evenly
   const maxTicks = 8

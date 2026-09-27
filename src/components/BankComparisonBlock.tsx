@@ -14,6 +14,7 @@
 import { useState, memo } from 'react'
 import { formatVND } from '../utils/vndFormat'
 import { useT, useTRich } from '../i18n'
+import { IconScale, IconTarget, IconWarning } from './icons'
 
 const DEFAULT_BANK_RATE = 0.065  // 6.5%/năm
 
@@ -144,7 +145,7 @@ function BankTakeaway({ comparisons }: TakeawayProps) {
     // All beat bank
     return (
       <div className="chart-takeaway chart-takeaway--green">
-        <span className="chart-takeaway-icon">🎯</span>
+        <span className="chart-takeaway-icon"><IconTarget /></span>
         <div className="chart-takeaway-body">
           {tr('bank.allWin', {
             n: comparisons.length,
@@ -160,7 +161,7 @@ function BankTakeaway({ comparisons }: TakeawayProps) {
     // All lost to bank
     return (
       <div className="chart-takeaway chart-takeaway--red">
-        <span className="chart-takeaway-icon">⚠️</span>
+        <span className="chart-takeaway-icon"><IconWarning /></span>
         <div className="chart-takeaway-body">
           {tr('bank.allLose', { n: comparisons.length })}
         </div>
@@ -171,7 +172,7 @@ function BankTakeaway({ comparisons }: TakeawayProps) {
   // Mixed
   return (
     <div className="chart-takeaway chart-takeaway--orange">
-      <span className="chart-takeaway-icon">⚖️</span>
+      <span className="chart-takeaway-icon"><IconScale /></span>
       <div className="chart-takeaway-body">
         {tr('bank.mixed', {
           winners: winners.length,

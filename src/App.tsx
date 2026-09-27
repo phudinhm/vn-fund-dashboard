@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, type ReactElement } from 'react'
 import type { CalculatorId } from './types'
 import { useFundMetadata } from './hooks/useFundData'
 import { useUrlState } from './hooks/useUrlState'
@@ -10,25 +10,46 @@ import { BrandMark } from './components/BrandMark'
 import { useScrollDim } from './hooks/useScrollDim'
 import { useTabsPill } from './hooks/useTabsPill'
 import { SeoMetadata } from './components/SeoMetadata'
+import {
+  IconBank,
+  IconBitcoin,
+  IconCalculator,
+  IconCalendar,
+  IconCloud,
+  IconCompare,
+  IconMoon,
+  IconOverlap,
+  IconRefresh,
+  IconRuler,
+  IconScale,
+  IconSearch,
+  IconStar,
+  IconSun,
+  IconTarget,
+} from './components/icons'
 
 /** Nút bấm được trong nav — đăng ký (ẩn) không tính. */
 const VISIBLE_TABS = TAB_REGISTRY.filter(tab => !tab.hidden)
 
-/** Icon gợi ý cho từng tab — thuần trang trí, chỉ để quét nhanh bằng mắt. */
-const TAB_ICONS: Record<TabId, string> = {
-  compare: '📊',
-  watchlist: '⭐',
-  dca: '📅',
-  lsdca: '⚖️',
-  fundanalysis: '🔍',
-  overlap: '🧩',
-  rebalance: '🔄',
-  tactical: '🎯',
-  bitcoin: '₿',
-  wallofworry: '🌩️',
-  calculator: '🧮',
-  profiles: '🏛️',
-  methodology: '📐',
+/**
+ * Icon gợi ý cho từng tab — thuần trang trí, chỉ để quét nhanh bằng mắt.
+ * SVG nét đơn (xem components/icons.tsx) thay vì emoji: emoji có màu riêng
+ * theo hệ điều hành, không theo được theme sáng/tối hay màu chủ đạo của app.
+ */
+const TAB_ICONS: Record<TabId, ReactElement> = {
+  compare: <IconCompare />,
+  watchlist: <IconStar />,
+  dca: <IconCalendar />,
+  lsdca: <IconScale />,
+  fundanalysis: <IconSearch />,
+  overlap: <IconOverlap />,
+  rebalance: <IconRefresh />,
+  tactical: <IconTarget />,
+  bitcoin: <IconBitcoin />,
+  wallofworry: <IconCloud />,
+  calculator: <IconCalculator />,
+  profiles: <IconBank />,
+  methodology: <IconRuler />,
 }
 
 export function App() {
@@ -99,7 +120,7 @@ export function App() {
             title={theme === 'dark' ? t('app.theme.toLight') : t('app.theme.toDark')}
             aria-label={theme === 'dark' ? t('app.theme.toLight') : t('app.theme.toDark')}
           >
-            {theme === 'dark' ? '☀️' : '🌙'}
+            {theme === 'dark' ? <IconSun /> : <IconMoon />}
           </button>
         </div>
       </header>

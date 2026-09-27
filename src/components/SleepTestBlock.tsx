@@ -2,6 +2,7 @@ import { memo } from 'react'
 import type { PortfolioStats } from './PerformanceTable'
 import { formatVND } from '../utils/vndFormat'
 import { useT, useTRich } from '../i18n'
+import { IconWarning } from './icons'
 
 interface Props {
   investAmount: number
@@ -79,7 +80,7 @@ function SleepTestBlockImpl({ investAmount, stats }: Props) {
 
       {extraPainVND > 0 && (
         <div className="sleep-test-takeaway">
-          <span className="mm-takeaway-emoji">😰</span>
+          <span className="mm-takeaway-emoji"><IconWarning /></span>
           <span>
             {tr('sleep.takeaway', {
               name: worstBtc.name,

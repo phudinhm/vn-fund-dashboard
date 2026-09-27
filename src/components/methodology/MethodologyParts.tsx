@@ -24,7 +24,9 @@ export function Where({ children }: { children: React.ReactNode }) {
 export function SeenAt({ where, children }: { where: string; children: React.ReactNode }) {
   return (
     <div className="method-seenat">
-      <span className="method-seenat-icon">👉</span>
+      {/* Mũi tên chữ thường, không phải icon riêng: cùng ký hiệu "→" đã dùng
+          khắp app để trỏ tới chỗ khác, không cần một icon SVG cho một chỗ. */}
+      <span className="method-seenat-icon">→</span>
       <span>{where}: {children}</span>
     </div>
   )

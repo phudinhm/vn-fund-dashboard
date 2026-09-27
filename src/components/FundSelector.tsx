@@ -5,6 +5,7 @@ import { FUND_COLORS, MAX_COMPARE_FUNDS } from '../constants'
 import { SavingsRateInput } from './SavingsRateInput'
 import { useWatchlist } from '../hooks/useWatchlist'
 import { useT, type TranslationKey } from '../i18n'
+import { IconStar } from './icons'
 import {
   buildGroupedFundOptions, findGroupedOption,
   type FundOption, type FundOptionGroup,
@@ -110,7 +111,7 @@ export function FundSelector({
                 onClick={() => toggle(fundId)}
                 title={isWatched(fundId) ? t('fundSelector.removeFromWatchlist') : t('fundSelector.addToWatchlist')}
               >
-                {isWatched(fundId) ? '★' : '☆'}
+                <IconStar filled={isWatched(fundId)} />
               </button>
             )}
             <button

@@ -4,6 +4,7 @@ import {
   Tooltip, ResponsiveContainer, Legend, LabelList,
 } from 'recharts'
 import { useT, useTRich } from '../i18n'
+import { IconWarning } from './icons'
 
 export interface RiskContribItem {
   name: string
@@ -105,7 +106,7 @@ function RiskContributionChartImpl({ data, fundId }: Props) {
       </ResponsiveContainer>
       {highlight && riskMultiplier > 1 && (
         <div className="chart-takeaway chart-takeaway--orange">
-          <span className="chart-takeaway-icon">⚠️</span>
+          <span className="chart-takeaway-icon"><IconWarning /></span>
           <div className="chart-takeaway-body">
             {tr('rc.takeaway', {
               name: highlight.name,

@@ -12,6 +12,7 @@ import { formatVND, vndComparisonKey } from '../utils/vndFormat'
 import { useT, useTRich, translateStatic } from '../i18n'
 import { useLanguage, type Language } from '../hooks/useLanguage'
 import { dcaYearlyMWRR } from '../utils/dca'
+import { IconCoin, IconTarget, IconTrendDown } from './icons'
 
 export interface JourneyPortfolio {
   id: string
@@ -79,7 +80,7 @@ function DcaJourneyBlockImpl({ portfolios, startDate, endDate }: Props) {
 
         {netProfit > 0 && (
           <div className="dca-journey-takeaway">
-            <span className="dca-journey-takeaway-icon">💰</span>
+            <span className="dca-journey-takeaway-icon"><IconCoin /></span>
             <div>
               {comparison
                 ? tr('journey.takeaway.gain', {
@@ -98,7 +99,7 @@ function DcaJourneyBlockImpl({ portfolios, startDate, endDate }: Props) {
         )}
         {netProfit <= 0 && (
           <div className="dca-journey-takeaway dca-journey-takeaway--neg">
-            <span className="dca-journey-takeaway-icon">📉</span>
+            <span className="dca-journey-takeaway-icon"><IconTrendDown /></span>
             <div>
               {tr('journey.takeaway.loss', { period, pct: Math.abs(profitPct).toFixed(1) })}
             </div>
@@ -147,7 +148,7 @@ function DcaJourneyBlockImpl({ portfolios, startDate, endDate }: Props) {
 
       {sorted.length >= 2 && gap > 0 && (
         <div className="dca-journey-takeaway">
-          <span className="dca-journey-takeaway-icon">🎯</span>
+          <span className="dca-journey-takeaway-icon"><IconTarget /></span>
           <div>
             {tr('journey.gap', { winner: winner.name, loser: loser.name })}
             <strong>{formatVND(gap)}</strong>

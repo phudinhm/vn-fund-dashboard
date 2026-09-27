@@ -287,6 +287,11 @@ button:not(:disabled):active {
   width: 38px;
 }
 
+.theme-toggle-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
 .lang-toggle-btn {
   width: auto;
   min-width: 38px;
@@ -435,14 +440,17 @@ button:not(:disabled):active {
   border-radius: 50%;
   background: var(--color-bg);
   color: #b8b6ab;
-  font-size: 1rem;
-  line-height: 1;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.15s;
   flex-shrink: 0;
+}
+
+.fund-star-btn svg {
+  width: 15px;
+  height: 15px;
 }
 
 .fund-star-btn:hover {
@@ -652,8 +660,13 @@ button:not(:disabled):active {
 }
 
 .tab-icon {
-  font-size: 0.95rem;
-  line-height: 1;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.tab-icon svg {
+  width: 16px;
+  height: 16px;
 }
 
 .tab:hover {
@@ -719,8 +732,7 @@ button:not(:disabled):active {
   .tab-icon {
     /* Cột icon rộng cố định để chữ của mọi tab thẳng hàng nhau. */
     width: 18px;
-    flex-shrink: 0;
-    text-align: center;
+    justify-content: center;
   }
 }
 
@@ -1806,10 +1818,21 @@ button:not(:disabled):active {
 }
 
 .mm-takeaway-emoji {
-  font-size: 1.1rem;
+  display: inline-flex;
   flex-shrink: 0;
-  line-height: 1.4;
+  padding-top: 1px;
 }
+
+.mm-takeaway-emoji svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* Icon lấy màu accent của khối chứa nó (xanh/đỏ/lục), cùng quy ước với
+   .chart-takeaway-icon: giữ tín hiệu màu emoji cũ có, nhưng đúng bảng màu app. */
+.money-machine-takeaway .mm-takeaway-emoji { color: var(--color-primary); }
+.sleep-test-takeaway .mm-takeaway-emoji { color: #dc2626; }
+.winrate-takeaway .mm-takeaway-emoji { color: #16a34a; }
 
 /* ─── Sleep Test block ────────────────────────────── */
 
@@ -2127,9 +2150,17 @@ button:not(:disabled):active {
 
 .dca-journey-takeaway-icon {
   flex-shrink: 0;
-  font-size: 1.1rem;
-  line-height: 1.3;
+  display: inline-flex;
+  padding-top: 1px;
+  color: var(--color-primary);
 }
+
+.dca-journey-takeaway-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.dca-journey-takeaway--neg .dca-journey-takeaway-icon { color: #dc2626; }
 
 /* EOY Returns table (Modified Dietz) */
 
@@ -2346,9 +2377,15 @@ button:not(:disabled):active {
 }
 
 .dividend-notice-icon {
-  font-size: 1.1rem;
+  display: inline-flex;
   flex-shrink: 0;
-  line-height: 1.3;
+  padding-top: 1px;
+  color: var(--color-primary);
+}
+
+.dividend-notice-icon svg {
+  width: 18px;
+  height: 18px;
 }
 
 .dividend-notice-body strong {
@@ -2622,8 +2659,13 @@ button:not(:disabled):active {
 
 .chart-takeaway-icon {
   flex-shrink: 0;
-  font-size: 1.1rem;
-  line-height: 1.3;
+  display: inline-flex;
+  padding-top: 1px;
+}
+
+.chart-takeaway-icon svg {
+  width: 18px;
+  height: 18px;
 }
 
 .chart-takeaway-body {
@@ -2636,6 +2678,10 @@ button:not(:disabled):active {
   border-left: 4px solid #16a34a;
 }
 .chart-takeaway--green strong { color: #15803d; font-weight: 700; }
+/* Icon lấy màu accent của biến thể (chứ không phải màu chữ đen mặc định) —
+   giữ lại cùng tín hiệu "xanh = tốt, đỏ = cảnh báo" mà emoji cũ có, nhưng
+   dùng đúng bảng màu của app thay vì màu cố định của icon emoji. */
+.chart-takeaway--green .chart-takeaway-icon { color: #16a34a; }
 
 .chart-takeaway--red {
   background: #fff1f2;
@@ -2643,6 +2689,7 @@ button:not(:disabled):active {
   border-left: 4px solid #dc2626;
 }
 .chart-takeaway--red strong { color: #9f1239; font-weight: 700; }
+.chart-takeaway--red .chart-takeaway-icon { color: #dc2626; }
 
 .chart-takeaway--orange {
   background: #fff7ed;
@@ -2650,6 +2697,7 @@ button:not(:disabled):active {
   border-left: 4px solid #ea580c;
 }
 .chart-takeaway--orange strong { color: var(--color-primary-dark); font-weight: 700; }
+.chart-takeaway--orange .chart-takeaway-icon { color: #ea580c; }
 
 .chart-takeaway--blue {
   background: var(--color-primary-light);
@@ -2657,6 +2705,7 @@ button:not(:disabled):active {
   border-left: 4px solid var(--color-primary);
 }
 .chart-takeaway--blue strong { color: var(--color-primary-dark); font-weight: 700; }
+.chart-takeaway--blue .chart-takeaway-icon { color: var(--color-primary); }
 
 /* ─── Section Divider (chapter break between chart groups) ─────────────────────── */
 
@@ -3217,16 +3266,27 @@ button:not(:disabled):active {
 }
 
 .share-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   padding: 14px 20px;
   border: 2px solid var(--color-border);
   border-radius: var(--radius);
   background: none;
   font-size: 0.9rem;
   font-weight: 600;
-  color: var(--color-text-secondary);
+  /* --color-text-secondary không tồn tại trong token; dùng --color-text-muted
+     cho đúng quy ước "chữ phụ" dùng chung ở nơi khác. */
+  color: var(--color-text-muted);
   cursor: pointer;
   transition: all 0.15s;
   white-space: nowrap;
+}
+
+.share-btn svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
 }
 
 .share-btn:hover {
@@ -5513,8 +5573,13 @@ button:not(:disabled):active {
 
 .dca-storm-takeaway-icon {
   flex-shrink: 0;
-  font-size: 1.3rem;
-  line-height: 1;
+  display: inline-flex;
+  padding-top: 1px;
+}
+
+.dca-storm-takeaway-icon svg {
+  width: 20px;
+  height: 20px;
 }
 
 .dca-storm-takeaway strong {
@@ -5563,8 +5628,12 @@ button:not(:disabled):active {
 }
 
 .dca-explainer-icon {
-  font-size: 1.15rem;
-  line-height: 1;
+  display: inline-flex;
+}
+
+.dca-explainer-icon svg {
+  width: 19px;
+  height: 19px;
 }
 
 .dca-explainer-toggle-text {

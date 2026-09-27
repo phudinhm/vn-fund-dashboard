@@ -9,6 +9,7 @@ import {
   buildGroupedFundOptions, type FundOption, type FundOptionGroup,
 } from '../utils/fundSelectOptions'
 import { MAX_COMPARE_FUNDS } from '../constants'
+import { IconStar } from './icons'
 
 interface Props {
   funds: FundMeta[]
@@ -200,7 +201,7 @@ export function WatchlistPanel({ funds, onCompare }: Props) {
                 onClick={() => remove(meta.id)}
                 title={t('watchlist.removeFromWatchlist')}
               >
-                ★
+                <IconStar filled />
               </button>
             </div>
             <p className="watchlist-card-fullname">{meta.name_vi}</p>
