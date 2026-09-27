@@ -26,6 +26,8 @@ import { useMemo, useState } from 'react'
 import type { FundMeta, PortfolioCardState, PricePoint } from '../types'
 import { formatVND } from '../utils/vndFormat'
 import { useT, useTRich } from '../i18n'
+import { useLanguage } from '../hooks/useLanguage'
+import { fundDisplayName } from '../utils/fundName'
 
 /** Đơn vị bán lẻ nhỏ nhất SJC thực tế cho cả vàng miếng và vàng nhẫn. */
 const SMALLEST_LOT_CHI = 0.5
@@ -102,6 +104,7 @@ export function GoldLotWarningBlock({
 }: Props) {
   const t = useT()
   const tr = useTRich()
+  const { language } = useLanguage()
   const [expanded, setExpanded] = useState(false)
 
   const goldFunds = useMemo(
@@ -130,7 +133,7 @@ export function GoldLotWarningBlock({
           const detail = contribution > 0 ? evaluateContribution(prices, contribution) : null
           if (detail) {
             issues.push({
-              portfolioName: p.name, fundName: goldFund.name_vi, weight: s.weight,
+              portfolioName: p.name, fundName: fundDisplayName(goldFund, language), weight: s.weight,
               kind: 'periodic', contribution, lotPrice: detail.lotPrice,
               periodsNeeded: Math.ceil(detail.lotPrice / contribution),
               sinceDate: detail.sinceDate, rangeStart: detail.rangeStart, rangeEnd: detail.rangeEnd,
@@ -142,7 +145,7 @@ export function GoldLotWarningBlock({
           const detail = contribution > 0 ? evaluateContribution(prices, contribution) : null
           if (detail) {
             issues.push({
-              portfolioName: p.name, fundName: goldFund.name_vi, weight: s.weight,
+              portfolioName: p.name, fundName: fundDisplayName(goldFund, language), weight: s.weight,
               kind: 'initial', contribution, lotPrice: detail.lotPrice,
               periodsNeeded: Math.ceil(detail.lotPrice / contribution),
               sinceDate: detail.sinceDate, rangeStart: detail.rangeStart, rangeEnd: detail.rangeEnd,
@@ -152,7 +155,7 @@ export function GoldLotWarningBlock({
       }
     }
     return { issues, hasGold }
-  }, [portfolios, initialAmount, cashflowAmount, purchasePriceData, goldFunds, dateFrom, dateTo])
+  }, [portfolios, initialAmount, cashflowAmount, purchasePriceData, goldFunds, dateFrom, dateTo, language])
 
   if (!hasGold) return null
 

@@ -43,6 +43,7 @@ import {
 } from './PortfolioCard'
 import { useT, useTRich, type TranslationKey } from '../i18n'
 import { useLanguage } from '../hooks/useLanguage'
+import { fundDisplayName } from '../utils/fundName'
 
 interface Props {
   funds: FundMeta[]
@@ -176,16 +177,16 @@ function LumpSumDCAPanelImpl({ funds, shareUrl, active }: Props) {
   }, [portfolio])
 
   const fundOptions = useMemo(
-    () => funds.map(f => ({ value: f.id, label: f.name_vi })),
-    [funds],
+    () => funds.map(f => ({ value: f.id, label: fundDisplayName(f, language) })),
+    [funds, language],
   )
 
   // Bond/balanced funds for cash fund picker
   const cashFundOptions = useMemo(
     () => funds
       .filter(f => ['VFF', 'DCBF', 'BVBF', 'SSIBF', 'DCIP'].includes(f.id))
-      .map(f => ({ value: f.id, label: f.name_vi })),
-    [funds],
+      .map(f => ({ value: f.id, label: fundDisplayName(f, language) })),
+    [funds, language],
   )
 
   // Collect fund IDs needed (portfolio slots + cash fund + compare fund)
@@ -277,6 +278,7 @@ function LumpSumDCAPanelImpl({ funds, shareUrl, active }: Props) {
       const prices = fundData.get(id)
       if (prices) snapshot.set(id, prices)
     }
+    const compareFund = compareFundId ? funds.find(f => f.id === compareFundId) : undefined
     return {
       params: {
         portfolio: { ...portfolio!, slots: [...portfolio!.slots] },
@@ -290,7 +292,7 @@ function LumpSumDCAPanelImpl({ funds, shareUrl, active }: Props) {
       },
       data: snapshot,
       compareFundName: compareFundId
-        ? funds.find(f => f.id === compareFundId)?.name_vi ?? compareFundId
+        ? (compareFund ? fundDisplayName(compareFund, language) : compareFundId)
         : null,
     }
   }

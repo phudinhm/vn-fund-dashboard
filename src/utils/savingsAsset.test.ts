@@ -35,9 +35,11 @@ describe('id tiết kiệm', () => {
   })
 
   it('tên hiển thị đọc ra nghĩa, mã quỹ thật thì giữ nguyên', () => {
-    expect(assetDisplayName(savingsAssetId(6))).toBe('Tiết kiệm 6%/năm')
-    expect(assetDisplayName(savingsAssetId(6.5))).toBe('Tiết kiệm 6.5%/năm')
-    expect(assetDisplayName('DCDS')).toBe('DCDS')
+    // lang ghim 'vi' rõ ràng: assetDisplayName đọc ngôn ngữ hiện tại của app
+    // theo mặc định, không nên phụ thuộc app đang để ngôn ngữ gì.
+    expect(assetDisplayName(savingsAssetId(6), 'vi')).toBe('Tiết kiệm 6%/năm')
+    expect(assetDisplayName(savingsAssetId(6.5), 'vi')).toBe('Tiết kiệm 6.5%/năm')
+    expect(assetDisplayName('DCDS', 'vi')).toBe('DCDS')
   })
 })
 

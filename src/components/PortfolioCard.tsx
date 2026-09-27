@@ -1,7 +1,7 @@
 import Select from 'react-select'
 import type { FundMeta, PortfolioCardState, RebalanceFrequency } from '../types'
 import type { DCASlot } from '../utils/dca'
-import { isSavingsAssetId, savingsAssetId, SAVINGS_OPTION_LABEL } from '../utils/savingsAsset'
+import { isSavingsAssetId, savingsAssetId, savingsOptionLabel } from '../utils/savingsAsset'
 import { SavingsRateInput } from './SavingsRateInput'
 import { useT, type TranslationKey } from '../i18n'
 
@@ -117,7 +117,7 @@ export function PortfolioCard({
         {portfolio.slots.map((slot, idx) => {
           const isSavings = isSavingsAssetId(slot.fundId)
           const selectedOption = isSavings
-            ? { value: slot.fundId, label: SAVINGS_OPTION_LABEL }
+            ? { value: slot.fundId, label: savingsOptionLabel() }
             : fundOptions.find(o => o.value === slot.fundId) || null
           return (
           <div key={idx} className="portfolio-slot-row">

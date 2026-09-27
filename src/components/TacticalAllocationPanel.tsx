@@ -25,12 +25,13 @@ import { runTacticalBacktest, decomposeAdvantage, type TacticalBacktestResult, t
 import { PortfolioCard, portfolioSelectStyles, PORTFOLIO_COLORS } from './PortfolioCard'
 import {
   isSavingsAssetId, savingsAssetId,
-  SAVINGS_OPTION_LABEL, DEFAULT_SAVINGS_RATE,
+  savingsOptionLabel, DEFAULT_SAVINGS_RATE,
 } from '../utils/savingsAsset'
 import { MoneyInput } from './MoneyInput'
 import { formatVND, formatVNDAxis } from '../utils/vndFormat'
 import { useT, useTRich, translateStatic, type TranslationKey } from '../i18n'
 import { useLanguage } from '../hooks/useLanguage'
+import { fundDisplayName } from '../utils/fundName'
 
 interface Props {
   funds: FundMeta[]
@@ -146,8 +147,8 @@ function TacticalAllocationPanelImpl({ funds }: Props) {
 
   // Danh sách quỹ thật, không có tiết kiệm ngân hàng.
   const realFundOptions = useMemo(
-    () => funds.map(f => ({ value: f.id, label: f.name_vi })),
-    [funds],
+    () => funds.map(f => ({ value: f.id, label: fundDisplayName(f, language) })),
+    [funds, language],
   )
 
   // Danh sách đầy đủ, thêm tiết kiệm ngân hàng. Dùng cho CẢ 2 thẻ danh mục lẫn
@@ -166,7 +167,7 @@ function TacticalAllocationPanelImpl({ funds }: Props) {
   // process/2026-08-05_TietKiemNganHang.md.
   const fundOptions = useMemo(() => [
     ...realFundOptions,
-    { value: savingsAssetId(DEFAULT_SAVINGS_RATE), label: SAVINGS_OPTION_LABEL },
+    { value: savingsAssetId(DEFAULT_SAVINGS_RATE), label: savingsOptionLabel() },
   ], [realFundOptions])
 
   // Tín hiệu đang trỏ vào tiết kiệm thì backtest sẽ đứng im một trạng thái.

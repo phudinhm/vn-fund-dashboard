@@ -13,6 +13,8 @@ import {
 } from '../utils/overlap'
 import { useT, type TranslationKey } from '../i18n'
 import { sectorName } from '../utils/sectorName'
+import { useLanguage } from '../hooks/useLanguage'
+import { fundDisplayName } from '../utils/fundName'
 
 interface Props {
   funds: FundMeta[]
@@ -107,6 +109,7 @@ function symmetricDomain(rows: SectorDriftRow[]): { domain: [number, number]; ti
 
 function OverlapPanelImpl({ funds }: Props) {
   const t = useT()
+  const { language } = useLanguage()
   const formatPeriodLabel = usePeriodLabel()
   const [index, setIndex] = useState<HoldingsIndexEntry[] | null>(null)
   const [indexErrorKey, setIndexErrorKey] = useState<TranslationKey | null>(null)
@@ -146,8 +149,8 @@ function OverlapPanelImpl({ funds }: Props) {
     const ids = new Set((index ?? []).map(e => e.id))
     return funds
       .filter(f => ids.has(f.id))
-      .map(f => ({ value: f.id, label: f.name_vi }))
-  }, [funds, index])
+      .map(f => ({ value: f.id, label: fundDisplayName(f, language) }))
+  }, [funds, index, language])
 
   // Validate selections against available options; fall back to defaults.
   useEffect(() => {

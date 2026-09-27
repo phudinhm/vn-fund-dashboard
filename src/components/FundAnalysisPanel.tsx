@@ -20,6 +20,7 @@ import {
 import { useT, useTRich, numberLocale, type TranslationKey } from '../i18n'
 import { useLanguage, type Language } from '../hooks/useLanguage'
 import { sectorName } from '../utils/sectorName'
+import { fundDisplayName } from '../utils/fundName'
 
 /**
  * Tab "Phân Tích Quỹ" — đọc báo cáo tài chính tháng chính thức (Thông tư
@@ -311,11 +312,14 @@ function FundAnalysisPanelImpl({ funds }: Props) {
    * người dùng biết trước mức chi tiết sẽ nhận được.
    */
   const fundGroups: FundOptionGroup[] = useMemo(() => {
-    const label = (id: string) => funds.find(f => f.id === id)?.name_vi ?? id
+    const label = (id: string) => {
+      const f = funds.find(f => f.id === id)
+      return f ? fundDisplayName(f, language) : id
+    }
     const reportOptions = REPORT_FUNDS.map(id => ({ value: id, label: label(id) }))
     const holdingsOnly = funds
       .filter(f => !REPORT_FUNDS.includes(f.id) && holdingsSource.has(f.id))
-      .map(f => ({ value: f.id, label: f.name_vi }))
+      .map(f => ({ value: f.id, label: fundDisplayName(f, language) }))
 
     const groups: FundOptionGroup[] = [
       { label: t('fa.group.fullReports', { n: reportOptions.length }), options: reportOptions },
@@ -324,13 +328,14 @@ function FundAnalysisPanelImpl({ funds }: Props) {
       groups.push({ label: t('fa.group.holdingsOnly', { n: holdingsOnly.length }), options: holdingsOnly })
     }
     return groups
-  }, [funds, holdingsSource])
+  }, [funds, holdingsSource, language])
 
-  const selectedFund = useMemo(
-    () => findGroupedOption(fundGroups, fundId)
-      ?? { value: fundId, label: funds.find(f => f.id === fundId)?.name_vi ?? fundId },
-    [fundGroups, fundId, funds],
-  )
+  const selectedFund = useMemo(() => {
+    const found = findGroupedOption(fundGroups, fundId)
+    if (found) return found
+    const meta = funds.find(f => f.id === fundId)
+    return { value: fundId, label: meta ? fundDisplayName(meta, language) : fundId }
+  }, [fundGroups, fundId, funds, language])
   const selectedMeta = funds.find(f => f.id === fundId)
 
   const periodOptions: PeriodOption[] = useMemo(

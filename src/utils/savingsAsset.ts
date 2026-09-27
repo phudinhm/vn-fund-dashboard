@@ -1,5 +1,7 @@
 import type { PricePoint, PriceSeries } from '../types'
 import { createPriceSeries, toPriceSeriesPoints } from './priceSeries'
+import { getLanguage, type Language } from '../hooks/useLanguage'
+import { translateStatic } from '../i18n'
 
 /**
  * Tài sản giả lập "tiết kiệm ngân hàng, lãi suất cố định", dùng để trộn
@@ -36,7 +38,9 @@ export function pickDefaultSavingsRate(usedRates: Iterable<number>): number {
 }
 
 /** Nhãn hiển thị trong danh sách chọn quỹ, dùng chung cho mọi mức lãi suất vì rate sửa bằng ô nhập riêng ngay cạnh weight. */
-export const SAVINGS_OPTION_LABEL = 'Tiết kiệm ngân hàng (lãi suất cố định, tự nhập)'
+export function savingsOptionLabel(lang: Language = getLanguage()): string {
+  return translateStatic('savings.optionLabel', lang)
+}
 
 export function savingsAssetId(ratePct: number): string {
   return `${SAVINGS_ID_PREFIX}${ratePct}`
@@ -56,9 +60,9 @@ export function parseSavingsRate(id: string): number {
  * Tên hiển thị trên biểu đồ, bảng, narrative. Id thô ("SAVINGS:6") chỉ là
  * khoá nội bộ, đọc lên không ra nghĩa gì với người dùng.
  */
-export function assetDisplayName(id: string): string {
+export function assetDisplayName(id: string, lang: Language = getLanguage()): string {
   if (!isSavingsAssetId(id)) return id
-  return `Tiết kiệm ${parseSavingsRate(id)}%/năm`
+  return translateStatic('savings.displayName', lang, { rate: parseSavingsRate(id) })
 }
 
 /**

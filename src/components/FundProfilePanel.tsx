@@ -4,6 +4,7 @@ import { useFundProfiles, findProfile, type FundProfile } from '../hooks/useFund
 import { fundHouse } from '../utils/fundHouse'
 import { useT, useDecimal, numberLocale, type TranslationKey } from '../i18n'
 import { useLanguage } from '../hooks/useLanguage'
+import { fundDisplayName } from '../utils/fundName'
 
 interface Props {
   funds: FundMeta[]
@@ -39,8 +40,8 @@ function FundProfilePanelImpl({ funds }: Props) {
   const [openHouse, setOpenHouse] = useState<string | null>(null)
 
   const nameById = useMemo(
-    () => new Map(funds.map(f => [f.id.toUpperCase(), f.name_vi])),
-    [funds],
+    () => new Map(funds.map(f => [f.id.toUpperCase(), fundDisplayName(f, language)])),
+    [funds, language],
   )
 
   if (loading) return <div className="chart-container">{t('profile.loading')}</div>

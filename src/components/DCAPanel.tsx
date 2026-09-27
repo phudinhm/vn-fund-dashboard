@@ -34,7 +34,7 @@ import { parsePortfolios } from '../utils/portfolio'
 import { FUND_COLORS } from '../constants'
 import {
   savingsAssetId,
-  SAVINGS_OPTION_LABEL,
+  savingsOptionLabel,
   DEFAULT_SAVINGS_RATE,
 } from '../utils/savingsAsset'
 import {
@@ -44,6 +44,8 @@ import {
   MAX_FUNDS_PER_PORTFOLIO,
 } from './PortfolioCard'
 import { useT, type TranslationKey } from '../i18n'
+import { useLanguage } from '../hooks/useLanguage'
+import { fundDisplayName } from '../utils/fundName'
 
 interface Props {
   funds: FundMeta[]
@@ -155,6 +157,7 @@ const FREQ_OPTIONS: { value: DCAFrequency; labelKey: TranslationKey }[] = [
 function DCAPanelImpl({ funds, shareUrl, active }: Props) {
   const nextIdRef = useRef(1)
   const t = useT()
+  const { language } = useLanguage()
 
   // URL payload comes from App; this hook keeps localStorage precedence and the persist gate.
   const {
@@ -253,9 +256,9 @@ function DCAPanelImpl({ funds, shareUrl, active }: Props) {
   }, [portfolios])
 
   const fundOptions = useMemo(() => [
-    ...funds.map(f => ({ value: f.id, label: f.name_vi })),
-    { value: savingsAssetId(DEFAULT_SAVINGS_RATE), label: SAVINGS_OPTION_LABEL },
-  ], [funds])
+    ...funds.map(f => ({ value: f.id, label: fundDisplayName(f, language) })),
+    { value: savingsAssetId(DEFAULT_SAVINGS_RATE), label: savingsOptionLabel(language) },
+  ], [funds, language])
 
   // Quỹ 2-giá (mua/bán khác nhau, vd vàng miếng SJC) — xem giải thích ở
   // purchasePriceData phía trên.

@@ -4,6 +4,7 @@ import { daysBetween } from './dateMath'
 import { rollingWindowStarts } from './dateWindow'
 import { assetDisplayName } from './savingsAsset'
 import { percentileSorted } from './stats'
+import { getLanguage, type Language } from '../hooks/useLanguage'
 
 /**
  * Resample multiple ReturnPoint[] series to a common weekly date grid.
@@ -125,8 +126,8 @@ export type DCASlot = PortfolioSlot
  * tên hiển thị ("Tiết kiệm 6%/năm"). Mã quỹ thật thì giữ nguyên: "DCDS" vốn
  * đã là cái tên người dùng quen đọc.
  */
-export function derivePortfolioName(slots: DCASlot[], fallback: string): string {
-  if (slots.length === 1 && slots[0]!.fundId) return assetDisplayName(slots[0]!.fundId)
+export function derivePortfolioName(slots: DCASlot[], fallback: string, lang: Language = getLanguage()): string {
+  if (slots.length === 1 && slots[0]!.fundId) return assetDisplayName(slots[0]!.fundId, lang)
   return fallback
 }
 

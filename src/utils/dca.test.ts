@@ -35,9 +35,11 @@ describe('derivePortfolioName', () => {
     // "SAVINGS:6" là khoá nội bộ. Danh mục 100% tiết kiệm là cách dùng tự nhiên
     // nhất ở tab Chiến Thuật Phân Bổ ("dưới MA200 thì rút về gửi tiết kiệm"),
     // nên tên này hiện lên khắp biểu đồ và bảng, không được để lộ id thô.
-    expect(derivePortfolioName([{ fundId: 'SAVINGS:6', weight: 100 }], 'Portfolio 1'))
+    // lang ghim 'vi': hàm đọc ngôn ngữ hiện tại của app theo mặc định, không
+    // nên phụ thuộc app đang để ngôn ngữ gì.
+    expect(derivePortfolioName([{ fundId: 'SAVINGS:6', weight: 100 }], 'Portfolio 1', 'vi'))
       .toBe('Tiết kiệm 6%/năm')
-    expect(derivePortfolioName([{ fundId: 'SAVINGS:7.5', weight: 100 }], 'Portfolio 1'))
+    expect(derivePortfolioName([{ fundId: 'SAVINGS:7.5', weight: 100 }], 'Portfolio 1', 'vi'))
       .toBe('Tiết kiệm 7.5%/năm')
   })
 })

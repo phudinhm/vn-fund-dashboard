@@ -69,6 +69,8 @@ const DICT = {
   'fundSelector.savingsGroup': { vi: 'Tài sản khác', en: 'Other assets' },
   'fundSelector.addToWatchlist': { vi: 'Thêm vào danh sách theo dõi', en: 'Add to watchlist' },
   'fundSelector.removeFromWatchlist': { vi: 'Bỏ khỏi danh sách theo dõi', en: 'Remove from watchlist' },
+  'savings.optionLabel': { vi: 'Tiết kiệm ngân hàng (lãi suất cố định, tự nhập)', en: 'Bank savings (fixed rate, custom)' },
+  'savings.displayName': { vi: 'Tiết kiệm {rate}%/năm', en: 'Savings {rate}%/yr' },
 
   // ── Date range picker ──
   'dateRange.7d': { vi: '7 ngày', en: '7d' },

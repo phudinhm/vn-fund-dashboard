@@ -6,13 +6,14 @@ import { SavingsRateInput } from './SavingsRateInput'
 import { useWatchlist } from '../hooks/useWatchlist'
 import { useT, type TranslationKey } from '../i18n'
 import { IconStar } from './icons'
+import { useLanguage } from '../hooks/useLanguage'
 import {
   buildGroupedFundOptions, findGroupedOption,
   type FundOption, type FundOptionGroup,
 } from '../utils/fundSelectOptions'
 import {
   isSavingsAssetId, savingsAssetId, parseSavingsRate, pickDefaultSavingsRate,
-  SAVINGS_OPTION_LABEL,
+  savingsOptionLabel,
 } from '../utils/savingsAsset'
 interface Props {
   allFunds: FundMeta[]
@@ -30,12 +31,13 @@ export function FundSelector({
   endDate,
 }: Props) {
   const t = useT()
+  const { language } = useLanguage()
   const { isWatched, toggle } = useWatchlist()
   // Nhóm theo loại tài sản + công ty quản lý. 80+ quỹ trong một danh sách phẳng
   // rất khó quét bằng mắt; gom nhóm cho thấy ngay quỹ thuộc loại nào, của bên nào.
   const baseGroups: FundOptionGroup[] = useMemo(
-    () => buildGroupedFundOptions(allFunds, type => t(`category.${type}` as TranslationKey)),
-    [allFunds, t],
+    () => buildGroupedFundOptions(allFunds, type => t(`category.${type}` as TranslationKey), language),
+    [allFunds, t, language],
   )
 
   function changeFund(index: number, newId: string) {
@@ -75,7 +77,7 @@ export function FundSelector({
             ...baseGroups,
             {
               label: t('fundSelector.savingsGroup'),
-              options: [{ value: savingsAssetId(defaultRate), label: SAVINGS_OPTION_LABEL }],
+              options: [{ value: savingsAssetId(defaultRate), label: savingsOptionLabel() }],
             },
           ]
           return (
@@ -91,7 +93,7 @@ export function FundSelector({
               // Lãi suất nằm trong id ("SAVINGS:7"), đổi lãi suất là đổi id, nên
               // id mới không khớp option nào. Tự dựng option cho đúng id hiện tại.
               value={isSavingsAssetId(fundId)
-                ? { value: fundId, label: SAVINGS_OPTION_LABEL }
+                ? { value: fundId, label: savingsOptionLabel() }
                 : findGroupedOption(groups, fundId)}
               onChange={opt => opt && changeFund(i, opt.value)}
               placeholder={t('fundSelector.searchPlaceholder')}
