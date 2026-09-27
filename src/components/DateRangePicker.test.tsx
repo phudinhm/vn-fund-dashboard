@@ -1,6 +1,14 @@
-import { describe, expect, it, vi } from 'vitest'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { describe, expect, it, vi, beforeAll } from 'vitest'
+import { fireEvent, render, screen, renderHook, act } from '@testing-library/react'
 import { DateRangePicker } from './DateRangePicker'
+import { useLanguage } from '../hooks/useLanguage'
+
+// Nhãn nút/label đọc qua useT() (store ngôn ngữ toàn cục), nên phải tự ghim
+// tiếng Việt thay vì dựa vào ngôn ngữ mặc định hiện tại của app.
+beforeAll(() => {
+  const { result } = renderHook(() => useLanguage())
+  act(() => result.current.setLanguage('vi'))
+})
 
 describe('DateRangePicker', () => {
   it.each([

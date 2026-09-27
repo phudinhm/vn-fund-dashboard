@@ -1,9 +1,17 @@
-import { render } from '@testing-library/react'
+import { render, renderHook, act } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
-import { beforeEach, describe, expect, it } from 'vitest'
+import { beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { SeoMetadata } from './SeoMetadata'
+import { useLanguage } from '../hooks/useLanguage'
 
 describe('SeoMetadata', () => {
+  // Tiêu đề/mô tả dịch qua useLanguage() (store toàn cục): ghim tiếng Việt
+  // để test không phụ thuộc ngôn ngữ mặc định hiện tại của app.
+  beforeAll(() => {
+    const { result } = renderHook(() => useLanguage())
+    act(() => result.current.setLanguage('vi'))
+  })
+
   beforeEach(() => {
     document.head.innerHTML = `
       <meta name="description" content="" />

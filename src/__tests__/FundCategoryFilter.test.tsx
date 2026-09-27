@@ -1,8 +1,17 @@
-import { describe, it, expect, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { describe, it, expect, vi, beforeAll } from 'vitest'
+import { render, screen, renderHook, act } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { FundCategoryFilter, filterFundsByCategory, getCategoryLabel } from '../components/FundCategoryFilter'
+import { useLanguage } from '../hooks/useLanguage'
 import type { FundMeta } from '../types'
+
+// Component đọc ngôn ngữ qua useT()/useLanguage() (store toàn cục, không
+// nhận prop), nên test khẳng định nhãn tiếng Việt phải tự ghim ngôn ngữ —
+// không được dựa vào ngôn ngữ mặc định hiện tại của app.
+beforeAll(() => {
+  const { result } = renderHook(() => useLanguage())
+  act(() => result.current.setLanguage('vi'))
+})
 
 const SAMPLE_FUNDS: FundMeta[] = [
   { id: 'DCDS', name_vi: 'DCDS - Dragon Capital', type: 'mutual_fund', start_date: '2004-05-20', csv_file: 'DCDS.csv' },
@@ -74,9 +83,9 @@ describe('filterFundsByCategory', () => {
 
 describe('getCategoryLabel', () => {
   it('returns correct Vietnamese labels for all types', () => {
-    expect(getCategoryLabel('mutual_fund')).toBe('Cổ phiếu')
-    expect(getCategoryLabel('bond')).toBe('Trái phiếu')
-    expect(getCategoryLabel('balanced')).toBe('Cân bằng')
-    expect(getCategoryLabel('etf')).toBe('ETF')
+    expect(getCategoryLabel('mutual_fund', 'vi')).toBe('Cổ phiếu')
+    expect(getCategoryLabel('bond', 'vi')).toBe('Trái phiếu')
+    expect(getCategoryLabel('balanced', 'vi')).toBe('Cân bằng')
+    expect(getCategoryLabel('etf', 'vi')).toBe('ETF')
   })
 })

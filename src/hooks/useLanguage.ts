@@ -7,7 +7,7 @@ export type Language = 'vi' | 'en'
 
 /** Store ngoài React (giống useWatchlist/useTheme) — mọi component gọi
  *  useLanguage() dùng chung một nguồn, đổi ở đâu cũng phản ánh khắp app. */
-let language: Language = loadLS<Language>(STORAGE_KEY, 'vi')
+let language: Language = loadLS<Language>(STORAGE_KEY, 'en')
 const listeners = new Set<() => void>()
 
 function setStoredLanguage(next: Language) {
