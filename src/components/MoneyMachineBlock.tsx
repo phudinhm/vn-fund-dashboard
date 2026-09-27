@@ -3,6 +3,7 @@ import type { PortfolioStats } from './PerformanceTable'
 import { formatVND, vndComparisonKey, signedVND } from '../utils/vndFormat'
 import { useT, useTRich, translateStatic } from '../i18n'
 import { useLanguage, type Language } from '../hooks/useLanguage'
+import { IconIdea } from './icons'
 
 interface Props {
   investAmount: number
@@ -105,7 +106,7 @@ function MoneyMachineBlockImpl({ investAmount, stats, fundId, startDate, endDate
 
       {bestCard.delta > 0 && comparison && (
         <div className="money-machine-takeaway">
-          <span className="mm-takeaway-emoji">💡</span>
+          <span className="mm-takeaway-emoji"><IconIdea /></span>
           <span>
             {tr('mm.takeaway', {
               pct: bestPct,

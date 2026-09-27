@@ -16,6 +16,7 @@ import type { DCAStormStats } from '../utils/dca'
 import { drawdownEpisodes } from '../utils/drawdownStats'
 import { useT, useTRich, translateStatic, type TranslationKey } from '../i18n'
 import { useLanguage, type Language } from '../hooks/useLanguage'
+import { IconAnchor, IconStorm } from './icons'
 
 export interface StormPortfolio {
   id: string
@@ -460,7 +461,7 @@ function StormTakeaway({ storm, worstName, multi }: TakeawayProps) {
   if (s.recoveryMonths !== null) {
     return (
       <div className="dca-storm-takeaway">
-        <span className="dca-storm-takeaway-icon">⚓</span>
+        <span className="dca-storm-takeaway-icon"><IconAnchor /></span>
         <div>
           {multi
             ? tr('storm.takeaway.recoveredNamed', { name: worstName })
@@ -480,7 +481,7 @@ function StormTakeaway({ storm, worstName, multi }: TakeawayProps) {
   // Case 2: Chưa hồi phục, message thẳng thắn
   return (
     <div className="dca-storm-takeaway dca-storm-takeaway--ongoing">
-      <span className="dca-storm-takeaway-icon">⛈️</span>
+      <span className="dca-storm-takeaway-icon"><IconStorm /></span>
       <div>
         {multi
           ? tr('storm.takeaway.underwaterNamed', { name: worstName })

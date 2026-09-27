@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useT } from '../i18n'
+import { IconCheck, IconLink } from './icons'
 
 interface Props {
   getUrl: () => string
@@ -29,6 +30,7 @@ export function ShareButton({ getUrl }: Props) {
 
   return (
     <button className={`share-btn ${copied ? 'share-btn-copied' : ''}`} onClick={handleClick}>
+      {copied ? <IconCheck /> : <IconLink />}
       {t(copied ? 'share.copied' : 'share.copy')}
     </button>
   )

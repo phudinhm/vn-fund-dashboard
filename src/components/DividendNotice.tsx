@@ -11,6 +11,7 @@
 import { useEffect, useState } from 'react'
 import { loadDividends } from '../utils/dividendAdjust'
 import { useTRich } from '../i18n'
+import { IconCoin } from './icons'
 
 interface Props {
   /** Danh sách fundId đang được chọn (hiển thị trên biểu đồ) */
@@ -41,7 +42,7 @@ export function DividendNotice({ fundIds }: Props) {
 
   return (
     <div className="dividend-notice">
-      <span className="dividend-notice-icon">💵</span>
+      <span className="dividend-notice-icon"><IconCoin /></span>
       <div className="dividend-notice-body">
         {tr('dividend.notice', { funds: matched.join(', ') })}
       </div>

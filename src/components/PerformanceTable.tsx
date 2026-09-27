@@ -1,4 +1,5 @@
 import { useT, useTRich } from '../i18n'
+import { IconTrophy } from './icons'
 
 export interface PortfolioStats {
   name: string
@@ -101,7 +102,7 @@ export function PerformanceTable({ stats }: Props) {
       </div>
       {winnerCagr && winnerSharpe && winnerSharpe.sharpe !== null && winnerDD && stats.length > 1 && (
         <div className="chart-takeaway chart-takeaway--blue">
-          <span className="chart-takeaway-icon">🏆</span>
+          <span className="chart-takeaway-icon"><IconTrophy /></span>
           <div className="chart-takeaway-body">
             {winnerCagr.name === winnerSharpe.name
               ? tr('perf.takeaway.sweep', {

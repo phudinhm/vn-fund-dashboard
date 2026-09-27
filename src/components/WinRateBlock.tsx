@@ -2,6 +2,7 @@ import { memo, useMemo } from 'react'
 import type { ReturnPoint } from '../types'
 import { rollingCumulativeReturnsMap, winRateAgainstRolledB } from '../utils/calculations'
 import { useT, useTRich, type TranslationKey } from '../i18n'
+import { IconTarget } from './icons'
 
 interface Props {
   portfolioReturns: ReturnPoint[][]    // [baseline, btc1, btc2, btc3]
@@ -140,7 +141,7 @@ function WinRateTakeaway({ best }: { best: Best }) {
   const tr = useTRich()
   return (
     <div className="winrate-takeaway">
-      <span className="mm-takeaway-emoji">🎯</span>
+      <span className="mm-takeaway-emoji"><IconTarget /></span>
       <span>
         {tr('wr.takeaway', {
           pct: best.btcPct,

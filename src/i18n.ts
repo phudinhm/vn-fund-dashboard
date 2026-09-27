@@ -685,8 +685,8 @@ const DICT = {
   },
 
   // ── Compare tab: charts & blocks ──
-  'share.copy': { vi: '🔗 Copy link chia sẻ', en: '🔗 Copy share link' },
-  'share.copied': { vi: '✓ Đã copy link!', en: '✓ Link copied' },
+  'share.copy': { vi: 'Copy link chia sẻ', en: 'Copy share link' },
+  'share.copied': { vi: 'Đã copy link!', en: 'Link copied' },
 
   'price.titleSingle': { vi: 'Giá tài sản', en: 'Asset price' },
   'price.titleMulti': { vi: 'Giá từng tài sản', en: 'Price of each asset' },

@@ -14,6 +14,7 @@ import { memo } from 'react'
 import type { DividendEvent, DividendNarrativeStats } from '../utils/dividendAdjust'
 import { formatVNDFull } from '../utils/vndFormat'
 import { useT, useTRich, numberLocale } from '../i18n'
+import { IconCoin } from './icons'
 
 export interface PortfolioDividendNarrative {
   portfolioId: string
@@ -156,7 +157,7 @@ function DividendBlockImpl({ fundIds, dividendsByFund, startDate, endDate, narra
         })}
 
         <div className="dca-journey-takeaway">
-          <span className="dca-journey-takeaway-icon">💵</span>
+          <span className="dca-journey-takeaway-icon"><IconCoin /></span>
           <div>
             {tr('div.navNote')}
           </div>

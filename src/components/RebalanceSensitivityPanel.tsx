@@ -23,6 +23,7 @@ import {
   type VariantResult, type VariantGroup, type ScheduleId, type BandSweep,
 } from '../utils/rebalanceSensitivity'
 import { PortfolioCard, portfolioSelectStyles } from './PortfolioCard'
+import { IconScale, IconTarget } from './icons'
 import {
   savingsAssetId,
   SAVINGS_OPTION_LABEL, DEFAULT_SAVINGS_RATE,
@@ -716,7 +717,7 @@ function SensitivityNarrative({
 
   const small = spread < 1.5
   const variant = small ? 'blue' : 'orange'
-  const icon = small ? '🎯' : '⚖️'
+  const icon = small ? <IconTarget /> : <IconScale />
 
   return (
     <div className={`chart-takeaway chart-takeaway--${variant}`}>

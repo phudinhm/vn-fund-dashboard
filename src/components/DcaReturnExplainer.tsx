@@ -9,6 +9,7 @@
  */
 import { useState, memo } from 'react'
 import { useT, useTRich } from '../i18n'
+import { IconIdea } from './icons'
 
 interface ExplainerPortfolio {
   id: string
@@ -49,7 +50,7 @@ function DcaReturnExplainerImpl({ portfolios }: Props) {
         onClick={() => setOpen(!open)}
         aria-expanded={open}
       >
-        <span className="dca-explainer-icon">💡</span>
+        <span className="dca-explainer-icon"><IconIdea /></span>
         <span className="dca-explainer-toggle-text">
           {t('explainer.title')}
         </span>

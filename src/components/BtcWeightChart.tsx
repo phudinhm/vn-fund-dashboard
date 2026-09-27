@@ -6,6 +6,7 @@ import {
 import type { ReturnPoint, RebalanceFrequency } from '../types'
 import { rollingCumulativeReturns } from '../utils/calculations'
 import { useT, useTRich, type TranslationKey } from '../i18n'
+import { IconTrendDown, IconTrendUp } from './icons'
 
 interface Props {
   // Pre-simulated returns for BTC weights 0%–10% (index 0 = 0%, index 10 = 10%)
@@ -197,7 +198,7 @@ function BtcWeightChartImpl({ allSimReturns, rebalFreq, fundId }: Props) {
       </div>
       {slope !== null && ret0 !== undefined && ret10 !== undefined && (
         <div className={`chart-takeaway chart-takeaway--${slope > 0 ? 'green' : 'red'}`}>
-          <span className="chart-takeaway-icon">{slope > 0 ? '📈' : '📉'}</span>
+          <span className="chart-takeaway-icon">{slope > 0 ? <IconTrendUp /> : <IconTrendDown />}</span>
           <div className="chart-takeaway-body">
             {tr('bw.takeaway', {
               period: periodLabel,
