@@ -1,15 +1,19 @@
 """
-Update fund NAV & ETF prices using vnstock library.
+Update ETF prices, market indices and BTC.
 Handles:
-  1. ETFs (E1VFVN30, FUEVFVND, FUEDCMID) via vnstock Quote (VCI source)
+  1. ETFs (E1VFVN30, FUEVFVND, FUEDCMID...) via the VCI chart API (same source
+     the vnstock library used; called directly since vnstock is no longer on PyPI)
   2. Mutual funds with different names on fmarket (DFVNCAF→DCAF, SSIVLGF→VLGF, MBBMFF→BMFF)
   3. Funds not on fmarket at all (PRULINK, VSF, TCFIN, TCSME) — skipped with warning
 
 Usage:  python -X utf8 scripts/update_vnstock.py
 """
 
+import json
 import os
 import sys
+import time
+import urllib.request
 import pandas as pd
 from datetime import datetime, timedelta, timezone
 
@@ -17,10 +21,10 @@ from datetime import datetime, timedelta, timezone
 
 DATA_DIR = os.path.join(os.path.dirname(__file__), '..', 'public', 'data')
 
-# ETFs — use Quote(source='VCI') to get stock prices
+# ETFs — lấy giá chứng khoán qua API biểu đồ VCI
 ETF_FUNDS = ['E1VFVN30', 'FUEVFVND', 'FUEDCMID', 'FUESSVFL', 'FUEVN100', 'FUESSV50']
 
-# Chỉ số thị trường — dùng làm benchmark so sánh với quỹ. Cùng Quote(source='VCI')
+# Chỉ số thị trường — dùng làm benchmark so sánh với quỹ. Cùng nguồn VCI
 # như ETF, nhưng KHÔNG nhân 1000: giá ETF trả về đơn vị nghìn đồng, còn điểm chỉ
 # số đã là con số thật (vd VNINDEX ~1.200), nhân lên sẽ sai một bậc.
 INDEX_SYMBOLS = ['VNINDEX', 'VN30', 'VN100']
@@ -64,12 +68,66 @@ def append_to_csv(csv_path, new_df):
     return len(new_df)
 
 
-# ─── ETF update via Quote ─────────────────────────────────
+# ─── VCI price history (direct HTTP, replaces vnstock Quote) ───
+
+VCI_CHART_URL = 'https://trading.vietcap.com.vn/api/chart/OHLCChart/gap-chart'
+VN_UTC_OFFSET_SECONDS = 7 * 3600
+
+
+def parse_vci_bars(payload):
+    """Turn a gap-chart response into a DataFrame with `time` (date) and `close`.
+
+    The API returns one object per symbol holding parallel arrays
+    (o/h/l/c/v/t), with `t` as epoch seconds. Adding the +7h Vietnam offset
+    before taking the date gives the trading day whether the bar is stamped at
+    local or UTC midnight.
+    """
+    if not payload:
+        return pd.DataFrame(columns=['time', 'close'])
+    bars = payload[0]
+    closes = bars.get('c') or []
+    stamps = bars.get('t') or []
+    if not closes or len(closes) != len(stamps):
+        return pd.DataFrame(columns=['time', 'close'])
+    dates = [
+        datetime.fromtimestamp(int(t) + VN_UTC_OFFSET_SECONDS, tz=timezone.utc).strftime('%Y-%m-%d')
+        for t in stamps
+    ]
+    return pd.DataFrame({'time': dates, 'close': [float(c) for c in closes]})
+
+
+def fetch_vci_history(symbol, start, max_retries=3):
+    """Daily closes for `symbol` from `start` (YYYY-MM-DD) up to today."""
+    days_back = (datetime.now() - datetime.strptime(start, '%Y-%m-%d')).days + 5
+    body = json.dumps({
+        'timeFrame': 'ONE_DAY',
+        'symbols': [symbol],
+        'countBack': max(days_back, 5),
+        'to': int(time.time()) + 86400,
+    }).encode()
+    req = urllib.request.Request(VCI_CHART_URL, data=body, headers={
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Origin': 'https://trading.vietcap.com.vn',
+        'Referer': 'https://trading.vietcap.com.vn/',
+        'User-Agent': 'Mozilla/5.0 (VN-Funds-Dashboard updater)',
+    })
+    for attempt in range(1, max_retries + 1):
+        try:
+            with urllib.request.urlopen(req, timeout=30) as resp:
+                payload = json.loads(resp.read().decode())
+            df = parse_vci_bars(payload)
+            return df[df['time'] >= start].reset_index(drop=True)
+        except Exception:
+            if attempt == max_retries:
+                raise
+            time.sleep(2 ** attempt)
+
+
+# ─── ETF update via VCI ───────────────────────────────────
 
 def update_etf(symbol):
-    """Update ETF price data using vnstock Quote (VCI source)."""
-    from vnstock import Quote
-
+    """Update ETF price data via the VCI chart API."""
     csv_path = os.path.join(DATA_DIR, f'{symbol}.csv')
     last_date = get_last_date(csv_path)
 
@@ -84,14 +142,13 @@ def update_etf(symbol):
         return True
 
     try:
-        quote = Quote(symbol=symbol, source='VCI')
-        df = quote.history(start=start, end=end, interval='1D')
+        df = fetch_vci_history(symbol, start)
 
         if df is None or df.empty:
             print(f'  ✅ {symbol}: no new data available (last: {last_date})')
             return True
 
-        # vnstock Quote returns: time, open, high, low, close, volume
+        # fetch_vci_history returns: time, close
         df_filtered = df[['time', 'close']].copy()
         df_filtered = df_filtered.rename(columns={'time': 'date', 'close': 'price'})
         df_filtered['date'] = pd.to_datetime(df_filtered['date']).dt.strftime('%Y-%m-%d')
@@ -115,17 +172,15 @@ def update_etf(symbol):
         return False
 
 
-# ─── Index update via Quote (benchmark: VNINDEX, VN30, VN100) ───
+# ─── Index update via VCI (benchmark: VNINDEX, VN30, VN100) ───
 
 def update_index(symbol):
-    """Update market index point data using vnstock Quote (VCI source).
+    """Update market index point data via the VCI chart API.
 
     Same fetch path as update_etf(), except index points are NOT multiplied
     by 1000 — VCI returns them as the real point value already, unlike stock/
     ETF closes which come in thousands of VND.
     """
-    from vnstock import Quote
-
     csv_path = os.path.join(DATA_DIR, f'{symbol}.csv')
     last_date = get_last_date(csv_path)
 
@@ -140,8 +195,7 @@ def update_index(symbol):
         return True
 
     try:
-        quote = Quote(symbol=symbol, source='VCI')
-        df = quote.history(start=start, end=end, interval='1D')
+        df = fetch_vci_history(symbol, start)
 
         if df is None or df.empty:
             print(f'  ✅ {symbol}: no new data available (last: {last_date})')
@@ -253,27 +307,10 @@ def update_btc_vnd():
 # ─── Main ─────────────────────────────────────────────────
 
 def main():
-    print(f'\n🚀 vnstock Updater — {datetime.now().strftime("%Y-%m-%d %H:%M")}\n')
-
-    # API key chỉ để NÂNG hạn mức request, không bắt buộc: vnstock vẫn chạy ở
-    # mức Khách (20 request/phút) khi không đăng ký — đủ cho vài chục mã chạy
-    # tuần tự ở đây. Trước kia thiếu key là return sớm, tức cả ETF, chỉ số và
-    # BTC đứng im vô thời hạn mà log chỉ ghi một dòng.
-    api_key = os.environ.get('VNSTOCK_API_KEY', '').strip()
-    if api_key:
-        try:
-            from vnstock import register_user
-            print('🔑 Registering vnstock API key...')
-            register_user(api_key=api_key)
-        except Exception as e:
-            # Key sai/hết hạn thì vẫn chạy tiếp ở mức Khách, không làm hỏng cả job.
-            print(f'⚠️  register_user failed, falling back to guest limits: {e}')
-    else:
-        print('ℹ️  No VNSTOCK_API_KEY set — running at guest rate limits (20 req/min).')
-    print()
+    print(f'\n🚀 Price Updater — {datetime.now().strftime("%Y-%m-%d %H:%M")}\n')
 
     # ── 1. ETFs ──
-    print('📊 Updating ETFs via vnstock Quote (VCI)...')
+    print('📊 Updating ETFs via VCI...')
     etf_failures = []
     for symbol in ETF_FUNDS:
         if not update_etf(symbol):
@@ -281,7 +318,7 @@ def main():
     print()
 
     # ── 2. Market indices (benchmark) ──
-    print('📈 Updating market indices via vnstock Quote (VCI)...')
+    print('📈 Updating market indices via VCI...')
     index_failures = []
     for symbol in INDEX_SYMBOLS:
         if not update_index(symbol):
