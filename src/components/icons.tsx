@@ -277,3 +277,13 @@ export function IconStorm(props: SVGProps<SVGSVGElement>) {
     </Icon>
   )
 }
+
+/** Gợi Ý Đầu Tư — la bàn, chỉ hướng chứ không đi thay. */
+export function IconCompass(props: SVGProps<SVGSVGElement>) {
+  return (
+    <Icon {...props}>
+      <circle cx="12" cy="12" r="8.5" />
+      <path d="M15.6 8.4l-2 5.2-5.2 2 2-5.2z" />
+    </Icon>
+  )
+}

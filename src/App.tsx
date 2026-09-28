@@ -17,6 +17,7 @@ import {
   IconCalendar,
   IconCloud,
   IconCompare,
+  IconCompass,
   IconMoon,
   IconOverlap,
   IconRefresh,
@@ -38,6 +39,7 @@ const VISIBLE_TABS = TAB_REGISTRY.filter(tab => !tab.hidden)
  */
 const TAB_ICONS: Record<TabId, ReactElement> = {
   compare: <IconCompare />,
+  advisor: <IconCompass />,
   watchlist: <IconStar />,
   dca: <IconCalendar />,
   lsdca: <IconScale />,
