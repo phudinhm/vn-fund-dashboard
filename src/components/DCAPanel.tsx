@@ -18,11 +18,10 @@ import { DcaRatioChart } from './DcaRatioChart'
 import { DcaReturnPainChart } from './DcaReturnPainChart'
 import { DcaEntryPointBlock } from './DcaEntryPointBlock'
 import { DCAStatsTable } from './DCAStatsTable'
-import { DCAGlossary } from './DCAGlossary'
 import { DcaJourneyBlock, EOYReturnsTable } from './DcaJourneyBlock'
 import { BankComparisonBlock } from './BankComparisonBlock'
 import { DcaStormBlock } from './DcaStormBlock'
-import { DcaReturnExplainer } from './DcaReturnExplainer'
+import { ReturnMetricsExplainer } from './ReturnMetricsExplainer'
 import { ProjectionBlock } from './ProjectionBlock'
 import { MonteCarloBlock } from './MonteCarloBlock'
 import { RollingReturnBlock } from './RollingReturnBlock'
@@ -678,11 +677,13 @@ function DCAPanelImpl({ funds, shareUrl, active }: Props) {
     cashflows: r.cashflows,
   })), [validResults])
 
-  const dcaReturnExplainerData = useMemo(() => validResults.map(r => ({
+  const returnExplainerData = useMemo(() => validResults.map(r => ({
     id: r.id,
     name: r.name,
     color: r.color,
     cagr: investorCagr(r.cumulative, r.totalInvested, r.finalValue),
+    twrr: dcaCagr(r.cumulative),
+    twrrGross: dcaCagr(r.cumulativeGross),
     mwrr: r.mwrr,
   })), [validResults])
 
@@ -1069,9 +1070,9 @@ function DCAPanelImpl({ funds, shareUrl, active }: Props) {
               portfolios={journeyPortfolios}
             />
 
-            {/* Giải thích CAGR vs MWRR (collapsible), ngay dưới summary cards để trả lời câu hỏi về 2 con số */}
-            <DcaReturnExplainer
-              portfolios={dcaReturnExplainerData}
+            {/* Giải thích CAGR, TWRR, MWRR (collapsible): một khối duy nhất gồm định nghĩa, công thức, ví dụ cây giống */}
+            <ReturnMetricsExplainer
+              portfolios={returnExplainerData}
             />
           </div>
 
@@ -1164,7 +1165,6 @@ function DCAPanelImpl({ funds, shareUrl, active }: Props) {
       )}
 
       {/* Giải Thích Khái Niệm */}
-      <DCAGlossary />
     </div>
   )
 }

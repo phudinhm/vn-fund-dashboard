@@ -8641,3 +8641,19 @@ button:not(:disabled):active {
 .adv-deploy .perf-table td:first-child,
 .adv-panel .perf-table-container:last-of-type .perf-table th:first-child,
 .adv-panel .perf-table-container:last-of-type .perf-table td:first-child { text-align: left; }
+
+/* ── Return metrics explainer: 3 thẻ số liệu ── */
+.rme-example-label { margin: 12px 0 6px; font-size: 0.82rem; color: var(--color-text-muted); }
+.rme-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.rme-fee-line {
+  margin: 12px 0 0;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--color-primary) 8%, var(--color-surface));
+  border: 1px solid var(--color-primary-border);
+  font-size: 0.86rem;
+  line-height: 1.55;
+}
+@media (max-width: 720px) {
+  .rme-cards { grid-template-columns: 1fr; }
+}

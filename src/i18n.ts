@@ -1597,12 +1597,26 @@ const DICT = {
     en: 'Cumulative return over the backtest: ending value ÷ total invested − 1.',
   },
   'dcaStats.help.cagr': {
-    vi: 'Lợi nhuận tích lũy quy năm: (Giá trị cuối ÷ Tổng đầu tư)^(1/số năm) − 1. Cho biết nếu danh mục tăng đều mỗi năm thì mỗi năm lãi bao nhiêu %. Lưu ý: chỉ số này thường thấp hơn MWRR trong DCA vì giả định toàn bộ vốn đã hoạt động từ đầu.',
-    en: 'The cumulative return annualised: (ending value ÷ total invested)^(1/years) − 1. It tells you the equal yearly return that lands on the same result. Note that for DCA this usually reads lower than MWRR, because it assumes all the capital was working from day one.',
+    vi: 'Chỉ hiện khi kỳ từ 1 năm trở lên. Lợi nhuận tích lũy quy năm: (Giá trị cuối ÷ Tổng đầu tư)^(1/số năm) − 1. Cho biết nếu danh mục tăng đều mỗi năm thì mỗi năm lãi bao nhiêu %. Lưu ý: chỉ số này thường thấp hơn MWRR trong DCA vì giả định toàn bộ vốn đã hoạt động từ đầu.',
+    en: 'Shown only for periods of a year or more. The cumulative return annualised: (ending value ÷ total invested)^(1/years) − 1. It tells you the equal yearly return that lands on the same result. Note that for DCA this usually reads lower than MWRR, because it assumes all the capital was working from day one.',
   },
   'dcaStats.help.mwrr': {
     vi: 'Money-Weighted Rate of Return: lợi nhuận thực tế của nhà đầu tư, tính đến thời điểm và số tiền từng lần nạp (IRR). Chỉ số chính để đánh giá hiệu quả chiến lược DCA. Thường cao hơn CAGR vì nhận ra rằng phần lớn vốn DCA chỉ hoạt động trong thời gian ngắn hơn toàn kỳ.',
     en: 'Money-weighted rate of return: what the investor actually earned, counting the date and size of every contribution (the IRR). This is the main measure of a DCA strategy. It usually reads higher than CAGR because it recognises that most DCA capital was invested for less than the full period.',
+  },
+  'dcaStats.col.twrrNet': { vi: 'TWRR sau phí', en: 'TWRR after fees' },
+  'dcaStats.col.twrrGross': { vi: 'TWRR trước phí', en: 'TWRR before fees' },
+  'dcaStats.help.twrrNet': {
+    vi: 'Lợi nhuận theo thời gian (TWRR) quy năm, SAU khi trừ phí mua, phí bán, thuế và chênh lệch mua-bán. Tiền nạp và tiền rút bị tách khỏi lợi nhuận; mọi chi phí trừ thẳng vào lợi nhuận ngay ngày phát sinh. Đây là hiệu suất của chính danh mục.',
+    en: 'Time-weighted return (TWRR) annualised, AFTER buy fees, sell fees, taxes and the bid-ask spread. Deposits and withdrawals are stripped out of the return; every cost is charged the day it happens. This is the performance of the portfolio itself.',
+  },
+  'dcaStats.help.twrrGross': {
+    vi: 'TWRR quy năm TRƯỚC phí: chỉ còn biến động giá và cổ tức. Chênh lệch với cột "TWRR sau phí" là phần phí ăn mòn mỗi năm.',
+    en: 'TWRR annualised BEFORE fees: price moves and dividends only. The gap to the "TWRR after fees" column is what costs erode each year.',
+  },
+  'dcaStats.shortPeriod': {
+    vi: 'Kỳ mô phỏng chưa đủ 1 năm nên không quy ra %/năm (nội suy từ vài tháng sẽ gây hiểu lầm).',
+    en: 'The simulated period is shorter than one year, so no %/yr is shown (extrapolating a few months would mislead).',
   },
   'dcaStats.col.maxDD': { vi: 'Sụt giảm tối đa', en: 'Max drawdown' },
   'dcaStats.help.maxDD': {
@@ -1726,53 +1740,15 @@ const DICT = {
   'ratio.months': { vi: '{n} tháng', en: '{n} months' },
   'ratio.years': { vi: '{n} năm', en: '{n} years' },
 
-  // ── DCA return explainer (CAGR vs MWRR) ──
-  'explainer.title': { vi: 'Vì sao có 2 con số lợi nhuận khác nhau (CAGR vs MWRR)?', en: 'Why are there two different return figures (CAGR vs MWRR)?' },
-  'explainer.intro': {
-    vi: 'Nhiều nhà đầu tư nhìn thấy 2 con số lợi nhuận chênh lệch nhau và bối rối: <i>"Tôi đã đầu tư tổng cộng 108 triệu đồng... nếu mà tăng trưởng 30%/năm thì không thể nào tôi chỉ có 168 triệu được. Quá vô lý!"</i> Thật ra cả hai đều đúng, chỉ là đo khác nhau.',
-    en: 'Plenty of investors see two different return figures and get confused: <i>"I put in 108 million in total… if it grew 30% a year there is no way I would only have 168 million. That makes no sense!"</i> In fact both figures are right; they measure different things.',
+  // ── Return metrics explainer (CAGR, TWRR, MWRR); nội dung dài ở components/ReturnMetricsExplainer.tsx ──
+  'rme.title': {
+    vi: 'Vì sao có 3 con số lợi nhuận khác nhau (CAGR, TWRR, MWRR)?',
+    en: 'Why are there three different return figures (CAGR, TWRR, MWRR)?',
   },
-  'explainer.perYear': { vi: '{v}%/năm', en: '{v}%/yr' },
-  'explainer.cagrAnswers': {
-    vi: 'Trả lời: <i>"Toàn bộ số tiền tôi đã đầu tư đã tăng trưởng bao nhiêu phần trăm mỗi năm?"</i> Giả định tất cả vốn đã hoạt động từ ngày đầu tiên.',
-    en: 'It answers: <i>"By what percentage per year did everything I invested grow?"</i> It assumes all the capital was working from day one.',
-  },
-  'explainer.mwrrAnswers': {
-    vi: 'Trả lời: <i>"Từng khoản tôi nạp vào tăng trưởng trung bình bao nhiêu phần trăm mỗi năm?"</i> Chiết khấu từng dòng tiền theo thời gian thực tế nắm giữ.',
-    en: 'It answers: <i>"On average, by what percentage per year did each contribution grow?"</i> It discounts every cash flow by how long it was actually held.',
-  },
-  'explainer.analogyTitle': { vi: '🌱 Ví dụ "cây giống"', en: '🌱 The "saplings" analogy' },
-  'explainer.analogy1': {
-    vi: 'Mỗi tháng bạn dành ra một khoản tiền để mua cây giống về trồng. Hãy xem mỗi cái cây là một khoản đầu tư.',
-    en: 'Each month you set aside some money to buy saplings and plant them. Think of every tree as one investment.',
-  },
-  'explainer.analogy2': {
-    vi: 'Sau ba năm, bạn bán hết số cây đang có. Tổng số tiền bán được xem như là doanh thu từ khoản đầu tư. Câu hỏi đặt ra là: <i>"Làm sao bạn biết khoản đầu tư này tốt tới đâu?"</i>',
-    en: 'After three years you sell every tree you have. The total is the proceeds of the investment. The question is: <i>how do you tell how good that investment was?</i>',
-  },
-  'explainer.analogyCagr': {
-    vi: '<b>CAGR</b> coi như bạn có đủ tiền từ đầu để mua tất cả cây trong ngày đầu tiên. Chia lợi nhuận cuối cùng cho tổng vốn, quy về hằng năm.',
-    en: '<b>CAGR</b> pretends you had enough money on day one to buy every tree at once. It divides the final gain by total capital and annualises.',
-  },
-  'explainer.analogyMwrr': {
-    vi: '<b>MWRR</b> tính tăng trưởng của <i>từng cái cây riêng biệt</i>. Cây trồng lâu có nhiều thời gian sinh trưởng sẽ mang về nhiều tiền hơn cây mới mua.',
-    en: '<b>MWRR</b> measures the growth of <i>each tree separately</i>. A tree planted long ago had more time to grow and brings in more than one bought recently.',
-  },
-  'explainer.dcaPoint': {
-    vi: 'Với DCA, khoản tiền bạn nạp tháng đầu tiên đã nắm giữ nhiều năm, nhưng khoản tiền tháng trước chỉ mới nắm giữ vài tuần. MWRR nhận ra điều này nên ',
-    en: 'With DCA, the money you contributed in the first month has been held for years, while last month’s has been held for weeks. MWRR recognises that, so it ',
-  },
-  'explainer.mwrrHigher': {
-    vi: 'thường cao hơn CAGR. Trong ví dụ của bạn, MWRR cao hơn CAGR <b>{gap}%/năm</b>.',
-    en: 'usually reads above CAGR. In your case MWRR is <b>{gap}%/yr</b> higher than CAGR.',
-  },
-  'explainer.mwrrGap': {
-    vi: 'chênh lệch với CAGR khoảng <b>{gap}%/năm</b>.',
-    en: 'differs from CAGR by about <b>{gap}%/yr</b>.',
-  },
-  'explainer.whichToUse': {
-    vi: '<b>Nên nhìn con số nào?</b> Nếu bạn muốn biết tiền của mình thực tế đã tăng trưởng ra sao, <b>MWRR là chỉ số chính cho chiến lược DCA</b>. Nhưng nếu bạn quen so sánh với các hình thức đầu tư khác (gửi tiết kiệm, trái phiếu) thì CAGR vẫn hữu ích. Nó trả lời câu hỏi đơn giản hơn: <i>"toàn bộ số tiền tôi đã đầu tư tăng bao nhiêu phần trăm mỗi năm?"</i>',
-    en: '<b>Which should you look at?</b> If you want to know how your money actually grew, <b>MWRR is the main measure for a DCA strategy</b>. But if you are used to comparing against other options — bank savings, bonds — CAGR is still useful. It answers the simpler question: <i>by what percentage per year did everything I invested grow?</i>',
+  'rme.exampleOf': { vi: 'Số liệu thật của danh mục', en: 'Real figures for' },
+  'rme.noYearYet': {
+    vi: 'Kỳ mô phỏng chưa đủ 1 năm nên chưa có số %/năm nào để so sánh. Phần giải thích bên dưới vẫn áp dụng khi kỳ đủ dài.',
+    en: 'The simulated period is shorter than one year, so there are no %/yr figures to compare yet. The explanation below applies once the period is long enough.',
   },
 
   // ── Dividend block ──
@@ -2771,9 +2747,6 @@ const DICT = {
     vi: '<b>Bảng này không nói khi nào nên vào lệnh.</b> Bạn không biết đỉnh ở đâu cho tới khi nó qua lâu rồi, và không biết bear lần này dài bằng mấy lần trước hay không. Bảng chỉ kể lại mấy chu kỳ đã đi qua.',
     en: '<b>This table does not tell you when to buy.</b> You cannot see a peak until long after it has passed, and you cannot know whether this bear runs as long as the last ones. It only recounts the cycles already behind us.',
   },
-
-  // ── DCA glossary (nội dung ở src/components/glossary/) ──
-  'glossary.toggle': { vi: 'Giải Thích Khái Niệm {arrow}', en: 'Key concepts {arrow}' },
 
   // ── Methodology tab (khung; nội dung ở src/components/methodology/) ──
   'method.tocLabel': { vi: 'Mục lục', en: 'Table of contents' },
