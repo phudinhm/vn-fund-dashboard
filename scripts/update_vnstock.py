@@ -43,6 +43,16 @@ def get_last_date(csv_path):
     return str(df['date'].iloc[-1])
 
 
+def get_last_price(csv_path):
+    """Read the last price from a CSV file (None if empty/missing)."""
+    if not os.path.exists(csv_path):
+        return None
+    df = pd.read_csv(csv_path)
+    if df.empty:
+        return None
+    return float(df['price'].iloc[-1])
+
+
 def append_to_csv(csv_path, new_df):
     """Append new rows to existing CSV (date,price format)."""
     if new_df.empty:
@@ -153,8 +163,21 @@ def update_etf(symbol):
         df_filtered = df_filtered.rename(columns={'time': 'date', 'close': 'price'})
         df_filtered['date'] = pd.to_datetime(df_filtered['date']).dt.strftime('%Y-%m-%d')
 
-        # VCI price is in 1000 VND → multiply by 1000
-        df_filtered['price'] = (df_filtered['price'] * 1000).astype(int)
+        # The VCI chart API returns ETF closes in whole VND (e.g. 34480). The old
+        # vnstock wrapper returned thousands of VND and needed a x1000; calling
+        # the API directly must NOT multiply, or prices come out 1000x too high.
+        df_filtered['price'] = df_filtered['price'].round().astype(int)
+
+        # Guard against a unit change: an ETF does not move >50% between two
+        # consecutive sessions, so a jump like that means the feed changed units
+        # and writing it would silently corrupt the history.
+        last_price = get_last_price(csv_path)
+        if last_price and len(df_filtered):
+            ratio = df_filtered['price'].iloc[0] / last_price
+            if ratio > 1.5 or ratio < 0.5:
+                print(f'  ❌ {symbol}: new price {df_filtered["price"].iloc[0]} vs last {last_price} '
+                      f'looks like a unit change — refusing to write')
+                return False
 
         df_filtered = df_filtered.sort_values('date').reset_index(drop=True)
 
