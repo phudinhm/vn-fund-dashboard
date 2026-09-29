@@ -8657,3 +8657,41 @@ button:not(:disabled):active {
 @media (max-width: 720px) {
   .rme-cards { grid-template-columns: 1fr; }
 }
+
+/* ── DCA cổ phiếu ── */
+.sdca-subhead { margin: 18px 0 8px; font-size: 0.86rem; font-weight: 700; color: var(--color-text); }
+.sdca-costs { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+.sdca-pct-field { display: flex; flex-direction: column; gap: 4px; font-size: 0.78rem; color: var(--color-text-muted); }
+.sdca-pct-input { display: flex; align-items: center; gap: 4px; }
+.sdca-pct-input input {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+  font-size: 0.9rem;
+}
+.sdca-pct-input em { font-style: normal; color: var(--color-text-muted); }
+.sdca-checks { display: flex; flex-direction: column; gap: 6px; margin-top: 14px; font-size: 0.86rem; }
+.sdca-checks label { display: flex; gap: 8px; align-items: center; cursor: pointer; }
+.sdca-manual-actions { margin: 8px 0 12px; }
+.sdca-textarea {
+  width: 100%;
+  margin: 6px 0 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-family: 'Courier New', monospace;
+  font-size: 0.82rem;
+  resize: vertical;
+}
+.sdca-errors { margin: 0 0 8px; padding-left: 18px; color: #be123c; font-size: 0.82rem; }
+.sdca-tile-sub { margin-top: 2px; font-size: 0.7rem; color: var(--color-text-muted); }
+.sdca-breakdown { font-size: 0.82rem; line-height: 1.55; color: var(--color-text-muted); }
+.sdca-ledger td, .sdca-ledger th { white-space: nowrap; font-size: 0.8rem; }
+.sdca-ledger-toggle { margin: 10px 0 0; }
+.sdca-panel .adv-results { margin-top: 4px; }
