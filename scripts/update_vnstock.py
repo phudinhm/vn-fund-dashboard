@@ -245,6 +245,84 @@ def update_index(symbol):
         return False
 
 
+# ─── Stocks (tab DCA cổ phiếu) ────────────────────────────
+
+STOCK_DIR = os.path.join(DATA_DIR, 'stocks')
+STOCK_YEARS = 10
+MIN_STOCK_BARS = 200
+
+# Rổ cổ phiếu vốn hoá lớn cho tab DCA cổ phiếu: (mã, tên hiển thị).
+STOCKS = [
+    ('ACB', 'ACB'), ('BID', 'BIDV'), ('CTG', 'VietinBank'), ('DGC', 'Hóa chất Đức Giang'),
+    ('FPT', 'FPT'), ('GAS', 'PV Gas'), ('GVR', 'Cao su Việt Nam'), ('HDB', 'HDBank'),
+    ('HPG', 'Hòa Phát'), ('MBB', 'MB Bank'), ('MSN', 'Masan'), ('MWG', 'Thế Giới Di Động'),
+    ('PLX', 'Petrolimex'), ('PNJ', 'PNJ'), ('POW', 'PV Power'), ('REE', 'REE'),
+    ('SAB', 'Sabeco'), ('SHB', 'SHB'), ('SSI', 'SSI'), ('STB', 'Sacombank'),
+    ('TCB', 'Techcombank'), ('TPB', 'TPBank'), ('VCB', 'Vietcombank'), ('VHM', 'Vinhomes'),
+    ('VIB', 'VIB'), ('VIC', 'Vingroup'), ('VJC', 'Vietjet'), ('VNM', 'Vinamilk'),
+    ('VPB', 'VPBank'), ('VRE', 'Vincom Retail'),
+]
+
+
+def read_stock_index():
+    path = os.path.join(STOCK_DIR, 'index.json')
+    if not os.path.exists(path):
+        return {}
+    try:
+        with open(path, encoding='utf-8') as f:
+            return {row['ticker']: row for row in json.load(f)}
+    except Exception:
+        return {}
+
+
+def update_stocks():
+    """Tải LẠI TOÀN BỘ lịch sử giá đã điều chỉnh của từng mã và ghi đè file.
+
+    Giá VCI đã điều chỉnh cổ tức và chia tách hồi tố: mỗi sự kiện mới làm dịch
+    toàn bộ giá cũ. Nối thêm dòng mới vào file cũ sẽ tạo bước nhảy giả ở chỗ nối,
+    nên khác ETF/chỉ số (chỉ nối thêm), ở đây luôn ghi đè cả file.
+    """
+    os.makedirs(STOCK_DIR, exist_ok=True)
+    index = read_stock_index()
+    start = (datetime.now() - timedelta(days=int(STOCK_YEARS * 365.25))).strftime('%Y-%m-%d')
+    failures = []
+
+    for ticker, name in STOCKS:
+        csv_path = os.path.join(STOCK_DIR, f'{ticker}.csv')
+        try:
+            df = fetch_vci_history(ticker, start)
+            if df is None or len(df) < MIN_STOCK_BARS:
+                raise ValueError(f'only {0 if df is None else len(df)} bars')
+            df = df.sort_values('time').drop_duplicates('time', keep='last').reset_index(drop=True)
+            df['price'] = df['close'].round(2)
+
+            # Chốt chặn: giá cuối kỳ mới không được lệch >50% so với lần trước
+            # (giá đã điều chỉnh nên giá gần nhất luôn là giá thật, ít khi đổi).
+            prev = index.get(ticker, {}).get('last_price')
+            if prev and not (0.5 <= df['price'].iloc[-1] / prev <= 1.5):
+                raise ValueError(f'last price {df["price"].iloc[-1]} vs previous {prev}')
+
+            with open(csv_path, 'w', newline='') as f:
+                f.write('date,price\n')
+                for d, p in zip(df['time'], df['price']):
+                    f.write(f'{d},{p}\n')
+            index[ticker] = {
+                'ticker': ticker, 'name': name, 'basis': 'adjusted',
+                'first': df['time'].iloc[0], 'last': df['time'].iloc[-1],
+                'last_price': float(df['price'].iloc[-1]),
+            }
+            print(f'  📈 {ticker}: {len(df)} bars ({df["time"].iloc[0]} → {df["time"].iloc[-1]})')
+        except Exception as e:
+            print(f'  ❌ {ticker}: {e}')
+            failures.append(ticker)
+
+    rows = [index[t] for t, _ in STOCKS if t in index]
+    with open(os.path.join(STOCK_DIR, 'index.json'), 'w', encoding='utf-8') as f:
+        json.dump(rows, f, ensure_ascii=False, indent=1)
+        f.write('\n')
+    return failures
+
+
 # ─── BTC/VND via CoinGecko ───────────────────────────────
 
 def update_btc_vnd():
@@ -348,16 +426,23 @@ def main():
             index_failures.append(symbol)
     print()
 
+    # ── 2b. Stocks (tab DCA cổ phiếu) ──
+    print('🏢 Updating stock prices via VCI (adjusted, full history)...')
+    stock_failures = update_stocks()
+    print()
+
     # ── 3. BTC/VND ──
     print('₿  Updating Bitcoin (BTC/VND) via CoinGecko...')
     btc_ok = update_btc_vnd()
     print()
 
-    if etf_failures or index_failures or not btc_ok:
+    if etf_failures or index_failures or stock_failures or not btc_ok:
         if etf_failures:
             print(f'❌ ETF update failed for: {", ".join(etf_failures)}')
         if index_failures:
             print(f'❌ Index update failed for: {", ".join(index_failures)}')
+        if stock_failures:
+            print(f'❌ Stock update failed for: {", ".join(stock_failures)}')
         if not btc_ok:
             print('❌ BTC update failed.')
         print('Exiting with error so GitHub Actions alerts.\n')

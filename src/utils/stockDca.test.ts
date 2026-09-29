@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { simulateStockDCA, lotsAffordable, LOT_SIZE, type StockEvent } from './stockDca'
+import { simulateStockDCA, lotsAffordable, parseStockEvents, LOT_SIZE, type StockEvent } from './stockDca'
 import { dcaMWRR } from './dca'
 import type { PricePoint } from '../types'
 
@@ -236,5 +236,44 @@ describe('simulateStockDCA: edge cases', () => {
     const r = simulateStockDCA(days('2024-01-01', [50_000, 51_000]), ONCE, { costs: ZERO })
     expect(r.finalValue).toBe(0)
     expect(r.cumulative[1]!.value).toBe(0)
+  })
+})
+
+describe('parseStockEvents', () => {
+  it('parses the three event kinds, comments and blank lines', () => {
+    const r = parseStockEvents(`
+      # cổ tức
+      cash 2024-06-20 2024-07-05 1000
+      cash 2024-12-10 500        # nhận cùng ngày ex
+      stock 2024-08-10 10%
+      rights 2024-09-01 0.2 20000
+    `)
+    expect(r.errors).toEqual([])
+    expect(r.events).toEqual([
+      { kind: 'cash', exDate: '2024-06-20', payDate: '2024-07-05', perShare: 1000 },
+      { kind: 'stock', exDate: '2024-08-10', ratio: 0.1 },
+      { kind: 'rights', exDate: '2024-09-01', ratio: 0.2, price: 20000 },
+      { kind: 'cash', exDate: '2024-12-10', perShare: 500 },
+    ])
+  })
+
+  it('reports each bad line by number and keeps the good ones', () => {
+    const r = parseStockEvents([
+      'cash 2024-06-20 1000',
+      'cash 2024-13-40 1000',
+      'stock 2024-08-10 0',
+      'rights 2024-09-01 0.2',
+      'dividend 2024-09-01 5',
+      'cash 2024-06-20 2024-06-10 1000',
+    ].join('\n'))
+    expect(r.events).toHaveLength(1)
+    expect(r.errors.map(e => [e.line, e.message])).toEqual([
+      [2, 'exDate'], [3, 'ratio'], [4, 'price'], [5, 'kind'], [6, 'payBeforeEx'],
+    ])
+  })
+
+  it('accepts thousands separators in the amount', () => {
+    const r = parseStockEvents('cash 2024-06-20 1,500')
+    expect(r.events[0]).toMatchObject({ perShare: 1500 })
   })
 })

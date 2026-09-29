@@ -387,3 +387,88 @@ export function simulateStockDCA(
     rightsShares,
   }
 }
+
+// ─── Đọc danh sách sự kiện dạng text (chế độ tự nhập) ────────────────────────
+
+export interface ParsedStockEvents {
+  events: StockEvent[]
+  /** Lỗi theo số dòng (đánh số từ 1) để người dùng sửa đúng chỗ. */
+  errors: { line: number; message: string }[]
+}
+
+const ISO = /^\d{4}-\d{2}-\d{2}$/
+
+function isValidIso(s: string): boolean {
+  if (!ISO.test(s)) return false
+  const d = new Date(s + 'T00:00:00Z')
+  return !Number.isNaN(d.getTime()) && d.toISOString().slice(0, 10) === s
+}
+
+/**
+ * Cú pháp mỗi dòng (dấu # mở đầu phần ghi chú, dòng trống bỏ qua):
+ *
+ *   cash   <ngày ex> [<ngày nhận>] <VND/cp>     cổ tức tiền mặt
+ *   stock  <ngày ex> <tỷ lệ>                    cổ tức/thưởng bằng cổ phiếu (0.1 = 10%)
+ *   rights <ngày ex> <tỷ lệ> <giá phát hành>    quyền mua (0.2 = 20%)
+ *
+ * Ngày theo dạng YYYY-MM-DD. Tỷ lệ chấp nhận cả "10%" (= 0.1).
+ */
+export function parseStockEvents(text: string): ParsedStockEvents {
+  const events: StockEvent[] = []
+  const errors: { line: number; message: string }[] = []
+
+  const num = (raw: string | undefined): number | null => {
+    if (raw === undefined) return null
+    const isPct = raw.endsWith('%')
+    const v = Number(isPct ? raw.slice(0, -1) : raw.replace(/,/g, ''))
+    if (!Number.isFinite(v)) return null
+    return isPct ? v / 100 : v
+  }
+
+  text.split(/\r?\n/).forEach((rawLine, idx) => {
+    const line = rawLine.replace(/#.*$/, '').trim()
+    if (!line) return
+    const lineNo = idx + 1
+    const parts = line.split(/[\s;]+/)
+    const kind = parts[0]!.toLowerCase()
+    const fail = (message: string) => errors.push({ line: lineNo, message })
+
+    if (kind === 'cash') {
+      const rest = parts.slice(1)
+      const exDate = rest[0]
+      if (!exDate || !isValidIso(exDate)) return fail('exDate')
+      let payDate: string | undefined
+      let amountRaw: string | undefined
+      if (rest.length >= 3) {
+        payDate = rest[1]
+        amountRaw = rest[2]
+        if (!payDate || !isValidIso(payDate)) return fail('payDate')
+        if (payDate < exDate) return fail('payBeforeEx')
+      } else {
+        amountRaw = rest[1]
+      }
+      const perShare = num(amountRaw)
+      if (perShare === null || perShare <= 0) return fail('amount')
+      events.push({ kind: 'cash', exDate, ...(payDate ? { payDate } : {}), perShare })
+    } else if (kind === 'stock') {
+      const exDate = parts[1]
+      if (!exDate || !isValidIso(exDate)) return fail('exDate')
+      const ratio = num(parts[2])
+      if (ratio === null || ratio <= 0 || ratio > 5) return fail('ratio')
+      events.push({ kind: 'stock', exDate, ratio })
+    } else if (kind === 'rights') {
+      const exDate = parts[1]
+      if (!exDate || !isValidIso(exDate)) return fail('exDate')
+      const ratio = num(parts[2])
+      if (ratio === null || ratio <= 0 || ratio > 5) return fail('ratio')
+      const price = num(parts[3])
+      if (price === null || price <= 0) return fail('price')
+      events.push({ kind: 'rights', exDate, ratio, price })
+    } else {
+      fail('kind')
+    }
+  })
+
+  events.sort((a, b) => a.exDate.localeCompare(b.exDate))
+  return { events, errors }
+}
