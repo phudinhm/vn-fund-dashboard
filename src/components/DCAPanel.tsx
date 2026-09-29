@@ -79,6 +79,9 @@ interface DCAPortfolioResult {
   name: string
   color: string
   cumulative: ReturnPoint[]
+  /** TWRR trước phí (chỉ biến động thị trường); `cumulative` là sau phí. */
+  cumulativeGross: ReturnPoint[]
+  totalCosts: number
   drawdown: ReturnPoint[]
   totalInvested: number
   finalValue: number
@@ -538,7 +541,7 @@ function DCAPanelImpl({ funds, shareUrl, active }: Props) {
       if (dcaResult.cumulative.length === 0) {
         portfolioResults.push({
           id: p.id, name: p.name, color,
-          cumulative: [], drawdown: [],
+          cumulative: [], cumulativeGross: [], totalCosts: 0, drawdown: [],
           totalInvested: 0, finalValue: 0, mwrr: null, profitFactor: null,
           storm: { maxDrawdown: 0, maxDDDate: '', maxDDPeakDate: '', recoveryMonths: null, stormsCount: 0, inBearPeriod: null },
           investedSeries: [], valueSeries: [], cashflows: [],
@@ -570,6 +573,8 @@ function DCAPanelImpl({ funds, shareUrl, active }: Props) {
       portfolioResults.push({
         id: p.id, name: p.name, color,
         cumulative: dcaResult.cumulative,
+        cumulativeGross: dcaResult.cumulativeGross,
+        totalCosts: dcaResult.totalCosts,
         drawdown: dcaResult.drawdown,
         totalInvested: dcaResult.totalInvested,
         finalValue: dcaResult.finalValue,
@@ -651,6 +656,9 @@ function DCAPanelImpl({ funds, shareUrl, active }: Props) {
     finalValue: r.finalValue,
     totalInvested: r.totalInvested,
     cagr: investorCagr(r.cumulative, r.totalInvested, r.finalValue),
+    twrrNet: dcaCagr(r.cumulative),
+    twrrGross: dcaCagr(r.cumulativeGross),
+    totalCosts: r.totalCosts,
     mwrr: r.mwrr,
     maxDrawdown: r.storm.maxDrawdown,
     avgDrawdown: avgDrawdown(r.drawdown),
