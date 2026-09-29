@@ -19,6 +19,11 @@ Usage:
   python scripts/fund_report/download_dragoncapital_reports.py --fund DCDS --url <product-page>
   python scripts/fund_report/download_dragoncapital_reports.py --start-year 2024 --end-year 2026
 
+Scheduled mode (no browser, no product-page URL needed):
+  python scripts/fund_report/download_dragoncapital_reports.py --fund DCBF --probe-only --recent-months 3
+probes the Azure Blob file names for the last N calendar months directly. Used
+by .github/workflows/update_fund_reports.yml to pick up each new monthly report.
+
 Idempotent: existing <FUND>_YYYY_MM.xlsx files are skipped; old-named files
 already in raw/ are renamed to the new convention (duplicates by size are
 dropped).
@@ -33,7 +38,6 @@ import time
 from pathlib import Path
 
 import requests
-from playwright.sync_api import sync_playwright
 
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8")
@@ -223,6 +227,45 @@ def add_no_prefix_urls(found, fund, raw_dir, start_yy, end_yy):
     return found
 
 
+def recent_months(n, today=None):
+    """The last n calendar months as (YYYY, MM) strings, newest first.
+
+    Includes the current month: a report for month M is published in early
+    month M+1, so the newest candidate is normally the previous month, but
+    probing the current one too costs two HEAD requests and never misses.
+    """
+    from datetime import date
+    d = today or date.today()
+    y, m = d.year, d.month
+    out = []
+    for _ in range(n):
+        out.append((str(y), f"{m:02d}"))
+        m -= 1
+        if m == 0:
+            y, m = y - 1, 12
+    return out
+
+
+def probe_months(found, fund, raw_dir, months):
+    """Probe the no-prefix blob names for specific (YYYY, MM) months only."""
+    added = 0
+    for yy, mm in months:
+        if (yy, mm) in found or (raw_dir / f"{fund}_{yy}_{mm}.xlsx").exists():
+            continue
+        for casing in ("THANG", "Thang"):
+            url = f"https://{BLOB_HOST}/cms1public/{fund}_BC_{casing}_{mm}{yy}.xlsx"
+            try:
+                r = requests.head(url, headers=HEADERS, timeout=20)
+            except Exception:
+                continue
+            if r.status_code == 200:
+                found[(yy, mm)] = url
+                added += 1
+                break
+    print(f"  probe: {added} new report URL(s) among {[f'{y}-{m}' for y, m in months]}")
+    return found
+
+
 def download(url, target):
     """Download to target; return True on success."""
     r = requests.get(url, headers=HEADERS, timeout=60)
@@ -242,6 +285,10 @@ def main():
     ap.add_argument("--url", default=DEFAULT_URL, help="product documents page")
     ap.add_argument("--start-year", type=int, default=None, help="oldest year to fetch")
     ap.add_argument("--end-year", type=int, default=None, help="newest year to fetch")
+    ap.add_argument("--probe-only", action="store_true",
+                    help="skip the browser; probe blob URLs for the most recent months")
+    ap.add_argument("--recent-months", type=int, default=3,
+                    help="with --probe-only: how many recent months to probe (default 3)")
     args = ap.parse_args()
 
     raw_dir = DATA_DIR / args.fund / "raw"
@@ -252,39 +299,44 @@ def main():
     renamed, deduped = normalize_raw_dir(args.fund, raw_dir)
     print(f"  renamed {renamed}, deduped {deduped}")
 
-    print(f"== scrape {args.fund}")
-    with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True, executable_path=find_chromium())
-        page = browser.new_page()
-        page.goto(args.url, wait_until="domcontentloaded", timeout=60000)
-        page.wait_for_timeout(2000)
+    if args.probe_only:
+        print(f"== probe {args.fund} (last {args.recent_months} months)")
+        found = probe_months({}, args.fund, raw_dir, recent_months(args.recent_months))
+    else:
+        print(f"== scrape {args.fund}")
+        from playwright.sync_api import sync_playwright  # only needed when scraping
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=True, executable_path=find_chromium())
+            page = browser.new_page()
+            page.goto(args.url, wait_until="domcontentloaded", timeout=60000)
+            page.wait_for_timeout(2000)
 
-        # discover available years from the 'Năm' dropdown
-        page.get_by_role("textbox", name="Năm").click(timeout=8000)
-        page.wait_for_timeout(600)
-        years = {y for y, _li in year_options(page)}
-        page.keyboard.press("Escape")
-        page.wait_for_timeout(400)
-        if not years:
-            print("  could not read year options", file=sys.stderr)
+            # discover available years from the 'Năm' dropdown
+            page.get_by_role("textbox", name="Năm").click(timeout=8000)
+            page.wait_for_timeout(600)
+            years = {y for y, _li in year_options(page)}
+            page.keyboard.press("Escape")
+            page.wait_for_timeout(400)
+            if not years:
+                print("  could not read year options", file=sys.stderr)
+                browser.close()
+                sys.exit(1)
+            print(f"  years available: {sorted(years)}")
+
+            end = args.end_year or max(years)
+            start = args.start_year or min(years)
+            year_range = [y for y in range(end, start - 1, -1) if y in years]
+
+            found = {}
+            for y in year_range:
+                for u in scrape_year(page, y):
+                    name = u.rsplit("/", 1)[-1]
+                    m = REPORT_RE.search(name)
+                    if m and m.group(1).upper() in aliases:
+                        found[(m.group(2)[2:], m.group(2)[:2])] = u  # (YYYY, MM) -> url
             browser.close()
-            sys.exit(1)
-        print(f"  years available: {sorted(years)}")
 
-        end = args.end_year or max(years)
-        start = args.start_year or min(years)
-        year_range = [y for y in range(end, start - 1, -1) if y in years]
-
-        found = {}
-        for y in year_range:
-            for u in scrape_year(page, y):
-                name = u.rsplit("/", 1)[-1]
-                m = REPORT_RE.search(name)
-                if m and m.group(1).upper() in aliases:
-                    found[(m.group(2)[2:], m.group(2)[:2])] = u  # (YYYY, MM) -> url
-        browser.close()
-
-    found = add_no_prefix_urls(found, args.fund, raw_dir, start, end)
+        found = add_no_prefix_urls(found, args.fund, raw_dir, start, end)
     print(f"== unique monthly reports found: {len(found)}")
     downloaded = skipped = failed = 0
     for (yy, mm), url in sorted(found.items()):
