@@ -4,6 +4,7 @@ import { daysBetween } from './dateMath'
 import { rollingWindowStarts } from './dateWindow'
 import { assetDisplayName } from './savingsAsset'
 import { percentileSorted } from './stats'
+import { TwrrChain, annualizeGrowth, isAnnualizable } from './twrr'
 import { getLanguage, type Language } from '../hooks/useLanguage'
 
 /**
@@ -144,8 +145,16 @@ export interface DCAResult {
   invested: { date: string; value: number }[]
   /** Individual cashflow events: { date, amount }, cho MWRR/IRR calculation */
   cashflows: { date: string; amount: number }[]
-  /** TWRR cumulative return series, bỏ qua ảnh hưởng cashflows */
+  /**
+   * TWRR cumulative return series SAU phí: bỏ qua ảnh hưởng cashflows nhưng đã
+   * trừ mọi chi phí (phí mua, chênh lệch mua-bán, chi phí tái cân bằng) ngay
+   * ngày phát sinh. Xem utils/twrr.ts.
+   */
   cumulative: ReturnPoint[]
+  /** TWRR cumulative TRƯỚC phí (chỉ biến động thị trường). Chênh với `cumulative` = phần phí ăn mòn theo thời gian. */
+  cumulativeGross: ReturnPoint[]
+  /** Tổng chi phí đã trả (VND) trong cả kỳ. */
+  totalCosts: number
   /** TWRR drawdown series, tính từ TWRR growth, không phải raw portfolio value */
   drawdown: ReturnPoint[]
   /** TWRR daily returns (for rolling, yearly calculations) */
@@ -158,7 +167,7 @@ export interface DCAResult {
 /**
  * Check if a cashflow should happen on this date given the frequency.
  */
-function shouldInvest(
+export function shouldInvest(
   prevDate: string,
   currentDate: string,
   freq: DCAFrequency,
@@ -413,6 +422,12 @@ export interface DCASimulateOptions {
    * thay vì giả định vàng cũng chỉ có 1 giá như quỹ mở/ETF.
    */
   purchasePrices?: Map<string, PricePoint[]>
+  /**
+   * Phí mua (tỷ lệ, vd 0.003 = 0,3%) trừ vào MỖI khoản nạp: chỉ (1 − phí) của
+   * số tiền nạp thành đơn vị quỹ. Mặc định 0. Không áp cho phần mua khi tái cân
+   * bằng (ở đó chỉ có chênh lệch mua-bán của tài sản 2 giá).
+   */
+  buyFeeRate?: number
 }
 
 /**
@@ -437,7 +452,7 @@ export function simulateDCA(
 ): DCAResult {
   const validSlots = slots.filter(s => s.fundId && s.weight > 0)
   if (validSlots.length === 0) {
-    return { values: [], invested: [], cashflows: [], cumulative: [], drawdown: [], returns: [], totalInvested: 0, finalValue: 0 }
+    return { values: [], invested: [], cashflows: [], cumulative: [], cumulativeGross: [], totalCosts: 0, drawdown: [], returns: [], totalInvested: 0, finalValue: 0 }
   }
 
   // Normalize weights to fractions
@@ -450,7 +465,7 @@ export function simulateDCA(
 
   const commonGrid = buildCommonPriceGrid(priceArrays)
   if (!commonGrid) {
-    return { values: [], invested: [], cashflows: [], cumulative: [], drawdown: [], returns: [], totalInvested: 0, finalValue: 0 }
+    return { values: [], invested: [], cashflows: [], cumulative: [], cumulativeGross: [], totalCosts: 0, drawdown: [], returns: [], totalInvested: 0, finalValue: 0 }
   }
   const purchaseGrid = buildPurchasePriceGrid(
     commonGrid.dates,
@@ -459,7 +474,7 @@ export function simulateDCA(
     options?.purchasePrices,
   )
   if (!purchaseGrid) {
-    return { values: [], invested: [], cashflows: [], cumulative: [], drawdown: [], returns: [], totalInvested: 0, finalValue: 0 }
+    return { values: [], invested: [], cashflows: [], cumulative: [], cumulativeGross: [], totalCosts: 0, drawdown: [], returns: [], totalInvested: 0, finalValue: 0 }
   }
   const { dates: allDates, priceLookups: purchaseLookups } = purchaseGrid
   const priceLookups = commonGrid.priceLookups
@@ -478,16 +493,17 @@ export function simulateDCA(
   const invested: { date: string; value: number }[] = []
   const cashflows: { date: string; amount: number }[] = []
 
-  // TWRR series (ignores cashflows effect, pure investment performance)
-  const twrrDailyReturns: ReturnPoint[] = []
-  const cumulative: ReturnPoint[] = []
-  const drawdown: ReturnPoint[] = []
+  // TWRR: một bộ tích luỹ dùng chung với tab DCA cổ phiếu (utils/twrr.ts).
+  const twrr = new TwrrChain()
+  const buyFeeRate = Math.min(Math.max(options?.buyFeeRate ?? 0, 0), 0.5)
 
   // Helper: buy funds with a given amount (dùng giá MUA-VÀO của người mua —
-  // tức priceLookups cho quỹ thường, purchaseLookups/giá "bán ra" cho vàng)
+  // tức priceLookups cho quỹ thường, purchaseLookups/giá "bán ra" cho vàng).
+  // Phí mua lấy ra khỏi số tiền nạp trước khi đổi thành đơn vị; totalInvested
+  // vẫn là số tiền nhà đầu tư thực bỏ ra.
   function buyFunds(amount: number, dateIdx: number) {
     const date = allDates[dateIdx]!
-    allocateUnits(units, amount, weights, purchaseLookups, date)
+    allocateUnits(units, amount * (1 - buyFeeRate), weights, purchaseLookups, date)
     totalInvested += amount
     lastInvestDate = date
   }
@@ -500,44 +516,37 @@ export function simulateDCA(
 
   // Track for rebalancing & TWRR
   let prevDateForRebal = allDates[0]!
-  let twrrGrowth = 1.0  // chain-linked TWRR growth factor
-  let twrrPeak = 1.0    // for TWRR-based drawdown
   // prevEndValue: portfolio value at end of previous day (AFTER any cashflow on that day)
   let prevEndValue = totalInvested > 0 ? valueUnits(units, priceLookups, allDates[0]!) : 0
 
-  // Record day 0
+  // Record day 0 (khoản nạp đầu đã chịu phí/chênh lệch mua-bán ngay: TWRR ngày 0 có thể âm)
   values.push({ date: allDates[0]!, value: prevEndValue })
   invested.push({ date: allDates[0]!, value: totalInvested })
-  cumulative.push({ date: allDates[0]!, value: 0 })  // 0% return on day 0
-  drawdown.push({ date: allDates[0]!, value: 0 })
+  twrr.start(allDates[0]!, params.initialAmount > 0 ? params.initialAmount : 0, prevEndValue)
 
   for (let i = 1; i < allDates.length; i++) {
     const date = allDates[i]!
 
-    // ── TWRR Step 1: compute value BEFORE any cashflow today ──
-    // This reflects pure market movement since yesterday's close
-    const valueBeforeCashflow = valueUnits(units, priceLookups, date)
-
-    // Daily TWRR return = market movement only (before adding new money)
-    let marketReturn = 0
-    if (prevEndValue > 0) {
-      marketReturn = valueBeforeCashflow / prevEndValue - 1
-    }
-    const growthAfterMarket = twrrGrowth * (1 + marketReturn)
+    // ── TWRR Step 1: value BEFORE any transaction today ──
+    // Pure market movement since yesterday's close
+    const v0 = valueUnits(units, priceLookups, date)
+    const market = prevEndValue > 0 ? v0 / prevEndValue : 1
 
     // ── Step 2: DCA cashflow (add new money AFTER computing return) ──
+    let flow = 0
     if (params.cashflowAmount > 0) {
       const investDate = lastInvestDate || allDates[0]!
       if (shouldInvest(investDate, date, params.cashflowFreq)) {
         // Panic-stop hook: cho biến thể hành vi (vd: dừng nạp khi DD < -20%).
         // DD dùng ở đây là TWRR drawdown hiện tại (sau khi đã chain-link return hôm nay).
         // Retail đọc giá đóng cửa, thấy âm, rồi quyết định không nạp.
-        const currentDD = twrrPeak > 0 ? (growthAfterMarket / twrrPeak - 1) : 0
+        const currentDD = twrr.drawdownAfterMarket(market)
         const shouldSkip = options?.skipContributionWhen?.(date, currentDD) ?? false
         if (!shouldSkip) {
           const amount = options?.contributionAmountOverride?.(date, currentDD) ?? params.cashflowAmount
           buyFunds(amount, i)
           cashflows.push({ date, amount: -amount })
+          flow = amount
         } else {
           // Vẫn phải dời mốc "kỳ nạp gần nhất" tới ngày hôm nay dù bỏ qua lần
           // này — nếu không, investDate ở trên cứ đứng yên tại lần nạp thành
@@ -551,13 +560,10 @@ export function simulateDCA(
 
     // ── Step 3: Rebalance check ──
     let portfolioValue = totalInvested > 0 ? valueUnits(units, priceLookups, date) : 0
-    let rebalanceFactor = 1
     if (totalInvested > 0) {
       if (shouldRebalForDCA(prevDateForRebal, date, rebalFreq)) {
-        const valueBeforeRebalance = portfolioValue
         rebalanceUnits(units, weights, priceLookups, date, purchaseLookups)
         portfolioValue = valueUnits(units, priceLookups, date)
-        if (valueBeforeRebalance > 0) rebalanceFactor = portfolioValue / valueBeforeRebalance
       }
     }
     prevDateForRebal = date
@@ -566,22 +572,18 @@ export function simulateDCA(
     values.push({ date, value: portfolioValue })
     invested.push({ date, value: totalInvested })
 
-    // ── Record TWRR cumulative return ──
-    const dailyReturn = (1 + marketReturn) * rebalanceFactor - 1
-    twrrDailyReturns.push({ date, value: dailyReturn })
-    twrrGrowth *= 1 + dailyReturn
-    cumulative.push({ date, value: twrrGrowth - 1 })
-
-    // ── Record TWRR drawdown ──
-    if (twrrGrowth > twrrPeak) twrrPeak = twrrGrowth
-    drawdown.push({ date, value: twrrGrowth / twrrPeak - 1 })
+    // ── Record TWRR: thị trường tách khỏi dòng tiền; phí + chênh lệch mua-bán
+    // (kể cả của lần nạp và tái cân bằng hôm nay) trừ ngay vào lợi nhuận ngày này.
+    twrr.step({ date, prevEnd: prevEndValue, v0, flow, v1: portfolioValue })
 
     // Update prevEndValue for next day's TWRR calculation
     prevEndValue = portfolioValue
   }
 
-  // Dữ liệu đã ở dạng chuỗi TWRR daily returns, dùng trực tiếp (không cần resample gì thêm)
-  const dailyReturnsOut = twrrDailyReturns
+  const series = twrr.result()
+  const cumulative = series.cumulative
+  const drawdown = series.drawdown
+  const dailyReturnsOut = series.returns
 
   const finalValue = values.length > 0 ? values[values.length - 1]!.value : 0
 
@@ -596,6 +598,8 @@ export function simulateDCA(
     invested,
     cashflows: allCashflows,
     cumulative,
+    cumulativeGross: series.cumulativeGross,
+    totalCosts: series.totalCosts,
     drawdown,
     returns: dailyReturnsOut,
     totalInvested,
@@ -626,6 +630,8 @@ export function simulateDCA(
  */
 export function dcaMWRR(cashflows: { date: string; amount: number }[]): number | null {
   if (cashflows.length < 2) return null
+  // Kỳ chưa đủ 1 năm: IRR quy năm chỉ là nội suy từ vài tháng, không báo.
+  if (!isAnnualizable(cashflows[0]!.date, cashflows[cashflows.length - 1]!.date)) return null
 
   const t0 = new Date(cashflows[0]!.date).getTime()
   const msPerYear = 365.25 * 24 * 60 * 60 * 1000
@@ -673,19 +679,17 @@ export function dcaMWRR(cashflows: { date: string; amount: number }[]): number |
  * giá trị điểm cuối (1 + growth) là tính được.
  *
  * Công thức: (twrrGrowth)^(1/years) - 1
+ *
+ * Trả null khi kỳ chưa đủ 1 năm (xem MIN_ANNUALIZE_YEARS trong twrr.ts): quy vài
+ * tháng lên cả năm là nội suy, không phải số đo.
  */
 export function dcaCagr(cumulative: ReturnPoint[]): number | null {
   if (cumulative.length < 2) return null
-
-  const startDate = new Date(cumulative[0]!.date)
-  const endDate = new Date(cumulative[cumulative.length - 1]!.date)
-  const msPerYear = 365.25 * 24 * 60 * 60 * 1000
-  const years = (endDate.getTime() - startDate.getTime()) / msPerYear
-
-  if (years <= 0) return null
-
-  const twrrGrowth = 1 + cumulative[cumulative.length - 1]!.value
-  return Math.pow(twrrGrowth, 1 / years) - 1
+  return annualizeGrowth(
+    1 + cumulative[cumulative.length - 1]!.value,
+    cumulative[0]!.date,
+    cumulative[cumulative.length - 1]!.date,
+  )
 }
 
 /**
@@ -700,13 +704,11 @@ export function investorCagr(
   finalValue: number,
 ): number | null {
   if (cumulative.length < 2 || totalInvested <= 0 || finalValue <= 0) return null
-
-  const msPerYear = 365.25 * 24 * 60 * 60 * 1000
-  const years = (new Date(cumulative[cumulative.length - 1]!.date).getTime() -
-    new Date(cumulative[0]!.date).getTime()) / msPerYear
-  if (years <= 0) return null
-
-  return Math.pow(finalValue / totalInvested, 1 / years) - 1
+  return annualizeGrowth(
+    finalValue / totalInvested,
+    cumulative[0]!.date,
+    cumulative[cumulative.length - 1]!.date,
+  )
 }
 
 /**

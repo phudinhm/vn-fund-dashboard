@@ -465,10 +465,17 @@ describe('simulateDCA purchasePrices option (gold buy/sell spread)', () => {
     expect(result.finalValue).toBeCloseTo(expectedUnits * 110, 4)
     expect(result.finalValue).toBeCloseTo(1000, 1)
 
-    // TWRR đo đúng biến động thị trường thuần túy của chuỗi ĐỊNH GIÁ (100→110,
-    // +10%), không lẫn khoản "lỗ" do spread lúc mua — 2 khái niệm tách bạch.
+    // TWRR sau phí trừ chênh lệch mua-bán NGAY ngày mua (1000 → 909,09 = −9,09%),
+    // rồi cộng biến động thị trường (100→110, +10%): 909,09 × 1,1 = 1000 → hoà vốn.
+    expect(result.cumulative[0]!.value).toBeCloseTo(100 / 110 - 1, 8)
     const finalTWRR = result.cumulative[result.cumulative.length - 1]!.value
-    expect(finalTWRR).toBeCloseTo(0.10, 4)
+    expect(finalTWRR).toBeCloseTo(0, 8)
+
+    // TWRR trước phí chỉ có biến động thị trường của chuỗi ĐỊNH GIÁ: +10%.
+    const grossTWRR = result.cumulativeGross[result.cumulativeGross.length - 1]!.value
+    expect(grossTWRR).toBeCloseTo(0.10, 8)
+    // Phần phí ăn mòn = đúng khoản chênh lệch mua-bán đã trả.
+    expect(result.totalCosts).toBeCloseTo(1000 - 1000 / 110 * 100, 6)
   })
 
   it('REGRESSION GUARD: without purchasePrices, buying at the (lower) valuation price overstates both day-0 value and final return', () => {
@@ -571,7 +578,7 @@ describe('simulateDCA purchasePrices option (gold buy/sell spread)', () => {
     )
 
     expect(result).toEqual({
-      values: [], invested: [], cashflows: [], cumulative: [], drawdown: [], returns: [], totalInvested: 0, finalValue: 0,
+      values: [], invested: [], cashflows: [], cumulative: [], cumulativeGross: [], totalCosts: 0, drawdown: [], returns: [], totalInvested: 0, finalValue: 0,
     })
   })
 

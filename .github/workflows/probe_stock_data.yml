@@ -1,0 +1,17 @@
+name: Probe stock data (temporary)
+on:
+  push:
+    paths:
+      - '.github/workflows/probe_stock_data.yml'
+      - 'scripts/probe_stock_data.py'
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -X utf8 scripts/probe_stock_data.py
