@@ -1,0 +1,242 @@
+[
+ {
+  "ticker": "ACB",
+  "name": "ACB",
+  "basis": "adjusted",
+  "first": "2016-09-29",
+  "last": "2026-09-29",
+  "last_price": 21050.0
+ },
+ {
+  "ticker": "BID",
+  "name": "BIDV",
+  "basis": "adjusted",
+  "first": "2016-09-29",
+  "last": "2026-09-29",
+  "last_price": 35900.0
+ },
+ {
+  "ticker": "CTG",
+  "name": "VietinBank",
+  "basis": "adjusted",
+  "first": "2016-09-29",
+  "last": "2026-09-29",
+  "last_price": 29750.0
+ },
+ {
+  "ticker": "DGC",
+  "name": "Hóa chất Đức Giang",
+  "basis": "adjusted",
+  "first": "2016-09-29",
+  "last": "2026-09-29",
+  "last_price": 36400.0
+ },
+ {
+  "ticker": "FPT",
+  "name": "FPT",
+  "basis": "adjusted",
+  "first": "2016-09-29",
+  "last": "2026-09-29",
+  "last_price": 63200.0
+ },
+ {
+  "ticker": "GAS",
+  "name": "PV Gas",
+  "basis": "adjusted",
+  "first": "2016-09-29",
+  "last": "2026-09-29",
+  "last_price": 84900.0
+ },
+ {
+  "ticker": "GVR",
+  "name": "Cao su Việt Nam",
+  "basis": "adjusted",
+  "first": "2018-03-21",
+  "last": "2026-09-29",
+  "last_price": 33300.0
+ },
+ {
+  "ticker": "HDB",
+  "name": "HDBank",
+  "basis": "adjusted",
+  "first": "2018-01-05",
+  "last": "2026-09-29",
+  "last_price": 27400.0
+ },
+ {
+  "ticker": "HPG",
+  "name": "Hòa Phát",
+  "basis": "adjusted",
+  "first": "2016-09-29",
+  "last": "2026-09-29",
+  "last_price": 20300.0
+ },
+ {
+  "ticker": "MBB",
+  "name": "MB Bank",
+  "basis": "adjusted",
+  "first": "2016-09-29",
+  "last": "2026-09-29",
+  "last_price": 19600.0
+ },
+ {
+  "ticker": "MSN",
+  "name": "Masan",
+  "basis": "adjusted",
+  "first": "2016-09-29",
+  "last": "2026-09-29",
+  "last_price": 69400.0
+ },
+ {
+  "ticker": "MWG",
+  "name": "Thế Giới Di Động",
+  "basis": "adjusted",
+  "first": "2016-09-29",
+  "last": "2026-09-29",
+  "last_price": 71900.0
+ },
+ {
+  "ticker": "PLX",
+  "name": "Petrolimex",
+  "basis": "adjusted",
+  "first": "2017-04-21",
+  "last": "2026-09-29",
+  "last_price": 36450.0
+ },
+ {
+  "ticker": "PNJ",
+  "name": "PNJ",
+  "basis": "adjusted",
+  "first": "2016-09-29",
+  "last": "2026-09-29",
+  "last_price": 28600.0
+ },
+ {
+  "ticker": "POW",
+  "name": "PV Power",
+  "basis": "adjusted",
+  "first": "2018-03-06",
+  "last": "2026-09-29",
+  "last_price": 12700.0
+ },
+ {
+  "ticker": "REE",
+  "name": "REE",
+  "basis": "adjusted",
+  "first": "2016-09-29",
+  "last": "2026-09-29",
+  "last_price": 47150.0
+ },
+ {
+  "ticker": "SAB",
+  "name": "Sabeco",
+  "basis": "adjusted",
+  "first": "2016-12-06",
+  "last": "2026-09-29",
+  "last_price": 43050.0
+ },
+ {
+  "ticker": "SHB",
+  "name": "SHB",
+  "basis": "adjusted",
+  "first": "2016-09-29",
+  "last": "2026-09-29",
+  "last_price": 11450.0
+ },
+ {
+  "ticker": "SSI",
+  "name": "SSI",
+  "basis": "adjusted",
+  "first": "2016-09-29",
+  "last": "2026-09-29",
+  "last_price": 20150.0
+ },
+ {
+  "ticker": "STB",
+  "name": "Sacombank",
+  "basis": "adjusted",
+  "first": "2016-09-29",
+  "last": "2026-09-29",
+  "last_price": 75800.0
+ },
+ {
+  "ticker": "TCB",
+  "name": "Techcombank",
+  "basis": "adjusted",
+  "first": "2018-06-04",
+  "last": "2026-09-29",
+  "last_price": 32600.0
+ },
+ {
+  "ticker": "TPB",
+  "name": "TPBank",
+  "basis": "adjusted",
+  "first": "2018-04-19",
+  "last": "2026-09-29",
+  "last_price": 14500.0
+ },
+ {
+  "ticker": "VCB",
+  "name": "Vietcombank",
+  "basis": "adjusted",
+  "first": "2016-09-29",
+  "last": "2026-09-29",
+  "last_price": 58000.0
+ },
+ {
+  "ticker": "VHM",
+  "name": "Vinhomes",
+  "basis": "adjusted",
+  "first": "2016-09-29",
+  "last": "2026-09-29",
+  "last_price": 69800.0
+ },
+ {
+  "ticker": "VIB",
+  "name": "VIB",
+  "basis": "adjusted",
+  "first": "2017-01-09",
+  "last": "2026-09-29",
+  "last_price": 13400.0
+ },
+ {
+  "ticker": "VIC",
+  "name": "Vingroup",
+  "basis": "adjusted",
+  "first": "2016-09-29",
+  "last": "2026-09-29",
+  "last_price": 230000.0
+ },
+ {
+  "ticker": "VJC",
+  "name": "Vietjet",
+  "basis": "adjusted",
+  "first": "2017-02-28",
+  "last": "2026-09-29",
+  "last_price": 133500.0
+ },
+ {
+  "ticker": "VNM",
+  "name": "Vinamilk",
+  "basis": "adjusted",
+  "first": "2016-09-29",
+  "last": "2026-09-29",
+  "last_price": 60300.0
+ },
+ {
+  "ticker": "VPB",
+  "name": "VPBank",
+  "basis": "adjusted",
+  "first": "2017-08-17",
+  "last": "2026-09-29",
+  "last_price": 22950.0
+ },
+ {
+  "ticker": "VRE",
+  "name": "Vincom Retail",
+  "basis": "adjusted",
+  "first": "2017-11-06",
+  "last": "2026-09-29",
+  "last_price": 24150.0
+ }
+]
