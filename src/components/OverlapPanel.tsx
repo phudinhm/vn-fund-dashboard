@@ -15,6 +15,8 @@ import { useT, type TranslationKey } from '../i18n'
 import { sectorName } from '../utils/sectorName'
 import { useLanguage } from '../hooks/useLanguage'
 import { fundDisplayName } from '../utils/fundName'
+import { FundFilterBar } from './FundFilterBar'
+import { useFilteredFunds } from '../hooks/useFundFilter'
 
 interface Props {
   funds: FundMeta[]
@@ -144,13 +146,14 @@ function OverlapPanelImpl({ funds }: Props) {
     return () => { cancelled = true }
   }, [])
 
+  const visibleFunds = useFilteredFunds(funds, [fundA, fundB])
   // Funds eligible for overlap: only those present in holdings index.
   const options: FundOption[] = useMemo(() => {
     const ids = new Set((index ?? []).map(e => e.id))
-    return funds
+    return visibleFunds
       .filter(f => ids.has(f.id))
       .map(f => ({ value: f.id, label: fundDisplayName(f, language) }))
-  }, [funds, index, language])
+  }, [visibleFunds, index, language])
 
   // Validate selections against available options; fall back to defaults.
   useEffect(() => {
@@ -303,6 +306,7 @@ function OverlapPanelImpl({ funds }: Props) {
       <div className="dca-params-card">
         <h3 className="dca-section-title">{t('calc.params')}</h3>
         <p className="overlap-limit-warn">{t('overlap.scopeNote')}</p>
+        <FundFilterBar funds={funds} />
         <div className="dca-param-row">
           <label className="dca-label">{fundA}</label>
           <div className="overlap-select">

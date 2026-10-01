@@ -12,6 +12,8 @@ import { MAX_COMPARE_FUNDS } from '../constants'
 import { IconStar } from './icons'
 import { useLanguage } from '../hooks/useLanguage'
 import { fundDisplayName } from '../utils/fundName'
+import { FundFilterBar } from './FundFilterBar'
+import { useFilteredFunds } from '../hooks/useFundFilter'
 
 interface Props {
   funds: FundMeta[]
@@ -104,14 +106,16 @@ export function WatchlistPanel({ funds, onCompare }: Props) {
 
   const fundById = useMemo(() => new Map(funds.map(f => [f.id, f])), [funds])
 
+  // Ở đây bộ lọc "chỉ quỹ theo dõi" vô nghĩa (đang chọn quỹ CHƯA theo dõi), nên bỏ qua cờ đó.
+  const visibleFunds = useFilteredFunds(funds)
   // Gom nhóm theo loại tài sản + công ty quản lý, giống dropdown tab So Sánh.
   const addGroups: FundOptionGroup[] = useMemo(
     () => buildGroupedFundOptions(
-      funds.filter(f => !watchedIds.includes(f.id)),
+      visibleFunds.filter(f => !watchedIds.includes(f.id)),
       type => t(`category.${type}` as TranslationKey),
       language,
     ),
-    [funds, watchedIds, t, language],
+    [visibleFunds, watchedIds, t, language],
   )
   const hasAddOptions = addGroups.some(g => g.options.length > 0)
 
@@ -154,6 +158,7 @@ export function WatchlistPanel({ funds, onCompare }: Props) {
         <div className="chart-header">
           <h3>{t('watchlist.addSectionTitle')}</h3>
         </div>
+        <FundFilterBar funds={funds} />
         <Select<FundOption, false, FundOptionGroup>
           className="fund-search-select"
           classNamePrefix="fund-search"

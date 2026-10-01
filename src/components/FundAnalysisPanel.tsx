@@ -21,6 +21,8 @@ import { useT, useTRich, numberLocale, type TranslationKey } from '../i18n'
 import { useLanguage, type Language } from '../hooks/useLanguage'
 import { sectorName } from '../utils/sectorName'
 import { fundDisplayName } from '../utils/fundName'
+import { FundFilterBar } from './FundFilterBar'
+import { useFilteredFunds } from '../hooks/useFundFilter'
 
 /**
  * Tab "Phân Tích Quỹ" — đọc báo cáo tài chính tháng chính thức (Thông tư
@@ -311,13 +313,14 @@ function FundAnalysisPanelImpl({ funds }: Props) {
    * liệu danh mục (phân tích theo holdings). Tách hai nhóm trong dropdown để
    * người dùng biết trước mức chi tiết sẽ nhận được.
    */
+  const visibleFunds = useFilteredFunds(funds, [fundId, ...REPORT_FUNDS])
   const fundGroups: FundOptionGroup[] = useMemo(() => {
     const label = (id: string) => {
       const f = funds.find(f => f.id === id)
       return f ? fundDisplayName(f, language) : id
     }
     const reportOptions = REPORT_FUNDS.map(id => ({ value: id, label: label(id) }))
-    const holdingsOnly = funds
+    const holdingsOnly = visibleFunds
       .filter(f => !REPORT_FUNDS.includes(f.id) && holdingsSource.has(f.id))
       .map(f => ({ value: f.id, label: fundDisplayName(f, language) }))
 
@@ -752,6 +755,7 @@ function FundAnalysisPanelImpl({ funds }: Props) {
       {/* ── Thông số ── */}
       <div className="dca-params-card">
         <h3 className="dca-section-title">{t('calc.params')}</h3>
+        <FundFilterBar funds={funds} />
         <div className="dca-param-row">
           <label className="dca-label">{t('fa.fund')}</label>
           <div className="overlap-select">

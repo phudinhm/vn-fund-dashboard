@@ -31,6 +31,8 @@ import {
 import { useT, useTRich, useDecimal, translateStatic } from '../i18n'
 import { useLanguage } from '../hooks/useLanguage'
 import { fundDisplayName } from '../utils/fundName'
+import { FundFilterBar } from './FundFilterBar'
+import { useFilteredFunds } from '../hooks/useFundFilter'
 
 interface Props {
   funds: FundMeta[]
@@ -132,10 +134,11 @@ function RebalanceSensitivityPanelImpl({ funds }: Props) {
     [language],
   )
 
+  const visibleFunds = useFilteredFunds(funds, portfolio.slots.map(s => s.fundId))
   const fundOptions = useMemo(() => [
-    ...funds.map(f => ({ value: f.id, label: fundDisplayName(f, language) })),
+    ...visibleFunds.map(f => ({ value: f.id, label: fundDisplayName(f, language) })),
     { value: savingsAssetId(DEFAULT_SAVINGS_RATE), label: savingsOptionLabel(language) },
-  ], [funds, language])
+  ], [visibleFunds, language])
 
   // Fetch CSV cho các quỹ đã chọn (cùng pipeline adjusted-prices với các tab khác)
   const neededIds = useMemo(() => {
@@ -384,6 +387,7 @@ function RebalanceSensitivityPanelImpl({ funds }: Props) {
         <div className="dca-portfolios-card-header">
           <h3 className="dca-section-title">{t('rebal.portfolio')}</h3>
         </div>
+        <FundFilterBar funds={funds} />
         <div className="dca-portfolio-grid">
           <PortfolioCard
             portfolio={portfolio}

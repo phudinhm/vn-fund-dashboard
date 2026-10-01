@@ -73,6 +73,20 @@ jobs:
         continue-on-error: true
         run: node scripts/update_gold.mjs
 
+      # Hồ sơ quỹ (NAV, lợi nhuận, công ty quản lý) và biểu phí. Trước đây chỉ có
+      # workflow audit hàng tháng và nó đẩy ra nhánh riêng chờ mở PR tay, nên
+      # hai file này đứng im. Làm mới hằng ngày thẳng vào main: một request
+      # danh mục cho hồ sơ, ~70 request chi tiết (có nghỉ) cho biểu phí.
+      - name: Update fund profiles
+        id: profiles
+        continue-on-error: true
+        run: node scripts/fetch_fund_profiles.mjs
+
+      - name: Update fund fees
+        id: fees
+        continue-on-error: true
+        run: node scripts/fetch_fund_fees.mjs
+
       - name: Check for changes
         id: changes
         run: |
@@ -102,6 +116,8 @@ jobs:
           [ "${{ steps.holdings.outcome }}"   = "failure" ] && failed="$failed holdings"
           [ "${{ steps.digiinvest.outcome }}" = "failure" ] && failed="$failed digiinvest"
           [ "${{ steps.gold.outcome }}"       = "failure" ] && failed="$failed gold"
+          [ "${{ steps.profiles.outcome }}"   = "failure" ] && failed="$failed profiles"
+          [ "${{ steps.fees.outcome }}"       = "failure" ] && failed="$failed fees"
           if [ -n "$failed" ]; then
             echo "::error::Data sources failed:$failed"
             exit 1
