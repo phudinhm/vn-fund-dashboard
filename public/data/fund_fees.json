@@ -1,0 +1,2968 @@
+[
+ {
+  "code": "ABBF",
+  "management": 0.525,
+  "performance": null,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sipBuy": [],
+  "sell": [
+   {
+    "from": 0,
+    "to": 1,
+    "rate": 0.5
+   },
+   {
+    "from": 1,
+    "to": 6,
+    "rate": 0.4
+   },
+   {
+    "from": 6,
+    "to": 12,
+    "rate": 0.1
+   },
+   {
+    "from": 12,
+    "to": null,
+    "rate": 0
+   }
+  ]
+ },
+ {
+  "code": "ABEF",
+  "management": 1.7,
+  "performance": null,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sipBuy": [],
+  "sell": [
+   {
+    "from": 0,
+    "to": 12,
+    "rate": 1.9
+   },
+   {
+    "from": 12,
+    "to": 24,
+    "rate": 0.9
+   },
+   {
+    "from": 24,
+    "to": null,
+    "rate": 0
+   }
+  ]
+ },
+ {
+  "code": "AEIF",
+  "management": 1.35,
+  "performance": null,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sipBuy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sell": [
+   {
+    "from": 0,
+    "to": 6,
+    "rate": 1.5
+   },
+   {
+    "from": 6,
+    "to": 12,
+    "rate": 1
+   },
+   {
+    "from": 12,
+    "to": 24,
+    "rate": 0.5
+   },
+   {
+    "from": 24,
+    "to": null,
+    "rate": 0
+   }
+  ]
+ },
+ {
+  "code": "ASBF",
+  "management": 0.85,
+  "performance": null,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sipBuy": [],
+  "sell": [
+   {
+    "from": 0,
+    "to": 12,
+    "rate": 0
+   },
+   {
+    "from": 12,
+    "to": null,
+    "rate": 0
+   }
+  ]
+ },
+ {
+  "code": "BMFF",
+  "management": 1.8,
+  "performance": null,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sipBuy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sell": [
+   {
+    "from": 0,
+    "to": 12,
+    "rate": 2
+   },
+   {
+    "from": 12,
+    "to": 24,
+    "rate": 1
+   },
+   {
+    "from": 24,
+    "to": null,
+    "rate": 0
+   }
+  ]
+ },
+ {
+  "code": "BVBF",
+  "management": 0.5,
+  "performance": null,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sipBuy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sell": [
+   {
+    "from": 0,
+    "to": 12,
+    "rate": 0.5
+   },
+   {
+    "from": 12,
+    "to": 24,
+    "rate": 0.3
+   },
+   {
+    "from": 24,
+    "to": null,
+    "rate": 0
+   }
+  ]
+ },
+ {
+  "code": "BVFED",
+  "management": 1,
+  "performance": null,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sipBuy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sell": [
+   {
+    "from": 0,
+    "to": 12,
+    "rate": 1
+   },
+   {
+    "from": 12,
+    "to": 24,
+    "rate": 0.5
+   },
+   {
+    "from": 24,
+    "to": null,
+    "rate": 0
+   }
+  ]
+ },
+ {
+  "code": "BVPF",
+  "management": 1.5,
+  "performance": null,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sipBuy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sell": [
+   {
+    "from": 0,
+    "to": 12,
+    "rate": 1
+   },
+   {
+    "from": 12,
+    "to": 24,
+    "rate": 0.5
+   },
+   {
+    "from": 24,
+    "to": null,
+    "rate": 0
+   }
+  ]
+ },
+ {
+  "code": "DCAF",
+  "management": 1.5,
+  "performance": 1.5,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sipBuy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sell": [
+   {
+    "from": 0,
+    "to": 6,
+    "rate": 2
+   },
+   {
+    "from": 6,
+    "to": 12,
+    "rate": 1.5
+   },
+   {
+    "from": 12,
+    "to": null,
+    "rate": 0
+   }
+  ]
+ },
+ {
+  "code": "DCBF",
+  "management": 1.2,
+  "performance": null,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sipBuy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sell": [
+   {
+    "from": 0,
+    "to": 6,
+    "rate": 1
+   },
+   {
+    "from": 6,
+    "to": 12,
+    "rate": 0.5
+   },
+   {
+    "from": 12,
+    "to": null,
+    "rate": 0
+   }
+  ]
+ },
+ {
+  "code": "DCDE",
+  "management": 1.93,
+  "performance": null,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sipBuy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sell": [
+   {
+    "from": 0,
+    "to": 12,
+    "rate": 1.5
+   },
+   {
+    "from": 12,
+    "to": 24,
+    "rate": 0.5
+   },
+   {
+    "from": 24,
+    "to": null,
+    "rate": 0
+   }
+  ]
+ },
+ {
+  "code": "DCDS",
+  "management": 1.95,
+  "performance": null,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sipBuy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sell": [
+   {
+    "from": 0,
+    "to": 12,
+    "rate": 1.5
+   },
+   {
+    "from": 12,
+    "to": 24,
+    "rate": 0.5
+   },
+   {
+    "from": 24,
+    "to": null,
+    "rate": 0
+   }
+  ]
+ },
+ {
+  "code": "DCIP",
+  "management": 1.2,
+  "performance": null,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sipBuy": [],
+  "sell": [
+   {
+    "from": 0,
+    "to": 12,
+    "rate": 0
+   },
+   {
+    "from": 12,
+    "to": null,
+    "rate": 0
+   }
+  ]
+ },
+ {
+  "code": "DFIX",
+  "management": 0.9,
+  "performance": 0.9,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sipBuy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sell": [
+   {
+    "from": 0,
+    "to": 3,
+    "rate": 0.5
+   },
+   {
+    "from": 3,
+    "to": null,
+    "rate": 0
+   }
+  ]
+ },
+ {
+  "code": "ENF",
+  "management": 1.5,
+  "performance": null,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sipBuy": [],
+  "sell": [
+   {
+    "from": 0,
+    "to": 18,
+    "rate": 1.5
+   },
+   {
+    "from": 18,
+    "to": null,
+    "rate": 0
+   }
+  ]
+ },
+ {
+  "code": "EVESG",
+  "management": 1.3,
+  "performance": null,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sipBuy": [],
+  "sell": [
+   {
+    "from": 0,
+    "to": 18,
+    "rate": 1.5
+   },
+   {
+    "from": 18,
+    "to": null,
+    "rate": 0
+   }
+  ]
+ },
+ {
+  "code": "GDEGF",
+  "management": 1.2,
+  "performance": null,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sipBuy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sell": [
+   {
+    "from": 0,
+    "to": 12,
+    "rate": 1.2
+   },
+   {
+    "from": 12,
+    "to": 24,
+    "rate": 0.5
+   },
+   {
+    "from": 24,
+    "to": null,
+    "rate": 0
+   }
+  ]
+ },
+ {
+  "code": "HDBOND",
+  "management": 0.95,
+  "performance": null,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sipBuy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sell": [
+   {
+    "from": 0,
+    "to": 3,
+    "rate": 0.5
+   },
+   {
+    "from": 3,
+    "to": 6,
+    "rate": 0.4
+   },
+   {
+    "from": 6,
+    "to": 9,
+    "rate": 0.3
+   },
+   {
+    "from": 9,
+    "to": 12,
+    "rate": 0.2
+   },
+   {
+    "from": 12,
+    "to": null,
+    "rate": 0
+   }
+  ]
+ },
+ {
+  "code": "KDEF",
+  "management": 1.7,
+  "performance": null,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sipBuy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sell": [
+   {
+    "from": 0,
+    "to": 6,
+    "rate": 2
+   },
+   {
+    "from": 6,
+    "to": 12,
+    "rate": 1.5
+   },
+   {
+    "from": 12,
+    "to": 24,
+    "rate": 0.5
+   },
+   {
+    "from": 24,
+    "to": null,
+    "rate": 0
+   }
+  ]
+ },
+ {
+  "code": "KSIF",
+  "management": 1.2,
+  "performance": null,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sipBuy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sell": [
+   {
+    "from": 0,
+    "to": 6,
+    "rate": 0.5
+   },
+   {
+    "from": 6,
+    "to": null,
+    "rate": 0
+   }
+  ]
+ },
+ {
+  "code": "LHBF",
+  "management": 1,
+  "performance": 12,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sipBuy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sell": [
+   {
+    "from": 0,
+    "to": 6,
+    "rate": 0.5
+   },
+   {
+    "from": 6,
+    "to": 9,
+    "rate": 0.3
+   },
+   {
+    "from": 9,
+    "to": 12,
+    "rate": 0.15
+   },
+   {
+    "from": 12,
+    "to": null,
+    "rate": 0
+   }
+  ]
+ },
+ {
+  "code": "LHCDF",
+  "management": 1.5,
+  "performance": null,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sipBuy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sell": [
+   {
+    "from": 0,
+    "to": 6,
+    "rate": 0.5
+   },
+   {
+    "from": 6,
+    "to": 9,
+    "rate": 0.3
+   },
+   {
+    "from": 9,
+    "to": 12,
+    "rate": 0.15
+   },
+   {
+    "from": 12,
+    "to": null,
+    "rate": 0
+   }
+  ]
+ },
+ {
+  "code": "LHFCF",
+  "management": 0.9,
+  "performance": null,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sipBuy": [],
+  "sell": [
+   {
+    "from": 0,
+    "to": 1.5,
+    "rate": 0.15
+   },
+   {
+    "from": 1.5,
+    "to": null,
+    "rate": 0
+   }
+  ]
+ },
+ {
+  "code": "LPBF",
+  "management": 1.2,
+  "performance": null,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sipBuy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sell": [
+   {
+    "from": 0,
+    "to": 3,
+    "rate": 0.3
+   },
+   {
+    "from": 3,
+    "to": null,
+    "rate": 0
+   }
+  ]
+ },
+ {
+  "code": "LPLF",
+  "management": 1.75,
+  "performance": null,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sipBuy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sell": [
+   {
+    "from": 0,
+    "to": 12,
+    "rate": 2
+   },
+   {
+    "from": 12,
+    "to": 24,
+    "rate": 1
+   },
+   {
+    "from": 24,
+    "to": null,
+    "rate": 0
+   }
+  ]
+ },
+ {
+  "code": "MAFBAL",
+  "management": 1.2,
+  "performance": null,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sipBuy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sell": [
+   {
+    "from": 0,
+    "to": 12,
+    "rate": 2
+   },
+   {
+    "from": 12,
+    "to": 18,
+    "rate": 1
+   },
+   {
+    "from": 18,
+    "to": null,
+    "rate": 0
+   }
+  ]
+ },
+ {
+  "code": "MAFEQI",
+  "management": 1.75,
+  "performance": null,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sipBuy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sell": [
+   {
+    "from": 0,
+    "to": 12,
+    "rate": 2
+   },
+   {
+    "from": 12,
+    "to": 18,
+    "rate": 1
+   },
+   {
+    "from": 18,
+    "to": null,
+    "rate": 0
+   }
+  ]
+ },
+ {
+  "code": "MAFF",
+  "management": 0.8,
+  "performance": null,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0.1
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0.1
+   }
+  ],
+  "sipBuy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sell": [
+   {
+    "from": 0,
+    "to": 6,
+    "rate": 0.5
+   },
+   {
+    "from": 6,
+    "to": 12,
+    "rate": 0.15
+   },
+   {
+    "from": 12,
+    "to": null,
+    "rate": 0
+   }
+  ]
+ },
+ {
+  "code": "MAGEF",
+  "management": 1.75,
+  "performance": 1.75,
+  "buy": [
+   {
+    "from": 0,
+    "to": 20000000000,
+    "rate": 0.75
+   },
+   {
+    "from": 20000000000,
+    "to": null,
+    "rate": 0.75
+   }
+  ],
+  "sipBuy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0.5
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0.5
+   }
+  ],
+  "sell": [
+   {
+    "from": 0,
+    "to": 12,
+    "rate": 1.25
+   },
+   {
+    "from": 12,
+    "to": null,
+    "rate": 0
+   }
+  ]
+ },
+ {
+  "code": "MBAM",
+  "management": 1.5,
+  "performance": null,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sipBuy": [],
+  "sell": [
+   {
+    "from": 0,
+    "to": 2,
+    "rate": 0.2
+   },
+   {
+    "from": 2,
+    "to": 6,
+    "rate": 0.05
+   },
+   {
+    "from": 6,
+    "to": 12,
+    "rate": 0.04
+   },
+   {
+    "from": 12,
+    "to": null,
+    "rate": 0
+   }
+  ]
+ },
+ {
+  "code": "MBBOND",
+  "management": 1.2,
+  "performance": null,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sipBuy": [],
+  "sell": [
+   {
+    "from": 0,
+    "to": 12,
+    "rate": 0.8
+   },
+   {
+    "from": 12,
+    "to": null,
+    "rate": 0
+   }
+  ]
+ },
+ {
+  "code": "MBVF",
+  "management": 1.5,
+  "performance": null,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sipBuy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sell": [
+   {
+    "from": 0,
+    "to": 12,
+    "rate": 2
+   },
+   {
+    "from": 12,
+    "to": 24,
+    "rate": 1
+   },
+   {
+    "from": 24,
+    "to": null,
+    "rate": 0
+   }
+  ]
+ },
+ {
+  "code": "MDI",
+  "management": 1.75,
+  "performance": null,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sipBuy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sell": [
+   {
+    "from": 0,
+    "to": 12,
+    "rate": 2
+   },
+   {
+    "from": 12,
+    "to": 18,
+    "rate": 1
+   },
+   {
+    "from": 18,
+    "to": null,
+    "rate": 0
+   }
+  ]
+ },
+ {
+  "code": "NTPPF",
+  "management": 1.75,
+  "performance": null,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sipBuy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sell": [
+   {
+    "from": 0,
+    "to": 6,
+    "rate": 1
+   },
+   {
+    "from": 6,
+    "to": 9,
+    "rate": 0.75
+   },
+   {
+    "from": 9,
+    "to": 12,
+    "rate": 0.5
+   },
+   {
+    "from": 12,
+    "to": null,
+    "rate": 0
+   }
+  ]
+ },
+ {
+  "code": "PBIF",
+  "management": 1.3,
+  "performance": null,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sipBuy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sell": [
+   {
+    "from": 0,
+    "to": 6,
+    "rate": 2
+   },
+   {
+    "from": 6,
+    "to": 9,
+    "rate": 1.5
+   },
+   {
+    "from": 9,
+    "to": 12,
+    "rate": 1
+   },
+   {
+    "from": 12,
+    "to": 18,
+    "rate": 0.5
+   },
+   {
+    "from": 18,
+    "to": null,
+    "rate": 0
+   }
+  ]
+ },
+ {
+  "code": "PHVSF",
+  "management": 1.5,
+  "performance": null,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sipBuy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sell": [
+   {
+    "from": 0,
+    "to": 6,
+    "rate": 2
+   },
+   {
+    "from": 6,
+    "to": 12,
+    "rate": 1.5
+   },
+   {
+    "from": 12,
+    "to": 24,
+    "rate": 0.5
+   },
+   {
+    "from": 24,
+    "to": null,
+    "rate": 0
+   }
+  ]
+ },
+ {
+  "code": "PVBF",
+  "management": 0.5,
+  "performance": 1,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sipBuy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sell": [
+   {
+    "from": 0,
+    "to": 6,
+    "rate": 0.5
+   },
+   {
+    "from": 6,
+    "to": 9,
+    "rate": 0.3
+   },
+   {
+    "from": 9,
+    "to": 12,
+    "rate": 0.15
+   },
+   {
+    "from": 12,
+    "to": null,
+    "rate": 0
+   }
+  ]
+ },
+ {
+  "code": "RVPIF",
+  "management": 1.5,
+  "performance": null,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sipBuy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sell": [
+   {
+    "from": 0,
+    "to": 12,
+    "rate": 0.5
+   },
+   {
+    "from": 12,
+    "to": 24,
+    "rate": 0.3
+   },
+   {
+    "from": 24,
+    "to": null,
+    "rate": 0
+   }
+  ]
+ },
+ {
+  "code": "SSI-EF",
+  "management": 1.75,
+  "performance": null,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sipBuy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sell": [
+   {
+    "from": 0,
+    "to": 12,
+    "rate": 2
+   },
+   {
+    "from": 12,
+    "to": 24,
+    "rate": 1.5
+   },
+   {
+    "from": 24,
+    "to": null,
+    "rate": 0
+   }
+  ]
+ },
+ {
+  "code": "SSI-PDF",
+  "management": 1.9,
+  "performance": null,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sipBuy": [],
+  "sell": [
+   {
+    "from": 0,
+    "to": 12,
+    "rate": 2
+   },
+   {
+    "from": 12,
+    "to": 24,
+    "rate": 1.5
+   },
+   {
+    "from": 24,
+    "to": null,
+    "rate": 0
+   }
+  ]
+ },
+ {
+  "code": "SSIBF",
+  "management": 1,
+  "performance": null,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sipBuy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sell": [
+   {
+    "from": 0,
+    "to": 3,
+    "rate": 0.04
+   },
+   {
+    "from": 3,
+    "to": 6,
+    "rate": 0.02
+   },
+   {
+    "from": 6,
+    "to": null,
+    "rate": 0.2
+   }
+  ]
+ },
+ {
+  "code": "SSISCA",
+  "management": 1.75,
+  "performance": null,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sipBuy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sell": [
+   {
+    "from": 0,
+    "to": 6,
+    "rate": 2.5
+   },
+   {
+    "from": 6,
+    "to": 12,
+    "rate": 2
+   },
+   {
+    "from": 12,
+    "to": 24,
+    "rate": 1.5
+   },
+   {
+    "from": 24,
+    "to": null,
+    "rate": 0
+   }
+  ]
+ },
+ {
+  "code": "TBLF",
+  "management": 1.3,
+  "performance": 1,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0.5
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0.5
+   }
+  ],
+  "sipBuy": [],
+  "sell": [
+   {
+    "from": 0,
+    "to": 6,
+    "rate": 1
+   },
+   {
+    "from": 6,
+    "to": null,
+    "rate": 1
+   }
+  ]
+ },
+ {
+  "code": "TCGF",
+  "management": 1.5,
+  "performance": null,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sipBuy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sell": [
+   {
+    "from": 0,
+    "to": 12,
+    "rate": 0.5
+   },
+   {
+    "from": 12,
+    "to": 24,
+    "rate": 0.35
+   },
+   {
+    "from": 24,
+    "to": null,
+    "rate": 0.2
+   }
+  ]
+ },
+ {
+  "code": "UMMF",
+  "management": 0.6,
+  "performance": null,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sipBuy": [],
+  "sell": []
+ },
+ {
+  "code": "USIF",
+  "management": 0.6,
+  "performance": null,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sipBuy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sell": [
+   {
+    "from": 0,
+    "to": 12,
+    "rate": 1.5
+   },
+   {
+    "from": 12,
+    "to": 24,
+    "rate": 1
+   },
+   {
+    "from": 24,
+    "to": null,
+    "rate": 0
+   }
+  ]
+ },
+ {
+  "code": "UVDIF",
+  "management": 1.5,
+  "performance": null,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sipBuy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sell": [
+   {
+    "from": 0,
+    "to": 12,
+    "rate": 2
+   },
+   {
+    "from": 12,
+    "to": 24,
+    "rate": 1.5
+   },
+   {
+    "from": 24,
+    "to": null,
+    "rate": 0
+   }
+  ]
+ },
+ {
+  "code": "UVEEF",
+  "management": 1.75,
+  "performance": null,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sipBuy": [],
+  "sell": [
+   {
+    "from": 0,
+    "to": 12,
+    "rate": 2
+   },
+   {
+    "from": 12,
+    "to": 24,
+    "rate": 1.5
+   },
+   {
+    "from": 24,
+    "to": null,
+    "rate": 0
+   }
+  ]
+ },
+ {
+  "code": "VBIF",
+  "management": 1.5,
+  "performance": null,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sipBuy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sell": [
+   {
+    "from": 0,
+    "to": 3,
+    "rate": 2
+   },
+   {
+    "from": 3,
+    "to": 12,
+    "rate": 1.5
+   },
+   {
+    "from": 12,
+    "to": 24,
+    "rate": 0.5
+   },
+   {
+    "from": 24,
+    "to": null,
+    "rate": 0
+   }
+  ]
+ },
+ {
+  "code": "VCAMBF",
+  "management": 1.2,
+  "performance": null,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sipBuy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sell": [
+   {
+    "from": 0,
+    "to": 12,
+    "rate": 1
+   },
+   {
+    "from": 12,
+    "to": 24,
+    "rate": 0.5
+   },
+   {
+    "from": 24,
+    "to": null,
+    "rate": 0
+   }
+  ]
+ },
+ {
+  "code": "VCAMDF",
+  "management": 1.5,
+  "performance": null,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sipBuy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sell": [
+   {
+    "from": 0,
+    "to": 12,
+    "rate": 1
+   },
+   {
+    "from": 12,
+    "to": 24,
+    "rate": 0.5
+   },
+   {
+    "from": 24,
+    "to": null,
+    "rate": 0
+   }
+  ]
+ },
+ {
+  "code": "VCAMFI",
+  "management": 1,
+  "performance": null,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sipBuy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sell": [
+   {
+    "from": 0,
+    "to": 12,
+    "rate": 1
+   },
+   {
+    "from": 12,
+    "to": null,
+    "rate": 0
+   }
+  ]
+ },
+ {
+  "code": "VCBF-AIF",
+  "management": 1.9,
+  "performance": null,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sipBuy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sell": [
+   {
+    "from": 0,
+    "to": 1,
+    "rate": 3
+   },
+   {
+    "from": 1,
+    "to": 12,
+    "rate": 2
+   },
+   {
+    "from": 12,
+    "to": 24,
+    "rate": 0.5
+   },
+   {
+    "from": 24,
+    "to": null,
+    "rate": 0
+   }
+  ]
+ },
+ {
+  "code": "VCBF-BCF",
+  "management": 1.9,
+  "performance": 1.9,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sipBuy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sell": [
+   {
+    "from": 0,
+    "to": 1,
+    "rate": 3
+   },
+   {
+    "from": 1,
+    "to": 12,
+    "rate": 2
+   },
+   {
+    "from": 12,
+    "to": 24,
+    "rate": 0.5
+   },
+   {
+    "from": 24,
+    "to": null,
+    "rate": 0
+   }
+  ]
+ },
+ {
+  "code": "VCBF-FIF",
+  "management": 0.8,
+  "performance": 0.1,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sipBuy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sell": [
+   {
+    "from": 0,
+    "to": 3,
+    "rate": 2
+   },
+   {
+    "from": 3,
+    "to": 12,
+    "rate": 1
+   },
+   {
+    "from": 12,
+    "to": null,
+    "rate": 0
+   }
+  ]
+ },
+ {
+  "code": "VCBF-MGF",
+  "management": 1.9,
+  "performance": null,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sipBuy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sell": [
+   {
+    "from": 0,
+    "to": 1,
+    "rate": 3
+   },
+   {
+    "from": 1,
+    "to": 12,
+    "rate": 2
+   },
+   {
+    "from": 12,
+    "to": 24,
+    "rate": 0.5
+   },
+   {
+    "from": 24,
+    "to": null,
+    "rate": 0
+   }
+  ]
+ },
+ {
+  "code": "VCBF-TBF",
+  "management": 1.5,
+  "performance": 0,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sipBuy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sell": [
+   {
+    "from": 0,
+    "to": 1,
+    "rate": 3
+   },
+   {
+    "from": 1,
+    "to": 12,
+    "rate": 2
+   },
+   {
+    "from": 12,
+    "to": 24,
+    "rate": 0.5
+   },
+   {
+    "from": 24,
+    "to": null,
+    "rate": 0
+   }
+  ]
+ },
+ {
+  "code": "VDEF",
+  "management": 1.75,
+  "performance": null,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sipBuy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sell": [
+   {
+    "from": 0,
+    "to": 12,
+    "rate": 2
+   },
+   {
+    "from": 12,
+    "to": 24,
+    "rate": 1
+   },
+   {
+    "from": 24,
+    "to": null,
+    "rate": 0
+   }
+  ]
+ },
+ {
+  "code": "VEOF",
+  "management": 1.75,
+  "performance": null,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sipBuy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sell": [
+   {
+    "from": 0,
+    "to": 12,
+    "rate": 2
+   },
+   {
+    "from": 12,
+    "to": 24,
+    "rate": 1
+   },
+   {
+    "from": 24,
+    "to": null,
+    "rate": 0
+   }
+  ]
+ },
+ {
+  "code": "VESAF",
+  "management": 1.75,
+  "performance": null,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sipBuy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sell": [
+   {
+    "from": 0,
+    "to": 12,
+    "rate": 2
+   },
+   {
+    "from": 12,
+    "to": 24,
+    "rate": 1
+   },
+   {
+    "from": 24,
+    "to": null,
+    "rate": 0
+   }
+  ]
+ },
+ {
+  "code": "VFF",
+  "management": 0.95,
+  "performance": null,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sipBuy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sell": [
+   {
+    "from": 0,
+    "to": 12,
+    "rate": 2
+   },
+   {
+    "from": 12,
+    "to": 24,
+    "rate": 0.5
+   },
+   {
+    "from": 24,
+    "to": null,
+    "rate": 0
+   }
+  ]
+ },
+ {
+  "code": "VIBF",
+  "management": 1.75,
+  "performance": null,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sipBuy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sell": [
+   {
+    "from": 0,
+    "to": 12,
+    "rate": 2
+   },
+   {
+    "from": 12,
+    "to": 24,
+    "rate": 1
+   },
+   {
+    "from": 24,
+    "to": null,
+    "rate": 0
+   }
+  ]
+ },
+ {
+  "code": "VLBF",
+  "management": 0.9,
+  "performance": null,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sipBuy": [],
+  "sell": [
+   {
+    "from": 0,
+    "to": 1.5,
+    "rate": 0.1
+   },
+   {
+    "from": 1.5,
+    "to": null,
+    "rate": 0
+   }
+  ]
+ },
+ {
+  "code": "VLGF",
+  "management": 1.5,
+  "performance": null,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 1
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 1
+   }
+  ],
+  "sipBuy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sell": [
+   {
+    "from": 0,
+    "to": 12,
+    "rate": 0
+   },
+   {
+    "from": 12,
+    "to": null,
+    "rate": 0
+   }
+  ]
+ },
+ {
+  "code": "VMEEF",
+  "management": 1.75,
+  "performance": null,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sipBuy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sell": [
+   {
+    "from": 0,
+    "to": 12,
+    "rate": 2
+   },
+   {
+    "from": 12,
+    "to": 24,
+    "rate": 1
+   },
+   {
+    "from": 24,
+    "to": null,
+    "rate": 0
+   }
+  ]
+ },
+ {
+  "code": "VNDAF",
+  "management": 1.5,
+  "performance": null,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sipBuy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sell": [
+   {
+    "from": 0,
+    "to": 6,
+    "rate": 2
+   },
+   {
+    "from": 6,
+    "to": 12,
+    "rate": 1.5
+   },
+   {
+    "from": 12,
+    "to": 24,
+    "rate": 1
+   },
+   {
+    "from": 24,
+    "to": null,
+    "rate": 0
+   }
+  ]
+ },
+ {
+  "code": "VNDBF",
+  "management": 1.1,
+  "performance": null,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sipBuy": [],
+  "sell": [
+   {
+    "from": 0,
+    "to": 3,
+    "rate": 1
+   },
+   {
+    "from": 3,
+    "to": 6,
+    "rate": 0.35
+   },
+   {
+    "from": 6,
+    "to": 9,
+    "rate": 0.25
+   },
+   {
+    "from": 9,
+    "to": null,
+    "rate": 0
+   }
+  ]
+ },
+ {
+  "code": "VNDCF",
+  "management": 0.9,
+  "performance": null,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sipBuy": [],
+  "sell": [
+   {
+    "from": 0,
+    "to": 12,
+    "rate": 0
+   },
+   {
+    "from": 12,
+    "to": null,
+    "rate": 0
+   }
+  ]
+ }
+]
