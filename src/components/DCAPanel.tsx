@@ -45,6 +45,8 @@ import {
 import { useT, type TranslationKey } from '../i18n'
 import { useLanguage } from '../hooks/useLanguage'
 import { fundDisplayName } from '../utils/fundName'
+import { FundFilterBar } from './FundFilterBar'
+import { useFilteredFunds } from '../hooks/useFundFilter'
 
 interface Props {
   funds: FundMeta[]
@@ -257,10 +259,11 @@ function DCAPanelImpl({ funds, shareUrl, active }: Props) {
     })))
   }, [portfolios])
 
+  const visibleFunds = useFilteredFunds(funds, portfolios.flatMap(p => p.slots.map(s => s.fundId)))
   const fundOptions = useMemo(() => [
-    ...funds.map(f => ({ value: f.id, label: fundDisplayName(f, language) })),
+    ...visibleFunds.map(f => ({ value: f.id, label: fundDisplayName(f, language) })),
     { value: savingsAssetId(DEFAULT_SAVINGS_RATE), label: savingsOptionLabel(language) },
-  ], [funds, language])
+  ], [visibleFunds, language])
 
   // Quỹ 2-giá (mua/bán khác nhau, vd vàng miếng SJC) — xem giải thích ở
   // purchasePriceData phía trên.
@@ -946,6 +949,7 @@ function DCAPanelImpl({ funds, shareUrl, active }: Props) {
             </button>
           )}
         </div>
+        <FundFilterBar funds={funds} />
         <div className="dca-portfolio-grid">
           {portfolios.map((portfolio, pIdx) => (
             <PortfolioCard

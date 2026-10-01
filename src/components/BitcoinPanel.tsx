@@ -30,6 +30,8 @@ import { REBAL_OPTIONS } from './PortfolioCard'
 import { useT } from '../i18n'
 import { useLanguage } from '../hooks/useLanguage'
 import { fundDisplayName } from '../utils/fundName'
+import { FundFilterBar } from './FundFilterBar'
+import { useFilteredFunds } from '../hooks/useFundFilter'
 
 interface Props {
   funds: FundMeta[]
@@ -113,14 +115,15 @@ function BitcoinPanelImpl({ funds }: Props) {
   }
 
   // Fund options (exclude BTC itself)
+  const visibleFunds = useFilteredFunds(funds, [selectedFundId])
   const fundOptions = useMemo(
     () => [
-      ...funds
+      ...visibleFunds
         .filter(f => f.id !== BTC_ID)
         .map(f => ({ value: f.id, label: fundDisplayName(f, language) })),
       { value: savingsAssetId(DEFAULT_SAVINGS_RATE), label: savingsOptionLabel(language) },
     ],
-    [funds, language],
+    [visibleFunds, language],
   )
 
   // Lãi suất nằm ngay trong id ("SAVINGS:7"), nên khi người dùng đổi lãi suất,
@@ -324,6 +327,7 @@ function BitcoinPanelImpl({ funds }: Props) {
 
       <div className="bitcoin-controls">
         <p className="bitcoin-description">{t('btc.description')}</p>
+        <FundFilterBar funds={funds} />
         <div className="bitcoin-ctrl-group bitcoin-ctrl-fund">
           <label className="bitcoin-ctrl-label">{t('btc.baseFund')}</label>
           <div className="bitcoin-fund-row">

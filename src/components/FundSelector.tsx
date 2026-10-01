@@ -4,6 +4,8 @@ import type { FundMeta } from '../types'
 import { FUND_COLORS, MAX_COMPARE_FUNDS } from '../constants'
 import { SavingsRateInput } from './SavingsRateInput'
 import { useWatchlist } from '../hooks/useWatchlist'
+import { useFilteredFunds } from '../hooks/useFundFilter'
+import { FundFilterBar } from './FundFilterBar'
 import { useT, type TranslationKey } from '../i18n'
 import { IconStar } from './icons'
 import { useLanguage } from '../hooks/useLanguage'
@@ -35,9 +37,10 @@ export function FundSelector({
   const { isWatched, toggle } = useWatchlist()
   // Nhóm theo loại tài sản + công ty quản lý. 80+ quỹ trong một danh sách phẳng
   // rất khó quét bằng mắt; gom nhóm cho thấy ngay quỹ thuộc loại nào, của bên nào.
+  const visibleFunds = useFilteredFunds(allFunds, selectedFunds)
   const baseGroups: FundOptionGroup[] = useMemo(
-    () => buildGroupedFundOptions(allFunds, type => t(`category.${type}` as TranslationKey), language),
-    [allFunds, t, language],
+    () => buildGroupedFundOptions(visibleFunds, type => t(`category.${type}` as TranslationKey), language),
+    [visibleFunds, t, language],
   )
 
   function changeFund(index: number, newId: string) {
@@ -62,6 +65,7 @@ export function FundSelector({
 
   return (
     <div className="fund-selector">
+      <FundFilterBar funds={allFunds} />
       <div className="fund-selector-list">
         {selectedFunds.map((fundId, i) => {
           // Mức lãi suất mặc định của Ô NÀY tránh trùng với tiết kiệm đã chọn

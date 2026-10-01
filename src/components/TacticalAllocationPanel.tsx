@@ -32,6 +32,8 @@ import { formatVND, formatVNDAxis } from '../utils/vndFormat'
 import { useT, useTRich, translateStatic, type TranslationKey } from '../i18n'
 import { useLanguage } from '../hooks/useLanguage'
 import { fundDisplayName } from '../utils/fundName'
+import { FundFilterBar } from './FundFilterBar'
+import { useFilteredFunds } from '../hooks/useFundFilter'
 
 interface Props {
   funds: FundMeta[]
@@ -146,9 +148,12 @@ function TacticalAllocationPanelImpl({ funds }: Props) {
   }, [language])
 
   // Danh sách quỹ thật, không có tiết kiệm ngân hàng.
+  const visibleFunds = useFilteredFunds(funds, [
+    signalFundId, ...allocationA.slots.map(s => s.fundId), ...allocationB.slots.map(s => s.fundId),
+  ])
   const realFundOptions = useMemo(
-    () => funds.map(f => ({ value: f.id, label: fundDisplayName(f, language) })),
-    [funds, language],
+    () => visibleFunds.map(f => ({ value: f.id, label: fundDisplayName(f, language) })),
+    [visibleFunds, language],
   )
 
   // Danh sách đầy đủ, thêm tiết kiệm ngân hàng. Dùng cho CẢ 2 thẻ danh mục lẫn
@@ -460,6 +465,7 @@ function TacticalAllocationPanelImpl({ funds }: Props) {
         <div className="dca-portfolios-card-header">
           <h3 className="dca-section-title">{t('tac.portfoliosTitle')}</h3>
         </div>
+        <FundFilterBar funds={funds} />
         <div className="dca-portfolio-grid">
           <PortfolioCard
             portfolio={allocationA} pIdx={0} funds={funds} fundOptions={fundOptions}

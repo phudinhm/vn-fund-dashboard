@@ -8,9 +8,9 @@ interface Props {
   onChangeTo: (v: string | null) => void
 }
 
-type Preset = '7d' | '1m' | '3m' | '6m' | '1y' | '3y' | '5y' | 'ytd' | 'all'
+type Preset = '7d' | '1m' | '3m' | '6m' | '1y' | '2y' | '3y' | '5y' | 'ytd' | 'all'
 
-const PRESET_VALUES: Preset[] = ['7d', '1m', '3m', '6m', '1y', '3y', '5y', 'ytd', 'all']
+const PRESET_VALUES: Preset[] = ['7d', '1m', '3m', '6m', '1y', '2y', '3y', '5y', 'ytd', 'all']
 
 function getPresetFrom(preset: Preset): string | null {
   const now = new Date()
@@ -32,6 +32,9 @@ function getPresetFrom(preset: Preset): string | null {
       break
     case '1y':
       d = new Date(now.getFullYear() - 1, now.getMonth(), now.getDate())
+      break
+    case '2y':
+      d = new Date(now.getFullYear() - 2, now.getMonth(), now.getDate())
       break
     case '3y':
       d = new Date(now.getFullYear() - 3, now.getMonth(), now.getDate())

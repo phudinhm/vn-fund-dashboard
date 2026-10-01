@@ -65,6 +65,13 @@ const DICT = {
   'category.gold': { vi: 'Vàng', en: 'Gold' },
 
   // ── Fund selector ──
+  'ffb.label': { vi: 'Lọc danh sách quỹ', en: 'Filter the fund list' },
+  'ffb.watchOnly': { vi: 'Theo dõi ({n})', en: 'Watchlist ({n})' },
+  'ffb.watchOnly.hint': { vi: 'Chỉ liệt kê quỹ trong danh sách theo dõi', en: 'Only list funds on your watchlist' },
+  'ffb.house': { vi: 'Công ty quản lý quỹ', en: 'Fund manager' },
+  'ffb.house.all': { vi: 'Mọi công ty quỹ', en: 'All fund managers' },
+  'ffb.count': { vi: 'Hiện {shown}/{total} quỹ', en: 'Showing {shown}/{total} funds' },
+  'ffb.clear': { vi: 'Bỏ lọc', en: 'Clear filters' },
   'fundSelector.searchPlaceholder': { vi: 'Tìm quỹ...', en: 'Search funds...' },
   'fundSelector.noOptions': { vi: 'Không tìm thấy', en: 'No matches found' },
   'fundSelector.addFund': { vi: '+ Thêm quỹ so sánh', en: '+ Add fund to compare' },
@@ -161,6 +168,7 @@ const DICT = {
   'dateRange.3m': { vi: '3 tháng', en: '3m' },
   'dateRange.6m': { vi: '6 tháng', en: '6m' },
   'dateRange.1y': { vi: '1 năm', en: '1y' },
+  'dateRange.2y': { vi: '2 năm', en: '2y' },
   'dateRange.3y': { vi: '3 năm', en: '3y' },
   'dateRange.5y': { vi: '5 năm', en: '5y' },
   'dateRange.ytd': { vi: 'YTD', en: 'YTD' },
@@ -1751,6 +1759,39 @@ const DICT = {
   'rme.noYearYet': {
     vi: 'Kỳ mô phỏng chưa đủ 1 năm nên chưa có số %/năm nào để so sánh. Phần giải thích bên dưới vẫn áp dụng khi kỳ đủ dài.',
     en: 'The simulated period is shorter than one year, so there are no %/yr figures to compare yet. The explanation below applies once the period is long enough.',
+  },
+
+  // ── Fees and net-on-hand block (Compare) ──
+  'fee.title': { vi: 'Phí và tăng trưởng thực nhận', en: 'Fees and net growth on hand' },
+  'fee.help': {
+    vi: 'Lãi theo NAV đã trừ sẵn phí quản lý và phí thưởng hiệu quả. Phí mua và phí bán thu ngoài NAV khi bạn vào và ra quỹ, nên khối này trừ thêm hai phí đó để ra số tiền bạn thực sự cầm về.',
+    en: 'NAV returns already net of the management and performance fees. Buy and sell fees are charged outside the NAV when you enter and leave a fund, so this block deducts them to show what you actually take home.',
+  },
+  'fee.lead': {
+    vi: 'Giả định mua ở đầu kỳ và bán hết ở cuối kỳ, nắm giữ khoảng {months} tháng. Phí bán của quỹ mở giảm dần theo thời gian nắm giữ.',
+    en: 'Assumes you buy at the start and sell everything at the end, holding about {months} months. Open-end fund sell fees fall with the holding period.',
+  },
+  'fee.amount': { vi: 'Số tiền mua', en: 'Purchase amount' },
+  'fee.withBuy': { vi: 'Trừ phí mua', en: 'Deduct buy fee' },
+  'fee.withSell': { vi: 'Trừ phí bán', en: 'Deduct sell fee' },
+  'fee.col.fund': { vi: 'Quỹ', en: 'Fund' },
+  'fee.col.mgmt': { vi: 'Phí quản lý/năm (đã trong NAV)', en: 'Mgmt fee/yr (in NAV)' },
+  'fee.col.buy': { vi: 'Phí mua', en: 'Buy fee' },
+  'fee.col.sell': { vi: 'Phí bán (giữ {months} tháng)', en: 'Sell fee (held {months} mo)' },
+  'fee.col.gross': { vi: 'Lãi theo NAV', en: 'NAV return' },
+  'fee.col.net': { vi: 'Thực nhận (net)', en: 'Net on hand' },
+  'fee.col.drag': { vi: 'Phí lấy đi (điểm %)', en: 'Fee drag (pp)' },
+  'fee.col.netYear': { vi: 'Net %/năm', en: 'Net %/yr' },
+  'fee.schedule': { vi: 'Xem biểu phí từng quỹ', en: 'Show each fund’s fee schedule' },
+  'fee.sched.buy': { vi: 'phí mua', en: 'buy' },
+  'fee.sched.sell': { vi: 'phí bán', en: 'sell' },
+  'fee.sched.perf': { vi: 'phí thưởng hiệu quả', en: 'performance fee' },
+  'fee.monthUnit': { vi: ' tháng', en: ' mo' },
+  'fee.estimated': { vi: 'ước tính phí môi giới 0,15% + thuế bán 0,1%', en: 'estimate: 0.15% brokerage + 0.1% sell tax' },
+  'fee.none': { vi: 'chưa có biểu phí (vàng, chỉ số, crypto, tiết kiệm không thuộc quỹ mở)', en: 'no fee schedule (gold, indices, crypto and savings are not open-end funds)' },
+  'fee.note': {
+    vi: 'Biểu phí lấy từ fmarket, chương trình mua thường. Phí có thể đổi và có ưu đãi theo kênh mua; hãy đối chiếu với công ty quản lý quỹ trước khi quyết định.',
+    en: 'Fee schedules come from fmarket (regular purchase program). Fees can change and channels may offer discounts; check with the fund manager before deciding.',
   },
 
   // ── Stock DCA tab ──

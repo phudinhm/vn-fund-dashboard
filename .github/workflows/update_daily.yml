@@ -73,6 +73,20 @@ jobs:
         continue-on-error: true
         run: node scripts/update_gold.mjs
 
+      # Hồ sơ quỹ (NAV, lợi nhuận, công ty quản lý) và biểu phí. Trước đây chỉ có
+      # workflow audit hàng tháng và nó đẩy ra nhánh riêng chờ mở PR tay, nên
+      # hai file này đứng im. Làm mới hằng ngày thẳng vào main: một request
+      # danh mục cho hồ sơ, ~70 request chi tiết (có nghỉ) cho biểu phí.
+      - name: Update fund profiles
+        id: profiles
+        continue-on-error: true
+        run: node scripts/fetch_fund_profiles.mjs
+
+      - name: Update fund fees
+        id: fees
+        continue-on-error: true
+        run: node scripts/fetch_fund_fees.mjs
+
       - name: Check for changes
         id: changes
         run: |
@@ -91,7 +105,16 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add public/data/
           git commit -m "Update fund NAV data $(date -u +%Y-%m-%d)"
-          git push
+          # Hai workflow dữ liệu (hằng ngày và báo cáo quỹ) cùng đẩy vào main; nếu
+          # một bên vừa đẩy xong thì `git push` trần bị từ chối và mất cả lượt cập
+          # nhật. Rebase lên main mới rồi thử lại.
+          for attempt in 1 2 3 4; do
+            git pull --rebase origin main && git push && exit 0
+            echo "push attempt $attempt failed, retrying"
+            sleep $((attempt * 5))
+          done
+          echo "::error::could not push after 4 attempts"
+          exit 1
 
       # Job đỏ khi có nguồn hỏng, để lỗi không trôi qua im lặng hàng tháng trời.
       - name: Report source failures
@@ -102,6 +125,8 @@ jobs:
           [ "${{ steps.holdings.outcome }}"   = "failure" ] && failed="$failed holdings"
           [ "${{ steps.digiinvest.outcome }}" = "failure" ] && failed="$failed digiinvest"
           [ "${{ steps.gold.outcome }}"       = "failure" ] && failed="$failed gold"
+          [ "${{ steps.profiles.outcome }}"   = "failure" ] && failed="$failed profiles"
+          [ "${{ steps.fees.outcome }}"       = "failure" ] && failed="$failed fees"
           if [ -n "$failed" ]; then
             echo "::error::Data sources failed:$failed"
             exit 1

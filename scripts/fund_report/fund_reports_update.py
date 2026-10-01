@@ -551,6 +551,19 @@ def build_manifests(meta_per_file, latest_as_of, latest_period, fund):
 
 
 def write_manifests(meta_per_file, tidy_dir, fund):
+    # raw/ không được commit, nên một lần chạy trên CI (chỉ tải vài tháng gần
+    # nhất) chỉ thấy các file mới. Gộp với bản kê hiện có để không làm mất lịch
+    # sử file nguồn; file mới ghi đè bản cũ cùng tên.
+    previous = tidy_dir / "tidy_metadata.json"
+    if previous.exists():
+        try:
+            old = json.loads(previous.read_text(encoding="utf-8")).get("files", [])
+            merged = {m["source_file"]: m for m in old if "source_file" in m}
+            merged.update(meta_per_file)
+            meta_per_file = merged
+        except (ValueError, KeyError):
+            pass
+
     latest_as_of = None
     latest_period = None
     for tbl in TABLES:

@@ -8695,3 +8695,59 @@ button:not(:disabled):active {
 .sdca-ledger td, .sdca-ledger th { white-space: nowrap; font-size: 0.8rem; }
 .sdca-ledger-toggle { margin: 10px 0 0; }
 .sdca-panel .adv-results { margin-top: 4px; }
+
+/* ── Thanh lọc quỹ dùng chung ── */
+.ffb {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  background: color-mix(in srgb, var(--color-surface) 72%, transparent);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+.ffb-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.ffb-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 11px;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  background: transparent;
+  color: var(--color-text-muted);
+  font: inherit;
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: background var(--duration-fast) var(--ease-smooth-out), color var(--duration-fast) var(--ease-smooth-out), border-color var(--duration-fast) var(--ease-smooth-out);
+}
+.ffb-chip:hover { border-color: var(--color-primary-border); color: var(--color-text); }
+.ffb-chip--on { background: var(--color-primary); border-color: var(--color-primary); color: var(--color-primary-fg); }
+.ffb-chip svg { width: 13px; height: 13px; }
+.ffb-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.ffb-house {
+  padding: 5px 9px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+  font-size: 0.82rem;
+  max-width: 100%;
+}
+.ffb-count { font-size: 0.76rem; color: var(--color-text-muted); }
+.ffb-clear { background: none; border: none; color: var(--color-primary); font: inherit; font-size: 0.78rem; cursor: pointer; padding: 0; }
+.ffb-clear:hover { text-decoration: underline; }
+@media (prefers-reduced-motion: reduce) { .ffb-chip { transition: none; } }
+
+/* ── Khối phí và tăng trưởng thực nhận ── */
+.fee-controls { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 16px; margin: 4px 0 14px; }
+.fee-amount { display: flex; flex-direction: column; gap: 4px; font-size: 0.78rem; color: var(--color-text-muted); }
+.fee-check { display: flex; align-items: center; gap: 6px; font-size: 0.86rem; cursor: pointer; padding-bottom: 8px; }
+.fee-schedule { margin-top: 12px; font-size: 0.82rem; }
+.fee-schedule summary { cursor: pointer; color: var(--color-primary); }
+.fee-schedule ul { margin: 8px 0 0; padding-left: 18px; display: flex; flex-direction: column; gap: 4px; line-height: 1.5; color: var(--color-text-muted); }
+.fee-lead { margin: 0 0 8px; }

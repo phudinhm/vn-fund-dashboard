@@ -44,6 +44,8 @@ import {
 import { useT, useTRich, type TranslationKey } from '../i18n'
 import { useLanguage } from '../hooks/useLanguage'
 import { fundDisplayName } from '../utils/fundName'
+import { FundFilterBar } from './FundFilterBar'
+import { useFilteredFunds } from '../hooks/useFundFilter'
 
 interface Props {
   funds: FundMeta[]
@@ -176,9 +178,10 @@ function LumpSumDCAPanelImpl({ funds, shareUrl, active }: Props) {
     } : null)
   }, [portfolio])
 
+  const visibleFunds = useFilteredFunds(funds, portfolio?.slots.map(s => s.fundId) ?? [])
   const fundOptions = useMemo(
-    () => funds.map(f => ({ value: f.id, label: fundDisplayName(f, language) })),
-    [funds, language],
+    () => visibleFunds.map(f => ({ value: f.id, label: fundDisplayName(f, language) })),
+    [visibleFunds, language],
   )
 
   // Bond/balanced funds for cash fund picker
@@ -719,6 +722,7 @@ function LumpSumDCAPanelImpl({ funds, shareUrl, active }: Props) {
       </div>
 
       {/* ── Portfolio card ── */}
+      {portfolio && <FundFilterBar funds={funds} />}
       {portfolio && (
         <PortfolioCard
           portfolio={portfolio}
