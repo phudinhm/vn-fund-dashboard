@@ -105,7 +105,16 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add public/data/
           git commit -m "Update fund NAV data $(date -u +%Y-%m-%d)"
-          git push
+          # Hai workflow dữ liệu (hằng ngày và báo cáo quỹ) cùng đẩy vào main; nếu
+          # một bên vừa đẩy xong thì `git push` trần bị từ chối và mất cả lượt cập
+          # nhật. Rebase lên main mới rồi thử lại.
+          for attempt in 1 2 3 4; do
+            git pull --rebase origin main && git push && exit 0
+            echo "push attempt $attempt failed, retrying"
+            sleep $((attempt * 5))
+          done
+          echo "::error::could not push after 4 attempts"
+          exit 1
 
       # Job đỏ khi có nguồn hỏng, để lỗi không trôi qua im lặng hàng tháng trời.
       - name: Report source failures

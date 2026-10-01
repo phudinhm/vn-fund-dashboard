@@ -8742,3 +8742,12 @@ button:not(:disabled):active {
 .ffb-clear { background: none; border: none; color: var(--color-primary); font: inherit; font-size: 0.78rem; cursor: pointer; padding: 0; }
 .ffb-clear:hover { text-decoration: underline; }
 @media (prefers-reduced-motion: reduce) { .ffb-chip { transition: none; } }
+
+/* ── Khối phí và tăng trưởng thực nhận ── */
+.fee-controls { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 16px; margin: 4px 0 14px; }
+.fee-amount { display: flex; flex-direction: column; gap: 4px; font-size: 0.78rem; color: var(--color-text-muted); }
+.fee-check { display: flex; align-items: center; gap: 6px; font-size: 0.86rem; cursor: pointer; padding-bottom: 8px; }
+.fee-schedule { margin-top: 12px; font-size: 0.82rem; }
+.fee-schedule summary { cursor: pointer; color: var(--color-primary); }
+.fee-schedule ul { margin: 8px 0 0; padding-left: 18px; display: flex; flex-direction: column; gap: 4px; line-height: 1.5; color: var(--color-text-muted); }
+.fee-lead { margin: 0 0 8px; }

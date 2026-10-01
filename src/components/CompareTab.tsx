@@ -13,6 +13,7 @@ import { CorrelationBlock } from './CorrelationBlock'
 import { MonthlyHeatmap } from './MonthlyHeatmap'
 import { DataQualityBlock } from './DataQualityBlock'
 import { DividendNotice } from './DividendNotice'
+import { FeeNetGrowthBlock } from './FeeNetGrowthBlock'
 import { DateRangePicker } from './DateRangePicker'
 import { ShareButton } from './ShareButton'
 import { FUND_COLORS } from '../constants'
@@ -137,6 +138,21 @@ function CompareTabImpl({
     }))
     : []
 
+  // Tổng lợi nhuận theo NAV của từng tài sản trong kỳ so sánh, cho khối phí/net.
+  const feeFunds = useMemo(
+    () => comparison.status === 'ready'
+      ? comparison.data.funds
+        .map((f, i) => ({
+          id: f.id,
+          name: assetDisplayName(f.id),
+          color: FUND_COLORS[i % FUND_COLORS.length]!,
+          gross: f.cumulative[f.cumulative.length - 1]?.value ?? 0,
+        }))
+        .filter(f => !isSavingsAssetId(f.id))
+      : [],
+    [comparison],
+  )
+
   // Đổi id thô sang tên hiển thị cho CompareStoryBlock. PHẢI bọc useMemo: khối
   // đó có useMemo riêng phụ thuộc vào chính mảng này, bên trong chạy
   // drawdownStats + rollingReturns cho từng quỹ. Tạo mảng mới mỗi lần render
@@ -203,6 +219,13 @@ function CompareTabImpl({
           />
 
           <KPICards funds={kpiFunds} />
+
+          <FeeNetGrowthBlock
+            funds={feeFunds}
+            metadata={metadata}
+            startDate={comparison.data.startDate}
+            endDate={comparison.data.endDate}
+          />
 
           <AssetPriceChart series={priceSeries} metadata={metadata} />
 
