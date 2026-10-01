@@ -65,6 +65,13 @@ const DICT = {
   'category.gold': { vi: 'Vàng', en: 'Gold' },
 
   // ── Fund selector ──
+  'ffb.label': { vi: 'Lọc danh sách quỹ', en: 'Filter the fund list' },
+  'ffb.watchOnly': { vi: 'Theo dõi ({n})', en: 'Watchlist ({n})' },
+  'ffb.watchOnly.hint': { vi: 'Chỉ liệt kê quỹ trong danh sách theo dõi', en: 'Only list funds on your watchlist' },
+  'ffb.house': { vi: 'Công ty quản lý quỹ', en: 'Fund manager' },
+  'ffb.house.all': { vi: 'Mọi công ty quỹ', en: 'All fund managers' },
+  'ffb.count': { vi: 'Hiện {shown}/{total} quỹ', en: 'Showing {shown}/{total} funds' },
+  'ffb.clear': { vi: 'Bỏ lọc', en: 'Clear filters' },
   'fundSelector.searchPlaceholder': { vi: 'Tìm quỹ...', en: 'Search funds...' },
   'fundSelector.noOptions': { vi: 'Không tìm thấy', en: 'No matches found' },
   'fundSelector.addFund': { vi: '+ Thêm quỹ so sánh', en: '+ Add fund to compare' },

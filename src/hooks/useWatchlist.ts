@@ -17,6 +17,18 @@ function setIds(next: string[]) {
   for (const listener of listeners) listener()
 }
 
+// Đồng bộ giữa các tab/cửa sổ trình duyệt: localStorage đổi ở tab khác thì tab này
+// nhận sự kiện `storage` (không bắn ở chính tab vừa ghi) và cập nhật theo.
+if (typeof window !== 'undefined') {
+  window.addEventListener('storage', e => {
+    if (e.key !== STORAGE_KEY && e.key !== null) return
+    const next = loadLS<string[]>(STORAGE_KEY, [])
+    if (JSON.stringify(next) === JSON.stringify(ids)) return
+    ids = Array.isArray(next) ? next : []
+    for (const listener of listeners) listener()
+  })
+}
+
 function subscribe(listener: () => void): () => void {
   listeners.add(listener)
   return () => listeners.delete(listener)
