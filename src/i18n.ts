@@ -161,6 +161,7 @@ const DICT = {
   'dateRange.3m': { vi: '3 tháng', en: '3m' },
   'dateRange.6m': { vi: '6 tháng', en: '6m' },
   'dateRange.1y': { vi: '1 năm', en: '1y' },
+  'dateRange.2y': { vi: '2 năm', en: '2y' },
   'dateRange.3y': { vi: '3 năm', en: '3y' },
   'dateRange.5y': { vi: '5 năm', en: '5y' },
   'dateRange.ytd': { vi: 'YTD', en: 'YTD' },
