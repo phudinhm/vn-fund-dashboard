@@ -299,3 +299,12 @@ export function IconCandles(props: SVGProps<SVGSVGElement>) {
     </Icon>
   )
 }
+
+/** Bộ lọc danh sách quỹ: phễu lọc. */
+export function IconFilter(props: SVGProps<SVGSVGElement>) {
+  return (
+    <Icon {...props}>
+      <path d="M4 5h16l-6.2 7.4V19l-3.6-1.8v-4.8z" />
+    </Icon>
+  )
+}

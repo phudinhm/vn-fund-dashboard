@@ -46,7 +46,7 @@ import { useT, type TranslationKey } from '../i18n'
 import { useLanguage } from '../hooks/useLanguage'
 import { fundDisplayName } from '../utils/fundName'
 import { FundFilterBar } from './FundFilterBar'
-import { useFilteredFunds } from '../hooks/useFundFilter'
+import { useFundFilterSplit } from '../hooks/useFundFilter'
 
 interface Props {
   funds: FundMeta[]
@@ -259,7 +259,8 @@ function DCAPanelImpl({ funds, shareUrl, active }: Props) {
     })))
   }, [portfolios])
 
-  const visibleFunds = useFilteredFunds(funds, portfolios.flatMap(p => p.slots.map(s => s.fundId)))
+  const filterSplit = useFundFilterSplit(funds, portfolios.flatMap(p => p.slots.map(s => s.fundId)))
+  const visibleFunds = filterSplit.visible
   const fundOptions = useMemo(() => [
     ...visibleFunds.map(f => ({ value: f.id, label: fundDisplayName(f, language) })),
     { value: savingsAssetId(DEFAULT_SAVINGS_RATE), label: savingsOptionLabel(language) },
@@ -324,7 +325,7 @@ function DCAPanelImpl({ funds, shareUrl, active }: Props) {
     setPortfolios(portfolios.map(p => {
       if (p.id !== portfolioId || p.slots.length >= MAX_FUNDS_PER_PORTFOLIO) return p
       const used = new Set(p.slots.map(s => s.fundId))
-      const available = funds.find(f => !used.has(f.id))
+      const available = filterSplit.matched.find(f => !used.has(f.id))
       const newSlots = [...p.slots, { fundId: available?.id || '', weight: 0 }]
       const name = p.isNameCustom ? p.name : derivePortfolioName(newSlots, `Portfolio ${p.num}`)
       return { ...p, name, slots: newSlots }

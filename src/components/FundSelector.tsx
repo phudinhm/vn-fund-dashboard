@@ -4,7 +4,7 @@ import type { FundMeta } from '../types'
 import { FUND_COLORS, MAX_COMPARE_FUNDS } from '../constants'
 import { SavingsRateInput } from './SavingsRateInput'
 import { useWatchlist } from '../hooks/useWatchlist'
-import { useFilteredFunds } from '../hooks/useFundFilter'
+import { useFundFilterSplit } from '../hooks/useFundFilter'
 import { FundFilterBar } from './FundFilterBar'
 import { useT, type TranslationKey } from '../i18n'
 import { IconStar } from './icons'
@@ -37,11 +37,18 @@ export function FundSelector({
   const { isWatched, toggle } = useWatchlist()
   // Nhóm theo loại tài sản + công ty quản lý. 80+ quỹ trong một danh sách phẳng
   // rất khó quét bằng mắt; gom nhóm cho thấy ngay quỹ thuộc loại nào, của bên nào.
-  const visibleFunds = useFilteredFunds(allFunds, selectedFunds)
-  const baseGroups: FundOptionGroup[] = useMemo(
-    () => buildGroupedFundOptions(visibleFunds, type => t(`category.${type}` as TranslationKey), language),
-    [visibleFunds, t, language],
-  )
+  const split = useFundFilterSplit(allFunds, selectedFunds)
+  const baseGroups: FundOptionGroup[] = useMemo(() => {
+    const groups = buildGroupedFundOptions(split.matched, type => t(`category.${type}` as TranslationKey), language)
+    if (split.outside.length === 0) return groups
+    // Quỹ đang chọn nhưng bị bộ lọc loại: gom riêng ở đầu danh sách, có nhãn rõ
+    // thay vì lẫn vào các quỹ khớp (trước đây làm số quỹ hiện ra lệch số khớp).
+    const outsideOptions = buildGroupedFundOptions(split.outside, type => t(`category.${type}` as TranslationKey), language)
+      .flatMap(g => g.options)
+    return [{ label: t('ffb.outside'), options: outsideOptions }, ...groups]
+  }, [split, t, language])
+
+  const hasMatchedToAdd = split.matched.some(f => !selectedFunds.includes(f.id))
 
   function changeFund(index: number, newId: string) {
     const next = [...selectedFunds]
@@ -57,7 +64,8 @@ export function FundSelector({
   function addFund() {
     if (selectedFunds.length >= MAX_COMPARE_FUNDS) return
     const used = new Set(selectedFunds)
-    const available = allFunds.find(f => !used.has(f.id))
+    // Chỉ thêm quỹ khớp bộ lọc đang bật, không lặng lẽ thêm quỹ nằm ngoài nó.
+    const available = split.matched.find(f => !used.has(f.id))
     if (available) {
       onChangeFunds([...selectedFunds, available.id])
     }
@@ -136,7 +144,8 @@ export function FundSelector({
       <button
         className="fund-add-btn"
         onClick={addFund}
-        disabled={selectedFunds.length >= MAX_COMPARE_FUNDS}
+        disabled={selectedFunds.length >= MAX_COMPARE_FUNDS || !hasMatchedToAdd}
+        title={!hasMatchedToAdd ? t('ffb.noneToAdd') : undefined}
       >
         {t('fundSelector.addFund')}
       </button>
