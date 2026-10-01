@@ -15,8 +15,10 @@ import {
   IconBitcoin,
   IconCalculator,
   IconCalendar,
+  IconCandles,
   IconCloud,
   IconCompare,
+  IconCompass,
   IconMoon,
   IconOverlap,
   IconRefresh,
@@ -38,8 +40,10 @@ const VISIBLE_TABS = TAB_REGISTRY.filter(tab => !tab.hidden)
  */
 const TAB_ICONS: Record<TabId, ReactElement> = {
   compare: <IconCompare />,
+  advisor: <IconCompass />,
   watchlist: <IconStar />,
   dca: <IconCalendar />,
+  stockdca: <IconCandles />,
   lsdca: <IconScale />,
   fundanalysis: <IconSearch />,
   overlap: <IconOverlap />,

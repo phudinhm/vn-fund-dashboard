@@ -34,27 +34,12 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Install vnstock
-        # vnstock 4.0.6 has an UnboundLocalError in the VCI execution path.
-        run: pip install vnstock==4.0.5
-
-      # Không gọi register_user khi chưa có secret: với api_key rỗng, vnstock rơi
-      # vào luồng đăng ký TƯƠNG TÁC, gọi input() và chết EOFError trên runner —
-      # làm hỏng cả job ngay trước mọi bước cập nhật dữ liệu. Không có key thì
-      # vnstock vẫn chạy ở mức Khách (20 request/phút), đủ dùng.
-      - name: Register vnstock API key
-        continue-on-error: true
-        env:
-          # Qua env chứ không nội suy thẳng vào lệnh: secret không lọt vào chuỗi
-          # lệnh (và vào log khi bật debug). `secrets` cũng không dùng được
-          # trong `if:` của step, nên kiểm tra bằng bash ở đây.
-          VNSTOCK_API_KEY: ${{ secrets.VNSTOCK_API_KEY }}
-        run: |
-          if [ -z "$VNSTOCK_API_KEY" ]; then
-            echo "No VNSTOCK_API_KEY set — vnstock runs at guest limits (20 req/min)."
-            exit 0
-          fi
-          python -X utf8 -c "import os; from vnstock import register_user; register_user(api_key=os.environ['VNSTOCK_API_KEY'])"
+      # Chỉ cần pandas cho update_vnstock.py. Không còn cài gói `vnstock`: gói
+      # đó đã bị gỡ khỏi PyPI (pip báo "from versions: none"), và bước cài lỗi
+      # này từng làm chết cả job trước khi nguồn dữ liệu nào kịp chạy. Giá ETF
+      # và chỉ số giờ gọi thẳng API VCI trong chính script.
+      - name: Install Python dependencies
+        run: pip install pandas
 
       # Mỗi nguồn dữ liệu chạy độc lập: một nguồn hỏng (API đổi, site đổi cấu
       # trúc, hết hạn mức) không được kéo theo các nguồn còn lại. Kết quả tổng
@@ -70,8 +55,6 @@ jobs:
         id: vnstock
         continue-on-error: true
         run: python -X utf8 scripts/update_vnstock.py
-        env:
-          VNSTOCK_API_KEY: ${{ secrets.VNSTOCK_API_KEY }}
 
       - name: Update fund holdings (Overlap tab)
         id: holdings

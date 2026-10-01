@@ -1,6 +1,6 @@
 import { memo } from 'react'
 import { useT, translateStatic } from '../i18n'
-import { useLanguage, type Language } from '../hooks/useLanguage'
+import { getLanguage, useLanguage, type Language } from '../hooks/useLanguage'
 
 interface StatsRow {
   id: string
@@ -8,7 +8,14 @@ interface StatsRow {
   color: string
   finalValue: number
   totalInvested: number
+  /** CAGR nhà đầu tư (giá trị cuối ÷ tổng đầu tư, quy năm). Null khi kỳ chưa đủ 1 năm. */
   cagr: number | null
+  /** TWRR quy năm SAU phí. Null khi kỳ chưa đủ 1 năm. */
+  twrrNet: number | null
+  /** TWRR quy năm TRƯỚC phí. Null khi kỳ chưa đủ 1 năm. */
+  twrrGross: number | null
+  /** Tổng chi phí đã trả (VND). */
+  totalCosts?: number
   mwrr: number | null
   maxDrawdown: number | null
   avgDrawdown: number | null
@@ -58,6 +65,14 @@ function DCAStatsTableImpl({ portfolios }: Props) {
                 <span className="dca-info-icon" title={t('dcaStats.help.cagr')}>?</span>
               </th>
               <th>
+                {t('dcaStats.col.twrrNet')}
+                <span className="dca-info-icon" title={t('dcaStats.help.twrrNet')}>?</span>
+              </th>
+              <th>
+                {t('dcaStats.col.twrrGross')}
+                <span className="dca-info-icon" title={t('dcaStats.help.twrrGross')}>?</span>
+              </th>
+              <th>
                 MWRR
                 <span className="dca-info-icon" title={t('dcaStats.help.mwrr')}>?</span>
               </th>
@@ -95,8 +110,10 @@ function DCAStatsTableImpl({ portfolios }: Props) {
                   <td>{formatVND(Math.round(p.finalValue), language)}</td>
                   <td>{formatVND(p.totalInvested, language)}</td>
                   <td className={signClass(cumReturn)}>{formatSignedPercent(cumReturn)}</td>
-                  <td className={signClass(p.cagr)}>{formatSignedPercent(p.cagr)}</td>
-                  <td className={signClass(p.mwrr)}>{formatSignedPercent(p.mwrr)}</td>
+                  <td className={signClass(p.cagr)} title={annualTitle(p.cagr)}>{formatAnnualized(p.cagr)}</td>
+                  <td className={signClass(p.twrrNet)} title={annualTitle(p.twrrNet)}>{formatAnnualized(p.twrrNet)}</td>
+                  <td className={signClass(p.twrrGross)} title={annualTitle(p.twrrGross)}>{formatAnnualized(p.twrrGross)}</td>
+                  <td className={signClass(p.mwrr)} title={annualTitle(p.mwrr)}>{formatAnnualized(p.mwrr)}</td>
                   <td className={p.maxDrawdown !== null && p.maxDrawdown < 0 ? 'dca-loss' : ''}>
                     {p.maxDrawdown !== null ? (p.maxDrawdown * 100).toFixed(2) + '%' : '—'}
                   </td>
@@ -129,6 +146,18 @@ function formatSignedPercent(v: number | null): string {
   if (v === null) return '—'
   const pct = v * 100
   return (pct >= 0 ? '+' : '') + pct.toFixed(2) + '%'
+}
+
+/**
+ * Số quy năm (%/năm): null nghĩa là kỳ chưa đủ 1 năm nên KHÔNG quy năm, ô để
+ * trống thay vì nội suy từ vài tháng. Tooltip giải thích vì sao trống.
+ */
+function formatAnnualized(v: number | null): string {
+  return v === null ? '' : formatSignedPercent(v)
+}
+
+function annualTitle(v: number | null): string | undefined {
+  return v === null ? translateStatic('dcaStats.shortPeriod', getLanguage()) : undefined
 }
 
 function formatVND(value: number, lang: Language): string {

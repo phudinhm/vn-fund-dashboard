@@ -21,13 +21,15 @@ import { MoneyMachineBlock } from './MoneyMachineBlock'
 import { SavingsRateInput } from './SavingsRateInput'
 import {
   isSavingsAssetId, savingsAssetId, assetDisplayName,
-  SAVINGS_OPTION_LABEL, DEFAULT_SAVINGS_RATE,
+  savingsOptionLabel, DEFAULT_SAVINGS_RATE,
 } from '../utils/savingsAsset'
 import { SleepTestBlock } from './SleepTestBlock'
 import { WinRateBlock } from './WinRateBlock'
 import { loadLS, saveLS } from '../utils/localStorage'
 import { REBAL_OPTIONS } from './PortfolioCard'
 import { useT } from '../i18n'
+import { useLanguage } from '../hooks/useLanguage'
+import { fundDisplayName } from '../utils/fundName'
 
 interface Props {
   funds: FundMeta[]
@@ -57,6 +59,7 @@ interface BitcoinSnapshot {
 
 function BitcoinPanelImpl({ funds }: Props) {
   const t = useT()
+  const { language } = useLanguage()
   const [selectedFundId, setSelectedFundId] = useState(
     () => loadLS<string>('btc_fund', DEFAULT_FUND_ID),
   )
@@ -114,17 +117,17 @@ function BitcoinPanelImpl({ funds }: Props) {
     () => [
       ...funds
         .filter(f => f.id !== BTC_ID)
-        .map(f => ({ value: f.id, label: f.name_vi })),
-      { value: savingsAssetId(DEFAULT_SAVINGS_RATE), label: SAVINGS_OPTION_LABEL },
+        .map(f => ({ value: f.id, label: fundDisplayName(f, language) })),
+      { value: savingsAssetId(DEFAULT_SAVINGS_RATE), label: savingsOptionLabel(language) },
     ],
-    [funds],
+    [funds, language],
   )
 
   // Lãi suất nằm ngay trong id ("SAVINGS:7"), nên khi người dùng đổi lãi suất,
   // id mới không còn khớp option nào trong danh sách. Tự dựng lại option cho
   // đúng id hiện tại để ô chọn không bị rỗng.
   const selectedFundOption = isSavingsAssetId(selectedFundId)
-    ? { value: selectedFundId, label: SAVINGS_OPTION_LABEL }
+    ? { value: selectedFundId, label: savingsOptionLabel(language) }
     : fundOptions.find(o => o.value === selectedFundId) || null
 
   // BTC weight 0–10% used by the scatter chart, computed once here and passed

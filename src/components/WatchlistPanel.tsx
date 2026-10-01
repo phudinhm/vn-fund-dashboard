@@ -10,6 +10,8 @@ import {
 } from '../utils/fundSelectOptions'
 import { MAX_COMPARE_FUNDS } from '../constants'
 import { IconStar } from './icons'
+import { useLanguage } from '../hooks/useLanguage'
+import { fundDisplayName } from '../utils/fundName'
 
 interface Props {
   funds: FundMeta[]
@@ -96,6 +98,7 @@ function pctClass(value: number | null): string {
 
 export function WatchlistPanel({ funds, onCompare }: Props) {
   const t = useT()
+  const { language } = useLanguage()
   const { ids: watchedIds, add, remove } = useWatchlist()
   const { data, loading, errors } = useMultiFundSeries(watchedIds)
 
@@ -106,8 +109,9 @@ export function WatchlistPanel({ funds, onCompare }: Props) {
     () => buildGroupedFundOptions(
       funds.filter(f => !watchedIds.includes(f.id)),
       type => t(`category.${type}` as TranslationKey),
+      language,
     ),
-    [funds, watchedIds, t],
+    [funds, watchedIds, t, language],
   )
   const hasAddOptions = addGroups.some(g => g.options.length > 0)
 
@@ -194,7 +198,7 @@ export function WatchlistPanel({ funds, onCompare }: Props) {
                 <span className="watchlist-badge" style={{ background: CATEGORY_COLORS[meta.type] }}>
                   {t(`category.${meta.type}` as TranslationKey)}
                 </span>
-                <span className="watchlist-card-name" title={meta.name_vi}>{meta.id}</span>
+                <span className="watchlist-card-name" title={fundDisplayName(meta, language)}>{meta.id}</span>
               </div>
               <button
                 className="fund-star-btn fund-star-btn-active"
@@ -204,7 +208,7 @@ export function WatchlistPanel({ funds, onCompare }: Props) {
                 <IconStar filled />
               </button>
             </div>
-            <p className="watchlist-card-fullname">{meta.name_vi}</p>
+            <p className="watchlist-card-fullname">{fundDisplayName(meta, language)}</p>
 
             {error && <p className="overlap-empty">{error}</p>}
 

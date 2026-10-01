@@ -277,3 +277,25 @@ export function IconStorm(props: SVGProps<SVGSVGElement>) {
     </Icon>
   )
 }
+
+/** Gợi Ý Đầu Tư — la bàn, chỉ hướng chứ không đi thay. */
+export function IconCompass(props: SVGProps<SVGSVGElement>) {
+  return (
+    <Icon {...props}>
+      <circle cx="12" cy="12" r="8.5" />
+      <path d="M15.6 8.4l-2 5.2-5.2 2 2-5.2z" />
+    </Icon>
+  )
+}
+
+/** DCA Cổ Phiếu: biểu đồ nến, khác cột biểu đồ của So Sánh. */
+export function IconCandles(props: SVGProps<SVGSVGElement>) {
+  return (
+    <Icon {...props}>
+      <path d="M7 4v3M7 15v5M12 8v2M12 19v2M17 3v4M17 13v5" />
+      <rect x="5" y="7" width="4" height="8" rx="1" />
+      <rect x="10" y="10" width="4" height="9" rx="1" />
+      <rect x="15" y="7" width="4" height="6" rx="1" />
+    </Icon>
+  )
+}

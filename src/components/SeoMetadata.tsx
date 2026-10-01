@@ -19,8 +19,10 @@ const SITE_ORIGIN = 'https://fund.minhphudinh.com'
  */
 export const SEO_BY_TAB: Record<TabId, SeoMeta> = {
   compare:      { titleKey: 'seo.compare.title',      descriptionKey: 'seo.compare.description',      indexable: true },
+  advisor:      { titleKey: 'seo.advisor.title',      descriptionKey: 'seo.advisor.description',      indexable: true },
   watchlist:    { titleKey: 'seo.watchlist.title',    descriptionKey: 'seo.watchlist.description',    indexable: false },
   dca:          { titleKey: 'seo.dca.title',          descriptionKey: 'seo.dca.description',          indexable: true },
+  stockdca:     { titleKey: 'seo.stockdca.title',     descriptionKey: 'seo.stockdca.description',     indexable: true },
   lsdca:        { titleKey: 'seo.lsdca.title',        descriptionKey: 'seo.lsdca.description',        indexable: true },
   fundanalysis: { titleKey: 'seo.fundanalysis.title', descriptionKey: 'seo.fundanalysis.description', indexable: true },
   overlap:      { titleKey: 'seo.overlap.title',      descriptionKey: 'seo.overlap.description',      indexable: true },

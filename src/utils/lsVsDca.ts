@@ -158,6 +158,12 @@ export function computeRollingScenarios(
   cashSavingsRate: number,       // annual rate, e.g. 0.04 for 4%
   cashFundPrices: PricePoint[] | null,
   holdingPeriodMonths?: number,  // total holding window; defaults to horizonMonths
+  /**
+   * Chỉ lấy một ngày bắt đầu trong mỗi `startStride` ngày. Mặc định 1 = mọi ngày.
+   * Các kịch bản liền kề gần như trùng nhau, nên tab Tư vấn (chạy nhiều danh mục
+   * cùng lúc) lấy thưa để nhanh hơn mà không đổi bức tranh.
+   */
+  startStride = 1,
 ): LSvsDCAScenario[] {
   const validSlots = slots.filter(s => s.fundId && s.weight > 0)
   if (validSlots.length === 0 || totalCapital <= 0) return []
@@ -196,7 +202,7 @@ export function computeRollingScenarios(
 
   const scenarios: LSvsDCAScenario[] = []
 
-  for (let startIdx = 0; startIdx < dates.length; startIdx++) {
+  for (let startIdx = 0; startIdx < dates.length; startIdx += Math.max(1, startStride)) {
     const horizonEndIdx = horizonEndIndices[startIdx]!
     const endIdx = holdingEndIndices[startIdx]!
     // j tăng đơn điệu theo startIdx (two-pointer) nên một khi hết dữ liệu
@@ -849,7 +855,7 @@ export function drawdownFromRunningPeak(
 }
 
 /** Dải chứa mức giảm này, hoặc -1 nếu không dải nào chứa. */
-function bandIndexOf(drawdown: number): number {
+export function bandIndexOf(drawdown: number): number {
   for (let i = 0; i < DRAWDOWN_BANDS.length; i++) {
     const b = DRAWDOWN_BANDS[i]!
     // Cận trên đóng, cận dưới mở, để không đếm trùng ở đúng mốc tròn.
@@ -909,6 +915,26 @@ export function computeDrawdownBuckets(
 }
 
 /**
+ * Ngày bắt đầu của các quãng KHÔNG đè lên nhau, đếm tham lam từ ngày sớm nhất:
+ * lấy một ngày rồi bỏ hết những ngày nằm trong cùng kỳ nắm giữ, lấy tiếp ngày kế.
+ * Tách ra để tab Tư vấn dùng đúng một quy tắc đếm với các bảng ở tab LS vs DCA.
+ */
+export function independentEpisodeStarts(startDates: string[], holdingMonths: number): string[] {
+  const holdMs = Math.max(1, holdingMonths) * 30.44 * 86400000
+  const sorted = [...startDates].sort()
+  const episodeStarts: string[] = []
+  let lastTaken = -Infinity
+  for (const d of sorted) {
+    const t = new Date(d).getTime()
+    if (t - lastTaken >= holdMs) {
+      episodeStarts.push(d)
+      lastTaken = t
+    }
+  }
+  return episodeStarts
+}
+
+/**
  * Số liệu chung cho một nhóm kịch bản đã lọc: thống kê tiền, cộng lớp trung
  * thực về cỡ mẫu. Dùng chung cho bảng chia theo mức giảm lẫn bảng chia theo
  * thời gian kể từ đỉnh, để hai bảng không bao giờ lệch quy ước.
@@ -923,17 +949,7 @@ function summarizeGroup(list: LSvsDCAScenario[], holdingMonths: number) {
   //
   // Ghi lại luôn ngày bắt đầu của từng quãng: không có danh sách đó thì con
   // số này là lời khẳng định suông, người đọc không cách nào kiểm.
-  const holdMs = Math.max(1, holdingMonths) * 30.44 * 86400000
-  const sorted = list.map(s => s.startDate).sort()
-  const episodeStarts: string[] = []
-  let lastTaken = -Infinity
-  for (const d of sorted) {
-    const t = new Date(d).getTime()
-    if (t - lastTaken >= holdMs) {
-      episodeStarts.push(d)
-      lastTaken = t
-    }
-  }
+  const episodeStarts = independentEpisodeStarts(list.map(s => s.startDate), holdingMonths)
 
   const usable = list.filter(s => s.lsGrowth > 0)
   const wins = list.filter(s => s.diff > 0).length

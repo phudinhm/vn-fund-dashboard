@@ -1,6 +1,16 @@
-import { describe, expect, it } from 'vitest'
+import { beforeAll, describe, expect, it } from 'vitest'
+import { act, renderHook } from '@testing-library/react'
 import { industryAllocationForPeriod, top10StocksForPeriod } from './FundAnalysisPanel'
+import { useLanguage } from '../hooks/useLanguage'
 import type { FundPeriodSummary } from '../utils/fundReport'
+
+// industryAllocationForPeriod dịch tên ngành qua sectorName(), đọc ngôn ngữ
+// từ store toàn cục (không nhận tham số lang) — ghim tiếng Việt để test
+// không phụ thuộc ngôn ngữ mặc định hiện tại của app.
+beforeAll(() => {
+  const { result } = renderHook(() => useLanguage())
+  act(() => result.current.setLanguage('vi'))
+})
 
 function period(periodEnd: string, tickers: string[]): FundPeriodSummary {
   return {

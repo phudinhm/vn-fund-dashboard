@@ -1,0 +1,86 @@
+name: Update Fund Reports
+
+# Tab Phân Tích Quỹ đọc báo cáo tài chính tháng của DCDS, DCBF, DCIP. Báo cáo
+# tháng M được Dragon Capital đăng vào những ngày đầu tháng M+1, nên chạy hằng
+# ngày và chỉ dò vài tháng gần nhất: ngày nào chưa có báo cáo mới thì không có
+# gì thay đổi và không commit. Không cần trình duyệt hay URL trang sản phẩm, vì
+# script dò thẳng tên file trên Azure Blob (xem --probe-only).
+#
+# Backfill toàn bộ lịch sử hoặc thêm quỹ mới vẫn dùng backfill_fund_reports.yml.
+on:
+  schedule:
+    # 02:30 UTC = 09:30 Việt Nam
+    - cron: '30 2 * * *'
+  workflow_dispatch:
+
+jobs:
+  update-reports:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      # Ghi rõ nhánh đích, đừng để nhánh mặc định quyết định dữ liệu rơi vào đâu
+      # (cùng lý do như update_daily.yml).
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Python deps
+        run: pip install requests pandas openpyxl
+
+      - name: Download latest reports
+        id: download
+        continue-on-error: true
+        run: |
+          for fund in DCDS DCBF DCIP; do
+            python -X utf8 scripts/fund_report/download_dragoncapital_reports.py --fund "$fund" --probe-only --recent-months 3
+          done
+
+      - name: Convert xlsx to tidied CSVs
+        id: convert
+        continue-on-error: true
+        run: python -X utf8 scripts/fund_report/fund_reports_update.py
+
+      - name: Regenerate holdings (Overlap tab)
+        id: holdings
+        continue-on-error: true
+        run: python -X utf8 scripts/fund_report/fund_reports_to_holdings.py
+
+      - name: Check for changes
+        id: changes
+        run: |
+          if git diff --quiet -- public/data; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit and push
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add public/data/
+          git commit -m "Update fund reports $(date -u +%Y-%m-%d)"
+          git push
+
+      # Đỏ khi một bước hỏng hoặc báo cáo mới nhất đã quá cũ, để việc dò không
+      # còn khớp tên file không trôi qua im lặng.
+      - name: Report failures and staleness
+        run: |
+          failed=""
+          [ "${{ steps.download.outcome }}" = "failure" ] && failed="$failed download"
+          [ "${{ steps.convert.outcome }}"  = "failure" ] && failed="$failed convert"
+          [ "${{ steps.holdings.outcome }}" = "failure" ] && failed="$failed holdings"
+          if [ -n "$failed" ]; then
+            echo "::error::Report steps failed:$failed"
+            exit 1
+          fi
+          python scripts/fund_report/check_report_freshness.py DCDS DCBF DCIP

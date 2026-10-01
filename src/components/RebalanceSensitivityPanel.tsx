@@ -26,10 +26,11 @@ import { PortfolioCard, portfolioSelectStyles } from './PortfolioCard'
 import { IconScale, IconTarget } from './icons'
 import {
   savingsAssetId,
-  SAVINGS_OPTION_LABEL, DEFAULT_SAVINGS_RATE,
+  savingsOptionLabel, DEFAULT_SAVINGS_RATE,
 } from '../utils/savingsAsset'
 import { useT, useTRich, useDecimal, translateStatic } from '../i18n'
 import { useLanguage } from '../hooks/useLanguage'
+import { fundDisplayName } from '../utils/fundName'
 
 interface Props {
   funds: FundMeta[]
@@ -132,9 +133,9 @@ function RebalanceSensitivityPanelImpl({ funds }: Props) {
   )
 
   const fundOptions = useMemo(() => [
-    ...funds.map(f => ({ value: f.id, label: f.name_vi })),
-    { value: savingsAssetId(DEFAULT_SAVINGS_RATE), label: SAVINGS_OPTION_LABEL },
-  ], [funds])
+    ...funds.map(f => ({ value: f.id, label: fundDisplayName(f, language) })),
+    { value: savingsAssetId(DEFAULT_SAVINGS_RATE), label: savingsOptionLabel(language) },
+  ], [funds, language])
 
   // Fetch CSV cho các quỹ đã chọn (cùng pipeline adjusted-prices với các tab khác)
   const neededIds = useMemo(() => {

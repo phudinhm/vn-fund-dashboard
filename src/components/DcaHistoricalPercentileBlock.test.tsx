@@ -1,6 +1,7 @@
 import { beforeAll, describe, expect, it, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render, screen, renderHook, act } from '@testing-library/react'
 import { DcaHistoricalPercentileBlock } from './DcaHistoricalPercentileBlock'
+import { useLanguage } from '../hooks/useLanguage'
 
 beforeAll(() => {
   vi.stubGlobal('ResizeObserver', class {
@@ -8,6 +9,10 @@ beforeAll(() => {
     unobserve() {}
     disconnect() {}
   })
+  // Nhãn đọc qua useT() (store ngôn ngữ toàn cục): ghim tiếng Việt để test
+  // không phụ thuộc ngôn ngữ mặc định hiện tại của app.
+  const { result } = renderHook(() => useLanguage())
+  act(() => result.current.setLanguage('vi'))
 })
 
 describe('DcaHistoricalPercentileBlock', () => {

@@ -50,6 +50,10 @@ export interface ReturnPoint {
 export interface FundMeta {
   id: string
   name_vi: string
+  /** Bản dịch tiếng Anh, dịch tay để đúng nghĩa — không phải mọi quỹ đều có
+   *  (quỹ mới do audit workflow tự thêm thì chưa), dùng fundDisplayName() để
+   *  tự rơi về name_vi khi thiếu. */
+  name_en?: string
   type: 'mutual_fund' | 'bond' | 'balanced' | 'etf' | 'crypto' | 'gold' | 'index'
   start_date: string
   csv_file: string

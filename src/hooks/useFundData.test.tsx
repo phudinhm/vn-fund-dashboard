@@ -1,10 +1,18 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { act, cleanup, render, screen, waitFor } from '@testing-library/react'
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
+import { act, cleanup, render, renderHook, screen, waitFor } from '@testing-library/react'
 import {
   useFundSeries,
   useFundSeriesMap,
   useMultiFundSeries,
 } from './useFundData'
+import { useLanguage } from './useLanguage'
+
+// Thông điệp lỗi đọc qua useT() (store ngôn ngữ toàn cục): ghim tiếng Việt để
+// test không phụ thuộc ngôn ngữ mặc định hiện tại của app.
+beforeAll(() => {
+  const { result } = renderHook(() => useLanguage())
+  act(() => result.current.setLanguage('vi'))
+})
 
 type MockResponse = {
   ok: boolean

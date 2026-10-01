@@ -18,11 +18,10 @@ import { DcaRatioChart } from './DcaRatioChart'
 import { DcaReturnPainChart } from './DcaReturnPainChart'
 import { DcaEntryPointBlock } from './DcaEntryPointBlock'
 import { DCAStatsTable } from './DCAStatsTable'
-import { DCAGlossary } from './DCAGlossary'
 import { DcaJourneyBlock, EOYReturnsTable } from './DcaJourneyBlock'
 import { BankComparisonBlock } from './BankComparisonBlock'
 import { DcaStormBlock } from './DcaStormBlock'
-import { DcaReturnExplainer } from './DcaReturnExplainer'
+import { ReturnMetricsExplainer } from './ReturnMetricsExplainer'
 import { ProjectionBlock } from './ProjectionBlock'
 import { MonteCarloBlock } from './MonteCarloBlock'
 import { RollingReturnBlock } from './RollingReturnBlock'
@@ -34,7 +33,7 @@ import { parsePortfolios } from '../utils/portfolio'
 import { FUND_COLORS } from '../constants'
 import {
   savingsAssetId,
-  SAVINGS_OPTION_LABEL,
+  savingsOptionLabel,
   DEFAULT_SAVINGS_RATE,
 } from '../utils/savingsAsset'
 import {
@@ -44,6 +43,8 @@ import {
   MAX_FUNDS_PER_PORTFOLIO,
 } from './PortfolioCard'
 import { useT, type TranslationKey } from '../i18n'
+import { useLanguage } from '../hooks/useLanguage'
+import { fundDisplayName } from '../utils/fundName'
 
 interface Props {
   funds: FundMeta[]
@@ -77,6 +78,9 @@ interface DCAPortfolioResult {
   name: string
   color: string
   cumulative: ReturnPoint[]
+  /** TWRR trước phí (chỉ biến động thị trường); `cumulative` là sau phí. */
+  cumulativeGross: ReturnPoint[]
+  totalCosts: number
   drawdown: ReturnPoint[]
   totalInvested: number
   finalValue: number
@@ -155,6 +159,7 @@ const FREQ_OPTIONS: { value: DCAFrequency; labelKey: TranslationKey }[] = [
 function DCAPanelImpl({ funds, shareUrl, active }: Props) {
   const nextIdRef = useRef(1)
   const t = useT()
+  const { language } = useLanguage()
 
   // URL payload comes from App; this hook keeps localStorage precedence and the persist gate.
   const {
@@ -253,9 +258,9 @@ function DCAPanelImpl({ funds, shareUrl, active }: Props) {
   }, [portfolios])
 
   const fundOptions = useMemo(() => [
-    ...funds.map(f => ({ value: f.id, label: f.name_vi })),
-    { value: savingsAssetId(DEFAULT_SAVINGS_RATE), label: SAVINGS_OPTION_LABEL },
-  ], [funds])
+    ...funds.map(f => ({ value: f.id, label: fundDisplayName(f, language) })),
+    { value: savingsAssetId(DEFAULT_SAVINGS_RATE), label: savingsOptionLabel(language) },
+  ], [funds, language])
 
   // Quỹ 2-giá (mua/bán khác nhau, vd vàng miếng SJC) — xem giải thích ở
   // purchasePriceData phía trên.
@@ -535,7 +540,7 @@ function DCAPanelImpl({ funds, shareUrl, active }: Props) {
       if (dcaResult.cumulative.length === 0) {
         portfolioResults.push({
           id: p.id, name: p.name, color,
-          cumulative: [], drawdown: [],
+          cumulative: [], cumulativeGross: [], totalCosts: 0, drawdown: [],
           totalInvested: 0, finalValue: 0, mwrr: null, profitFactor: null,
           storm: { maxDrawdown: 0, maxDDDate: '', maxDDPeakDate: '', recoveryMonths: null, stormsCount: 0, inBearPeriod: null },
           investedSeries: [], valueSeries: [], cashflows: [],
@@ -567,6 +572,8 @@ function DCAPanelImpl({ funds, shareUrl, active }: Props) {
       portfolioResults.push({
         id: p.id, name: p.name, color,
         cumulative: dcaResult.cumulative,
+        cumulativeGross: dcaResult.cumulativeGross,
+        totalCosts: dcaResult.totalCosts,
         drawdown: dcaResult.drawdown,
         totalInvested: dcaResult.totalInvested,
         finalValue: dcaResult.finalValue,
@@ -648,6 +655,9 @@ function DCAPanelImpl({ funds, shareUrl, active }: Props) {
     finalValue: r.finalValue,
     totalInvested: r.totalInvested,
     cagr: investorCagr(r.cumulative, r.totalInvested, r.finalValue),
+    twrrNet: dcaCagr(r.cumulative),
+    twrrGross: dcaCagr(r.cumulativeGross),
+    totalCosts: r.totalCosts,
     mwrr: r.mwrr,
     maxDrawdown: r.storm.maxDrawdown,
     avgDrawdown: avgDrawdown(r.drawdown),
@@ -667,11 +677,13 @@ function DCAPanelImpl({ funds, shareUrl, active }: Props) {
     cashflows: r.cashflows,
   })), [validResults])
 
-  const dcaReturnExplainerData = useMemo(() => validResults.map(r => ({
+  const returnExplainerData = useMemo(() => validResults.map(r => ({
     id: r.id,
     name: r.name,
     color: r.color,
     cagr: investorCagr(r.cumulative, r.totalInvested, r.finalValue),
+    twrr: dcaCagr(r.cumulative),
+    twrrGross: dcaCagr(r.cumulativeGross),
     mwrr: r.mwrr,
   })), [validResults])
 
@@ -1058,9 +1070,9 @@ function DCAPanelImpl({ funds, shareUrl, active }: Props) {
               portfolios={journeyPortfolios}
             />
 
-            {/* Giải thích CAGR vs MWRR (collapsible), ngay dưới summary cards để trả lời câu hỏi về 2 con số */}
-            <DcaReturnExplainer
-              portfolios={dcaReturnExplainerData}
+            {/* Giải thích CAGR, TWRR, MWRR (collapsible): một khối duy nhất gồm định nghĩa, công thức, ví dụ cây giống */}
+            <ReturnMetricsExplainer
+              portfolios={returnExplainerData}
             />
           </div>
 
@@ -1153,7 +1165,6 @@ function DCAPanelImpl({ funds, shareUrl, active }: Props) {
       )}
 
       {/* Giải Thích Khái Niệm */}
-      <DCAGlossary />
     </div>
   )
 }

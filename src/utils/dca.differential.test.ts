@@ -88,7 +88,7 @@ function refShouldRebal(prevDate: string, nextDate: string, freq: RebalanceFrequ
 }
 
 const EMPTY_SIM: DCAResult = {
-  values: [], invested: [], cashflows: [], cumulative: [], drawdown: [], returns: [],
+  values: [], invested: [], cashflows: [], cumulative: [], cumulativeGross: [], totalCosts: 0, drawdown: [], returns: [],
   totalInvested: 0, finalValue: 0,
 }
 
@@ -172,8 +172,11 @@ function refSimulateDCA(
   prevEndValue = totalInvested > 0 ? valueOf(allDates[0]!) : 0
   values.push({ date: allDates[0]!, value: prevEndValue })
   invested.push({ date: allDates[0]!, value: totalInvested })
-  cumulative.push({ date: allDates[0]!, value: 0 })
-  drawdown.push({ date: allDates[0]!, value: 0 })
+  // Chênh lệch mua-bán của khoản nạp đầu hiện ngay ở ngày 0: giá trị sau mua / tiền bỏ ra.
+  if (totalInvested > 0) twrrGrowth = prevEndValue / totalInvested
+  if (twrrGrowth > twrrPeak) twrrPeak = twrrGrowth
+  cumulative.push({ date: allDates[0]!, value: twrrGrowth - 1 })
+  drawdown.push({ date: allDates[0]!, value: twrrGrowth / twrrPeak - 1 })
 
   for (let i = 1; i < allDates.length; i++) {
     const date = allDates[i]!
@@ -192,6 +195,8 @@ function refSimulateDCA(
     }
     returns.push({ date, value: dailyReturn })
     twrrGrowth *= 1 + dailyReturn
+    const v0 = valueOf(date)
+    let flow = 0
 
     if (params.cashflowAmount > 0) {
       const investDate = lastInvestDate || allDates[0]!
@@ -204,6 +209,7 @@ function refSimulateDCA(
           totalInvested += amount
           lastInvestDate = date
           cashflows.push({ date, amount: -amount })
+          flow = amount
         } else {
           lastInvestDate = date
         }
@@ -217,6 +223,10 @@ function refSimulateDCA(
     prevDateForRebal = date
 
     const portfolioValue = totalInvested > 0 ? valueOf(date) : 0
+    // Chi phí (chênh lệch mua-bán của khoản nạp và tái cân bằng) trừ ngay vào TWRR ngày phát sinh.
+    const costFactor = v0 + flow > 0 ? portfolioValue / (v0 + flow) : 1
+    twrrGrowth *= costFactor
+    returns[returns.length - 1]!.value = (1 + dailyReturn) * costFactor - 1
     values.push({ date, value: portfolioValue })
     invested.push({ date, value: totalInvested })
     cumulative.push({ date, value: twrrGrowth - 1 })
@@ -227,12 +237,27 @@ function refSimulateDCA(
 
   const finalValue = values.length > 0 ? values[values.length - 1]!.value : 0
   const allCashflows = [...cashflows, { date: allDates[allDates.length - 1]!, amount: finalValue }]
-  return { values, invested, cashflows: allCashflows, cumulative, drawdown, returns, totalInvested, finalValue }
+  return { values, invested, cashflows: allCashflows, cumulative, cumulativeGross: cumulative, totalCosts: 0, drawdown, returns, totalInvested, finalValue }
 }
 
 /** MWRR — bisection (không đạo hàm) thay vì Newton-Raphson. */
+/** Kỳ đủ để quy năm: ≥ 1 năm lịch (dung sai 1 ngày). Viết lại bằng đếm ngày, độc lập với utils/twrr.ts. */
+function refAnnualizable(startDate: string, endDate: string): boolean {
+  const days = (Date.parse(endDate + 'T00:00:00Z') - Date.parse(startDate + 'T00:00:00Z')) / 86400000
+  return days >= 365.25 - 1
+}
+
+function expectNullableClose(actual: number | null, expected: number | null, digits: number): void {
+  if (expected === null) expect(actual).toBeNull()
+  else {
+    expect(actual).not.toBeNull()
+    expect(actual!).toBeCloseTo(expected, digits)
+  }
+}
+
 function refDcaMWRR(cashflows: { date: string; amount: number }[]): number | null {
   if (cashflows.length < 2) return null
+  if (!refAnnualizable(cashflows[0]!.date, cashflows[cashflows.length - 1]!.date)) return null
   const t0 = Date.parse(cashflows[0]!.date + 'T00:00:00Z')
   const msPerYear = 365.25 * 24 * 60 * 60 * 1000
   const cfs = cashflows.map(cf => ({
@@ -278,6 +303,7 @@ function refDcaMWRR(cashflows: { date: string; amount: number }[]): number | nul
 
 function refDcaCagr(cumulative: ReturnPoint[]): number | null {
   if (cumulative.length < 2) return null
+  if (!refAnnualizable(cumulative[0]!.date, cumulative[cumulative.length - 1]!.date)) return null
   const msPerYear = 365.25 * 24 * 60 * 60 * 1000
   const years = (Date.parse(cumulative[cumulative.length - 1]!.date + 'T00:00:00Z') - Date.parse(cumulative[0]!.date + 'T00:00:00Z')) / msPerYear
   if (years <= 0) return null
@@ -286,6 +312,7 @@ function refDcaCagr(cumulative: ReturnPoint[]): number | null {
 
 function refInvestorCagr(cumulative: ReturnPoint[], totalInvested: number, finalValue: number): number | null {
   if (cumulative.length < 2 || totalInvested <= 0 || finalValue <= 0) return null
+  if (!refAnnualizable(cumulative[0]!.date, cumulative[cumulative.length - 1]!.date)) return null
   const msPerYear = 365.25 * 24 * 60 * 60 * 1000
   const years = (Date.parse(cumulative[cumulative.length - 1]!.date + 'T00:00:00Z') - Date.parse(cumulative[0]!.date + 'T00:00:00Z')) / msPerYear
   if (years <= 0) return null
@@ -1092,8 +1119,8 @@ describe('differential: dcaMWRR (bisection reference)', () => {
     )
     const prod = dcaMWRR(result.cashflows)
     const ref = refDcaMWRR(result.cashflows)
-    expect(prod).not.toBeNull()
-    expect(prod!).toBeCloseTo(ref!, 4)
+    // Dữ liệu thật ở đây ngắn hơn 1 năm → cả hai cùng phải để trống (không quy năm).
+    expectNullableClose(prod, ref, 4)
   })
 
   it('IRR âm (mua đắt, kết thúc ít hơn vốn) khớp', () => {
@@ -1472,12 +1499,13 @@ describe('differential: pipeline end-to-end (đúng quy trình DCAPanel)', () =>
     const ref = refSimulateDCA(prices, slots, params, 'quarterly')
 
     // TWRR-based KPIs
-    expect(dcaCagr(prod.cumulative)).toBeCloseTo(refDcaCagr(ref.cumulative)!, 8)
+    expectNullableClose(dcaCagr(prod.cumulative), refDcaCagr(ref.cumulative), 8)
     expect(dcaMaxDrawdown(prod.cumulative)).toBeCloseTo(refDcaMaxDrawdown(ref.cumulative), 8)
     expect(dcaProfitFactor(prod.returns)).toBeCloseTo(refDcaProfitFactor(ref.returns)!, 8)
-    expect(investorCagr(prod.cumulative, prod.totalInvested, prod.finalValue))
-      .toBeCloseTo(refInvestorCagr(ref.cumulative, ref.totalInvested, ref.finalValue)!, 8)
-    expect(dcaMWRR(prod.cashflows)).toBeCloseTo(refDcaMWRR(ref.cashflows)!, 4)
+    expectNullableClose(
+      investorCagr(prod.cumulative, prod.totalInvested, prod.finalValue),
+      refInvestorCagr(ref.cumulative, ref.totalInvested, ref.finalValue), 8)
+    expectNullableClose(dcaMWRR(prod.cashflows), refDcaMWRR(ref.cashflows), 4)
 
     // Rolling & yearly
     expectPointsEqual(computeDCARolling(prod.cumulative, 12), refComputeDCARolling(ref.cumulative, 12), 8)
