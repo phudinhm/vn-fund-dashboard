@@ -45,7 +45,7 @@ import { useT, useTRich, type TranslationKey } from '../i18n'
 import { useLanguage } from '../hooks/useLanguage'
 import { fundDisplayName } from '../utils/fundName'
 import { FundFilterBar } from './FundFilterBar'
-import { useFilteredFunds } from '../hooks/useFundFilter'
+import { useFundFilterSplit } from '../hooks/useFundFilter'
 
 interface Props {
   funds: FundMeta[]
@@ -178,7 +178,8 @@ function LumpSumDCAPanelImpl({ funds, shareUrl, active }: Props) {
     } : null)
   }, [portfolio])
 
-  const visibleFunds = useFilteredFunds(funds, portfolio?.slots.map(s => s.fundId) ?? [])
+  const filterSplit = useFundFilterSplit(funds, portfolio?.slots.map(s => s.fundId) ?? [])
+  const visibleFunds = filterSplit.visible
   const fundOptions = useMemo(
     () => visibleFunds.map(f => ({ value: f.id, label: fundDisplayName(f, language) })),
     [visibleFunds, language],
@@ -236,7 +237,7 @@ function LumpSumDCAPanelImpl({ funds, shareUrl, active }: Props) {
   function addSlot() {
     if (!portfolio) return
     const used = new Set(portfolio.slots.map(s => s.fundId))
-    const available = funds.find(f => !used.has(f.id))
+    const available = filterSplit.matched.find(f => !used.has(f.id))
     const newSlots = [...portfolio.slots, { fundId: available?.id || '', weight: 0 }]
     const name = portfolio.isNameCustom ? portfolio.name : derivePortfolioName(newSlots, `Portfolio ${portfolio.num}`)
     setPortfolio(prev => prev ? { ...prev, name, slots: newSlots } : null)
