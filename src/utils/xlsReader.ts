@@ -3,7 +3,7 @@
  * chỉ lấy GIÁ TRỊ Ô của từng sheet: số và chuỗi. Không công thức, không định
  * dạng, không macro, không ảnh.
  *
- * Vì sao tự viết: báo cáo của fmarket là .xls cũ, thư viện đọc đủ dùng (SheetJS)
+ * Vì sao tự viết: báo cáo tài sản thường là .xls cũ, thư viện đọc đủ dùng (SheetJS)
  * không còn bản sạch trên npm (0.18.5 có lỗ hổng đã biết khi đọc file lạ). Định
  * dạng này đơn giản khi chỉ cần giá trị ô, và bộ đọc nhỏ giữ được bề mặt tấn
  * công nhỏ: mọi vòng lặp đều bị chặn bởi kích thước file, mọi chỉ số đều được

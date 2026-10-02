@@ -22,7 +22,7 @@ export function MethodologyEn() {
       {/* ─────────────────────────── 0. DATA ─────────────────────────── */}
       <Section id="m-data" title="0. Where the data comes from">
         <p>
-          Open-ended fund prices come from <strong>fmarket.vn</strong> (NAV for each
+          Open-ended fund prices come from <strong>the funds' public sources</strong> (NAV for each
           trading day). ETF and Bitcoin prices come from <strong>vnstock</strong> and
           CoinGecko. Gold prices come from sjc.com.vn. All of it updates automatically
           every day.
@@ -514,7 +514,7 @@ export function MethodologyEn() {
           a number that is not explained here, or suspect something is computed wrongly, say
           so.
         </p>
-        <p>Data from fmarket.vn &amp; vnstock. Updated daily.</p>
+        <p>Data from fund and exchange public sources. Updated daily.</p>
       </footer>
     </>
   )

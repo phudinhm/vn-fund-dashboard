@@ -1,7 +1,7 @@
 import type { CellValue } from './xlsReader'
 
 /**
- * Đọc "Báo cáo tài sản" (Asset Statement) xuất từ fmarket.
+ * Đọc "Báo cáo tài sản" (Asset Statement) dạng .xls.
  *
  * Báo cáo này là ẢNH CHỤP SỐ DƯ tại ngày xuất, không phải lịch sử lệnh: mỗi quỹ
  * có số CCQ đang giữ, giá mua bình quân và NAV gần nhất. Hàm này CỐ Ý chỉ trả

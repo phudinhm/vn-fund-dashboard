@@ -22,7 +22,7 @@ export function MethodologyVi() {
       {/* ─────────────────────────── 0. DỮ LIỆU ─────────────────────────── */}
       <Section id="m-data" title="0. Dữ liệu lấy từ đâu">
         <p>
-          Giá quỹ mở lấy từ <strong>fmarket.vn</strong> (NAV mỗi ngày giao dịch). Giá ETF
+          Giá quỹ mở lấy từ <strong>nguồn công bố của các quỹ</strong> (NAV mỗi ngày giao dịch). Giá ETF
           và Bitcoin lấy từ <strong>vnstock</strong> và CoinGecko. Giá vàng lấy từ
           sjc.com.vn. Toàn bộ tự động cập nhật hàng ngày.
         </p>
@@ -495,7 +495,7 @@ export function MethodologyVi() {
           Mọi công thức ở trang này phản ánh đúng code đang chạy. Nếu bạn thấy một con số
           nào chưa được giải thích, hoặc nghi ngờ một chỗ tính sai, cứ phản hồi.
         </p>
-        <p>Dữ liệu từ fmarket.vn &amp; vnstock. Cập nhật hàng ngày.</p>
+        <p>Dữ liệu từ nguồn công bố của các quỹ và sàn. Cập nhật hàng ngày.</p>
       </footer>
     </>
   )
