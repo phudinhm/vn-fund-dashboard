@@ -8840,6 +8840,10 @@ button:not(:disabled):active {
 /* ── Tab Xếp hạng ── */
 .rk-controls { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; margin-bottom: 10px; }
 .rk-periods { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+.rk-periods--inline { margin-bottom: 0; }
+.rk-colpick { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; margin-bottom: 10px; }
+.rk-colpick-label { font-size: 0.78rem; color: var(--color-text-muted); }
+.rk-colpick .ffb-chip:disabled { opacity: 0.45; cursor: not-allowed; }
 .rk-section { margin-bottom: 16px; }
 .rk-meta { font-size: 0.76rem; color: var(--color-text-muted); }
 .rk-lead { margin: 0 0 8px; }
@@ -8940,3 +8944,9 @@ button:not(:disabled):active {
 :root[data-theme="dark"] .mp-side--buy { color: #4ade80; }
 :root[data-theme="dark"] .mp-side--sell { color: #fb7185; }
 .mp-warn { margin-left: 6px; color: #d97706; cursor: help; }
+
+.mp-muted { color: var(--color-text-muted); }
+.mp-fee-now { font-style: normal; font-size: 0.72rem; color: var(--color-text-muted); }
+.mp-ledger { min-width: 1080px; }
+.mp-ledger th, .mp-ledger td { white-space: nowrap; }
+.mp-ledger td.rk-name { white-space: normal; min-width: 150px; }

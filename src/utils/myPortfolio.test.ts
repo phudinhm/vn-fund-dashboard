@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import {
-  findOversells, priceDeviation,
+  findOversells, priceDeviation, computeOrderLots,
   EMPTY_STATE, computePerformance, deriveOrders, effectiveOrders, positionsFromOrders, reconcile,
   removeSnapshot, sanitizeState, upsertSnapshot, type Order, type PortfolioState, type Snapshot,
 } from './myPortfolio'
@@ -218,5 +218,34 @@ describe('priceDeviation', () => {
   it('is null without a series or before the first price', () => {
     expect(priceDeviation(ord, undefined)).toBeNull()
     expect(priceDeviation({ ...ord, date: '2025-01-01' }, series)).toBeNull()
+  })
+})
+
+describe('computeOrderLots (FIFO)', () => {
+  const o = (id: string, date: string, side: 'buy' | 'sell', units: number, price: number): Order =>
+    ({ id, date, fund: 'F', side, units, price, source: 'manual' })
+
+  it('gives unrealised gain per buy lot at current NAV', () => {
+    const lots = computeOrderLots([o('a', '2025-01-01', 'buy', 100, 10_000), o('b', '2025-06-01', 'buy', 50, 12_000)], () => 15_000)
+    expect(lots.get('a')).toEqual({ remaining: 100, gain: 500_000, pct: 0.5 })
+    expect(lots.get('b')!.gain).toBe(150_000)
+    expect(lots.get('b')!.pct).toBeCloseTo(0.25)
+  })
+
+  it('sells the oldest lot first and reports realised gain on the sell', () => {
+    const lots = computeOrderLots([
+      o('a', '2025-01-01', 'buy', 100, 10_000), o('b', '2025-02-01', 'buy', 100, 20_000), o('s', '2025-03-01', 'sell', 150, 30_000),
+    ], () => 25_000)
+    // 100 @10k + 50 @20k bán ở 30k: lãi 2.000.000 + 500.000 trên vốn 2.000.000
+    expect(lots.get('s')!.gain).toBe(100 * 20_000 + 50 * 10_000)
+    expect(lots.get('s')!.pct).toBeCloseTo(2_500_000 / 2_000_000)
+    expect(lots.get('a')).toEqual({ remaining: 0, gain: 0, pct: null })
+    expect(lots.get('b')!.remaining).toBe(50)
+    expect(lots.get('b')!.gain).toBe(50 * 5_000)
+  })
+
+  it('leaves unrealised gain empty without a NAV', () => {
+    const lots = computeOrderLots([o('a', '2025-01-01', 'buy', 10, 10_000)], () => undefined)
+    expect(lots.get('a')).toEqual({ remaining: 10, gain: 0, pct: null })
   })
 })

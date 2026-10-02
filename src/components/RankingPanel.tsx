@@ -27,6 +27,8 @@ type MixedSort = 'score' | PeriodId
 
 const TOP_N = 10
 const MIXED_PREVIEW = 30
+const MAX_MIXED_COLS = 4
+const DEFAULT_MIXED_COLS: PeriodId[] = ['3m', '1y', '3y', '5y']
 
 function pickEnum<T extends string>(v: unknown, allowed: readonly T[], fallback: T): T {
   return typeof v === 'string' && (allowed as readonly string[]).includes(v) ? (v as T) : fallback
@@ -49,6 +51,11 @@ function RankingPanelImpl({ funds, onCompare }: Props) {
   const [period, setPeriod] = useState<PeriodId>(() => pickEnum(loadLS<unknown>('rk_period', '1y'), ALL_PERIODS, '1y'))
   const [metric, setMetric] = useState<RankMetric>(() => pickEnum(loadLS<unknown>('rk_metric', 'return'), RANK_METRICS, 'return'))
   const [mixedSort, setMixedSort] = useState<MixedSort>(() => pickEnum(loadLS<unknown>('rk_sort', 'score'), ['score', ...ALL_PERIODS], 'score'))
+  const [cols, setCols] = useState<PeriodId[]>(() => {
+    const saved = loadLS<unknown>('rk_cols', DEFAULT_MIXED_COLS)
+    const valid = Array.isArray(saved) ? MIXED_PERIODS.filter(p => saved.includes(p)).slice(0, MAX_MIXED_COLS) : []
+    return valid.length > 0 ? valid : DEFAULT_MIXED_COLS
+  })
   const [showAllMixed, setShowAllMixed] = useState(false)
   const [expanded, setExpanded] = useState<Set<string>>(new Set())
   const [picked, setPicked] = useState<string[]>([])
@@ -57,6 +64,15 @@ function RankingPanelImpl({ funds, onCompare }: Props) {
   useEffect(() => { saveLS('rk_period', period) }, [period])
   useEffect(() => { saveLS('rk_metric', metric) }, [metric])
   useEffect(() => { saveLS('rk_sort', mixedSort) }, [mixedSort])
+  useEffect(() => { saveLS('rk_cols', cols) }, [cols])
+  // Cột đang dùng để xếp bị bỏ thì quay về xếp theo điểm tổng hợp.
+  useEffect(() => { if (mixedSort !== 'score' && !cols.includes(mixedSort)) setMixedSort('score') }, [cols, mixedSort])
+
+  const toggleCol = (p: PeriodId) => setCols(cur => {
+    if (cur.includes(p)) return cur.length <= 1 ? cur : cur.filter(x => x !== p)
+    if (cur.length >= MAX_MIXED_COLS) return cur
+    return MIXED_PERIODS.filter(x => x === p || cur.includes(x))
+  })
 
   const ids = useMemo(() => funds.map(f => f.id), [funds])
   const dualPriceFundIds = useMemo(() => new Set(funds.filter(f => f.type === 'gold').map(f => f.id)), [funds])
@@ -261,6 +277,22 @@ function RankingPanelImpl({ funds, onCompare }: Props) {
             <span className="rk-meta">{t('rank.mixed.asOf', { date: refEnd })}</span>
           </div>
           <p className="adv-note rk-lead">{t('rank.mixed.lead')}</p>
+          <div className="rk-colpick">
+            <span className="rk-colpick-label">{t('rank.cols.label', { n: cols.length, max: MAX_MIXED_COLS })}</span>
+            <div className="rk-periods rk-periods--inline" role="group" aria-label={t('rank.cols.label', { n: cols.length, max: MAX_MIXED_COLS })}>
+              {MIXED_PERIODS.map(p => {
+                const on = cols.includes(p)
+                const full = !on && cols.length >= MAX_MIXED_COLS
+                return (
+                  <button key={p} type="button" aria-pressed={on} disabled={full}
+                    title={full ? t('rank.cols.full', { max: MAX_MIXED_COLS }) : undefined}
+                    className={`ffb-chip${on ? ' ffb-chip--on' : ''}`} onClick={() => toggleCol(p)}>
+                    {periodLabel(p)}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
           <div className="perf-table-wrap">
             <table className="perf-table rk-table rk-mixed">
               <thead>
@@ -273,7 +305,7 @@ function RankingPanelImpl({ funds, onCompare }: Props) {
                       {t('rank.col.score')}{mixedSort === 'score' ? ' ▾' : ''}
                     </button>
                   </th>
-                  {MIXED_PERIODS.map(p => (
+                  {cols.map(p => (
                     <th key={p} className={mixedSort === p ? 'rk-sorted' : ''}>
                       <button type="button" className="rk-th" onClick={() => setMixedSort(p)}>
                         {periodLabel(p)}{mixedSort === p ? ' ▾' : ''}
@@ -292,7 +324,7 @@ function RankingPanelImpl({ funds, onCompare }: Props) {
                     <td className={mixedSort === 'score' ? 'rk-sorted' : ''}>
                       {row.score === null ? <span title={t('rank.score.few')}>—</span> : <strong>{dec(row.score, 0)}</strong>}
                     </td>
-                    {MIXED_PERIODS.map(p => {
+                    {cols.map(p => {
                       const stat = row.stats[p]
                       const rank = row.ranks[p]
                       const v = stat ? metricValue(stat, metric) : null

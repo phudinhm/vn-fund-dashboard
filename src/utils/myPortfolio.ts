@@ -156,6 +156,59 @@ export function findOversells(orders: Order[]): { order: Order; held: number }[]
   return out
 }
 
+export interface OrderLot {
+  /** Lệnh mua: số CCQ còn giữ sau khi các lệnh bán lấy theo FIFO. Lệnh bán: 0. */
+  remaining: number
+  /** Lệnh mua: lãi/lỗ CHƯA CHỐT của phần còn giữ, theo NAV hiện tại. Lệnh bán: lãi/lỗ ĐÃ CHỐT so với giá các lô bị bán. */
+  gain: number
+  /** Lãi/lỗ trên vốn tương ứng (thập phân), null nếu không có vốn để chia. */
+  pct: number | null
+}
+
+/**
+ * Lãi/lỗ từng lệnh theo FIFO: lệnh bán lấy CCQ từ lô mua cũ nhất trước (đúng cách
+ * các quỹ mở tính phí bán theo thời gian nắm giữ). `navOf` trả NAV hiện tại của
+ * quỹ, hoặc undefined nếu không có thì lô mua không có lãi/lỗ chưa chốt.
+ * Khác `positionsFromOrders` (bình quân gia quyền) ở chỗ mỗi lô giữ giá riêng.
+ */
+export function computeOrderLots(orders: Order[], navOf: (fund: string) => number | undefined): Map<string, OrderLot> {
+  const out = new Map<string, OrderLot>()
+  const queues = new Map<string, { id: string; price: number; remaining: number }[]>()
+  const sorted = [...orders].sort((a, b) => a.date.localeCompare(b.date) || (a.side === b.side ? 0 : a.side === 'buy' ? -1 : 1) || a.id.localeCompare(b.id))
+  for (const o of sorted) {
+    const q = queues.get(o.fund) ?? []
+    queues.set(o.fund, q)
+    if (o.side === 'buy') {
+      q.push({ id: o.id, price: o.price, remaining: o.units })
+      continue
+    }
+    let toSell = o.units
+    let proceeds = 0
+    let cost = 0
+    while (toSell > 1e-9 && q.length > 0) {
+      const lot = q[0]!
+      const take = Math.min(lot.remaining, toSell)
+      proceeds += take * o.price
+      cost += take * lot.price
+      lot.remaining -= take
+      toSell -= take
+      if (lot.remaining <= 1e-9) q.shift()
+    }
+    out.set(o.id, { remaining: 0, gain: proceeds - cost, pct: cost > 0 ? proceeds / cost - 1 : null })
+  }
+  for (const o of sorted) {
+    if (o.side !== 'buy') continue
+    const left = queues.get(o.fund)?.find(l => l.id === o.id)?.remaining ?? 0
+    const nav = navOf(o.fund)
+    out.set(o.id, {
+      remaining: left,
+      gain: left > 0 && nav !== undefined ? left * (nav - o.price) : 0,
+      pct: left > 0 && nav !== undefined && o.price > 0 ? nav / o.price - 1 : null,
+    })
+  }
+  return out
+}
+
 /** Độ lệch giữa giá lệnh và NAV cùng ngày (thập phân), null nếu không có NAV để so. */
 export function priceDeviation(order: Order, series: PricePoint[] | undefined): number | null {
   if (!series || series.length === 0) return null

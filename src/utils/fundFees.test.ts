@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { buyFeePct, sellFeePct, netOnHand, holdingMonths, describeSellTiers, type FeeTier } from './fundFees'
+import { buyFeePct, sellFeePct, netOnHand, holdingMonths, describeSellTiers, feeFreeInfo, type FeeTier } from './fundFees'
 
 const SELL: FeeTier[] = [
   { from: 0, to: 6, rate: 2.5 }, { from: 6, to: 12, rate: 2 },
@@ -64,5 +64,21 @@ describe('helpers', () => {
   })
   it('describes a schedule', () => {
     expect(describeSellTiers(SELL, 'th', n => String(n))).toBe('<6th 2.5% · 6-12th 2% · 12-24th 1.5% · ≥24th 0%')
+  })
+})
+
+describe('feeFreeInfo', () => {
+  it('counts months left until the first zero-fee tier', () => {
+    expect(feeFreeInfo(SELL, 5)).toEqual({ currentRate: 2.5, monthsLeft: 19 })
+    expect(feeFreeInfo(SELL, 13.5)).toEqual({ currentRate: 1.5, monthsLeft: 10.5 })
+  })
+  it('is zero once the fee is already 0', () => {
+    expect(feeFreeInfo(SELL, 30)).toEqual({ currentRate: 0, monthsLeft: 0 })
+  })
+  it('returns null months when the schedule never reaches 0', () => {
+    expect(feeFreeInfo([{ from: 0, to: null, rate: 0.25 }], 3)).toEqual({ currentRate: 0.25, monthsLeft: null })
+  })
+  it('returns null without a schedule', () => {
+    expect(feeFreeInfo([], 3)).toBeNull()
   })
 })
