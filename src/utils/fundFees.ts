@@ -99,3 +99,22 @@ export function describeSellTiers(tiers: FeeTier[], unit: string, fmt: (n: numbe
     return `${range} ${fmt(t.rate)}%`
   }).join(' · ')
 }
+
+export interface FeeFreeInfo {
+  /** Phí bán (%) nếu rút ngay hôm nay. */
+  currentRate: number
+  /** Số tháng còn phải giữ để phí bán về 0: 0 nếu đã hết phí, null nếu biểu phí không bao giờ về 0. */
+  monthsLeft: number | null
+}
+
+/**
+ * Còn bao lâu nữa thì rút không mất phí bán. `months` là thời gian đã giữ.
+ * Không có biểu phí thì null (không biết, không đoán).
+ */
+export function feeFreeInfo(tiers: FeeTier[], months: number): FeeFreeInfo | null {
+  const currentRate = sellFeePct(tiers, months)
+  if (currentRate === null) return null
+  if (currentRate === 0) return { currentRate, monthsLeft: 0 }
+  const freeFrom = tiers.filter(t => t.rate === 0 && t.from > months).map(t => t.from)
+  return { currentRate, monthsLeft: freeFrom.length > 0 ? Math.min(...freeFrom) - months : null }
+}

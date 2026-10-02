@@ -2,15 +2,17 @@ import { memo, useEffect, useMemo, useRef, useState, type DragEvent } from 'reac
 import type { FundMeta, PricePoint } from '../types'
 import { PortfolioValueChart } from './PortfolioValueChart'
 import { useFundSeriesMap } from '../hooks/useFundData'
+import { useFundFees } from '../hooks/useFundFees'
 import { useLanguage } from '../hooks/useLanguage'
 import { useDecimal, useT, type TranslationKey } from '../i18n'
 import { loadLS, saveLS } from '../utils/localStorage'
 import { fundDisplayName } from '../utils/fundName'
 import { formatVNDFull } from '../utils/vndFormat'
+import { EXCHANGE_TRADED_FEES, feeFreeInfo, holdingMonths } from '../utils/fundFees'
 import { readXlsWorkbook, XlsError } from '../utils/xlsReader'
 import { ReportError, parseAssetStatementWorkbook } from '../utils/assetReport'
 import {
-  EMPTY_STATE, computePerformance, deriveOrders, effectiveOrders, findOversells, priceDeviation, reconcile, removeSnapshot,
+  EMPTY_STATE, computeOrderLots, computePerformance, deriveOrders, effectiveOrders, findOversells, priceDeviation, reconcile, removeSnapshot,
   sanitizeState, upsertSnapshot, type Order, type PortfolioState,
 } from '../utils/myPortfolio'
 import { IconWarning } from './icons'
@@ -78,6 +80,21 @@ function MyPortfolioPanelImpl({ funds }: Props) {
     () => (loading ? null : computePerformance(orders, priceByFund, fallbackNav, latest?.date)),
     [loading, orders, priceByFund, fallbackNav, latest],
   )
+  const { fees } = useFundFees()
+
+  // Ngày dữ liệu mới nhất làm mốc tính thời gian nắm giữ và NAV hiện tại.
+  const asOf = useMemo(() => {
+    let d = latest?.date ?? ''
+    for (const s of priceByFund.values()) { const last = s[s.length - 1]; if (last && last.date > d) d = last.date }
+    return d
+  }, [priceByFund, latest])
+  const lots = useMemo(
+    () => computeOrderLots(orders, fund => {
+      const s = priceByFund.get(fund)
+      return s && s.length > 0 ? s[s.length - 1]!.price : fallbackNav.get(fund)
+    }),
+    [orders, priceByFund, fallbackNav],
+  )
   const mismatches = useMemo(() => reconcile(state), [state])
   const oversells = useMemo(() => findOversells(orders), [orders])
 
@@ -88,6 +105,21 @@ function MyPortfolioPanelImpl({ funds }: Props) {
   const money = (v: number) => formatVNDFull(v)
   const pct = (v: number) => `${v >= 0 ? '+' : '−'}${dec(Math.abs(v) * 100, 2)}%`
   const tone = (v: number) => (v >= 0 ? 'dca-profit' : 'dca-loss')
+
+  /** "1 năm 3 tháng" / "5 tháng" / "12 ngày" từ số tháng (có phần lẻ). */
+  const duration = (months: number): string => {
+    const days = Math.max(0, Math.round(months * 30.4375))
+    if (days < 31) return t('mp.dur.d', { n: days })
+    const total = Math.floor(months)
+    const y = Math.floor(total / 12)
+    const m = total % 12
+    const parts: string[] = []
+    if (y > 0) parts.push(t('mp.dur.y', { n: y }))
+    if (m > 0) parts.push(t('mp.dur.m', { n: m }))
+    return parts.join(' ')
+  }
+  /** Phí bán theo thời gian nắm giữ: biểu phí của quỹ, hoặc mức sàn cho ETF. */
+  const sellTiers = (fund: string) => byId.get(fund)?.type === 'etf' ? EXCHANGE_TRADED_FEES.sell : fees.get(fund)?.sell ?? []
 
   // ── Nạp báo cáo ──
   async function handleFile(file: File) {
@@ -337,11 +369,12 @@ function MyPortfolioPanelImpl({ funds }: Props) {
           <div className="chart-header"><h3>{t('mp.orders')}</h3></div>
           <p className="adv-note">{t('mp.ordersNote')}</p>
           <div className="perf-table-wrap">
-            <table className="perf-table rk-table">
+            <table className="perf-table rk-table mp-ledger">
               <thead>
                 <tr>
                   <th>{t('mp.col.date')}</th><th>{t('fee.col.fund')}</th><th>{t('mp.col.side')}</th><th>{t('mp.col.units')}</th>
-                  <th>{t('mp.col.price')}</th><th>{t('mp.col.amount')}</th><th>{t('mp.col.source')}</th><th />
+                  <th>{t('mp.col.price')}</th><th>{t('mp.col.amount')}</th>
+                  <th>{t('mp.col.orderPnl')}</th><th>{t('mp.col.held')}</th><th>{t('mp.col.feeFree')}</th><th>{t('mp.col.source')}</th><th />
                 </tr>
               </thead>
               <tbody>
@@ -361,6 +394,38 @@ function MyPortfolioPanelImpl({ funds }: Props) {
                     <td>{dec(o.units, 2)}</td>
                     <td>{money(o.price)}</td>
                     <td>{money(o.units * o.price)}</td>
+                    {(() => {
+                      const lot = lots.get(o.id)
+                      const buy = o.side === 'buy'
+                      const open = buy && !!lot && lot.remaining > 1e-6
+                      const months = asOf ? holdingMonths(o.date, asOf) : 0
+                      const info = open ? feeFreeInfo(sellTiers(o.fund), months) : null
+                      const timeBased = sellTiers(o.fund).some(x => x.to !== null)
+                      return (
+                        <>
+                          <td title={buy ? (open ? t('mp.pnl.open', { units: dec(lot!.remaining, 2) }) : undefined) : t('mp.pnl.realized')}>
+                            {!lot || (buy && !open) ? <span className="mp-muted">{buy ? t('mp.sold') : ''}</span> : (buy && lot.pct === null) ? '' : (
+                              <span className={tone(lot.gain)}>
+                                {lot.gain >= 0 ? '+' : '−'}{money(Math.abs(lot.gain))}{lot.pct !== null && ` (${pct(lot.pct)})`}
+                              </span>
+                            )}
+                          </td>
+                          <td>{open && asOf ? duration(months) : ''}</td>
+                          <td>
+                            {!open ? '' : info === null ? <span className="mp-muted" title={t('mp.noFeeData')}>—</span>
+                              : !timeBased ? <span className="mp-muted" title={t('mp.feeFlat', { rate: dec(info.currentRate, 2) })}>{t('mp.feeFlatShort')}</span>
+                              : info.monthsLeft === 0 ? <span className="dca-profit">{t('mp.feeFreeNow')}</span>
+                              : info.monthsLeft === null ? <span className="mp-muted" title={t('mp.feeNever')}>—</span>
+                              : (
+                                <span title={t('mp.feeFreeOn', { date: new Date(new Date(asOf).getTime() + info.monthsLeft * 30.4375 * 86_400_000).toISOString().slice(0, 10) })}>
+                                  {t('mp.feeFreeIn', { time: duration(info.monthsLeft) })}
+                                  <em className="mp-fee-now"> · {t('mp.feeNow', { rate: dec(info.currentRate, 2) })}</em>
+                                </span>
+                              )}
+                          </td>
+                        </>
+                      )
+                    })()}
                     <td><span className="rk-type">{t(`mp.source.${o.source}` as TranslationKey)}</span></td>
                     <td><button type="button" className="fund-remove-btn" onClick={() => deleteOrder(o)} title={t('mp.deleteOrder')} aria-label={t('mp.deleteOrder')}>✕</button></td>
                   </tr>
