@@ -8,7 +8,7 @@ import { loadLS, saveLS } from '../utils/localStorage'
 import { fundDisplayName } from '../utils/fundName'
 import { formatVNDFull } from '../utils/vndFormat'
 import { readXlsWorkbook, XlsError } from '../utils/xlsReader'
-import { ReportError, parseAssetStatementWorkbook } from '../utils/fmarketReport'
+import { ReportError, parseAssetStatementWorkbook } from '../utils/assetReport'
 import {
   EMPTY_STATE, computePerformance, deriveOrders, effectiveOrders, findOversells, priceDeviation, reconcile, removeSnapshot,
   sanitizeState, upsertSnapshot, type Order, type PortfolioState,
@@ -31,12 +31,12 @@ function newId(): string {
 }
 
 /**
- * Tab "Danh mục của tôi": nạp báo cáo tài sản fmarket (.xls), tự suy ra từng lệnh
+ * Tab "Danh mục của tôi": nạp báo cáo tài sản (.xls), tự suy ra từng lệnh
  * từ chênh lệch giữa các báo cáo, và tính hiệu suất danh mục.
  *
  * RIÊNG TƯ: toàn bộ xử lý nằm trong trình duyệt. File không được gửi đi đâu, và
  * chỉ số dư (mã quỹ, số CCQ, giá) được lưu vào localStorage của trình duyệt này.
- * Họ tên và số giấy tờ trong báo cáo không bao giờ được đọc ra (xem fmarketReport.ts).
+ * Họ tên và số giấy tờ trong báo cáo không bao giờ được đọc ra (xem assetReport.ts).
  */
 function MyPortfolioPanelImpl({ funds }: Props) {
   const t = useT()

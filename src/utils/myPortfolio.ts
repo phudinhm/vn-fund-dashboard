@@ -3,7 +3,7 @@ import { TwrrChain } from './twrr'
 import { dcaMWRR, dcaCagr } from './dca'
 
 /**
- * Danh mục cá nhân dựng từ các báo cáo tài sản fmarket và lệnh nhập tay.
+ * Danh mục cá nhân dựng từ các báo cáo tài sản và lệnh nhập tay.
  *
  * Mỗi báo cáo là một ẢNH CHỤP số dư (số CCQ + giá mua bình quân). Lệnh được SUY
  * RA từ chênh lệch giữa hai ảnh chụp liên tiếp:
@@ -230,7 +230,7 @@ function lastAtOrBefore(series: PricePoint[], date: string, from: number): { idx
  * TWRR dùng đúng TwrrChain của các tab DCA: lệnh là dòng tiền ngoài, tách khỏi lợi
  * nhuận, và dòng tiền tính theo NAV ngày khớp (đo hiệu suất của NAV, không lẫn chênh
  * lệch giữa giá lệnh và NAV). MWRR và lãi/lỗ tuyệt đối dùng GIÁ KHỚP thật của lệnh.
- * Chưa có phí giao dịch: fmarket báo cáo tài sản không nêu phí của từng lệnh.
+ * Chưa có phí giao dịch: báo cáo tài sản không nêu phí của từng lệnh.
  */
 export function computePerformance(
   orders: Order[],

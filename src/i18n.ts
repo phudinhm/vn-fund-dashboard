@@ -51,7 +51,7 @@ const DICT = {
   // ── App shell ──
   'app.loading': { vi: 'Đang tải dữ liệu...', en: 'Loading data...' },
   'app.error': { vi: 'Lỗi tải dữ liệu', en: 'Failed to load data' },
-  'app.footer.dataSource': { vi: 'Dữ liệu từ fmarket.vn & vnstock. Cập nhật hàng ngày.', en: 'Data from fmarket.vn & vnstock. Updated daily.' },
+  'app.footer.dataSource': { vi: 'Dữ liệu từ nguồn công bố của các quỹ và sàn. Cập nhật hàng ngày.', en: 'Data from fund and exchange public sources. Updated daily.' },
   'app.footer.by': { vi: 'by Minh Phu Dinh', en: 'by Minh Phu Dinh' },
   'app.theme.toLight': { vi: 'Chuyển sang giao diện sáng', en: 'Switch to light mode' },
   'app.theme.toDark': { vi: 'Chuyển sang giao diện tối', en: 'Switch to dark mode' },
@@ -335,7 +335,7 @@ const DICT = {
   'overlap.sourceInfo': { vi: '{fund} lấy dữ liệu từ {source}', en: '{fund} sources its data from {source}' },
   'overlap.source.report': { vi: 'báo cáo tài chính của quỹ', en: 'the fund’s own financial reports' },
   'overlap.source.digiinvest': { vi: 'digiinvest.vn', en: 'digiinvest.vn' },
-  'overlap.source.fmarket': { vi: 'fmarket', en: 'fmarket' },
+  'overlap.source.fmarket': { vi: 'danh mục quỹ công bố', en: 'public fund catalogue' },
   'overlap.periodMismatch': {
     vi: '{fundA} đang dùng thông tin {periodA}, {fundB} đang dùng thông tin {periodB} vì quỹ chưa được cập nhật tới kỳ đã chọn.',
     en: '{fundA} is showing {periodA} while {fundB} is showing {periodB}, because one of them has not reported for the period you picked.',
@@ -1554,7 +1554,7 @@ const DICT = {
     vi: 'Dữ liệu danh mục từ {source}, hiệu suất tính từ chuỗi giá NAV/CCQ. Các phần cần báo cáo tài chính tháng (dòng tiền vào/ra, phí quản lý, vòng quay danh mục, số nhà đầu tư, red flags) chỉ có ở quỹ Dragon Capital — nơi báo cáo được công bố dưới dạng file bóc tách được.',
     en: 'Holdings data comes from {source}; performance is computed from the NAV-per-unit series. The sections that need monthly financial reports — flows, management fees, turnover, investor counts, red flags — exist only for Dragon Capital funds, whose reports are published in a machine-readable form.',
   },
-  'fh.sourceTopTen': { vi: 'fmarket (chỉ top 10 khoản nắm giữ)', en: 'fmarket (top 10 holdings only)' },
+  'fh.sourceTopTen': { vi: 'Danh mục quỹ công bố (chỉ top 10 khoản nắm giữ)', en: 'Public fund catalogue (top 10 holdings only)' },
   'fh.sourceFull': { vi: 'digiinvest (danh mục đầy đủ)', en: 'digiinvest (full portfolio)' },
   'fh.loadFailed': { vi: 'Không tải được dữ liệu danh mục của quỹ này.', en: 'Could not load this fund’s holdings data.' },
   'fh.navTitle': { vi: 'NAV/CCQ (giá quỹ)', en: 'NAV per unit' },
@@ -1571,8 +1571,8 @@ const DICT = {
   'fh.noAllocData': { vi: 'Kỳ này không có dữ liệu phân bổ.', en: 'No allocation data for this period.' },
   'fh.allocNote': { vi: 'Tỷ trọng theo loại tài sản, kỳ {period}.', en: 'Weight by asset class for {period}.' },
   'fh.topTenCaveat': {
-    vi: ' Nguồn fmarket chỉ công bố top 10 nên tổng tỷ trọng không đủ 100%.',
-    en: ' fmarket publishes only the top 10, so the weights do not add to 100%.',
+    vi: ' Nguồn này chỉ công bố top 10 nên tổng tỷ trọng không đủ 100%.',
+    en: ' This source publishes only the top 10, so the weights do not add to 100%.',
   },
   'fh.portfolioTitle': { vi: 'Danh mục quỹ ({n} mã)', en: 'Fund portfolio ({n} holdings)' },
   'fh.col.type': { vi: 'Loại', en: 'Type' },
@@ -1786,8 +1786,8 @@ const DICT = {
     vi: 'Riêng tư: file được đọc ngay trong trình duyệt này và KHÔNG được tải lên đâu cả. Chỉ số dư (mã quỹ, số CCQ, giá) được lưu trong trình duyệt của bạn; họ tên và số giấy tờ trong báo cáo không bao giờ được đọc ra. Đổi trình duyệt hoặc xoá dữ liệu trang thì mất, nên hãy dùng "Sao lưu".',
     en: 'Private: the file is read right in this browser and is NOT uploaded anywhere. Only balances (fund code, units, price) are saved in your browser; the name and ID number in the report are never read. Switching browsers or clearing site data loses them, so use "Back up".',
   },
-  'mp.drop.title': { vi: 'Thả báo cáo tài sản fmarket vào đây', en: 'Drop your fmarket asset statement here' },
-  'mp.drop.hint': { vi: 'File .xls "Báo cáo tài sản" tải từ fmarket. Mỗi lần nạp một báo cáo mới, các lệnh mua bán xảy ra giữa hai báo cáo được tự suy ra.', en: 'The .xls "Asset Statement" downloaded from fmarket. Each time you upload a newer report, the buys and sells between the two reports are inferred automatically.' },
+  'mp.drop.title': { vi: 'Thả báo cáo tài sản của bạn vào đây', en: 'Drop your asset statement here' },
+  'mp.drop.hint': { vi: 'File .xls "Báo cáo tài sản" tải từ nơi bạn mua quỹ. Mỗi lần nạp một báo cáo mới, các lệnh mua bán xảy ra giữa hai báo cáo được tự suy ra.', en: 'The .xls "Asset Statement" downloaded from where you buy funds. Each time you upload a newer report, the buys and sells between the two reports are inferred automatically.' },
   'mp.drop.button': { vi: 'Chọn file .xls', en: 'Choose .xls file' },
   'mp.ok': { vi: 'Đã đọc báo cáo ngày {date}: {n} quỹ.', en: 'Read the report dated {date}: {n} funds.' },
   'mp.detected': { vi: 'Lệnh được ghi nhận từ báo cáo này ({n}):', en: 'Orders recorded from this report ({n}):' },
@@ -1797,8 +1797,8 @@ const DICT = {
   'mp.sell': { vi: 'Bán', en: 'Sell' },
   'mp.units': { vi: 'CCQ', en: 'units' },
   'mp.err.size': { vi: 'File quá lớn (tối đa 5 MB).', en: 'File too large (5 MB max).' },
-  'mp.err.notXls': { vi: 'Không đọc được file. Hãy tải lại báo cáo dạng .xls từ fmarket (Báo cáo tài sản).', en: 'Could not read the file. Download the .xls report again from fmarket (Asset Statement).' },
-  'mp.err.no-date': { vi: 'Không tìm thấy "Ngày xuất báo cáo" trong file này. Đây có phải báo cáo tài sản của fmarket không?', en: 'No "report date" found in this file. Is it an fmarket asset statement?' },
+  'mp.err.notXls': { vi: 'Không đọc được file. Hãy tải lại báo cáo tài sản dạng .xls.', en: 'Could not read the file. Download the .xls asset statement again.' },
+  'mp.err.no-date': { vi: 'Không tìm thấy "Ngày xuất báo cáo" trong file này. Đây có phải báo cáo tài sản không?', en: 'No "report date" found in this file. Is it an asset statement?' },
   'mp.err.no-header': { vi: 'Không nhận ra bảng chứng chỉ quỹ trong file này.', en: 'Could not find the fund holdings table in this file.' },
   'mp.err.no-holdings': { vi: 'Báo cáo không có quỹ nào đang giữ.', en: 'The report lists no fund holdings.' },
   'mp.err.unknown': { vi: 'Có lỗi khi đọc file.', en: 'Something went wrong reading the file.' },
@@ -1806,8 +1806,8 @@ const DICT = {
   'mp.confirmImport': { vi: 'Nhập file sao lưu sẽ thay toàn bộ dữ liệu hiện có trong trình duyệt này. Tiếp tục?', en: 'Importing a backup replaces everything currently stored in this browser. Continue?' },
   'mp.importOk': { vi: 'Đã nhập sao lưu.', en: 'Backup imported.' },
   'mp.confirmClear': { vi: 'Xoá toàn bộ báo cáo và lệnh đã lưu trong trình duyệt này?', en: 'Delete all reports and orders stored in this browser?' },
-  'mp.howTitle': { vi: 'Cách lấy báo cáo từ fmarket', en: 'How to get the report from fmarket' },
-  'mp.how1': { vi: 'Đăng nhập fmarket, vào mục báo cáo / tài sản và tải "Báo cáo tài sản" (file .xls).', en: 'Log in to fmarket, open reports / assets and download the "Asset Statement" (.xls).' },
+  'mp.howTitle': { vi: 'Cách lấy báo cáo tài sản', en: 'How to get your asset statement' },
+  'mp.how1': { vi: 'Đăng nhập nơi bạn mua quỹ, vào mục báo cáo / tài sản và tải "Báo cáo tài sản" (file .xls).', en: 'Log in where you buy funds, open reports / assets and download the "Asset Statement" (.xls).' },
   'mp.how2': { vi: 'Thả file vào khung phía trên. Báo cáo đầu tiên cho ra số dư đầu kỳ, bạn chỉnh ngày mua ở sổ lệnh nếu biết.', en: 'Drop the file in the box above. The first report becomes your opening balance; set the real purchase dates in the order list if you know them.' },
   'mp.how3': { vi: 'Mỗi lần có giao dịch mới, tải báo cáo mới và nạp tiếp: lệnh mua/bán giữa hai báo cáo được tự suy ra.', en: 'After each new trade, download a fresh report and upload it: the buys and sells between the two reports are inferred.' },
   'mp.mismatch': { vi: 'Số CCQ tính từ các lệnh không khớp báo cáo mới nhất. Có thể thiếu lệnh hoặc lệnh nhập tay chưa đúng:', en: 'Units computed from the orders do not match the latest report. An order may be missing or a manual order is wrong:' },
@@ -1944,8 +1944,8 @@ const DICT = {
   'fee.estimated': { vi: 'ước tính phí môi giới 0,15% + thuế bán 0,1%', en: 'estimate: 0.15% brokerage + 0.1% sell tax' },
   'fee.none': { vi: 'chưa có biểu phí (vàng, chỉ số, crypto, tiết kiệm không thuộc quỹ mở)', en: 'no fee schedule (gold, indices, crypto and savings are not open-end funds)' },
   'fee.note': {
-    vi: 'Biểu phí lấy từ fmarket, chương trình mua thường. Phí có thể đổi và có ưu đãi theo kênh mua; hãy đối chiếu với công ty quản lý quỹ trước khi quyết định.',
-    en: 'Fee schedules come from fmarket (regular purchase program). Fees can change and channels may offer discounts; check with the fund manager before deciding.',
+    vi: 'Biểu phí lấy từ nguồn công bố, chương trình mua thường. Phí có thể đổi và có ưu đãi theo kênh mua; hãy đối chiếu với công ty quản lý quỹ trước khi quyết định.',
+    en: 'Fee schedules come from public sources (regular purchase program). Fees can change and channels may offer discounts; check with the fund manager before deciding.',
   },
 
   // ── Stock DCA tab ──
@@ -2061,8 +2061,8 @@ const DICT = {
   'div.col.reinvested': { vi: 'Mua thêm', en: 'Reinvested' },
   'div.total': { vi: 'Tổng', en: 'Total' },
   'div.navNote': {
-    vi: '<b>Giải thích giá NAV.</b> Giá NAV trên fmarket giảm đúng bằng giá trị cổ tức vào ngày chốt quyền. Đây là raw NAV (giá thô), không phải chuỗi giá đã được điều chỉnh cho cổ tức. Một số nền tảng tự tính lại lịch sử giá để xóa cú giảm điểm do cổ tức, cho ra chuỗi "tổng hiệu suất" đã bao gồm giả định tái đầu tư cổ tức. Nhưng trên Fmarket (hay website của quỹ) thì không làm việc này mà họ chỉ cung cấp raw NAV. Dữ liệu giá trên dashboard đã được điều chỉnh dựa trên các đợt chia cổ tức để đảm bảo tính nhất quán. Hệ số điều chỉnh được tính toán dựa trên giá trước ngày chốt quyền và giá trị cổ tức thực nhận (sau thuế TNCN).',
-    en: '<b>About the NAV price.</b> The NAV shown on fmarket drops by exactly the dividend amount on the ex-date. That is the raw NAV, not a dividend-adjusted series. Some platforms rewrite price history to remove that drop, producing a total-return series that assumes dividends were reinvested; fmarket and the fund websites do not — they publish raw NAV only. The prices in this dashboard are adjusted for each payout so the series stays consistent, with the adjustment factor computed from the price before the ex-date and the dividend actually received after tax.',
+    vi: '<b>Giải thích giá NAV.</b> Giá NAV công bố giảm đúng bằng giá trị cổ tức vào ngày chốt quyền. Đây là raw NAV (giá thô), không phải chuỗi giá đã được điều chỉnh cho cổ tức. Một số nền tảng tự tính lại lịch sử giá để xóa cú giảm điểm do cổ tức, cho ra chuỗi "tổng hiệu suất" đã bao gồm giả định tái đầu tư cổ tức. Nhưng trên website của quỹ và các nền tảng mua quỹ thì không làm việc này mà họ chỉ cung cấp raw NAV. Dữ liệu giá trên dashboard đã được điều chỉnh dựa trên các đợt chia cổ tức để đảm bảo tính nhất quán. Hệ số điều chỉnh được tính toán dựa trên giá trước ngày chốt quyền và giá trị cổ tức thực nhận (sau thuế TNCN).',
+    en: '<b>About the NAV price.</b> The published NAV drops by exactly the dividend amount on the ex-date. That is the raw NAV, not a dividend-adjusted series. Some platforms rewrite price history to remove that drop, producing a total-return series that assumes dividends were reinvested; the fund websites and fund-buying platforms do not — they publish raw NAV only. The prices in this dashboard are adjusted for each payout so the series stays consistent, with the adjustment factor computed from the price before the ex-date and the dividend actually received after tax.',
   },
 
   // ── Gold lot warning ──
@@ -2601,8 +2601,8 @@ const DICT = {
   // ── Hồ sơ quỹ và công ty quản lý (FundProfilePanel) ──
   'profile.title': { vi: 'Hồ sơ quỹ và công ty quản lý', en: 'Fund and fund-house profiles' },
   'profile.help': {
-    vi: 'Số liệu lấy từ danh mục fmarket, không nhập tay. Phí quản lý tính theo %/năm. Lợi nhuận là con số fmarket công bố, tính trên NAV của quỹ, không phải kết quả dashboard tự tính từ chuỗi giá.',
-    en: 'Figures come from the fmarket catalogue, not typed in by hand. The management fee is per year. Returns are as published by fmarket on the fund\'s own NAV, not computed by this dashboard from the price series.',
+    vi: 'Số liệu lấy từ danh mục quỹ công bố, không nhập tay. Phí quản lý tính theo %/năm. Lợi nhuận là con số nguồn công bố, tính trên NAV của quỹ, không phải kết quả dashboard tự tính từ chuỗi giá.',
+    en: 'Figures come from the public fund catalogue, not typed in by hand. The management fee is per year. Returns are as published by the source on the fund\'s own NAV, not computed by this dashboard from the price series.',
   },
   'profile.intro': {
     vi: 'Hồ sơ của {funds} quỹ mở, xếp theo {houses} công ty quản lý. Bấm vào một công ty để xem các quỹ của họ.',
@@ -2630,7 +2630,7 @@ const DICT = {
   'seo.ranking.title': { vi: 'Xếp hạng quỹ mở và ETF Việt Nam | Fund Dashboard', en: 'Vietnam fund and ETF rankings | Fund Dashboard' },
   'seo.ranking.description': { vi: 'Xếp hạng quỹ mở, ETF, vàng và crypto theo từng loại tài sản và theo nhiều kỳ (1 tháng đến 5 năm): lợi nhuận, sụt giảm tối đa, lợi nhuận trên rủi ro, kèm điểm tổng hợp.', en: 'Rank Vietnamese open-end funds, ETFs, gold and crypto by asset type and across periods from 1 month to 5 years: return, max drawdown, risk-adjusted return and a composite score.' },
   'seo.myportfolio.title': { vi: 'Danh mục của tôi | Fund Dashboard', en: 'My portfolio | Fund Dashboard' },
-  'seo.myportfolio.description': { vi: 'Nạp báo cáo tài sản fmarket để theo dõi lệnh và hiệu suất danh mục cá nhân. Dữ liệu chỉ nằm trong trình duyệt của bạn.', en: 'Upload your fmarket asset statement to track your orders and portfolio performance. Your data stays in your own browser.' },
+  'seo.myportfolio.description': { vi: 'Nạp báo cáo tài sản để theo dõi lệnh và hiệu suất danh mục cá nhân. Dữ liệu chỉ nằm trong trình duyệt của bạn.', en: 'Upload your asset statement to track your orders and portfolio performance. Your data stays in your own browser.' },
   'seo.advisor.title': { vi: 'Gợi ý danh mục và cách xuống tiền | Fund Dashboard', en: 'Portfolio and deployment guide | Fund Dashboard' },
   'seo.advisor.description': { vi: 'Nhập số tiền, khẩu vị rủi ro và kỳ hạn: xem danh mục quỹ hợp lý theo dữ liệu lịch sử và nên đầu tư một lần, chia đợt hay DCA.', en: 'Enter an amount, risk appetite and horizon: see which fund portfolio fits the historical data and whether to invest at once, stage it, or DCA.' },
   'seo.watchlist.title': { vi: 'Danh sách quỹ theo dõi | Fund Dashboard', en: 'Fund watchlist | Fund Dashboard' },
