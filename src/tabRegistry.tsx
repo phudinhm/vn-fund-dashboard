@@ -4,6 +4,7 @@ import type { DcaShareState, LsDcaShareState, ShareUrlState } from './utils/shar
 import { CompareTab } from './components/CompareTab'
 import { WatchlistPanel } from './components/WatchlistPanel'
 import { AdvisorPanel } from './components/AdvisorPanel'
+import { RankingPanel } from './components/RankingPanel'
 import { DCAPanel } from './components/DCAPanel'
 import { StockDCAPanel } from './components/StockDCAPanel'
 import { LumpSumDCAPanel } from './components/LumpSumDCAPanel'
@@ -32,10 +33,10 @@ import { MethodologyPanel } from './components/MethodologyPanel'
  * CSS đang dùng để style tiêu đề của tab So Sánh). Không khai báo thì để trống.
  */
 
-/** Kiểu id của tab. Khai báo tay ở đây (15 giá trị), registry và các file khác
+/** Kiểu id của tab. Khai báo tay ở đây (16 giá trị), registry và các file khác
  * đều suy từ nó — thêm tab phải thêm id vào union này VÀ một entry trong registry. */
 export type TabId =
-  | 'compare' | 'advisor' | 'watchlist' | 'dca' | 'stockdca' | 'lsdca' | 'fundanalysis' | 'overlap'
+  | 'compare' | 'ranking' | 'advisor' | 'watchlist' | 'dca' | 'stockdca' | 'lsdca' | 'fundanalysis' | 'overlap'
   | 'rebalance' | 'tactical' | 'bitcoin' | 'wallofworry'
   | 'calculator' | 'methodology' | 'profiles'
 
@@ -90,6 +91,14 @@ export const TAB_REGISTRY: TabManifest[] = [
         onChangeDateTo={onChangeDateTo}
         onChangeRollingPeriod={onChangeRollingPeriod}
       />
+    ),
+  },
+  {
+    id: 'ranking',
+    // keepMounted=false: tab nạp giá của cả 80+ quỹ, không nên tải ngay lúc mở app.
+    keepMounted: false,
+    render: ({ metadata, updateState }: TabContext): ReactElement => (
+      <RankingPanel funds={metadata} onCompare={fundIds => updateState({ funds: fundIds, tab: 'compare' })} />
     ),
   },
   {
