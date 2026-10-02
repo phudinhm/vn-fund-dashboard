@@ -28,6 +28,7 @@ import {
   IconStar,
   IconSun,
   IconTarget,
+  IconTrophy,
 } from './components/icons'
 
 /** Nút bấm được trong nav — đăng ký (ẩn) không tính. */
@@ -40,6 +41,7 @@ const VISIBLE_TABS = TAB_REGISTRY.filter(tab => !tab.hidden)
  */
 const TAB_ICONS: Record<TabId, ReactElement> = {
   compare: <IconCompare />,
+  ranking: <IconTrophy />,
   advisor: <IconCompass />,
   watchlist: <IconStar />,
   dca: <IconCalendar />,
