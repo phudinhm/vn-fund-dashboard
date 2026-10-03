@@ -7,7 +7,7 @@
   "managementFee": 0.525,
   "inceptionDate": "2020-11-02",
   "nav": 14693.28,
-  "navUpdatedAt": "2026-10-02",
+  "navUpdatedAt": "2026-10-03",
   "returns": {
    "m1": 0.77,
    "m3": 1.94,
@@ -28,7 +28,7 @@
   "managementFee": 1.7,
   "inceptionDate": null,
   "nav": 9214.27,
-  "navUpdatedAt": "2026-10-02",
+  "navUpdatedAt": "2026-10-03",
   "returns": {
    "m1": -5.06,
    "m3": -8.02,
@@ -49,7 +49,7 @@
   "managementFee": 1.35,
   "inceptionDate": "2026-05-10",
   "nav": 9179.29,
-  "navUpdatedAt": "2026-10-02",
+  "navUpdatedAt": "2026-10-03",
   "returns": {
    "m1": -2.87,
    "m3": null,
@@ -70,7 +70,7 @@
   "managementFee": 0.85,
   "inceptionDate": "2021-05-24",
   "nav": 13223.84,
-  "navUpdatedAt": "2026-10-02",
+  "navUpdatedAt": "2026-10-03",
   "returns": {
    "m1": 0.66,
    "m3": 1.76,
@@ -91,7 +91,7 @@
   "managementFee": 1.8,
   "inceptionDate": "2023-01-02",
   "nav": 15855,
-  "navUpdatedAt": "2026-10-02",
+  "navUpdatedAt": "2026-10-03",
   "returns": {
    "m1": -1.29,
    "m3": -4.22,
@@ -112,7 +112,7 @@
   "managementFee": 0.5,
   "inceptionDate": "2016-05-19",
   "nav": 22708,
-  "navUpdatedAt": "2026-10-02",
+  "navUpdatedAt": "2026-10-03",
   "returns": {
    "m1": 0.27,
    "m3": 2.01,
@@ -133,7 +133,7 @@
   "managementFee": 1,
   "inceptionDate": "2014-01-07",
   "nav": 29724,
-  "navUpdatedAt": "2026-10-02",
+  "navUpdatedAt": "2026-10-03",
   "returns": {
    "m1": -3.43,
    "m3": -5.36,
@@ -154,7 +154,7 @@
   "managementFee": 1.5,
   "inceptionDate": "2016-12-28",
   "nav": 20771,
-  "navUpdatedAt": "2026-10-02",
+  "navUpdatedAt": "2026-10-03",
   "returns": {
    "m1": -4.99,
    "m3": -8.67,
@@ -175,7 +175,7 @@
   "managementFee": 1.5,
   "inceptionDate": "2019-01-02",
   "nav": 16506.58,
-  "navUpdatedAt": "2026-10-02",
+  "navUpdatedAt": "2026-10-03",
   "returns": {
    "m1": -1.04,
    "m3": -4.95,
@@ -196,7 +196,7 @@
   "managementFee": 1.2,
   "inceptionDate": "2013-06-09",
   "nav": 30608.22,
-  "navUpdatedAt": "2026-10-02",
+  "navUpdatedAt": "2026-10-03",
   "returns": {
    "m1": 0.95,
    "m3": 2.03,
@@ -217,7 +217,7 @@
   "managementFee": 1.93,
   "inceptionDate": "2008-02-27",
   "nav": 24707.57,
-  "navUpdatedAt": "2026-10-02",
+  "navUpdatedAt": "2026-10-03",
   "returns": {
    "m1": -2.91,
    "m3": -7.81,
@@ -238,7 +238,7 @@
   "managementFee": 1.95,
   "inceptionDate": "2004-05-19",
   "nav": 93391.37,
-  "navUpdatedAt": "2026-10-02",
+  "navUpdatedAt": "2026-10-03",
   "returns": {
    "m1": -3.57,
    "m3": -7.67,
@@ -259,7 +259,7 @@
   "managementFee": 1.2,
   "inceptionDate": "2021-05-23",
   "nav": 12409.16,
-  "navUpdatedAt": "2026-10-02",
+  "navUpdatedAt": "2026-10-03",
   "returns": {
    "m1": 0.71,
    "m3": 1.53,
@@ -280,7 +280,7 @@
   "managementFee": 0.9,
   "inceptionDate": "2021-02-03",
   "nav": 12491.04,
-  "navUpdatedAt": "2026-10-02",
+  "navUpdatedAt": "2026-10-03",
   "returns": {
    "m1": 1.52,
    "m3": 3.02,
@@ -301,7 +301,7 @@
   "managementFee": 1.5,
   "inceptionDate": "2014-03-03",
   "nav": 40328,
-  "navUpdatedAt": "2026-10-02",
+  "navUpdatedAt": "2026-10-03",
   "returns": {
    "m1": -3.16,
    "m3": -5.01,
@@ -322,7 +322,7 @@
   "managementFee": 1.3,
   "inceptionDate": "2024-09-26",
   "nav": 12079,
-  "navUpdatedAt": "2026-10-02",
+  "navUpdatedAt": "2026-10-03",
   "returns": {
    "m1": -4.34,
    "m3": -4.92,
@@ -343,7 +343,7 @@
   "managementFee": 1.2,
   "inceptionDate": "2025-06-29",
   "nav": 8255.19,
-  "navUpdatedAt": "2026-10-02",
+  "navUpdatedAt": "2026-10-03",
   "returns": {
    "m1": -4.21,
    "m3": -6.37,
@@ -364,7 +364,7 @@
   "managementFee": 0.95,
   "inceptionDate": "2022-12-29",
   "nav": 12337.73,
-  "navUpdatedAt": "2026-10-02",
+  "navUpdatedAt": "2026-10-03",
   "returns": {
    "m1": 1.32,
    "m3": 0.81,
@@ -385,7 +385,7 @@
   "managementFee": 1.7,
   "inceptionDate": null,
   "nav": 11207.14,
-  "navUpdatedAt": "2026-10-02",
+  "navUpdatedAt": "2026-10-03",
   "returns": {
    "m1": -4.01,
    "m3": -5.62,
@@ -406,7 +406,7 @@
   "managementFee": 1.2,
   "inceptionDate": null,
   "nav": 10219.14,
-  "navUpdatedAt": "2026-10-02",
+  "navUpdatedAt": "2026-10-03",
   "returns": {
    "m1": 1.15,
    "m3": null,
@@ -427,7 +427,7 @@
   "managementFee": 1,
   "inceptionDate": "2022-12-28",
   "nav": 15358.5,
-  "navUpdatedAt": "2026-10-02",
+  "navUpdatedAt": "2026-10-03",
   "returns": {
    "m1": 0.57,
    "m3": 1.57,
@@ -448,7 +448,7 @@
   "managementFee": 1.5,
   "inceptionDate": null,
   "nav": 10745.24,
-  "navUpdatedAt": "2026-10-02",
+  "navUpdatedAt": "2026-10-03",
   "returns": {
    "m1": -4.29,
    "m3": -9.77,
@@ -469,7 +469,7 @@
   "managementFee": 0.9,
   "inceptionDate": null,
   "nav": 10309.93,
-  "navUpdatedAt": "2026-10-02",
+  "navUpdatedAt": "2026-10-03",
   "returns": {
    "m1": 0.52,
    "m3": 1.38,
@@ -490,7 +490,7 @@
   "managementFee": 1.2,
   "inceptionDate": null,
   "nav": 10864.34,
-  "navUpdatedAt": "2026-10-02",
+  "navUpdatedAt": "2026-10-03",
   "returns": {
    "m1": 0.8,
    "m3": 1.53,
@@ -511,7 +511,7 @@
   "managementFee": 1.75,
   "inceptionDate": null,
   "nav": 9288.25,
-  "navUpdatedAt": "2026-10-02",
+  "navUpdatedAt": "2026-10-03",
   "returns": {
    "m1": -2.84,
    "m3": -5.17,
@@ -532,7 +532,7 @@
   "managementFee": 1.2,
   "inceptionDate": "2017-09-28",
   "nav": 17551,
-  "navUpdatedAt": "2026-10-02",
+  "navUpdatedAt": "2026-10-03",
   "returns": {
    "m1": -0.82,
    "m3": -1.42,
@@ -553,7 +553,7 @@
   "managementFee": 1.75,
   "inceptionDate": "2014-09-30",
   "nav": 19470,
-  "navUpdatedAt": "2026-10-02",
+  "navUpdatedAt": "2026-10-03",
   "returns": {
    "m1": -2.41,
    "m3": -3.96,
@@ -574,7 +574,7 @@
   "managementFee": 0.8,
   "inceptionDate": "2021-12-16",
   "nav": 14012.94,
-  "navUpdatedAt": "2026-10-02",
+  "navUpdatedAt": "2026-10-03",
   "returns": {
    "m1": 0.32,
    "m3": 1.68,
@@ -595,7 +595,7 @@
   "managementFee": 1.75,
   "inceptionDate": "2019-07-22",
   "nav": 20675.99,
-  "navUpdatedAt": "2026-10-02",
+  "navUpdatedAt": "2026-10-03",
   "returns": {
    "m1": -3.92,
    "m3": -5.63,
@@ -616,7 +616,7 @@
   "managementFee": 1.5,
   "inceptionDate": "2024-04-10",
   "nav": 11378,
-  "navUpdatedAt": "2026-10-02",
+  "navUpdatedAt": "2026-10-03",
   "returns": {
    "m1": 0.36,
    "m3": 0.73,
@@ -637,7 +637,7 @@
   "managementFee": 1.2,
   "inceptionDate": "2018-03-25",
   "nav": 17149,
-  "navUpdatedAt": "2026-10-02",
+  "navUpdatedAt": "2026-10-03",
   "returns": {
    "m1": 0.65,
    "m3": 1.7,
@@ -658,7 +658,7 @@
   "managementFee": 1.5,
   "inceptionDate": "2014-04-24",
   "nav": 26788,
-  "navUpdatedAt": "2026-10-02",
+  "navUpdatedAt": "2026-10-03",
   "returns": {
    "m1": -1.44,
    "m3": -3.86,
@@ -679,7 +679,7 @@
   "managementFee": 1.75,
   "inceptionDate": "2023-11-29",
   "nav": 11685,
-  "navUpdatedAt": "2026-10-02",
+  "navUpdatedAt": "2026-10-03",
   "returns": {
    "m1": -1.02,
    "m3": -1.72,
@@ -700,7 +700,7 @@
   "managementFee": 1.75,
   "inceptionDate": "2022-06-11",
   "nav": 9686.1,
-  "navUpdatedAt": "2026-10-02",
+  "navUpdatedAt": "2026-10-03",
   "returns": {
    "m1": -5.93,
    "m3": -9.43,
@@ -721,7 +721,7 @@
   "managementFee": 1.3,
   "inceptionDate": null,
   "nav": 6010.42,
-  "navUpdatedAt": "2026-10-02",
+  "navUpdatedAt": "2026-10-03",
   "returns": {
    "m1": -1.54,
    "m3": -4.68,
@@ -742,7 +742,7 @@
   "managementFee": 1.5,
   "inceptionDate": "2022-11-20",
   "nav": 12714.8,
-  "navUpdatedAt": "2026-10-02",
+  "navUpdatedAt": "2026-10-03",
   "returns": {
    "m1": -1.48,
    "m3": -3.1,
@@ -763,7 +763,7 @@
   "managementFee": 0.5,
   "inceptionDate": "2020-02-06",
   "nav": 15767.83,
-  "navUpdatedAt": "2026-10-02",
+  "navUpdatedAt": "2026-10-03",
   "returns": {
    "m1": 0.59,
    "m3": 3.25,
@@ -784,7 +784,7 @@
   "managementFee": 1.5,
   "inceptionDate": null,
   "nav": 9635.4,
-  "navUpdatedAt": "2026-10-02",
+  "navUpdatedAt": "2026-10-03",
   "returns": {
    "m1": -4.92,
    "m3": -10.11,
@@ -805,7 +805,7 @@
   "managementFee": 1.75,
   "inceptionDate": null,
   "nav": 9451.15,
-  "navUpdatedAt": "2026-10-02",
+  "navUpdatedAt": "2026-10-03",
   "returns": {
    "m1": -1.67,
    "m3": -3.68,
@@ -826,7 +826,7 @@
   "managementFee": 1.9,
   "inceptionDate": null,
   "nav": 10012.29,
-  "navUpdatedAt": "2026-10-02",
+  "navUpdatedAt": "2026-10-03",
   "returns": {
    "m1": 0.22,
    "m3": null,
@@ -847,7 +847,7 @@
   "managementFee": 1,
   "inceptionDate": "2017-08-29",
   "nav": 17114.32,
-  "navUpdatedAt": "2026-10-02",
+  "navUpdatedAt": "2026-10-03",
   "returns": {
    "m1": 0.58,
    "m3": 1.44,
@@ -868,7 +868,7 @@
   "managementFee": 1.75,
   "inceptionDate": "2014-09-25",
   "nav": 41197.78,
-  "navUpdatedAt": "2026-10-02",
+  "navUpdatedAt": "2026-10-03",
   "returns": {
    "m1": -3.2,
    "m3": -6.76,
@@ -889,7 +889,7 @@
   "managementFee": 1.3,
   "inceptionDate": "2021-09-29",
   "nav": 11127.06,
-  "navUpdatedAt": "2026-10-02",
+  "navUpdatedAt": "2026-10-03",
   "returns": {
    "m1": 0.31,
    "m3": -0.97,
@@ -910,7 +910,7 @@
   "managementFee": 1.5,
   "inceptionDate": null,
   "nav": 10370.99,
-  "navUpdatedAt": "2026-10-02",
+  "navUpdatedAt": "2026-10-03",
   "returns": {
    "m1": -5.04,
    "m3": -11.88,
@@ -931,7 +931,7 @@
   "managementFee": 0.6,
   "inceptionDate": null,
   "nav": 10000,
-  "navUpdatedAt": "2026-10-02",
+  "navUpdatedAt": "2026-10-03",
   "returns": {
    "m1": null,
    "m3": null,
@@ -952,7 +952,7 @@
   "managementFee": 0.6,
   "inceptionDate": null,
   "nav": 10389.1,
-  "navUpdatedAt": "2026-10-02",
+  "navUpdatedAt": "2026-10-03",
   "returns": {
    "m1": 1.56,
    "m3": 1.49,
@@ -973,7 +973,7 @@
   "managementFee": 1.5,
   "inceptionDate": null,
   "nav": 10623.36,
-  "navUpdatedAt": "2026-10-02",
+  "navUpdatedAt": "2026-10-03",
   "returns": {
    "m1": -0.25,
    "m3": -1.21,
@@ -994,7 +994,7 @@
   "managementFee": 1.75,
   "inceptionDate": "2022-09-29",
   "nav": 16375.2,
-  "navUpdatedAt": "2026-10-02",
+  "navUpdatedAt": "2026-10-03",
   "returns": {
    "m1": -4.84,
    "m3": -6.69,
@@ -1015,7 +1015,7 @@
   "managementFee": 1.5,
   "inceptionDate": null,
   "nav": 10107.46,
-  "navUpdatedAt": "2026-10-02",
+  "navUpdatedAt": "2026-10-03",
   "returns": {
    "m1": 0.57,
    "m3": 1.21,
@@ -1036,7 +1036,7 @@
   "managementFee": 1.2,
   "inceptionDate": "2014-04-10",
   "nav": 21162.89,
-  "navUpdatedAt": "2026-10-02",
+  "navUpdatedAt": "2026-10-03",
   "returns": {
    "m1": -1.02,
    "m3": -2.65,
@@ -1057,7 +1057,7 @@
   "managementFee": 1.5,
   "inceptionDate": null,
   "nav": 10415.66,
-  "navUpdatedAt": "2026-10-02",
+  "navUpdatedAt": "2026-10-03",
   "returns": {
    "m1": -0.97,
    "m3": -5.85,
@@ -1078,7 +1078,7 @@
   "managementFee": 1,
   "inceptionDate": "2022-09-21",
   "nav": 12528.04,
-  "navUpdatedAt": "2026-10-02",
+  "navUpdatedAt": "2026-10-03",
   "returns": {
    "m1": 0.68,
    "m3": 1.8,
@@ -1099,7 +1099,7 @@
   "managementFee": 1.9,
   "inceptionDate": null,
   "nav": 10915.6,
-  "navUpdatedAt": "2026-10-02",
+  "navUpdatedAt": "2026-10-03",
   "returns": {
    "m1": -3.55,
    "m3": -6.05,
@@ -1120,7 +1120,7 @@
   "managementFee": 1.9,
   "inceptionDate": "2014-08-21",
   "nav": 40844.43,
-  "navUpdatedAt": "2026-10-02",
+  "navUpdatedAt": "2026-10-03",
   "returns": {
    "m1": -4.47,
    "m3": -7.09,
@@ -1141,7 +1141,7 @@
   "managementFee": 0.8,
   "inceptionDate": "2019-08-08",
   "nav": 16218.55,
-  "navUpdatedAt": "2026-10-02",
+  "navUpdatedAt": "2026-10-03",
   "returns": {
    "m1": 0.59,
    "m3": 1.8,
@@ -1162,7 +1162,7 @@
   "managementFee": 1.9,
   "inceptionDate": "2021-10-28",
   "nav": 13410.4,
-  "navUpdatedAt": "2026-10-02",
+  "navUpdatedAt": "2026-10-03",
   "returns": {
    "m1": -4.46,
    "m3": -8.01,
@@ -1183,7 +1183,7 @@
   "managementFee": 1.5,
   "inceptionDate": "2013-12-23",
   "nav": 37708.82,
-  "navUpdatedAt": "2026-10-02",
+  "navUpdatedAt": "2026-10-03",
   "returns": {
    "m1": -2.58,
    "m3": -3.7,
@@ -1204,7 +1204,7 @@
   "managementFee": 1.75,
   "inceptionDate": "2024-06-03",
   "nav": 11599.31,
-  "navUpdatedAt": "2026-10-02",
+  "navUpdatedAt": "2026-10-03",
   "returns": {
    "m1": -2.31,
    "m3": -4.94,
@@ -1225,7 +1225,7 @@
   "managementFee": 1.75,
   "inceptionDate": "2014-06-30",
   "nav": 32225.28,
-  "navUpdatedAt": "2026-10-02",
+  "navUpdatedAt": "2026-10-03",
   "returns": {
    "m1": -2.91,
    "m3": -7.15,
@@ -1246,7 +1246,7 @@
   "managementFee": 1.75,
   "inceptionDate": "2017-04-17",
   "nav": 31519.51,
-  "navUpdatedAt": "2026-10-02",
+  "navUpdatedAt": "2026-10-03",
   "returns": {
    "m1": -2.6,
    "m3": -6.18,
@@ -1267,7 +1267,7 @@
   "managementFee": 0.95,
   "inceptionDate": "2013-03-31",
   "nav": 26968.62,
-  "navUpdatedAt": "2026-10-02",
+  "navUpdatedAt": "2026-10-03",
   "returns": {
    "m1": 0.87,
    "m3": 2.23,
@@ -1288,7 +1288,7 @@
   "managementFee": 1.75,
   "inceptionDate": "2019-07-01",
   "nav": 19174.92,
-  "navUpdatedAt": "2026-10-02",
+  "navUpdatedAt": "2026-10-03",
   "returns": {
    "m1": -1.16,
    "m3": -3.82,
@@ -1309,7 +1309,7 @@
   "managementFee": 0.9,
   "inceptionDate": "2021-08-12",
   "nav": 12781.38,
-  "navUpdatedAt": "2026-10-02",
+  "navUpdatedAt": "2026-10-03",
   "returns": {
    "m1": 0.57,
    "m3": 1.47,
@@ -1330,7 +1330,7 @@
   "managementFee": 1.5,
   "inceptionDate": "2021-11-15",
   "nav": 11859.28,
-  "navUpdatedAt": "2026-10-02",
+  "navUpdatedAt": "2026-10-03",
   "returns": {
    "m1": -4.03,
    "m3": -7.65,
@@ -1351,7 +1351,7 @@
   "managementFee": 1.75,
   "inceptionDate": "2023-04-10",
   "nav": 15123.35,
-  "navUpdatedAt": "2026-10-02",
+  "navUpdatedAt": "2026-10-03",
   "returns": {
    "m1": -3.97,
    "m3": -9.75,
@@ -1372,7 +1372,7 @@
   "managementFee": 1.5,
   "inceptionDate": "2018-01-11",
   "nav": 18205.9,
-  "navUpdatedAt": "2026-10-02",
+  "navUpdatedAt": "2026-10-03",
   "returns": {
    "m1": -3.29,
    "m3": -8.67,
@@ -1393,7 +1393,7 @@
   "managementFee": 1.1,
   "inceptionDate": "2019-07-04",
   "nav": 16350.33,
-  "navUpdatedAt": "2026-10-02",
+  "navUpdatedAt": "2026-10-03",
   "returns": {
    "m1": 0.68,
    "m3": 1.56,
@@ -1414,7 +1414,7 @@
   "managementFee": 0.9,
   "inceptionDate": "2023-08-03",
   "nav": 11902.3,
-  "navUpdatedAt": "2026-10-02",
+  "navUpdatedAt": "2026-10-03",
   "returns": {
    "m1": 0.65,
    "m3": 1.57,
