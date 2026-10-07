@@ -183,11 +183,11 @@
   "medianManagementFee": 0.9
  },
  {
-  "name": "CÔNG TY TNHH MTV QUẢN LÝ QUỸ DAI-ICHI LIFE VIỆT NAM",
+  "name": "CÔNG TY TNHH MTV QUẢN LÝ QUỸ DAIICHI LIFE VIỆT NAM",
   "fundCount": 2,
   "funds": [
-   "DCAF",
-   "DFIX"
+   "DFVN-CAF",
+   "DFVN-FIX"
   ],
   "earliestInception": "2019-01-02",
   "medianManagementFee": 1.2
