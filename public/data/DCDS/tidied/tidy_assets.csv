@@ -6954,80 +6954,157 @@ code,line_item,period_end,value,asOf
 2220,Receivables from rental of investment property (not applicable),2026-07-31,0,2026-09-03
 2221,Real Estate Proceeds Receivables (not applicale),2026-07-31,0,2026-09-03
 2222,Real Estate Trading Payables (not applicable),2026-07-31,0,2026-09-03
-2200,ASSETS,2026-08-31,,2026-09-03
-2201,Cash and Cash Equivalents,2026-08-31,380255041907,2026-09-03
-2202,Cash,2026-08-31,,2026-09-03
-2203,Cash at bank,2026-08-31,380255041907,2026-09-03
-2203.1,Cash at bank for Fund's subscription,2026-08-31,7793880875,2026-09-03
-2203.2,Cash at bank for Fund's dividend payment and redemption,2026-08-31,191043998,2026-09-03
-2203.3,Cash at bank for Fund's operation,2026-08-31,372270117034,2026-09-03
-2203.4,Margin account for trading derivatives,2026-08-31,0,2026-09-03
-2203.5,"Cash, cash equivalents",2026-08-31,0,2026-09-03
-2205,Investments,2026-08-31,5796500899250,2026-09-03
-2205.1,"Listed Shares, fund certificates",2026-08-31,5735361951750,2026-09-03
-2205.2,"Unlisted Shares, fund certifictes",2026-08-31,0,2026-09-03
-2205.3,Bonds,2026-08-31,53382400000,2026-09-03
-2205.4,Money market instruments,2026-08-31,0,2026-09-03
-2205.5,Deposits with term over three (03) months,2026-08-31,0,2026-09-03
-2205.6,Investment - Rights,2026-08-31,7756547500,2026-09-03
-2205.7,Index future contracts,2026-08-31,0,2026-09-03
-2205.8,Other investments,2026-08-31,0,2026-09-03
-2205.9,Reverse repo contracts,2026-08-31,0,2026-09-03
-2206,"Dividend, Coupon receivables",2026-08-31,7000031425,2026-09-03
-2206.1,Dividend receivables,2026-08-31,6005510000,2026-09-03
-2206.2,Coupon receivables,2026-08-31,994521425,2026-09-03
-2207,Interest receivables,2026-08-31,0,2026-09-03
-2207.1,Interest receivable from bank deposits,2026-08-31,0,2026-09-03
-2207.2,Interest receivable from Money market instruments,2026-08-31,0,2026-09-03
-2207.3,Interest receivable from reverse repo contracts,2026-08-31,0,2026-09-03
-2208,Securities Trading Receivables,2026-08-31,184872609000,2026-09-03
-2210,Other Receivables,2026-08-31,-866400000,2026-09-03
-2210.1,Impairment of devaluation of pledged assets,2026-08-31,0,2026-09-03
-2210.2,Provision for doubtful debt,2026-08-31,-866400000,2026-09-03
-2210.3,Other Receivables,2026-08-31,0,2026-09-03
-2211,Other Assets,2026-08-31,0,2026-09-03
-2212,TOTAL ASSETS,2026-08-31,6367762181582,2026-09-03
-2213,LIABILITIES,2026-08-31,,2026-09-03
-2214,Securities Trading Payables,2026-08-31,323717418000,2026-09-03
-2215,Other Payables,2026-08-31,24178129442,2026-09-03
-2215.1,Payables to investors,2026-08-31,12170462283,2026-09-03
-2215.1.1,Subscription Pending allotment,2026-08-31,7793880875,2026-09-03
-2215.1.2,Payables to investors for investment bought on behalf,2026-08-31,0,2026-09-03
-2215.1.3,Payables to investors for collected dividend,2026-08-31,0,2026-09-03
-2215.1.4,Redemption payable to investors,2026-08-31,4376581408,2026-09-03
-2215.2,Tax payables and obligations to the State Budget,2026-08-31,50242666,2026-09-03
-2215.3,Subscription and Redemption fee payable to distributors and Fund Management Company,2026-08-31,694080927,2026-09-03
-2215.4,Income payable to investors,2026-08-31,39925000,2026-09-03
-2215.5,Remuneration Payable to Fund's Board of Representatives,2026-08-31,19989041,2026-09-03
-2215.6,Management fee payable,2026-08-31,9682917808,2026-09-03
-2215.7,Fund Administration fee payable,2026-08-31,136553969,2026-09-03
-2215.8,Supervisory service fee payable,2026-08-31,218486349,2026-09-03
-2215.9,Transaction fee,2026-08-31,533725547,2026-09-03
-2215.9.1,Brokerage fee payable,2026-08-31,533725547,2026-09-03
-2215.9.2,Clearing Settlement fee payable,2026-08-31,0,2026-09-03
-2215.10,Accrued expense for Custodian fee,2026-08-31,291023952,2026-09-03
-2215.10.1,Custodian service - Safe Custody Fee,2026-08-31,198623952,2026-09-03
-2215.10.2,Custodian service - Transaction fee,2026-08-31,81400000,2026-09-03
-2215.10.3,"Custodian service -  Depository fee, Position and Margin management fee paid to VSDC",2026-08-31,11000000,2026-09-03
-2215.11,Audit fee payable,2026-08-31,36012560,2026-09-03
-2215.12,General meeting expense payable,2026-08-31,102333223,2026-09-03
-2215.13,Annual report fee payable,2026-08-31,0,2026-09-03
-2215.14,Transfer Agency fee payable,2026-08-31,13200000,2026-09-03
-2215.15,Service fee payable to HOSE for calculating iNAV,2026-08-31,0,2026-09-03
-2215.16,Authorising index service fee payable to HOSE,2026-08-31,0,2026-09-03
-2215.17,Other payables,2026-08-31,189176117,2026-09-03
-2215.17.1,Price feed fee payable,2026-08-31,0,2026-09-03
-2215.17.2,"Accrued expense for Fund's Board of Representatives travelling, meeting",2026-08-31,0,2026-09-03
-2215.17.3,Accrued expense for Annual Management Fee pay to SSC,2026-08-31,4993151,2026-09-03
-2215.17.4,Other payables,2026-08-31,184182966,2026-09-03
-2215.18,Short-term loans - Repo contracts,2026-08-31,0,2026-09-03
-2215.18.1,Principal of repo contracts,2026-08-31,0,2026-09-03
-2215.18.2,Accrued Interest Expense,2026-08-31,0,2026-09-03
-2215.18.3,Principal of Short-term loans,2026-08-31,0,2026-09-03
-2216,TOTAL LIABILITIES,2026-08-31,347895547442,2026-09-03
-2217,Net Asset Value ( = I.10 - II.4),2026-08-31,6019866634140,2026-09-03
-2218,Total Outstanding Fund Certificates,2026-08-31,62226723.37,2026-09-03
-2219,Net Asset Value per Fund Certificate,2026-08-31,96740.85,2026-09-03
-2220,Receivables from rental of investment property (not applicable),2026-08-31,0,2026-09-03
-2221,Real Estate Proceeds Receivables (not applicale),2026-08-31,0,2026-09-03
-2222,Real Estate Trading Payables (not applicable),2026-08-31,0,2026-09-03
+2200,ASSETS,2026-08-31,,2026-10-01
+2201,Cash and Cash Equivalents,2026-08-31,380255041907,2026-10-01
+2202,Cash,2026-08-31,,2026-10-01
+2203,Cash at bank,2026-08-31,380255041907,2026-10-01
+2203.1,Cash at bank for Fund's subscription,2026-08-31,7793880875,2026-10-01
+2203.2,Cash at bank for Fund's dividend payment and redemption,2026-08-31,191043998,2026-10-01
+2203.3,Cash at bank for Fund's operation,2026-08-31,372270117034,2026-10-01
+2203.4,Margin account for trading derivatives,2026-08-31,0,2026-10-01
+2203.5,"Cash, cash equivalents",2026-08-31,0,2026-10-01
+2205,Investments,2026-08-31,5796500899250,2026-10-01
+2205.1,"Listed Shares, fund certificates",2026-08-31,5735361951750,2026-10-01
+2205.2,"Unlisted Shares, fund certifictes",2026-08-31,0,2026-10-01
+2205.3,Bonds,2026-08-31,53382400000,2026-10-01
+2205.4,Money market instruments,2026-08-31,0,2026-10-01
+2205.5,Deposits with term over three (03) months,2026-08-31,0,2026-10-01
+2205.6,Investment - Rights,2026-08-31,7756547500,2026-10-01
+2205.7,Index future contracts,2026-08-31,0,2026-10-01
+2205.8,Other investments,2026-08-31,0,2026-10-01
+2205.9,Reverse repo contracts,2026-08-31,0,2026-10-01
+2206,"Dividend, Coupon receivables",2026-08-31,7000031425,2026-10-01
+2206.1,Dividend receivables,2026-08-31,6005510000,2026-10-01
+2206.2,Coupon receivables,2026-08-31,994521425,2026-10-01
+2207,Interest receivables,2026-08-31,0,2026-10-01
+2207.1,Interest receivable from bank deposits,2026-08-31,0,2026-10-01
+2207.2,Interest receivable from Money market instruments,2026-08-31,0,2026-10-01
+2207.3,Interest receivable from reverse repo contracts,2026-08-31,0,2026-10-01
+2208,Securities Trading Receivables,2026-08-31,184872609000,2026-10-01
+2210,Other Receivables,2026-08-31,-866400000,2026-10-01
+2210.1,Impairment of devaluation of pledged assets,2026-08-31,0,2026-10-01
+2210.2,Provision for doubtful debt,2026-08-31,-866400000,2026-10-01
+2210.3,Other Receivables,2026-08-31,0,2026-10-01
+2211,Other Assets,2026-08-31,0,2026-10-01
+2212,TOTAL ASSETS,2026-08-31,6367762181582,2026-10-01
+2213,LIABILITIES,2026-08-31,,2026-10-01
+2214,Securities Trading Payables,2026-08-31,323717418000,2026-10-01
+2215,Other Payables,2026-08-31,24178129442,2026-10-01
+2215.1,Payables to investors,2026-08-31,12170462283,2026-10-01
+2215.1.1,Subscription Pending allotment,2026-08-31,7793880875,2026-10-01
+2215.1.2,Payables to investors for investment bought on behalf,2026-08-31,0,2026-10-01
+2215.1.3,Payables to investors for collected dividend,2026-08-31,0,2026-10-01
+2215.1.4,Redemption payable to investors,2026-08-31,4376581408,2026-10-01
+2215.2,Tax payables and obligations to the State Budget,2026-08-31,50242666,2026-10-01
+2215.3,Subscription and Redemption fee payable to distributors and Fund Management Company,2026-08-31,694080927,2026-10-01
+2215.4,Income payable to investors,2026-08-31,39925000,2026-10-01
+2215.5,Remuneration Payable to Fund's Board of Representatives,2026-08-31,19989041,2026-10-01
+2215.6,Management fee payable,2026-08-31,9682917808,2026-10-01
+2215.7,Fund Administration fee payable,2026-08-31,136553969,2026-10-01
+2215.8,Supervisory service fee payable,2026-08-31,218486349,2026-10-01
+2215.9,Transaction fee,2026-08-31,533725547,2026-10-01
+2215.9.1,Brokerage fee payable,2026-08-31,533725547,2026-10-01
+2215.9.2,Clearing Settlement fee payable,2026-08-31,0,2026-10-01
+2215.10,Accrued expense for Custodian fee,2026-08-31,291023952,2026-10-01
+2215.10.1,Custodian service - Safe Custody Fee,2026-08-31,198623952,2026-10-01
+2215.10.2,Custodian service - Transaction fee,2026-08-31,81400000,2026-10-01
+2215.10.3,"Custodian service -  Depository fee, Position and Margin management fee paid to VSDC",2026-08-31,11000000,2026-10-01
+2215.11,Audit fee payable,2026-08-31,36012560,2026-10-01
+2215.12,General meeting expense payable,2026-08-31,102333223,2026-10-01
+2215.13,Annual report fee payable,2026-08-31,0,2026-10-01
+2215.14,Transfer Agency fee payable,2026-08-31,13200000,2026-10-01
+2215.15,Service fee payable to HOSE for calculating iNAV,2026-08-31,0,2026-10-01
+2215.16,Authorising index service fee payable to HOSE,2026-08-31,0,2026-10-01
+2215.17,Other payables,2026-08-31,189176117,2026-10-01
+2215.17.1,Price feed fee payable,2026-08-31,0,2026-10-01
+2215.17.2,"Accrued expense for Fund's Board of Representatives travelling, meeting",2026-08-31,0,2026-10-01
+2215.17.3,Accrued expense for Annual Management Fee pay to SSC,2026-08-31,4993151,2026-10-01
+2215.17.4,Other payables,2026-08-31,184182966,2026-10-01
+2215.18,Short-term loans - Repo contracts,2026-08-31,0,2026-10-01
+2215.18.1,Principal of repo contracts,2026-08-31,0,2026-10-01
+2215.18.2,Accrued Interest Expense,2026-08-31,0,2026-10-01
+2215.18.3,Principal of Short-term loans,2026-08-31,0,2026-10-01
+2216,TOTAL LIABILITIES,2026-08-31,347895547442,2026-10-01
+2217,Net Asset Value ( = I.10 - II.4),2026-08-31,6019866634140,2026-10-01
+2218,Total Outstanding Fund Certificates,2026-08-31,62226723.37,2026-10-01
+2219,Net Asset Value per Fund Certificate,2026-08-31,96740.85,2026-10-01
+2220,Receivables from rental of investment property (not applicable),2026-08-31,0,2026-10-01
+2221,Real Estate Proceeds Receivables (not applicale),2026-08-31,0,2026-10-01
+2222,Real Estate Trading Payables (not applicable),2026-08-31,0,2026-10-01
+2200,ASSETS,2026-09-30,,2026-10-01
+2201,Cash and Cash Equivalents,2026-09-30,519641364857,2026-10-01
+2202,Cash,2026-09-30,,2026-10-01
+2203,Cash at bank,2026-09-30,519641364857,2026-10-01
+2203.1,Cash at bank for Fund's subscription,2026-09-30,6037703332,2026-10-01
+2203.2,Cash at bank for Fund's dividend payment and redemption,2026-09-30,1380016375,2026-10-01
+2203.3,Cash at bank for Fund's operation,2026-09-30,512223645150,2026-10-01
+2203.4,Margin account for trading derivatives,2026-09-30,0,2026-10-01
+2203.5,"Cash, cash equivalents",2026-09-30,0,2026-10-01
+2205,Investments,2026-09-30,5355836793758,2026-10-01
+2205.1,"Listed Shares, fund certificates",2026-09-30,5058536086950,2026-10-01
+2205.2,"Unlisted Shares, fund certifictes",2026-09-30,0,2026-10-01
+2205.3,Bonds,2026-09-30,132956860297,2026-10-01
+2205.4,Money market instruments,2026-09-30,164343846511,2026-10-01
+2205.5,Deposits with term over three (03) months,2026-09-30,0,2026-10-01
+2205.6,Investment - Rights,2026-09-30,0,2026-10-01
+2205.7,Index future contracts,2026-09-30,0,2026-10-01
+2205.8,Other investments,2026-09-30,0,2026-10-01
+2205.9,Reverse repo contracts,2026-09-30,0,2026-10-01
+2206,"Dividend, Coupon receivables",2026-09-30,4982652027,2026-10-01
+2206.1,Dividend receivables,2026-09-30,3280270000,2026-10-01
+2206.2,Coupon receivables,2026-09-30,1702382027,2026-10-01
+2207,Interest receivables,2026-09-30,3797974764,2026-10-01
+2207.1,Interest receivable from bank deposits,2026-09-30,0,2026-10-01
+2207.2,Interest receivable from Money market instruments,2026-09-30,3797974764,2026-10-01
+2207.3,Interest receivable from reverse repo contracts,2026-09-30,0,2026-10-01
+2208,Securities Trading Receivables,2026-09-30,260461835000,2026-10-01
+2210,Other Receivables,2026-09-30,-866400000,2026-10-01
+2210.1,Impairment of devaluation of pledged assets,2026-09-30,0,2026-10-01
+2210.2,Provision for doubtful debt,2026-09-30,-866400000,2026-10-01
+2210.3,Other Receivables,2026-09-30,0,2026-10-01
+2211,Other Assets,2026-09-30,0,2026-10-01
+2212,TOTAL ASSETS,2026-09-30,6143854220406,2026-10-01
+2213,LIABILITIES,2026-09-30,,2026-10-01
+2214,Securities Trading Payables,2026-09-30,265811201000,2026-10-01
+2215,Other Payables,2026-09-30,40645759912,2026-10-01
+2215.1,Payables to investors,2026-09-30,28419841157,2026-10-01
+2215.1.1,Subscription Pending allotment,2026-09-30,6037703332,2026-10-01
+2215.1.2,Payables to investors for investment bought on behalf,2026-09-30,0,2026-10-01
+2215.1.3,Payables to investors for collected dividend,2026-09-30,0,2026-10-01
+2215.1.4,Redemption payable to investors,2026-09-30,22382137825,2026-10-01
+2215.2,Tax payables and obligations to the State Budget,2026-09-30,89320094,2026-10-01
+2215.3,Subscription and Redemption fee payable to distributors and Fund Management Company,2026-09-30,1051709936,2026-10-01
+2215.4,Income payable to investors,2026-09-30,39925000,2026-10-01
+2215.5,Remuneration Payable to Fund's Board of Representatives,2026-09-30,20975342,2026-10-01
+2215.6,Management fee payable,2026-09-30,9471536498,2026-10-01
+2215.7,Fund Administration fee payable,2026-09-30,133572951,2026-10-01
+2215.8,Supervisory service fee payable,2026-09-30,213716721,2026-10-01
+2215.9,Transaction fee,2026-09-30,551408556,2026-10-01
+2215.9.1,Brokerage fee payable,2026-09-30,551408556,2026-10-01
+2215.9.2,Clearing Settlement fee payable,2026-09-30,0,2026-10-01
+2215.10,Accrued expense for Custodian fee,2026-09-30,293787928,2026-10-01
+2215.10.1,Custodian service - Safe Custody Fee,2026-09-30,194287928,2026-10-01
+2215.10.2,Custodian service - Transaction fee,2026-09-30,88500000,2026-10-01
+2215.10.3,"Custodian service -  Depository fee, Position and Margin management fee paid to VSDC",2026-09-30,11000000,2026-10-01
+2215.11,Audit fee payable,2026-09-30,54973406,2026-10-01
+2215.12,General meeting expense payable,2026-09-30,101999768,2026-10-01
+2215.13,Annual report fee payable,2026-09-30,0,2026-10-01
+2215.14,Transfer Agency fee payable,2026-09-30,13200000,2026-10-01
+2215.15,Service fee payable to HOSE for calculating iNAV,2026-09-30,0,2026-10-01
+2215.16,Authorising index service fee payable to HOSE,2026-09-30,0,2026-10-01
+2215.17,Other payables,2026-09-30,189792555,2026-10-01
+2215.17.1,Price feed fee payable,2026-09-30,0,2026-10-01
+2215.17.2,"Accrued expense for Fund's Board of Representatives travelling, meeting",2026-09-30,0,2026-10-01
+2215.17.3,Accrued expense for Annual Management Fee pay to SSC,2026-09-30,5609589,2026-10-01
+2215.17.4,Other payables,2026-09-30,184182966,2026-10-01
+2215.18,Short-term loans - Repo contracts,2026-09-30,0,2026-10-01
+2215.18.1,Principal of repo contracts,2026-09-30,0,2026-10-01
+2215.18.2,Accrued Interest Expense,2026-09-30,0,2026-10-01
+2215.18.3,Principal of Short-term loans,2026-09-30,0,2026-10-01
+2216,TOTAL LIABILITIES,2026-09-30,306456960912,2026-10-01
+2217,Net Asset Value ( = I.10 - II.4),2026-09-30,5837397259494,2026-10-01
+2218,Total Outstanding Fund Certificates,2026-09-30,62147101.41,2026-10-01
+2219,Net Asset Value per Fund Certificate,2026-09-30,93928.71,2026-10-01
+2220,Receivables from rental of investment property (not applicable),2026-09-30,0,2026-10-01
+2221,Real Estate Proceeds Receivables (not applicale),2026-09-30,0,2026-10-01
+2222,Real Estate Trading Payables (not applicable),2026-09-30,0,2026-10-01
