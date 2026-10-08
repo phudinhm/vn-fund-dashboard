@@ -1,23 +1,23 @@
-import type { ReactElement } from 'react'
+import { lazy, type ReactElement } from 'react'
 import type { CalculatorId, DashboardState, FundMeta } from './types'
 import type { DcaShareState, LsDcaShareState, ShareUrlState } from './utils/shareUrl'
-import { CompareTab } from './components/CompareTab'
-import { WatchlistPanel } from './components/WatchlistPanel'
-import { AdvisorPanel } from './components/AdvisorPanel'
-import { RankingPanel } from './components/RankingPanel'
-import { MyPortfolioPanel } from './components/MyPortfolioPanel'
-import { DCAPanel } from './components/DCAPanel'
-import { StockDCAPanel } from './components/StockDCAPanel'
-import { LumpSumDCAPanel } from './components/LumpSumDCAPanel'
-import { FundAnalysisPanel } from './components/FundAnalysisPanel'
-import { OverlapPanel } from './components/OverlapPanel'
-import { RebalanceSensitivityPanel } from './components/RebalanceSensitivityPanel'
-import { TacticalAllocationPanel } from './components/TacticalAllocationPanel'
-import { BitcoinPanel } from './components/BitcoinPanel'
-import { WallOfWorryPanel } from './components/WallOfWorryPanel'
-import { CalculatorTab } from './components/calculators/CalculatorTab'
-import { FundProfilePanel } from './components/FundProfilePanel'
-import { MethodologyPanel } from './components/MethodologyPanel'
+const CompareTab = lazy(() => import('./components/CompareTab').then(m => ({ default: m.CompareTab })))
+const WatchlistPanel = lazy(() => import('./components/WatchlistPanel').then(m => ({ default: m.WatchlistPanel })))
+const AdvisorPanel = lazy(() => import('./components/AdvisorPanel').then(m => ({ default: m.AdvisorPanel })))
+const RankingPanel = lazy(() => import('./components/RankingPanel').then(m => ({ default: m.RankingPanel })))
+const MyPortfolioPanel = lazy(() => import('./components/MyPortfolioPanel').then(m => ({ default: m.MyPortfolioPanel })))
+const DCAPanel = lazy(() => import('./components/DCAPanel').then(m => ({ default: m.DCAPanel })))
+const StockDCAPanel = lazy(() => import('./components/StockDCAPanel').then(m => ({ default: m.StockDCAPanel })))
+const LumpSumDCAPanel = lazy(() => import('./components/LumpSumDCAPanel').then(m => ({ default: m.LumpSumDCAPanel })))
+const FundAnalysisPanel = lazy(() => import('./components/FundAnalysisPanel').then(m => ({ default: m.FundAnalysisPanel })))
+const OverlapPanel = lazy(() => import('./components/OverlapPanel').then(m => ({ default: m.OverlapPanel })))
+const RebalanceSensitivityPanel = lazy(() => import('./components/RebalanceSensitivityPanel').then(m => ({ default: m.RebalanceSensitivityPanel })))
+const TacticalAllocationPanel = lazy(() => import('./components/TacticalAllocationPanel').then(m => ({ default: m.TacticalAllocationPanel })))
+const BitcoinPanel = lazy(() => import('./components/BitcoinPanel').then(m => ({ default: m.BitcoinPanel })))
+const WallOfWorryPanel = lazy(() => import('./components/WallOfWorryPanel').then(m => ({ default: m.WallOfWorryPanel })))
+const CalculatorTab = lazy(() => import('./components/calculators/CalculatorTab').then(m => ({ default: m.CalculatorTab })))
+const FundProfilePanel = lazy(() => import('./components/FundProfilePanel').then(m => ({ default: m.FundProfilePanel })))
+const MethodologyPanel = lazy(() => import('./components/MethodologyPanel').then(m => ({ default: m.MethodologyPanel })))
 
 /**
  * Nguồn duy nhất của danh sách tab.

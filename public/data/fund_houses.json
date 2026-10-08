@@ -15,6 +15,19 @@
   "medianManagementFee": 1.75
  },
  {
+  "name": "CÔNG TY CỔ PHẦN QUẢN LÝ QUỸ DRAGON CAPITAL VIỆT NAM",
+  "fundCount": 5,
+  "funds": [
+   "DCBA",
+   "DCBF",
+   "DCDE",
+   "DCDS",
+   "DCIP"
+  ],
+  "earliestInception": "2004-05-19",
+  "medianManagementFee": 1.6
+ },
+ {
   "name": "CÔNG TY TNHH QUẢN LÝ QUỸ ĐẦU TƯ CHỨNG KHOÁN VIETCOMBANK",
   "fundCount": 5,
   "funds": [
@@ -51,18 +64,6 @@
   ],
   "earliestInception": "2014-04-24",
   "medianManagementFee": 1.5
- },
- {
-  "name": "CÔNG TY CỔ PHẦN QUẢN LÝ QUỸ DRAGON CAPITAL VIỆT NAM",
-  "fundCount": 4,
-  "funds": [
-   "DCBF",
-   "DCDE",
-   "DCDS",
-   "DCIP"
-  ],
-  "earliestInception": "2004-05-19",
-  "medianManagementFee": 1.565
  },
  {
   "name": "CÔNG TY CỔ PHẦN QUẢN LÝ QUỸ UOB ASSET MANAGEMENT (VIỆT NAM)",
@@ -182,11 +183,11 @@
   "medianManagementFee": 0.9
  },
  {
-  "name": "CÔNG TY TNHH MTV QUẢN LÝ QUỸ DAI-ICHI LIFE VIỆT NAM",
+  "name": "CÔNG TY TNHH MTV QUẢN LÝ QUỸ DAIICHI LIFE VIỆT NAM",
   "fundCount": 2,
   "funds": [
-   "DCAF",
-   "DFIX"
+   "DFVN-CAF",
+   "DFVN-FIX"
   ],
   "earliestInception": "2019-01-02",
   "medianManagementFee": 1.2
