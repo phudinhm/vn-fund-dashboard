@@ -92,11 +92,32 @@ describe('computePeriodStat', () => {
     expect(s.riskAdjusted).not.toBeNull()
     expect(Math.sign(s.riskAdjusted!)).toBe(Math.sign(s.ret))
   })
+
+  it('computes sortino, calmar, up-days and the current drawdown', () => {
+    const p = series('2024-01-01', REF, i => 100 + i * 0.1 + (i % 2 === 0 ? 1 : -1))
+    const s = computePeriodStat(p, '1y', REF)!
+    expect(s.sortino).not.toBeNull()
+    expect(s.sortino!).toBeGreaterThan(0)
+    expect(s.upDays!).toBeGreaterThan(0.4)
+    expect(s.upDays!).toBeLessThan(0.6)
+    expect(s.calmar).toBeCloseTo(s.annualized! / Math.abs(s.maxDrawdown), 10)
+    expect(s.currentDrawdown).toBeLessThanOrEqual(0)
+  })
+
+  it('has no sortino without down days, no calmar under a year, and sits at peak on a rising series', () => {
+    const up = series('2025-01-01', REF, i => 100 + i)
+    const s = computePeriodStat(up, '3m', REF)!
+    expect(s.sortino).toBeNull()
+    expect(s.calmar).toBeNull()
+    expect(s.upDays).toBe(1)
+    expect(s.currentDrawdown).toBe(0)
+  })
 })
 
 describe('rankEntries', () => {
   const stat = (ret: number, dd = -0.1, ra: number | null = 1): PeriodStat => ({
     startDate: 'a', endDate: 'b', ret, annualized: null, maxDrawdown: dd, volatility: 0.1, riskAdjusted: ra,
+    sortino: ra, calmar: null, upDays: 0.5, currentDrawdown: 0,
   })
 
   it('ranks by return descending with ties sharing a rank', () => {

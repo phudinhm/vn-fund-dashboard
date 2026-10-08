@@ -12,8 +12,8 @@ export type PeriodId = '1m' | '3m' | '6m' | 'ytd' | '1y' | '2y' | '3y' | '5y' | 
 export const MIXED_PERIODS: PeriodId[] = ['1m', '3m', '6m', 'ytd', '1y', '2y', '3y', '5y']
 export const ALL_PERIODS: PeriodId[] = [...MIXED_PERIODS, 'all']
 
-export type RankMetric = 'return' | 'riskAdjusted' | 'drawdown'
-export const RANK_METRICS: RankMetric[] = ['return', 'riskAdjusted', 'drawdown']
+export type RankMetric = 'return' | 'riskAdjusted' | 'sortino' | 'calmar' | 'drawdown'
+export const RANK_METRICS: RankMetric[] = ['return', 'riskAdjusted', 'sortino', 'calmar', 'drawdown']
 
 /** Quỹ có dữ liệu cuối cách ngày tham chiếu quá số ngày này bị coi là cũ và không được xếp hạng. */
 export const STALE_DAYS = 7
@@ -34,6 +34,14 @@ export interface PeriodStat {
   volatility: number | null
   /** Lợi nhuận trên mỗi đơn vị rủi ro: ret / (vol × √số năm của kỳ). Null khi không tính được. */
   riskAdjusted: number | null
+  /** Như riskAdjusted nhưng chỉ phạt biến động đi xuống (độ lệch phía dưới 0). Null khi không có ngày giảm nào hoặc quá ít quan sát. */
+  sortino: number | null
+  /** %/năm chia sụt giảm tối đa. Null khi kỳ chưa đủ 1 năm hoặc không có sụt giảm. */
+  calmar: number | null
+  /** Tỷ lệ ngày tăng giá trong các ngày có biến động (0-1). */
+  upDays: number | null
+  /** Mức đang thấp hơn đỉnh của kỳ tại ngày cuối (≤ 0). 0 = đang ở đỉnh. */
+  currentDrawdown: number
 }
 
 function shiftDate(iso: string, years: number, months: number): string {
@@ -118,12 +126,14 @@ export function computePeriodStat(prices: PricePoint[], period: PeriodId, refEnd
 
   let peak = start.price
   let maxDrawdown = 0
+  let currentDrawdown = 0
   const dailyReturns: number[] = []
   for (let i = startIdx + 1; i < prices.length; i++) {
     const p = prices[i]!.price
     const prev = prices[i - 1]!.price
     if (p > peak) peak = p
     maxDrawdown = Math.min(maxDrawdown, p / peak - 1)
+    currentDrawdown = p / peak - 1
     if (prev > 0) dailyReturns.push(p / prev - 1)
   }
 
@@ -134,16 +144,27 @@ export function computePeriodStat(prices: PricePoint[], period: PeriodId, refEnd
     // Số quan sát mỗi năm lấy từ chính chuỗi (quỹ giao dịch ~250 ngày, crypto 365).
     volatility = Math.sqrt(variance) * Math.sqrt(dailyReturns.length / years)
   }
+  let sortino: number | null = null
+  let upDays: number | null = null
+  if (dailyReturns.length >= MIN_RETURNS_FOR_VOL && years > 0) {
+    const downside = Math.sqrt(dailyReturns.reduce((acc, x) => acc + Math.min(x, 0) ** 2, 0) / dailyReturns.length)
+      * Math.sqrt(dailyReturns.length / years)
+    if (downside > 0) sortino = ret / (downside * Math.sqrt(years))
+    const moving = dailyReturns.filter(x => x !== 0)
+    if (moving.length > 0) upDays = moving.filter(x => x > 0).length / moving.length
+  }
+  const annualized = annualizedOver(1 + ret, start.date, last.date)
+  const calmar = annualized !== null && maxDrawdown < 0 ? annualized / Math.abs(maxDrawdown) : null
   const riskAdjusted = volatility !== null && volatility > 0 && years > 0 ? ret / (volatility * Math.sqrt(years)) : null
 
   return {
     startDate: start.date,
     endDate: last.date,
     ret,
-    annualized: annualizedOver(1 + ret, start.date, last.date),
+    annualized,
     maxDrawdown,
     volatility,
-    riskAdjusted,
+    riskAdjusted, sortino, calmar, upDays, currentDrawdown,
   }
 }
 
@@ -161,6 +182,8 @@ export function metricValue(stat: PeriodStat, metric: RankMetric): number | null
   switch (metric) {
     case 'return': return stat.ret
     case 'riskAdjusted': return stat.riskAdjusted
+    case 'sortino': return stat.sortino
+    case 'calmar': return stat.calmar
     case 'drawdown': return stat.maxDrawdown // càng gần 0 càng tốt
   }
 }

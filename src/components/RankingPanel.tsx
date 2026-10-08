@@ -99,7 +99,7 @@ function RankingPanelImpl({ funds, onCompare }: Props) {
     if (!stat) return ''
     const v = metricValue(stat, m)
     if (v === null) return ''
-    return m === 'riskAdjusted' ? dec(v, 2) : pct(v)
+    return m === 'riskAdjusted' || m === 'sortino' || m === 'calmar' ? dec(v, 2) : pct(v)
   }
 
   // ── Theo loại tài sản ──
@@ -233,6 +233,10 @@ function RankingPanelImpl({ funds, onCompare }: Props) {
                       <th className={metric === 'drawdown' ? 'rk-sorted' : ''}>{t('rank.col.dd')}</th>
                       <th>{t('rank.col.vol')}</th>
                       <th className={metric === 'riskAdjusted' ? 'rk-sorted' : ''}>{t('rank.col.ra')}</th>
+                      <th className={metric === 'sortino' ? 'rk-sorted' : ''} title={t('rank.metric.sortino.hint')}>{t('rank.col.sortino')}</th>
+                      <th className={metric === 'calmar' ? 'rk-sorted' : ''} title={t('rank.metric.calmar.hint')}>{t('rank.col.calmar')}</th>
+                      <th title={t('rank.col.upDays.hint')}>{t('rank.col.upDays')}</th>
+                      <th title={t('rank.col.curDd.hint')}>{t('rank.col.curDd')}</th>
                       <th />
                     </tr>
                   </thead>
@@ -246,6 +250,10 @@ function RankingPanelImpl({ funds, onCompare }: Props) {
                         <td className={metric === 'drawdown' ? 'rk-sorted' : ''}>{dec(r.stat.maxDrawdown * 100, 1)}%</td>
                         <td>{r.stat.volatility === null ? '' : `${dec(r.stat.volatility * 100, 1)}%`}</td>
                         <td className={metric === 'riskAdjusted' ? 'rk-sorted' : ''}>{r.stat.riskAdjusted === null ? '' : dec(r.stat.riskAdjusted, 2)}</td>
+                        <td className={metric === 'sortino' ? 'rk-sorted' : ''}>{r.stat.sortino === null ? '' : dec(r.stat.sortino, 2)}</td>
+                        <td className={metric === 'calmar' ? 'rk-sorted' : ''} title={r.stat.calmar === null ? t('dcaStats.shortPeriod') : undefined}>{r.stat.calmar === null ? '' : dec(r.stat.calmar, 2)}</td>
+                        <td>{r.stat.upDays === null ? '' : `${dec(r.stat.upDays * 100, 0)}%`}</td>
+                        <td className={r.stat.currentDrawdown < -0.1 ? 'dca-loss' : ''}>{r.stat.currentDrawdown === 0 ? t('rank.atPeak') : `${dec(r.stat.currentDrawdown * 100, 1)}%`}</td>
                         {rowActions(r.id)}
                       </tr>
                     ))}
@@ -332,7 +340,7 @@ function RankingPanelImpl({ funds, onCompare }: Props) {
                         <td key={p} className={mixedSort === p ? 'rk-sorted' : ''}>
                           {rank === undefined ? '' : (
                             <span className="rk-cell">
-                              <span className={metric === 'riskAdjusted' ? '' : v !== null && v >= 0 && metric === 'return' ? 'dca-profit' : metric === 'return' ? 'dca-loss' : ''}>{cell(stat, metric)}</span>
+                              <span className={metric !== 'return' && metric !== 'drawdown' ? '' : v !== null && v >= 0 && metric === 'return' ? 'dca-profit' : metric === 'return' ? 'dca-loss' : ''}>{cell(stat, metric)}</span>
                               <em className={rank <= 3 ? 'rk-top' : ''} title={t('rank.cellRank', { rank, total: row.totals[p] ?? 0 })}>#{rank}</em>
                             </span>
                           )}
