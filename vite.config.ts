@@ -6,6 +6,14 @@ export default defineConfig({
   optimizeDeps: {
     include: ['@vercel/analytics/react', '@vercel/speed-insights/react'],
   },
+  build: {
+    rollupOptions: {
+      output: {
+        // Recharts (+ d3) rất nặng và ít đổi: tách riêng để được cache lâu giữa các lần deploy.
+        manualChunks: id => (/node_modules\/(recharts|d3-|victory-vendor|recharts-scale)/.test(id) ? 'charts' : undefined),
+      },
+    },
+  },
   test: {
     globals: true,
     environment: 'jsdom',

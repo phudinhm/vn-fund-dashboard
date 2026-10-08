@@ -1,4 +1,4 @@
-import { useCallback, useMemo, type ReactElement } from 'react'
+import { Suspense, useCallback, useEffect, useMemo, useState, type ReactElement } from 'react'
 import type { CalculatorId } from './types'
 import { useFundMetadata } from './hooks/useFundData'
 import { useUrlState } from './hooks/useUrlState'
@@ -60,6 +60,18 @@ const TAB_ICONS: Record<TabId, ReactElement> = {
   methodology: <IconRuler />,
 }
 
+/** Khung chờ khi chunk của tab đang tải: giữ chỗ để trang không giật. */
+function TabSkeleton(): ReactElement {
+  return (
+    <div className="tab-skeleton" role="status" aria-busy="true">
+      <div className="tab-skeleton-bar tab-skeleton-bar--title" />
+      <div className="tab-skeleton-bar" />
+      <div className="tab-skeleton-block" />
+      <div className="tab-skeleton-block" />
+    </div>
+  )
+}
+
 export function App() {
   const { metadata, metadataError, loading: metaLoading } = useFundMetadata()
   const headerDim = useScrollDim()
@@ -81,6 +93,12 @@ export function App() {
   // Context truyền vào từng tab. Phải đặt TRƯỚC early return (Rules of Hooks):
   // mọi hook gọi vô điều kiện ở đầu component. Khi metadata chưa có thì chỉ
   // là [] thừa — không ai dùng vì đã return loading screen.
+  // Tab keepMounted chỉ mount lần đầu khi được mở (rồi giữ state), thay vì mount hết lúc khởi động.
+  const [visited, setVisited] = useState<Set<TabId>>(() => new Set([state.tab]))
+  useEffect(() => {
+    setVisited(v => (v.has(state.tab) ? v : new Set(v).add(state.tab)))
+  }, [state.tab])
+
   const tabContext = useMemo<TabContext>(
     () => ({
       metadata: metadata ?? [],
@@ -157,14 +175,16 @@ export function App() {
         <main className="app-main">
           {TAB_REGISTRY.map(tab =>
             tab.keepMounted ? (
+              !visited.has(tab.id) && state.tab !== tab.id ? null : (
               <div
                 key={tab.id}
                 className={tab.wrapperClass ? `${tab.wrapperClass} ${state.tab === tab.id ? '' : 'tab-panel-hidden'}` : (state.tab === tab.id ? undefined : 'tab-panel-hidden')}
               >
-                {tab.render(tabContext)}
+                <Suspense fallback={<TabSkeleton />}>{tab.render(tabContext)}</Suspense>
               </div>
+              )
             ) : (
-              state.tab === tab.id && <div key={tab.id}>{tab.render(tabContext)}</div>
+              state.tab === tab.id && <div key={tab.id}><Suspense fallback={<TabSkeleton />}>{tab.render(tabContext)}</Suspense></div>
             ),
           )}
         </main>
