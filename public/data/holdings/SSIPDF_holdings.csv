@@ -1,0 +1,6 @@
+date,stock_code,industry,weight_pct,asset_value,type_asset
+2026-09-01,VNM,Thực phẩm - Đồ uống,0.12,59400000,STOCK
+2026-09-01,SAB,Thực phẩm - Đồ uống,0.08,42900000,STOCK
+2026-09-01,DPR,Sản xuất Nhựa - Hóa chất,0.07,38600000,STOCK
+2026-09-01,IDC,Tiện ích,0.07,33600000,STOCK
+2026-09-01,ACB,Ngân hàng,0.04,21100000,STOCK
