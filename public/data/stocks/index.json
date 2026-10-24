@@ -116,7 +116,7 @@
   "name": "PV Power",
   "basis": "adjusted",
   "first": "2018-03-06",
-  "last": "2026-10-22",
+  "last": "2026-10-23",
   "last_price": 12550.0
  },
  {
@@ -124,8 +124,8 @@
   "name": "REE",
   "basis": "adjusted",
   "first": "2016-10-24",
-  "last": "2026-10-22",
-  "last_price": 46000.0
+  "last": "2026-10-23",
+  "last_price": 45900.0
  },
  {
   "ticker": "SAB",
@@ -220,8 +220,8 @@
   "name": "Vinamilk",
   "basis": "adjusted",
   "first": "2016-10-24",
-  "last": "2026-10-22",
-  "last_price": 58100.0
+  "last": "2026-10-23",
+  "last_price": 57600.0
  },
  {
   "ticker": "VPB",
