@@ -3,7 +3,7 @@
   "ticker": "ACB",
   "name": "ACB",
   "basis": "adjusted",
-  "first": "2016-10-24",
+  "first": "2016-10-25",
   "last": "2026-10-23",
   "last_price": 21300.0
  },
@@ -11,7 +11,7 @@
   "ticker": "BID",
   "name": "BIDV",
   "basis": "adjusted",
-  "first": "2016-10-24",
+  "first": "2016-10-25",
   "last": "2026-10-23",
   "last_price": 34250.0
  },
@@ -19,7 +19,7 @@
   "ticker": "CTG",
   "name": "VietinBank",
   "basis": "adjusted",
-  "first": "2016-10-24",
+  "first": "2016-10-25",
   "last": "2026-10-23",
   "last_price": 30950.0
  },
@@ -27,7 +27,7 @@
   "ticker": "DGC",
   "name": "Hóa chất Đức Giang",
   "basis": "adjusted",
-  "first": "2016-10-24",
+  "first": "2016-10-25",
   "last": "2026-10-23",
   "last_price": 33700.0
  },
@@ -35,7 +35,7 @@
   "ticker": "FPT",
   "name": "FPT",
   "basis": "adjusted",
-  "first": "2016-10-24",
+  "first": "2016-10-25",
   "last": "2026-10-23",
   "last_price": 57000.0
  },
@@ -43,7 +43,7 @@
   "ticker": "GAS",
   "name": "PV Gas",
   "basis": "adjusted",
-  "first": "2016-10-24",
+  "first": "2016-10-25",
   "last": "2026-10-23",
   "last_price": 78300.0
  },
@@ -67,7 +67,7 @@
   "ticker": "HPG",
   "name": "Hòa Phát",
   "basis": "adjusted",
-  "first": "2016-10-24",
+  "first": "2016-10-25",
   "last": "2026-10-23",
   "last_price": 20950.0
  },
@@ -75,7 +75,7 @@
   "ticker": "MBB",
   "name": "MB Bank",
   "basis": "adjusted",
-  "first": "2016-10-24",
+  "first": "2016-10-25",
   "last": "2026-10-23",
   "last_price": 19800.0
  },
@@ -83,7 +83,7 @@
   "ticker": "MSN",
   "name": "Masan",
   "basis": "adjusted",
-  "first": "2016-10-24",
+  "first": "2016-10-25",
   "last": "2026-10-23",
   "last_price": 74200.0
  },
@@ -91,7 +91,7 @@
   "ticker": "MWG",
   "name": "Thế Giới Di Động",
   "basis": "adjusted",
-  "first": "2016-10-24",
+  "first": "2016-10-25",
   "last": "2026-10-23",
   "last_price": 75500.0
  },
@@ -147,7 +147,7 @@
   "ticker": "SSI",
   "name": "SSI",
   "basis": "adjusted",
-  "first": "2016-10-24",
+  "first": "2016-10-25",
   "last": "2026-10-23",
   "last_price": 19950.0
  },
@@ -155,7 +155,7 @@
   "ticker": "STB",
   "name": "Sacombank",
   "basis": "adjusted",
-  "first": "2016-10-24",
+  "first": "2016-10-25",
   "last": "2026-10-23",
   "last_price": 68500.0
  },
@@ -179,7 +179,7 @@
   "ticker": "VCB",
   "name": "Vietcombank",
   "basis": "adjusted",
-  "first": "2016-10-24",
+  "first": "2016-10-25",
   "last": "2026-10-23",
   "last_price": 56800.0
  },
@@ -187,7 +187,7 @@
   "ticker": "VHM",
   "name": "Vinhomes",
   "basis": "adjusted",
-  "first": "2016-10-24",
+  "first": "2016-10-25",
   "last": "2026-10-23",
   "last_price": 64300.0
  },
@@ -203,7 +203,7 @@
   "ticker": "VIC",
   "name": "Vingroup",
   "basis": "adjusted",
-  "first": "2016-10-24",
+  "first": "2016-10-25",
   "last": "2026-10-23",
   "last_price": 236500.0
  },
