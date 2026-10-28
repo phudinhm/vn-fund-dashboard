@@ -133,6 +133,17 @@
   "medianManagementFee": 1.75
  },
  {
+  "name": "CÔNG TY TNHH QUẢN LÝ QUỸ MIREA ASSET VIỆT NAM",
+  "fundCount": 3,
+  "funds": [
+   "MADEF",
+   "MAFF",
+   "MAGEF"
+  ],
+  "earliestInception": "2019-07-22",
+  "medianManagementFee": 1.75
+ },
+ {
   "name": "CÔNG TY CỔ PHẦN QUẢN LÝ QUỸ AMBER",
   "fundCount": 2,
   "funds": [
@@ -211,16 +222,6 @@
   ],
   "earliestInception": null,
   "medianManagementFee": 1.45
- },
- {
-  "name": "CÔNG TY TNHH QUẢN LÝ QUỸ MIREA ASSET VIỆT NAM",
-  "fundCount": 2,
-  "funds": [
-   "MAFF",
-   "MAGEF"
-  ],
-  "earliestInception": "2019-07-22",
-  "medianManagementFee": 1.275
  },
  {
   "name": "CÔNG TY CỔ PHẦN QUẢN LÝ QUỸ ĐẦU TƯ SGI",

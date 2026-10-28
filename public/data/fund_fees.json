@@ -1114,6 +1114,36 @@
   ]
  },
  {
+  "code": "MADEF",
+  "management": 1.75,
+  "performance": null,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sipBuy": [],
+  "sell": [
+   {
+    "from": 0,
+    "to": 12,
+    "rate": 0
+   },
+   {
+    "from": 12,
+    "to": null,
+    "rate": 0
+   }
+  ]
+ },
+ {
   "code": "MAFBAL",
   "management": 1.2,
   "performance": null,
