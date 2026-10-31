@@ -52,24 +52,24 @@
   "name": "Cao su Việt Nam",
   "basis": "adjusted",
   "first": "2018-03-21",
-  "last": "2026-10-29",
-  "last_price": 31950.0
+  "last": "2026-10-30",
+  "last_price": 31250.0
  },
  {
   "ticker": "HDB",
   "name": "HDBank",
   "basis": "adjusted",
   "first": "2018-01-05",
-  "last": "2026-10-29",
-  "last_price": 22700.0
+  "last": "2026-10-30",
+  "last_price": 22400.0
  },
  {
   "ticker": "HPG",
   "name": "Hòa Phát",
   "basis": "adjusted",
   "first": "2016-10-31",
-  "last": "2026-10-29",
-  "last_price": 21200.0
+  "last": "2026-10-30",
+  "last_price": 21000.0
  },
  {
   "ticker": "MBB",
@@ -84,16 +84,16 @@
   "name": "Masan",
   "basis": "adjusted",
   "first": "2016-10-31",
-  "last": "2026-10-29",
-  "last_price": 72100.0
+  "last": "2026-10-30",
+  "last_price": 70000.0
  },
  {
   "ticker": "MWG",
   "name": "Thế Giới Di Động",
   "basis": "adjusted",
   "first": "2016-10-31",
-  "last": "2026-10-29",
-  "last_price": 75800.0
+  "last": "2026-10-30",
+  "last_price": 74000.0
  },
  {
   "ticker": "PLX",
@@ -108,16 +108,16 @@
   "name": "PNJ",
   "basis": "adjusted",
   "first": "2016-10-31",
-  "last": "2026-10-29",
-  "last_price": 16050.0
+  "last": "2026-10-30",
+  "last_price": 15500.0
  },
  {
   "ticker": "POW",
   "name": "PV Power",
   "basis": "adjusted",
   "first": "2018-03-06",
-  "last": "2026-10-29",
-  "last_price": 12400.0
+  "last": "2026-10-30",
+  "last_price": 12200.0
  },
  {
   "ticker": "REE",
@@ -156,16 +156,16 @@
   "name": "Sacombank",
   "basis": "adjusted",
   "first": "2016-10-31",
-  "last": "2026-10-29",
-  "last_price": 66900.0
+  "last": "2026-10-30",
+  "last_price": 66300.0
  },
  {
   "ticker": "TCB",
   "name": "Techcombank",
   "basis": "adjusted",
   "first": "2018-06-04",
-  "last": "2026-10-29",
-  "last_price": 22350.0
+  "last": "2026-10-30",
+  "last_price": 21600.0
  },
  {
   "ticker": "TPB",
@@ -212,7 +212,7 @@
   "name": "Vietjet",
   "basis": "adjusted",
   "first": "2017-02-28",
-  "last": "2026-10-29",
+  "last": "2026-10-30",
   "last_price": 131600.0
  },
  {
