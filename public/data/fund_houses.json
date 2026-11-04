@@ -25,7 +25,7 @@
    "DCIP"
   ],
   "earliestInception": "2004-05-19",
-  "medianManagementFee": 1.6
+  "medianManagementFee": 1.75
  },
  {
   "name": "CÔNG TY TNHH QUẢN LÝ QUỸ ĐẦU TƯ CHỨNG KHOÁN VIETCOMBANK",
@@ -187,7 +187,7 @@
   "name": "CÔNG TY CỔ PHẦN QUẢN LÝ QUỸ NGÂN HÀNG TMCP ĐẠI CHÚNG VIỆT NAM",
   "fundCount": 2,
   "funds": [
-   "PBIF",
+   "PFGF",
    "PVBF"
   ],
   "earliestInception": "2020-02-06",
