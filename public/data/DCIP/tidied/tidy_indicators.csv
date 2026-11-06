@@ -1869,33 +1869,63 @@ code,line_item,period_end,measure,value,asOf
 22781,Number of Fund Certificates redeemed during the period,2026-08-31,month,-9869556.8,2026-10-01
 22782,Net redemption amount during the period (based on par value),2026-08-31,month,-98695568000,2026-10-01
 22841,Number of investors of the Fund at the end of the period,2026-08-31,month,22219,2026-10-01
-2264,INVESTMENT PERFORMANCE INDICATORS,2026-09-30,month,,2026-10-01
-2265,Management fee paid to the fund management company/Average NAV (%),2026-09-30,month,0.012000827809766,2026-10-01
-2266,Custody and supervising fees paid to the Supervisory Bank/Average NAV (%),2026-09-30,month,0.000908346030289429,2026-10-01
-2267,Auditing fee paid to auditing organizations (if any)/Average NAV (%),2026-09-30,month,0.000281853308070255,2026-10-01
-2268,"Legal consultancy, price quotation and other appropriate service fees; remunerations paid to the Board of Representatives/Average NAV (%)",2026-09-30,month,0.000159117273207419,2026-10-01
-2269,Expense/Average NAV (%),2026-09-30,month,0.0144391651922514,2026-10-01
-2270,Portfolio turnover rate (%),2026-09-30,month,2.33355273600065,2026-10-01
-2272,OTHER INDICATORS,2026-09-30,month,,2026-10-01
-2273,Fund scale at the beginning of the period (based on par value of fund certificate),2026-09-30,month,477538114000,2026-10-01
-2274,Total value of outstanding Fund Certificate at the beginning of period,2026-09-30,month,477538114000,2026-10-01
-2275,Total number of outstanding Fund Certificate at the beginning of period,2026-09-30,month,47753811.4,2026-10-01
-2276,Change of Fund scale during the period (based on par value of fund certificate),2026-09-30,month,22749771300,2026-10-01
-2277,Number of Fund Certificates subscribed during the period,2026-09-30,month,12811927.29,2026-10-01
-2278,Net subscription amount during the period (based on par value),2026-09-30,month,128119272900,2026-10-01
-2279,Fund scale at the end of the period (based on par value),2026-09-30,month,500287885300,2026-10-01
-2280,Total value of outstanding Fund Certificate at the end of the period (based on par value),2026-09-30,month,500287885300,2026-10-01
-2281,Total number of outstanding Fund Certificate at the end of the period,2026-09-30,month,50028788.53,2026-10-01
-2282,Fund Management Company and related parties' ownership ratio at the end of the period,2026-09-30,month,0.0002296526,2026-10-01
-2283,Top 10 investors' ownership ratio at the end of the period,2026-09-30,month,0.2129,2026-10-01
-2284,Foreign investors' ownership ratio at the end of the period,2026-09-30,month,0.4131,2026-10-01
-2285,Net asset value per Fund Certificate at the end of period,2026-09-30,month,12405.43,2026-10-01
-2286,Fee paid to Real Estate management organisation/ Average NAV (%) (not applicable),2026-09-30,month,,2026-10-01
-2287,"Income (including interest income, dividend, coupon income and unrealised gain)/ Average NAV (%) (not applicable)",2026-09-30,month,,2026-10-01
-2288,Market price per fund certificates at the end of period (not applicable),2026-09-30,month,,2026-10-01
-22661,"Fund admin fee, and other fees paid to relating services providers by the fund management company/Average NAV (%)",2026-09-30,month,0.000916850973980619,2026-10-01
-22761,Change of Number of Fund Certificates during the period,2026-09-30,month,2274977.13,2026-10-01
-22762,Change in capital amount during the period (based on par value),2026-09-30,month,22749771300,2026-10-01
-22781,Number of Fund Certificates redeemed during the period,2026-09-30,month,-10536950.16,2026-10-01
-22782,Net redemption amount during the period (based on par value),2026-09-30,month,-105369501600,2026-10-01
-22841,Number of investors of the Fund at the end of the period,2026-09-30,month,22388,2026-10-01
+2264,INVESTMENT PERFORMANCE INDICATORS,2026-09-30,month,,2026-11-03
+2265,Management fee paid to the fund management company/Average NAV (%),2026-09-30,month,0.012000827809766,2026-11-03
+2266,Custody and supervising fees paid to the Supervisory Bank/Average NAV (%),2026-09-30,month,0.000908346030289429,2026-11-03
+2267,Auditing fee paid to auditing organizations (if any)/Average NAV (%),2026-09-30,month,0.000281853308070255,2026-11-03
+2268,"Legal consultancy, price quotation and other appropriate service fees; remunerations paid to the Board of Representatives/Average NAV (%)",2026-09-30,month,0.000159117273207419,2026-11-03
+2269,Expense/Average NAV (%),2026-09-30,month,0.0144391651922514,2026-11-03
+2270,Portfolio turnover rate (%),2026-09-30,month,2.33355273600065,2026-11-03
+2272,OTHER INDICATORS,2026-09-30,month,,2026-11-03
+2273,Fund scale at the beginning of the period (based on par value of fund certificate),2026-09-30,month,477538114000,2026-11-03
+2274,Total value of outstanding Fund Certificate at the beginning of period,2026-09-30,month,477538114000,2026-11-03
+2275,Total number of outstanding Fund Certificate at the beginning of period,2026-09-30,month,47753811.4,2026-11-03
+2276,Change of Fund scale during the period (based on par value of fund certificate),2026-09-30,month,22749771300,2026-11-03
+2277,Number of Fund Certificates subscribed during the period,2026-09-30,month,12811927.29,2026-11-03
+2278,Net subscription amount during the period (based on par value),2026-09-30,month,128119272900,2026-11-03
+2279,Fund scale at the end of the period (based on par value),2026-09-30,month,500287885300,2026-11-03
+2280,Total value of outstanding Fund Certificate at the end of the period (based on par value),2026-09-30,month,500287885300,2026-11-03
+2281,Total number of outstanding Fund Certificate at the end of the period,2026-09-30,month,50028788.53,2026-11-03
+2282,Fund Management Company and related parties' ownership ratio at the end of the period,2026-09-30,month,0.0002296526,2026-11-03
+2283,Top 10 investors' ownership ratio at the end of the period,2026-09-30,month,0.2129,2026-11-03
+2284,Foreign investors' ownership ratio at the end of the period,2026-09-30,month,0.4131,2026-11-03
+2285,Net asset value per Fund Certificate at the end of period,2026-09-30,month,12405.43,2026-11-03
+2286,Fee paid to Real Estate management organisation/ Average NAV (%) (not applicable),2026-09-30,month,,2026-11-03
+2287,"Income (including interest income, dividend, coupon income and unrealised gain)/ Average NAV (%) (not applicable)",2026-09-30,month,,2026-11-03
+2288,Market price per fund certificates at the end of period (not applicable),2026-09-30,month,,2026-11-03
+22661,"Fund admin fee, and other fees paid to relating services providers by the fund management company/Average NAV (%)",2026-09-30,month,0.000916850973980619,2026-11-03
+22761,Change of Number of Fund Certificates during the period,2026-09-30,month,2274977.13,2026-11-03
+22762,Change in capital amount during the period (based on par value),2026-09-30,month,22749771300,2026-11-03
+22781,Number of Fund Certificates redeemed during the period,2026-09-30,month,-10536950.16,2026-11-03
+22782,Net redemption amount during the period (based on par value),2026-09-30,month,-105369501600,2026-11-03
+22841,Number of investors of the Fund at the end of the period,2026-09-30,month,22388,2026-11-03
+2264,INVESTMENT PERFORMANCE INDICATORS,2026-10-31,month,,2026-11-03
+2265,Management fee paid to the fund management company/Average NAV (%),2026-10-31,month,0.0119654232809274,2026-11-03
+2266,Custody and supervising fees paid to the Supervisory Bank/Average NAV (%),2026-10-31,month,0.000923660717185902,2026-11-03
+2267,Auditing fee paid to auditing organizations (if any)/Average NAV (%),2026-10-31,month,0.000277634499413898,2026-11-03
+2268,"Legal consultancy, price quotation and other appropriate service fees; remunerations paid to the Board of Representatives/Average NAV (%)",2026-10-31,month,0.000152804046950696,2026-11-03
+2269,Expense/Average NAV (%),2026-10-31,month,0.0144062661704982,2026-11-03
+2270,Portfolio turnover rate (%),2026-10-31,month,2.44982758614819,2026-11-03
+2272,OTHER INDICATORS,2026-10-31,month,,2026-11-03
+2273,Fund scale at the beginning of the period (based on par value of fund certificate),2026-10-31,month,500287885300,2026-11-03
+2274,Total value of outstanding Fund Certificate at the beginning of period,2026-10-31,month,500287885300,2026-11-03
+2275,Total number of outstanding Fund Certificate at the beginning of period,2026-10-31,month,50028788.53,2026-11-03
+2276,Change of Fund scale during the period (based on par value of fund certificate),2026-10-31,month,-35654107500,2026-11-03
+2277,Number of Fund Certificates subscribed during the period,2026-10-31,month,13334571.48,2026-11-03
+2278,Net subscription amount during the period (based on par value),2026-10-31,month,133345714800,2026-11-03
+2279,Fund scale at the end of the period (based on par value),2026-10-31,month,464633777800,2026-11-03
+2280,Total value of outstanding Fund Certificate at the end of the period (based on par value),2026-10-31,month,464633777800,2026-11-03
+2281,Total number of outstanding Fund Certificate at the end of the period,2026-10-31,month,46463377.78,2026-11-03
+2282,Fund Management Company and related parties' ownership ratio at the end of the period,2026-10-31,month,0.0002472752,2026-11-03
+2283,Top 10 investors' ownership ratio at the end of the period,2026-10-31,month,0.2224,2026-11-03
+2284,Foreign investors' ownership ratio at the end of the period,2026-10-31,month,0.4257,2026-11-03
+2285,Net asset value per Fund Certificate at the end of period,2026-10-31,month,12479.89,2026-11-03
+2286,Fee paid to Real Estate management organisation/ Average NAV (%) (not applicable),2026-10-31,month,,2026-11-03
+2287,"Income (including interest income, dividend, coupon income and unrealised gain)/ Average NAV (%) (not applicable)",2026-10-31,month,,2026-11-03
+2288,Market price per fund certificates at the end of period (not applicable),2026-10-31,month,,2026-11-03
+22661,"Fund admin fee, and other fees paid to relating services providers by the fund management company/Average NAV (%)",2026-10-31,month,0.000873063121390964,2026-11-03
+22761,Change of Number of Fund Certificates during the period,2026-10-31,month,-3565410.75,2026-11-03
+22762,Change in capital amount during the period (based on par value),2026-10-31,month,-35654107500,2026-11-03
+22781,Number of Fund Certificates redeemed during the period,2026-10-31,month,-16899982.23,2026-11-03
+22782,Net redemption amount during the period (based on par value),2026-10-31,month,-168999822300,2026-11-03
+22841,Number of investors of the Fund at the end of the period,2026-10-31,month,22426,2026-11-03

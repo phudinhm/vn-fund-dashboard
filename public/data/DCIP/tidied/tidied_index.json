@@ -71,9 +71,10 @@
     "DCIP_2026_06.xlsx",
     "DCIP_2026_07.xlsx",
     "DCIP_2026_08.xlsx",
-    "DCIP_2026_09.xlsx"
+    "DCIP_2026_09.xlsx",
+    "DCIP_2026_10.xlsx"
   ],
-  "latest_period": "2026-09-30",
-  "latest_as_of": "2026-10-01",
-  "updated": "2026-11-05"
+  "latest_period": "2026-10-31",
+  "latest_as_of": "2026-11-03",
+  "updated": "2026-11-06"
 }
