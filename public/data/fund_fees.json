@@ -2433,6 +2433,47 @@
   ]
  },
  {
+  "code": "VCBF-CFO",
+  "management": 0.2,
+  "performance": null,
+  "buy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sipBuy": [
+   {
+    "from": 0,
+    "to": 100000000,
+    "rate": 0
+   },
+   {
+    "from": 100000000,
+    "to": null,
+    "rate": 0
+   }
+  ],
+  "sell": [
+   {
+    "from": 0,
+    "to": 12,
+    "rate": 0
+   },
+   {
+    "from": 12,
+    "to": null,
+    "rate": 0
+   }
+  ]
+ },
+ {
   "code": "VCBF-FIF",
   "management": 0.8,
   "performance": 0.1,
